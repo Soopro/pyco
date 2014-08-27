@@ -1,0 +1,10 @@
+{% if pagination %}
+    <section style="margin-bottom: 10em;">
+        {% if pagination["has_prev_page"] %}
+            <a rel="prev" class="a-hover" href="?page={{ pagination["current_page"]-1 }}"><i class="icon-arrow-left"></i> Prev Page </a>
+        {% endif %}
+        {% if pagination["has_next_page"] %}
+            <a rel="next" style="float:right" class="a-hover" href="?page={{ pagination["current_page"]+1 }}"> Next Page <i class="icon-arrow-right"></i></a>
+        {% endif %}
+    </section>
+{% endif %}
