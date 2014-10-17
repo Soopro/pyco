@@ -118,7 +118,7 @@ class BaseView(MethodView):
 
     def parse_file_meta(self, meta_string):
         headers = dict()
-        self.run_hook("before_read_file_meta",headers)
+        self.run_hook("before_read_file_meta")
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
@@ -201,9 +201,11 @@ class BaseView(MethodView):
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["description"] = meta.get("description", "")
-            
-            self.run_hook("get_post_data",data=data,post_meta=meta)
-            file_data_list.append(data)
+            self.view_ctx["tmp"]["post_data"] = data
+            self.view_ctx["tmp"]["post_meta"] = meta
+            self.run_hook("get_post_data")
+            file_data_list.append(self.view_ctx["tmp"]["post_data"])
+        self.pop_item_in_dict(self.view_ctx["tmp"], "post_data", "post_meta")
         if sort_key not in ("title", "date"):
             sort_key = "title"
         return sorted(file_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
@@ -232,11 +234,12 @@ class BaseView(MethodView):
         return
 
     #hook
-    def run_hook(self, hook_name, **references):
+    def run_hook(self, hook_name, *cleanup_keys):
         for plugin_module in self.plugins:
             func = plugin_module.__dict__.get(hook_name)
             if callable(func):
-                func(self.config, self.ext_ctx, **references)
+                func(self.config, ImmutableDict(self.view_ctx), self.ext_ctx)
+        self.cleanup_context(*cleanup_keys)
         return
 
     # cleanup
