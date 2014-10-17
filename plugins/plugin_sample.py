@@ -57,13 +57,13 @@ def after_parse_content():
     return
 
 
-def get_page_data():
-    print "get page data"
+def get_post_data():
+    print "get post data"
     return
 
 
-def get_pages():
-    print "get pages"
+def get_posts():
+    print "get posts"
     return
 
 

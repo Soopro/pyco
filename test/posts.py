@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from .base import BaseTest
 
 
-class PagesTest(BaseTest):
+class PostsTest(BaseTest):
     def index_test(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)

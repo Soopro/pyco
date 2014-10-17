@@ -3,13 +3,14 @@ from __future__ import absolute_import
 
 PLUGIN_DIR = "plugins/"
 
-THEME_DIR = "theme/"
+THEME_DIR = "themes"
 TEMPLATE_FILE_EXT = ".html"
 DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_POST_TMPL_NAME = "post"
+DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
-STATIC_DIR = "static/"
-STATIC_BASE_URL = "/static"
+STATIC_DIR = THEME_DIR
+STATIC_BASE_URL = '/themes'
 
 CONTENT_DIR = "content/"
 CONTENT_FILE_EXT = ".md"
@@ -35,6 +36,8 @@ import misaka
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
+
+from datetime import datetime
 
 
 class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
@@ -115,7 +118,7 @@ class BaseView(MethodView):
 
     def parse_file_meta(self, meta_string):
         headers = dict()
-        self.run_hook("before_read_file_meta")
+        self.run_hook("before_read_file_meta",headers)
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
@@ -139,7 +142,7 @@ class BaseView(MethodView):
                                                       fpath=content_file_full_path)
         return sha1(base).hexdigest()
 
-    # pages
+    # posts
     @staticmethod
     def get_files(base_dir, ext):
         all_files = []
@@ -148,7 +151,27 @@ class BaseView(MethodView):
             all_files.extend(file_full_paths)
         return all_files
 
-    def get_pages(self, sort_key="title", reverse=False):
+    def format_date(self, date):
+        config = self.config
+        date_format = DEFAULT_DATE_FORMAT
+        try:
+            date_object=datetime.strptime(date, date_format)
+            date_formatted=date_object.strftime(config.get('POST_DATE_FORMAT'))
+        except ValueError:
+            date_formatted=date
+        return date_formatted
+        
+    def get_posts(self):
+        config = self.config
+        base_url = config.get("BASE_URL")
+        
+        sort_key=config.get("POST_ORDER_BY")
+        order=config.get("POST_ORDER")
+        
+        reverse = False
+        if order == 'desc':
+            reverse = True
+
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         file_data_list = []
         for f in files:
@@ -169,19 +192,18 @@ class BaseView(MethodView):
             if relative_path.endswith("index"):
                 relative_path = relative_path[:-5]
 
-            url = "/{}".format(relative_path)
+            url = "{}/{}".format(base_url,relative_path)
 
             data["path"] = f
             data["title"] = meta.get("title", "")
             data["url"] = url
             data["author"] = meta.get("author", "")
             data["date"] = meta.get("date", "")
+            data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["description"] = meta.get("description", "")
-            self.view_ctx["tmp"]["page_data"] = data
-            self.view_ctx["tmp"]["page_meta"] = meta
-            self.run_hook("get_page_data")
-            file_data_list.append(self.view_ctx["tmp"]["page_data"])
-        self.pop_item_in_dict(self.view_ctx["tmp"], "page_data", "page_meta")
+            
+            self.run_hook("get_post_data",data=data,post_meta=meta)
+            file_data_list.append(data)
         if sort_key not in ("title", "date"):
             sort_key = "title"
         return sorted(file_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
@@ -198,8 +220,11 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
+        theme_relative_path = os.path.join(THEME_DIR,config.get("THEME_NAME"))
+        theme_url = os.path.join(config.get("BASE_URL"),theme_relative_path);
         self.view_ctx["config"] = config
         self.view_ctx["base_url"] = config.get("BASE_URL")
+        self.view_ctx["theme_url"] = theme_url
         self.view_ctx["theme_path_for"] = self.theme_path_for
         self.view_ctx["site_title"] = config.get("SITE_TITLE")
         self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
@@ -207,12 +232,11 @@ class BaseView(MethodView):
         return
 
     #hook
-    def run_hook(self, hook_name, *cleanup_keys):
+    def run_hook(self, hook_name, **references):
         for plugin_module in self.plugins:
             func = plugin_module.__dict__.get(hook_name)
             if callable(func):
-                func(self.config, ImmutableDict(self.view_ctx), self.ext_ctx)
-        self.cleanup_context(*cleanup_keys)
+                func(self.config, self.ext_ctx, **references)
         return
 
     # cleanup
@@ -288,33 +312,34 @@ class ContentView(BaseView):
             run_hook("after_parse_content")
 
         # content index
-        pages = self.get_pages("date", True)
-        self.view_ctx["pages"] = filter(lambda x: x["url"] != site_index_url, pages)
-        self.view_ctx["current_page"] = defaultdict(str)
-        self.view_ctx["prev_page"] = defaultdict(str)
-        self.view_ctx["next_page"] = defaultdict(str)
-        self.view_ctx["is_front_page"] = False
-        self.view_ctx["is_tail_page"] = False
-        for page_index, page_data in enumerate(self.view_ctx["pages"]):
+        posts = self.get_posts()
+        self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
+        self.view_ctx["current_post"] = defaultdict(str)
+        self.view_ctx["prev_post"] = defaultdict(str)
+        self.view_ctx["next_post"] = defaultdict(str)
+        self.view_ctx["is_front"] = False
+        self.view_ctx["is_tail"] = False
+        for post_index, post_data in enumerate(self.view_ctx["posts"]):
             if auto_index:
                 break
-            if page_data["path"] == content_file_full_path:
-                self.view_ctx["current_page"] = page_data
-                if page_index == 0:
-                    self.view_ctx["is_front_page"] = True
+            if post_data["path"] == content_file_full_path:
+                self.view_ctx["current_post"] = post_data
+                if post_index == 0:
+                    self.view_ctx["is_front"] = True
                 else:
-                    self.view_ctx["prev_page"] = self.view_ctx["pages"][page_index-1]
-                if page_index == len(self.view_ctx["pages"]) - 1:
-                    self.view_ctx["is_tail_page"] = True
+                    self.view_ctx["prev_post"] = self.view_ctx["posts"][post_index-1]
+                if post_index == len(self.view_ctx["posts"]) - 1:
+                    self.view_ctx["is_tail"] = True
                 else:
-                    self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
-            page_data.pop("path")
-        run_hook("get_pages")
+                    self.view_ctx["next_post"] = self.view_ctx["posts"][post_index+1]
+            post_data.pop("path")
+        run_hook("get_posts")
 
         self.view_ctx["template_file_path"] = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME) if auto_index \
             else self.theme_path_for(self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME))
 
         run_hook("before_render")
+
         self.view_ctx.update(self.ext_ctx)
         self.view_ctx["output"] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
         run_hook("after_render", "template_file_path")
@@ -322,7 +347,6 @@ class ContentView(BaseView):
         if "output" in self.ext_ctx:
             self.view_ctx["output"] = self.ext_ctx["output"]
         return make_content_response(self.view_ctx["output"], status_code)
-
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
@@ -344,4 +368,4 @@ def errorhandler(err):
 if __name__ == "__main__":
     host = app.config.get("HOST")
     port = app.config.get("PORT")
-    app.run(host=host, port=port, use_reloader=False)
+    app.run(host=host, port=port)
