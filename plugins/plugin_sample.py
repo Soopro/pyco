@@ -7,12 +7,12 @@ def plugins_loaded():
     return
 
 
-def config_loaded():
+def config_loaded(config):
     print "config loaded"
     return
 
 
-def request_url():
+def request_url(url):
     print "request url"
     return
 
@@ -37,13 +37,13 @@ def after_404_load_content():
     return
 
 
-def before_read_file_meta():
-    print "before read file meta"
+def before_read_post_meta():
+    print "before read post meta"
     return
 
 
-def file_meta():
-    print "file meta"
+def single_post_meta(post_meta):
+    print "post meta"
     return
 
 
@@ -57,19 +57,19 @@ def after_parse_content():
     return
 
 
-def get_post_data():
+def get_post_data(data, post_meta):
     print "get post data"
     return
 
 
-def get_posts():
+def get_posts(posts, current_post, prev_post, next_post):
     print "get posts"
     return
 
 
-def before_template_register():
-    print "before template register"
-    return
+# def before_template_register():
+#     print "before template register"
+#     return
 
 
 def before_render():

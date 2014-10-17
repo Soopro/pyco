@@ -24,8 +24,8 @@
                     </a>
                 </article>
                 <article class="post">
-                    <h2 class="content">{{ meta["title"] }}</h2>
-                    <h5>{{ meta["date"] }}</h5>
+                    <h2 class="content">{{ meta.title }} - {{meta.type}}</h2>
+                    <h5>{{ meta.date }}</h5>
                     <section>
                         {% autoescape false %}
                         {{ content }}

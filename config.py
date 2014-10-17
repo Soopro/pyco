@@ -20,5 +20,9 @@ IGNORE_FILES = []
 THEME_NAME = "default"
 PLUGINS = ["pagination","content_types"]
 
-# for pagination plugin
+""" For Plugins """
+#pagination
 PAGINATION_LIMIT = 10
+
+#content_type
+AUTO_TYPE = True

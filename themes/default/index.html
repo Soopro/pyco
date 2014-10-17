@@ -15,14 +15,14 @@
     <main class="container">
     	<div class="row-fluid">
     		<section class="content">
-    		  <h1>{{ site_title }}</h1>
+    		  <h1>{{ site_title }} {{file_path}}</h1>
               <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
     		</section>
     		<ul class="entries">
     		{% for page in posts %}
     		  <li>
     		    <a href="{{ page["url"] }}">
-    		        <h3>{{ page["title"] }}</h3>
+    		        <h3>{{ page["title"] }}-{{page.type}}</h3>
                 <time>{{ page["date_formatted"] }}</time>
                 <div>{{ page["description"] }}</div>
     		    </a>
