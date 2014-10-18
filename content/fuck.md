@@ -1,10 +1,11 @@
 /*
-Title: Hello
+Title: Hello FUck off
 Description: hello pyco
 Author: DTynn
 Date: 2014/07/25
 Type: Fuck
 Order:10
+Redirect: http://baidu.com
 */
 
 ### Hello Pyco

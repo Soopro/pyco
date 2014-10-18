@@ -18,7 +18,7 @@ POST_ORDER = "desc"
 IGNORE_FILES = []
 
 THEME_NAME = "default"
-PLUGINS = ["content_types","sort_by_order","pagination"]
+PLUGINS = ["redirect","content_types","sort_by_order","pagination"]
 
 """ For Plugins """
 #pagination

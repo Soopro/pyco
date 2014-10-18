@@ -20,8 +20,8 @@ def get_post_data(data, post_meta):
     filter_auto_type(data,data.get("url"));
     return
 
-def single_post_meta(post_meta):
-    post_url = _CONFIG.get("BASE_URL")+URL
+def single_post_meta(post_meta, redirect_to):
+    post_url = _CONFIG.get("BASE_URL")+_URL
     filter_auto_type(post_meta, post_url);
     return
     

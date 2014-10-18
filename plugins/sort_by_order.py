@@ -1,5 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
+from operator import itemgetter
 
 _CONFIG = {}
 _ORDER_DESC = False
@@ -27,7 +28,6 @@ def get_post_data(data, post_meta):
     return
 
 def get_posts(posts, current_post, prev_post, next_post):
-    ordered_pages = []
     for post in posts:
         try: 
             order = int(post.get('order'))
@@ -35,42 +35,8 @@ def get_posts(posts, current_post, prev_post, next_post):
             order = None
 
         post['order'] =  order or 0
-        ordered_pages.append(post);
-    
-    posts = sort_order(ordered_pages,'order', _ORDER_BY)
+    _posts=sorted(posts,key=itemgetter('order', _ORDER_BY),reverse=_ORDER_DESC)
+    del posts[:]
+    for post in _posts:
+        posts.append(post)
     return
-    
-def sort_order(posts, param, param_order_by):
-    if len(posts) < 1:
-        return posts
-    
-    pivot = posts[0]
-    left_list = []
-    right_list = []
-    
-    for post in posts:
-        if post['order']>pivot['order']:
-            left_list.append(post)
-        else:
-            right_list.append(post)
-
-    left_list = sort_order(left_list, param, param_order_by)
-    right_list = sort_order(right_list, param, param_order_by)
-    
-    return left_list + [pivot] + right_list
-        
-def compare(a,b,param,param_order_by):
-    
-    if a[param] != b[param]:
-        if _ORDER_DESC:
-            return a[param] > b[param]
-        else:
-            return a[param] < b[param]
-    else:
-        if a.get(param_order_by) and b.get(param_order_by):
-            if _ORDER_DESC:
-                return a[param_order_by] > b[param_order_by]
-            else:
-                return a[param_order_by] < b[param_order_by]
-        else:
-            return True

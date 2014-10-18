@@ -20,7 +20,7 @@ def request_url(request):
     return
 
 
-def get_posts(posts, current_post, prev_post, next_post):
+def get_posts(posts, current_post, prev_post, next_post):     
     global _current_page
     if _current_page and isinstance(_current_page, int):
         _pagination_limit = _CONFIG.get("PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT )

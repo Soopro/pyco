@@ -22,7 +22,7 @@ CHARSET = "utf8"
 import sys
 sys.path.insert(0, PLUGIN_DIR)
 
-from flask import Flask, current_app, request, abort, render_template, make_response
+from flask import Flask, current_app, request, abort, render_template, make_response, redirect
 from flask.views import MethodView
 import os
 import re
@@ -175,7 +175,7 @@ class BaseView(MethodView):
             reverse = True
 
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
-        file_data_list = []
+        post_data_list = []
         for f in files:
             relative_path = f.split(CONTENT_DIR, 1)[1]
             if relative_path.startswith("~") \
@@ -205,10 +205,10 @@ class BaseView(MethodView):
             data["description"] = meta.get("description", "")
             
             self.run_hook("get_post_data",data = data, post_meta = meta.copy())
-            file_data_list.append(data)
+            post_data_list.append(data)
         if sort_key not in ("title", "date"):
             sort_key = "title"
-        return sorted(file_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
+        return sorted(post_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
 
     #theme
     @property
@@ -309,7 +309,10 @@ class ContentView(BaseView):
             meta_string, content_string = self.content_splitter(file_content)
             post_meta=self.parse_post_meta(meta_string)
 
-            run_hook("single_post_meta", post_meta = post_meta)
+            redirect_to = {"url":None}
+            run_hook("single_post_meta", post_meta = post_meta, redirect_to = redirect_to)
+            if redirect_to.get("url"):
+                return redirect(redirect_to["url"], code=302)
             self.view_ctx["meta"] = post_meta
 
             run_hook("before_parse_content", content = content_string)
@@ -351,7 +354,6 @@ class ContentView(BaseView):
         output = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
         
         run_hook("after_render", output = output)
-        
         return make_content_response(output, status_code)
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)

@@ -42,7 +42,7 @@ def before_read_post_meta(headers):
     return
 
 
-def single_post_meta(post_meta):
+def single_post_meta(post_meta, redirect_to):
     print "post meta"
     return
 
