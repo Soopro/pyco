@@ -38,7 +38,7 @@ from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
 
 from datetime import datetime
-
+import traceback
 
 class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
     @staticmethod
@@ -54,9 +54,7 @@ class BaseView(MethodView):
     def __init__(self):
         super(BaseView, self).__init__()
         self.plugins = []
-        self.config = {}
-        for k,v in current_app.config.items():
-            self.config.update({k:v});
+        self.config = current_app.config
         
         self.view_ctx = dict()
         self.view_ctx["tmp"] = dict()
@@ -269,7 +267,10 @@ class ContentView(BaseView):
         run_hook("plugins_loaded")
 
         load_config(current_app)
+        self.config = current_app.config
+        
         self.init_context()
+        
         run_hook("config_loaded", config = self.config)
         
         config = self.config
@@ -280,7 +281,7 @@ class ContentView(BaseView):
         auto_index = is_site_index and config.get("AUTO_INDEX")
         self.view_ctx["is_site_index"] = is_site_index
         self.view_ctx["auto_index"] = auto_index
-        run_hook("request_url", url = request_url)
+        run_hook("request_url", request = request)
 
         if not auto_index:
             content_file_full_path = self.get_file_path(request_url)
@@ -299,22 +300,22 @@ class ContentView(BaseView):
             if is_not_found:
                 run_hook("before_404_load_content",file = content_file_full_path)
             with open(content_file_full_path, "r") as f:
-                self.view_ctx["file_content"] = f.read().decode(CHARSET)
+                file_content = f.read().decode(CHARSET)
             if is_not_found:
-                run_hook("after_404_load_content",file = content_file_full_path,content = self.view_ctx["file_content"])
-            run_hook("after_load_content", file = content_file_full_path,content = self.view_ctx["file_content"])
-
+                run_hook("after_404_load_content",file = content_file_full_path, content = file_content)
+            run_hook("after_load_content", file = content_file_full_path,content = file_content)
+            
             # parse file content
-            meta_string, content_string = self.content_splitter(self.view_ctx["file_content"])
+            meta_string, content_string = self.content_splitter(file_content)
             post_meta=self.parse_post_meta(meta_string)
 
             run_hook("single_post_meta", post_meta = post_meta)
             self.view_ctx["meta"] = post_meta
 
             run_hook("before_parse_content", content = content_string)
-            self.view_ctx["content"] = self.parse_content(content_string)
-            run_hook("after_parse_content",content = self.view_ctx["content"])
-
+            post_content = self.parse_content(content_string)
+            run_hook("after_parse_content", content = post_content)
+            self.view_ctx["content"] = post_content
         # content index
         posts = self.get_posts()
         self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
@@ -343,14 +344,15 @@ class ContentView(BaseView):
         
         template = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME)
         self.view_ctx["template_file_path"] = self.theme_path_for(template)
-
+        
+        run_hook("before_render",var = self.view_ctx, template = template)
         self.view_ctx["template"] = template
-        run_hook("before_render",view = self.view_ctx, template = self.view_ctx["template"])
-
-        self.view_ctx["output"] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
-        run_hook("after_render", output = self.view_ctx["output"])
-
-        return make_content_response(self.view_ctx["output"], status_code)
+        
+        output = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
+        
+        run_hook("after_render", output = output)
+        
+        return make_content_response(output, status_code)
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
@@ -362,11 +364,11 @@ app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index")
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
 
 
-# @app.errorhandler(Exception)
-# def errorhandler(err):
-#     err_msg = "{}".format(repr(err))
-#     current_app.logger.error(err_msg)
-#     return make_response(err_msg, 579)
+@app.errorhandler(Exception)
+def errorhandler(err):
+    err_msg = "{}\n{}".format(repr(err),traceback.format_exc())
+    current_app.logger.error(err_msg)
+    return make_response(repr(err), 579)
 
 
 if __name__ == "__main__":

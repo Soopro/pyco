@@ -18,11 +18,11 @@ POST_ORDER = "desc"
 IGNORE_FILES = []
 
 THEME_NAME = "default"
-PLUGINS = ["pagination","content_types"]
+PLUGINS = ["content_types","sort_by_order","pagination"]
 
 """ For Plugins """
 #pagination
-PAGINATION_LIMIT = 10
+PAGINATION_LIMIT = 12
 
 #content_type
 AUTO_TYPE = True
