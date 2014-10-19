@@ -70,8 +70,8 @@ class BaseView(MethodView):
             elif isinstance(module_or_module_name, basestring):
                 try:
                     module = __import__(module_or_module_name)
-                except ImportError:
-                    continue
+                except ImportError as err:
+                    raise
                 loaded_plugins.append(module)
         self.plugins = loaded_plugins
         return
@@ -259,9 +259,12 @@ class ContentView(BaseView):
         # init
         status_code = 200
         is_not_found = False
-        content_file_full_path = None
         run_hook = self.run_hook
-
+        
+        #for pass intor hook
+        file = {"path": None}
+        file_content = {"content": None}
+        
         # load
         self.load_plugins()
         run_hook("plugins_loaded")
@@ -284,29 +287,32 @@ class ContentView(BaseView):
         run_hook("request_url", request = request)
 
         if not auto_index:
-            content_file_full_path = self.get_file_path(request_url)
+            file["path"] = self.get_file_path(request_url)
             # hook before load content
-            run_hook("before_load_content",file = content_file_full_path)
+            run_hook("before_load_content",file = file)
             # if not found
-            if content_file_full_path is None:
+            if file["path"] is None:
                 is_not_found = True
                 status_code = 404
-                content_file_full_path = self.content_not_found_full_path
-                if not self.check_file_exists(content_file_full_path):
+                file["path"] = self.content_not_found_full_path
+                if not self.check_file_exists(file["path"]):
                     # without not found file
                     abort(404)
 
             # read file content
             if is_not_found:
-                run_hook("before_404_load_content",file = content_file_full_path)
-            with open(content_file_full_path, "r") as f:
-                file_content = f.read().decode(CHARSET)
+                run_hook("before_404_load_content",file = file)
+
+            with open(file['path'], "r") as f:
+                file_content['content'] = f.read().decode(CHARSET)
+            
+            
             if is_not_found:
-                run_hook("after_404_load_content",file = content_file_full_path, content = file_content)
-            run_hook("after_load_content", file = content_file_full_path,content = file_content)
+                run_hook("after_404_load_content",file = file, content = file_content)
+            run_hook("after_load_content", file = file, content = file_content)
             
             # parse file content
-            meta_string, content_string = self.content_splitter(file_content)
+            meta_string, content_string = self.content_splitter(file_content["content"])
             post_meta=self.parse_post_meta(meta_string)
 
             redirect_to = {"url":None}
@@ -314,11 +320,16 @@ class ContentView(BaseView):
             if redirect_to.get("url"):
                 return redirect(redirect_to["url"], code=302)
             self.view_ctx["meta"] = post_meta
-
+            
+            post_content = {}
+            
+            post_content['content'] = content_string
             run_hook("before_parse_content", content = content_string)
-            post_content = self.parse_content(content_string)
+            
+            post_content['content'] = self.parse_content(content_string)
             run_hook("after_parse_content", content = post_content)
-            self.view_ctx["content"] = post_content
+            
+            self.view_ctx["content"] = post_content['content']
         # content index
         posts = self.get_posts()
         self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
@@ -330,7 +341,7 @@ class ContentView(BaseView):
         for post_index, post_data in enumerate(self.view_ctx["posts"]):
             if auto_index:
                 break
-            if post_data["path"] == content_file_full_path:
+            if post_data["path"] == file['path']:
                 self.view_ctx["current_post"] = post_data
                 if post_index == 0:
                     self.view_ctx["is_front"] = True
@@ -345,16 +356,19 @@ class ContentView(BaseView):
         run_hook("get_posts",posts = self.view_ctx["posts"], current_post = self.view_ctx["current_post"],
             prev_post = self.view_ctx["prev_post"],next_post = self.view_ctx["next_post"])
         
-        template = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME)
-        self.view_ctx["template_file_path"] = self.theme_path_for(template)
+        template = {}
+        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME)
+        self.view_ctx["template_file_path"] = self.theme_path_for(template['file'])
         
+
         run_hook("before_render",var = self.view_ctx, template = template)
-        self.view_ctx["template"] = template
+        self.view_ctx["template"] = template['file']
         
-        output = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
+        output = {}
+        output['content'] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
         
         run_hook("after_render", output = output)
-        return make_content_response(output, status_code)
+        return make_content_response(output['content'], status_code)
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)

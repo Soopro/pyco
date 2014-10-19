@@ -18,11 +18,10 @@ POST_ORDER = "desc"
 IGNORE_FILES = []
 
 THEME_NAME = "default"
-PLUGINS = ["redirect","content_types","sort_by_order","pagination"]
+PLUGINS = ["redirect","additional_metas","argments","draft","content_types","sort_by_order","taxonomy","pagination"]
 
 """ For Plugins """
 #pagination
-PAGINATION_LIMIT = 12
-
-#content_type
-AUTO_TYPE = True
+PAGINATION_LIMIT = 2
+#taxonomy
+TAXONOMY_PAGINATION_LIMIT = PAGINATION_LIMIT

@@ -1,14 +1,16 @@
 #coding=utf-8
 from __future__ import absolute_import
+from plugin_helpers import generate_pagination
 
 _CONFIG = {}
 _DEFAULT_PAGINATION_LIMIT  = 10
 _current_page = 1
-_paged_posts = dict()
-_pagination = dict()
+_paged_posts = None
+_pagination = None
 
 def config_loaded(config):
-    _CONFIG.update(config)
+    global _CONFIG
+    _CONFIG = config
     return
     
 def request_url(request):
@@ -19,29 +21,19 @@ def request_url(request):
         _current_page = 1
     return
 
-
-def get_posts(posts, current_post, prev_post, next_post):     
-    global _current_page
+def get_posts(posts, current_post, prev_post, next_post):
+    global _paged_posts, _pagination
+    _paged_posts = _pagination = None
+    
     if _current_page and isinstance(_current_page, int):
-        _pagination_limit = _CONFIG.get("PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT )
-        total = page_count(_pagination_limit, len(posts))
-        _current_page = min(_current_page, total)
-        start = (_current_page-1)*_pagination_limit
-        end = _current_page*_pagination_limit
-        
-        global _paged_posts
-        _paged_posts = posts[start:end]
-        
-        global _pagination
-        _pagination["current_page"] = _current_page
-        _pagination["has_prev_page"] = _current_page > 1
-        _pagination["has_next_page"] = _current_page < total
+        limit = _CONFIG.get("PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT )
+        _paged_posts, _pagination = generate_pagination(_current_page,limit,posts)
     return
-
-def page_count(_pagination_limit, total):
-    return max((total+_pagination_limit-1)/_pagination_limit, 1)
 
 def before_render(var,template):
-    var['current_page_posts'] = _paged_posts
-    var['pagination'] = _pagination
+    if not var.get('paged_posts') and not var.get('pagination'):
+        var['results'] = _paged_posts
+        var['pagination'] = _pagination
     return
+
+#custom functions

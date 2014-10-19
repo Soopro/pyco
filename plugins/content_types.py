@@ -6,7 +6,8 @@ _DEFAULT_CONTENT_TYPE = 'page'
 _URL = ''
 
 def config_loaded(config):
-    _CONFIG.update(config)
+    global _CONFIG
+    _CONFIG = config
     return
 
             
@@ -24,7 +25,8 @@ def single_post_meta(post_meta, redirect_to):
     post_url = _CONFIG.get("BASE_URL")+_URL
     filter_auto_type(post_meta, post_url);
     return
-    
+
+#custom functions
 def filter_auto_type(meta,post_url):
     base_url = _CONFIG.get("BASE_URL")
 

@@ -16,15 +16,8 @@
     	<div class="row-fluid">
     		<section class="content">
     		  <h1>{{ site_title }} {{file_path}}</h1>
-              <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
+              <div class="sub-title">{{ taxonomy}}</div>
     		</section>
-    		<ul class="nav">
-    		{% for item in navigation %}
-				<li>
-					<a href="{{ item.url }}">{{ item.nav }}</a>
-				</li>
-    		{% endfor %}
-    		</ul>
     		<ul class="entries">
     		{% for post in results %}
     		  <li>
