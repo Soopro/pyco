@@ -18,10 +18,16 @@ POST_ORDER = "desc"
 IGNORE_FILES = []
 
 THEME_NAME = "default"
-PLUGINS = ["redirect","additional_metas","argments","draft","content_types","sort_by_order","taxonomy","pagination"]
+PLUGINS = ["redirect","additional_metas","argments","draft","content_types","sort_by_order","taxonomy","pagination","languages"]
 
 """ For Plugins """
 #pagination
 PAGINATION_LIMIT = 2
 #taxonomy
 TAXONOMY_PAGINATION_LIMIT = PAGINATION_LIMIT
+#languages
+TRANSLATES = {
+	"en":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
+	"zh":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
+}
+TRANSLATE_REDIRECT = False

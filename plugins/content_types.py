@@ -11,7 +11,7 @@ def config_loaded(config):
     return
 
             
-def request_url(request):
+def request_url(request, redirect_to):
     global _URL
     _URL = request.path
     return

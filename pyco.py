@@ -241,18 +241,6 @@ class BaseView(MethodView):
                 func(**references)
         return
 
-    # cleanup
-    @staticmethod
-    def pop_item_in_dict(d, *keys):
-        for key in keys:
-            if key in d:
-                d.pop(key)
-        return
-
-    def cleanup_context(self, *keys):
-        self.pop_item_in_dict(self.view_ctx, *keys)
-        return
-
 
 class ContentView(BaseView):
     def get(self, _):
@@ -284,7 +272,11 @@ class ContentView(BaseView):
         auto_index = is_site_index and config.get("AUTO_INDEX")
         self.view_ctx["is_site_index"] = is_site_index
         self.view_ctx["auto_index"] = auto_index
-        run_hook("request_url", request = request)
+        
+        redirect_to = {"url":None}
+        run_hook("request_url", request = request, redirect_to = redirect_to)
+        if redirect_to.get("url"):
+            return redirect(redirect_to["url"], code=302)
 
         if not auto_index:
             file["path"] = self.get_file_path(request_url)
@@ -319,6 +311,7 @@ class ContentView(BaseView):
             run_hook("single_post_meta", post_meta = post_meta, redirect_to = redirect_to)
             if redirect_to.get("url"):
                 return redirect(redirect_to["url"], code=302)
+
             self.view_ctx["meta"] = post_meta
             
             post_content = {}

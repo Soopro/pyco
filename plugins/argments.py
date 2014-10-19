@@ -10,10 +10,9 @@ def config_loaded(config):
     _CONFIG = config
     return
     
-def request_url(request):
+def request_url(request, redirect_to):
     global _argments, _url
     _argments={}
-    
     for (k,v) in request.args.items():
         _argments.update({k:v})
     _url = request.path

@@ -18,6 +18,15 @@
     		  <h1>{{ site_title }} {{file_path}}</h1>
               <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
     		</section>
+			<div>
+				<h2>{{language_text}}</h2>
+				
+				{% for trans in translates %}
+					{{ trans.name }}
+					{{ trans.url }}
+					<br/>
+				{% endfor %}
+			</div>
     		<ul class="nav">
     		{% for item in navigation %}
 				<li>

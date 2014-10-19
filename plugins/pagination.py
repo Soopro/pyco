@@ -13,7 +13,7 @@ def config_loaded(config):
     _CONFIG = config
     return
     
-def request_url(request):
+def request_url(request, redirect_to):
     global _current_page
     try:
         _current_page = max(int(request.args.get("paged")), 1)

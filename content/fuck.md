@@ -4,7 +4,7 @@ Description: hello pyco
 Author: DTynn
 Date: 2014/07/25
 Type: Fuck
-Draft: True
+Draft: False
 Order:50
 Redirect: http://baidu.com
 Category: this

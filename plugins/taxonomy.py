@@ -14,7 +14,7 @@ def config_loaded(config):
     _CONFIG.update(config)
     return
     
-def request_url(request):
+def request_url(request, redirect_to):
     global _term
     try:
         _term = request.args.get("term").lower()
