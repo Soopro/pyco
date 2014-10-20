@@ -17,8 +17,9 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-THEME_NAME = "default"
-PLUGINS = ["redirect","additional_metas","argments","draft","content_types","sort_by_order","taxonomy","pagination","languages"]
+THEME_NAME = "tinforce"
+PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
+"content_types","sort_by_order","taxonomy","pagination","languages"]
 
 """ For Plugins """
 #pagination
@@ -31,3 +32,9 @@ TRANSLATES = {
 	"zh":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
 }
 TRANSLATE_REDIRECT = False
+#shortcodes
+SHORTCODES  = [
+    {"pattern":"base_url","replacement":""},
+    {"pattern":"uploads","replacement":"/uploads"},
+    {"pattern":"image_url","replacement":"/uploads"}
+]

@@ -42,6 +42,11 @@ def before_read_post_meta(headers):
     return
 
 
+def after_read_post_meta(headers):
+    print "after read post meta"
+    return
+
+
 def single_post_meta(post_meta, redirect_to):
     print "post meta"
     return

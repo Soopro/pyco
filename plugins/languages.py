@@ -9,9 +9,9 @@ _current_lang = None
 
 def config_loaded(config):
     global _LOCALE, _TRANSLATES, _TRANSLATE_REDIRECT
-    _LOCALE = config.get('LOCALE') or _DEFAULT_LOCALE
-    _TRANSLATES = config.get('TRANSLATES')
-    _TRANSLATE_REDIRECT = config.get('TRANSLATE_REDIRECT')
+    _LOCALE = config.get("LOCALE") or _DEFAULT_LOCALE
+    _TRANSLATES = config.get("TRANSLATES")
+    _TRANSLATE_REDIRECT = config.get("TRANSLATE_REDIRECT")
     return
 
 def request_url(request, redirect_to):
@@ -33,7 +33,7 @@ def request_url(request, redirect_to):
 def before_render(var,template):
     current_trans = _TRANSLATES[_current_lang]
     translates = [_TRANSLATES[trans] for trans in _TRANSLATES]
-    var['translates'] = translates
-    var['language_text'] = current_trans['text']
-    var['locale'] = _LOCALE
+    var["translates"] = translates
+    var["language_text"] = current_trans["text"]
+    var["locale"] = _LOCALE
     return

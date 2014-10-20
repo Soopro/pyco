@@ -17,7 +17,7 @@ def request_url(request, redirect_to):
     return
 
 def get_post_data(data, post_meta):
-    data["type"] = post_meta.get("type") or None
+    data["type"] = post_meta.get("type")
     filter_auto_type(data,data.get("url"));
     return
 

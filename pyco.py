@@ -3,14 +3,17 @@ from __future__ import absolute_import
 
 PLUGIN_DIR = "plugins/"
 
-THEME_DIR = "themes"
+THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
 DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_POST_TMPL_NAME = "post"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
-STATIC_DIR = THEME_DIR
-STATIC_BASE_URL = '/themes'
+STATIC_DIR = THEMES_DIR
+STATIC_BASE_URL = "/statics"
+
+UPLOADS_DIR = "uploads/"
+UPLOADS_URL = "/uploads"
 
 CONTENT_DIR = "content/"
 CONTENT_FILE_EXT = ".md"
@@ -22,8 +25,9 @@ CHARSET = "utf8"
 import sys
 sys.path.insert(0, PLUGIN_DIR)
 
-from flask import Flask, current_app, request, abort, render_template, make_response, redirect
+from flask import Flask, current_app, request, abort, render_template, make_response, redirect, send_from_directory
 from flask.views import MethodView
+from jinja2 import FileSystemLoader
 import os
 import re
 from helpers import load_config, make_content_response
@@ -79,7 +83,6 @@ class BaseView(MethodView):
     # common funcs
     def get_file_path(self, url):
         base_path = os.path.join(CONTENT_DIR, url[1:]).rstrip("/")
-
         file_name = "{}{}".format(base_path, CONTENT_FILE_EXT)
         if self.check_file_exists(file_name):
             return file_name
@@ -125,6 +128,8 @@ class BaseView(MethodView):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
                 headers[kv_pair[0].lower()] = kv_pair[1].strip()
+        
+        self.run_hook("after_read_post_meta", headers = headers)
         return headers
 
     @staticmethod
@@ -193,8 +198,9 @@ class BaseView(MethodView):
 
             if relative_path.endswith("index"):
                 relative_path = relative_path[:-5]
-
-            url = "{}/{}".format(base_url,relative_path)
+            
+            # url = "{}/{}".format(base_url,relative_path)
+            url = "/{}".format(relative_path)
 
             data["path"] = f
             data["title"] = meta.get("title", "")
@@ -222,12 +228,17 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
-        theme_relative_path = os.path.join(THEME_DIR,config.get("THEME_NAME"))
-        theme_url = os.path.join(config.get("BASE_URL"),theme_relative_path);
+        
+        # change static folder
+        current_app.static_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
+
         self.view_ctx["config"] = config
         self.view_ctx["base_url"] = config.get("BASE_URL")
-        self.view_ctx["theme_url"] = theme_url
+        self.view_ctx["theme_url"] = STATIC_BASE_URL
+        self.view_ctx["theme_name"] = config.get("THEME_NAME")
+        self.view_ctx["theme_config"] = os.path.join(config.get("THEME_NAME"),"config.jinja")
         self.view_ctx["theme_path_for"] = self.theme_path_for
+        self.view_ctx["uploads"] = UPLOADS_URL
         self.view_ctx["site_title"] = config.get("SITE_TITLE")
         self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
         self.view_ctx["site_description"] = config.get("SITE_DESCRIPTION")
@@ -317,9 +328,9 @@ class ContentView(BaseView):
             post_content = {}
             
             post_content['content'] = content_string
-            run_hook("before_parse_content", content = content_string)
+            run_hook("before_parse_content", content = post_content)
             
-            post_content['content'] = self.parse_content(content_string)
+            post_content['content'] = self.parse_content(post_content['content'])
             run_hook("after_parse_content", content = post_content)
             
             self.view_ctx["content"] = post_content['content']
@@ -351,11 +362,18 @@ class ContentView(BaseView):
         
         template = {}
         template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME)
-        self.view_ctx["template_file_path"] = self.theme_path_for(template['file'])
         
-
         run_hook("before_render",var = self.view_ctx, template = template)
+        
+        template_file_path = self.theme_path_for(template['file'])
+        template_file_absolute_path = os.path.join(current_app.root_path, current_app.template_folder, template_file_path)
+
+        if not os.path.isfile(template_file_absolute_path):
+            template['file'] = None
+            template_file_path = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME)
+
         self.view_ctx["template"] = template['file']
+        self.view_ctx["template_file_path"] = template_file_path
         
         output = {}
         output['content'] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
@@ -363,15 +381,20 @@ class ContentView(BaseView):
         run_hook("after_render", output = output)
         return make_content_response(output['content'], status_code)
 
+
+class UploadsView(MethodView):
+    def get(self, filename):
+        return send_from_directory(UPLOADS_DIR, filename)
+
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
 app.debug = app.config.get("DEBUG")
 app.static_folder = STATIC_DIR
-app.template_folder = THEME_DIR
+app.template_folder = THEMES_DIR
 app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
-
+app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadsView.as_view("uploads"))
 
 @app.errorhandler(Exception)
 def errorhandler(err):

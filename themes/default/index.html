@@ -15,7 +15,7 @@
     <main class="container">
     	<div class="row-fluid">
     		<section class="content">
-    		  <h1>{{ site_title }} {{file_path}}</h1>
+    		  <h1>{{ site_title }} {{file_path}}123123123123213</h1>
               <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
     		</section>
 			<div>
@@ -27,6 +27,7 @@
 					<br/>
 				{% endfor %}
 			</div>
+			<img src="{{uploads}}/works/anv/anv_1_s.jpg">
     		<ul class="nav">
     		{% for item in navigation %}
 				<li>
@@ -45,10 +46,10 @@
     		  </li>
     		{% endfor %}
     		</ul>
-        {% include theme_path_for("pagination") %}
+        {% include "pagination.html" %}
     	</div>
     </main>
   </div>
-{% include theme_path_for("footer") %}
+{% include "footer.html" %}
 </body>
 </html>

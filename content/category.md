@@ -1,5 +1,6 @@
 /*
-Title: Category
-Taxonomy: Category
-Template: category
+!Title: Category
+Taxonomy: category
+!Template: taxonomy
+Redirect: %base_url%
 */

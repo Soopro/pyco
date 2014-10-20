@@ -27,5 +27,5 @@ def before_render(var,template):
 def add_args(args):
     if args and isinstance(args, dict):
         _argments.update(args)
-        url=_url+"?"+'&'.join(['%s=%s' % (key, value) for (key, value) in _argments.items()]) 
+        url=_url+"?"+"&".join(['%s=%s' % (key, value) for (key, value) in _argments.items()]) 
     return url

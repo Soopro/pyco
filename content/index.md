@@ -1,16 +1,8 @@
 /*
-Title: Index
-Description: this is index
-Author: DTynn
-Date: 2014/10/30
+Title: Digital Studio.
+Description: Micro business online solutions, WeChat / Weibo Totally supported.
+Date: 2012/01/01
+Nav: Works
+Order: 99
+Tagline: % base_url % Perfect online solutions <br>for micro business.
 */
-
-### Hello Pyco
-
-support markdown
-
-```python
-# some code
-import os
-print "this is pyco"
-```

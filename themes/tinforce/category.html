@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>{{ site_title }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="{{ site_description }}">
+    <link rel="stylesheet" href="{{ theme_url }}/css/style.css">
+    <link rel="shortcut icon" href="{{ theme_url }}/favicon.ico">
+</head>
+<body>
+<header>
+</header>
+  <div class="content">
+    <main class="container">
+    	<div class="row-fluid">
+    		<section class="content">
+    		  <h1>{{ site_title }} {{file_path}}</h1>
+              <div class="sub-title">{{ taxonomy}}</div>
+    		</section>
+    		<ul class="entries">
+    		{% for post in results %}
+    		  <li>
+    		    <a href="{{ post.url }}">
+    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
+                <time>{{ post.date_formatted }}</time>
+                <div>{{ post.description }}</div>
+    		    </a>
+    		  </li>
+    		{% endfor %}
+    		</ul>
+        {% include theme_path_for("pagination") %}
+    	</div>
+    </main>
+  </div>
+{% include theme_path_for("footer") %}
+</body>
+</html>
