@@ -17,7 +17,7 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-THEME_NAME = "tinforce"
+THEME_NAME = "default"
 PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
 "content_types","sort_by_order","taxonomy","pagination","languages"]
 
@@ -38,3 +38,5 @@ SHORTCODES  = [
     {"pattern":"uploads","replacement":"/uploads"},
     {"pattern":"image_url","replacement":"/uploads"}
 ]
+
+ADDITIONAL_METAS = ["nav","link","target","parent","thumbnail"]

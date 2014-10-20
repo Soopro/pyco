@@ -9,7 +9,7 @@ def config_loaded(config):
     global _CONFIG, _ADDITIONAL_METAS
 
     _CONFIG = config
-    _ADDITIONAL_METAS = _CONFIG.get("ADDITIONAL_METAS",_DEFAULT_ADDITIONAL_METAS)
+    _ADDITIONAL_METAS = set(_CONFIG.get("ADDITIONAL_METAS",[]) + _DEFAULT_ADDITIONAL_METAS)
     return
 
 

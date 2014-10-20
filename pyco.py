@@ -5,6 +5,7 @@ PLUGIN_DIR = "plugins/"
 
 THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
+THEME_CONFIG_FILE="config.jinja"
 DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_POST_TMPL_NAME = "post"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
@@ -135,7 +136,7 @@ class BaseView(MethodView):
     @staticmethod
     def parse_content(content_string):
         extensions = misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE | misaka.EXT_AUTOLINK | \
-            misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES
+            misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES | misaka.EXT_SUPERSCRIPT
         flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML | misaka.HTML_HARD_WRAP
         render = BleepRenderer(flags=flags)
         md = misaka.Markdown(render, extensions=extensions)
@@ -234,14 +235,15 @@ class BaseView(MethodView):
 
         self.view_ctx["config"] = config
         self.view_ctx["base_url"] = config.get("BASE_URL")
-        self.view_ctx["theme_url"] = STATIC_BASE_URL
         self.view_ctx["theme_name"] = config.get("THEME_NAME")
-        self.view_ctx["theme_config"] = os.path.join(config.get("THEME_NAME"),"config.jinja")
-        self.view_ctx["theme_path_for"] = self.theme_path_for
+        self.view_ctx["theme_url"] = STATIC_BASE_URL
+        self.view_ctx["theme_config"] = os.path.join(config.get("THEME_NAME"),THEME_CONFIG_FILE)
         self.view_ctx["uploads"] = UPLOADS_URL
         self.view_ctx["site_title"] = config.get("SITE_TITLE")
         self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
         self.view_ctx["site_description"] = config.get("SITE_DESCRIPTION")
+        
+        current_app.jinja_env.filters['theme'] = self.theme_path_for
         return
 
     #hook
@@ -370,7 +372,7 @@ class ContentView(BaseView):
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
-            template_file_path = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME)
+            template_file_path = self.theme_path_for(DEFAULT_POST_TMPL_NAME)
 
         self.view_ctx["template"] = template['file']
         self.view_ctx["template_file_path"] = template_file_path
@@ -391,7 +393,7 @@ load_config(app)
 app.debug = app.config.get("DEBUG")
 app.static_folder = STATIC_DIR
 app.template_folder = THEMES_DIR
-app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
+# app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
 app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadsView.as_view("uploads"))

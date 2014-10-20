@@ -3,8 +3,8 @@ Title: About
 Date: 2014/01/01
 Nav: About
 Order: 0
-Template: page
 Tagline: About
+Template: about
 */
 
 <section class="row">

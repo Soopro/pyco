@@ -1,3 +1,4 @@
+{% import theme_config as theme with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,6 +47,6 @@
         </section>
     </main>
   </div>
-{% include theme_path_for("footer") %}
+{% include "footer" | theme %}
 </body>
 </html>

@@ -29,10 +29,10 @@
     		  </li>
     		{% endfor %}
     		</ul>
-        {% include theme_path_for("pagination") %}
+        {% include "pagination" | theme %}
     	</div>
     </main>
   </div>
-{% include theme_path_for("footer") %}
+{% include "footer" | theme %}
 </body>
 </html>
