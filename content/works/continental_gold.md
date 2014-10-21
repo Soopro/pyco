@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-
+Thumbnail: %uploads%/continental_gold.jpg
 Description: Continental Gold official website front-end develop
 Tag: Html, CSS
 

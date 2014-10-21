@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-
+Thumbnail: %uploads%/turnix.jpg
 Description: Turnix Multimedia Studio
 Tag: Html, CSS
 

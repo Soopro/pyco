@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-
+Thumbnail: %uploads%/dji.jpg
 Description: DJI Official Website
 Tag: Html, CSS, Wordpress
 

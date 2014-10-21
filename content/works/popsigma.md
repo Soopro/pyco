@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-
+Thumbnail: %uploads%/popsigma.jpg
 Description: PopSigma Media & Entertainment Solutions
 Tag: Html, CSS, Wordpress
 

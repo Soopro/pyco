@@ -1,51 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>{{ meta["title"] }}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="Description Goes Here">
-    <link rel="stylesheet" href="{{ theme_url }}/css/style.css">
-    <link rel="shortcut icon" href="{{ theme_url }}/favicon.ico">
-	<link rel="stylesheet" href="{{ theme_url }}/css/code.css">
-</head>
+<html lang="{{ locale }}">
+{% include "_head.html" %}
 <body>
-<header>
-
-</header>
-
-  <div class="content">
-    <main class="content">
-        <section class="container">
-            <div class="row-fluid">
-                <article class="home-icon">
-                    <a href="/">
-                        <i class="icon-home"></i>
-                    </a>
-                </article>
-                <article class="post">
-                    <h2 class="content">{{ meta.title }} - {{meta.type}}</h2>
-					<h3>{{meta.tagline}}</h3>
-                    <h5>{{ meta.date }}</h5>
-                    <section>
-                        {% autoescape false %}
-                        {{ content }}
-                        {% endautoescape %}
-                        <hr>
-                    </section>
-                    <section style="margin-bottom: 2em;">
-                        {% if prev_page %}
-                                <a rel="prev" class="a-hover" href="{{ prev_page["url"] }}"><i class="icon-arrow-left"></i> {{ prev_page["title"] }}</a>
-                            {% endif %}
-                            {% if next_page %}
-                                <a rel="next" style="float:right" class="a-hover" href="{{ next_page["url"] }}">{{ next_page["title"] }} <i class="icon-arrow-right"></i></a>
-                        {% endif %}
-                    </section>
-                </article>
-            </div>
-        </section>
-    </main>
-  </div>
-{% include "footer.html" %}
+	<div id="wrapper">
+		<!-- Header -->
+		{% include "_header.html" %}
+		<!-- #Header -->
+		<!-- Tagline -->
+		<div class="container">
+			<section class="jumbotron">
+				<h1 class="title">{{meta.tagline}}</h1>
+				<a href="{{base_url}}/" class="btn-list"></a>
+			</section>
+		</div>
+		<!-- #Tagline -->
+		<!-- Contents -->
+		<div class="container">
+			<section class="row">
+				<div class="col-md-4 col-sm-4 pull-right">
+					<article>
+						<header>
+							<h5>{{meta.title}}</h5>
+						</header>
+						<div>
+							{{meta.brief}}
+						</div>
+						<ul class="metadata">
+							{% if meta.date %}
+							<li><p>{{ meta.date_formatted }}</p></li>
+							{% endif %}
+							{% if meta.task %}
+							<li><p>{{ meta.task }}</p></li>
+							{% endif %}
+							{% if meta.link %}
+							<li><p><a rel="external" href="{{ meta.link }}">{{ meta.link }}</a></p></li>
+							{% endif %}
+						</ul>
+					</article>
+				</div>
+				<div class="col-md-8 col-sm-8 pull-left">
+					<aside>
+						{{ content }}
+					</aside>
+				</div>
+			</section>
+		</div>
+		<!-- #Contents -->
+		<!-- Footer -->
+		{% include "_footer.html" %}
+		<!-- #Footer -->
+	</div>
 </body>
 </html>

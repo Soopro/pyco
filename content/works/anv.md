@@ -5,6 +5,7 @@ Date: 2009/11/06
 Author: Redy
 Template: works
 Type: works
+Thumbnail: %uploads%/anv.jpg
 Description: Full Flash, XML Content Rendering Engine with ActionScript 3.0
 Tag: Flash, XML
 Brief: <p>It's a full flash website, develop "XML Content Rendering Engine" with ActionScript 3.0.</p><p>You can decide the content box is rendering to text, pictures or video all by modify XML.</p>

@@ -1,14 +1,16 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-DEBUG = True
+DEBUG = False
 PORT = 5000
-AUTO_INDEX = True
+AUTO_INDEX = False
 
 SITE_TITLE = "TEST"
 BASE_URL = "http://localhost:5000"
 SITE_AUTHOR = "DTynn"
 SITE_DESCRIPTION = "123123"
+
+LOCALE = "en"
 
 POST_DATE_FORMAT = "%d, %b %Y"
 
@@ -19,13 +21,9 @@ IGNORE_FILES = []
 
 THEME_NAME = "tinforce"
 PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
-"content_types","sort_by_order","taxonomy","pagination","languages"]
+"content_types","sort_by_order","languages"]
 
 """ For Plugins """
-#pagination
-PAGINATION_LIMIT = 2
-#taxonomy
-TAXONOMY_PAGINATION_LIMIT = PAGINATION_LIMIT
 #languages
 TRANSLATES = {
 	"en":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},

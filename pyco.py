@@ -36,14 +36,15 @@ from collections import defaultdict
 from hashlib import sha1
 from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
+from datetime import datetime
+from optparse import OptionParser
+import traceback
+
 
 import misaka
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters.html import HtmlFormatter
-
-from datetime import datetime
-import traceback
 
 class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
     @staticmethod
@@ -129,7 +130,6 @@ class BaseView(MethodView):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
                 headers[kv_pair[0].lower()] = kv_pair[1].strip()
-        
         self.run_hook("after_read_post_meta", headers = headers)
         return headers
 
@@ -137,7 +137,7 @@ class BaseView(MethodView):
     def parse_content(content_string):
         extensions = misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE | misaka.EXT_AUTOLINK | \
             misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES | misaka.EXT_SUPERSCRIPT
-        flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML | misaka.HTML_HARD_WRAP
+        flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
         render = BleepRenderer(flags=flags)
         md = misaka.Markdown(render, extensions=extensions)
         return md.render(content_string)
@@ -279,6 +279,7 @@ class ContentView(BaseView):
         run_hook("plugins_loaded")
 
         load_config(current_app)
+        current_app.debug = _DEBUG
         self.config = current_app.config
         
         self.init_context()
@@ -346,7 +347,8 @@ class ContentView(BaseView):
             self.view_ctx["content"] = post_content['content']
         # content index
         posts = self.get_posts()
-        self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
+        # self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
+        self.view_ctx["posts"] = posts
         self.view_ctx["current_post"] = defaultdict(str)
         self.view_ctx["prev_post"] = defaultdict(str)
         self.view_ctx["next_post"] = defaultdict(str)
@@ -386,6 +388,7 @@ class ContentView(BaseView):
         self.view_ctx["template_file_path"] = template_file_path
         
         output = {}
+        self.view_ctx.get('meta')
         output['content'] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
         
         run_hook("after_render", output = output)
@@ -396,9 +399,23 @@ class UploadsView(MethodView):
     def get(self, filename):
         return send_from_directory(UPLOADS_DIR, filename)
 
+
+
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
-app.debug = app.config.get("DEBUG")
+
+
+opt = OptionParser()
+opt.add_option('-d','--debug', help='set debug mode',
+                action='store_const', dest='debug', const=True, default=False)
+opts, args = opt.parse_args()
+
+_DEBUG = app.config.get("DEBUG")
+if opts.debug:
+    _DEBUG = opts.debug
+
+app.debug = _DEBUG
+app.jinja_env.autoescape = False
 app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
 app.static_folder = app.template_folder
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")

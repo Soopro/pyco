@@ -1,0 +1,33 @@
+<header id="header" class="container">
+	<div class="row">
+		<div id="language" class="col-md-2 col-sm-2 pull-right">
+			{% if translates == false %}
+			<span id="language-switcher" href="#lang" class="language-switcher-btn-disabled">{{language_text}}</span>
+			{% else %}
+			<a id="language-switcher" href="#lang" class="language-switcher-btn" ontouchstart="language-switcher-btn-on">{{language_text}}</a>
+			<div id="lang" class="language-list">
+				{% for trans in translates %}
+					{% if trans.code == locale %}
+					<span class="lang-current-item">{{trans.name}}</span>
+					{% else %}
+					<a class="lang-item" href="{{trans.url}}">{{trans.name}}</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+			{% endif %}
+		</div>
+		<div id="logo" class="col-md-2 col-sm-2">
+			<a href="{{ base_url }}" class="logo-graph">{{ site_title }}</a>
+		</div>
+
+		<nav id="nav" class="col-md-4 col-sm-4">
+			<ul>
+				{% for item in navigation %}
+					{% if item.nav %}
+					<li><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</nav>
+	</div>
+</header>

@@ -1,0 +1,21 @@
+/*
+-----------------------------------------------
+TinForce Styles Debugs
+http://www.tinforce.com
+
+Author:   redy
+Date:     6 Dec 2013
+Version: 1.0
+----------------------------------------------- */
+
+.debug{
+	background: red;
+}
+
+.debug-2{
+	background: yellow;
+}
+
+.debug-3{
+	background: green;
+}

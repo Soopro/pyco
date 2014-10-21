@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{ locale }}">
+{% include "_head.html" %}
+<body>
+
+	<div id="wrapper">
+		<!-- Header -->
+		{% include "_header.html" %}
+		<!-- #Header -->
+		<!-- Tagline -->
+		<div class="container">
+			<section class="jumbotron">
+				<h1>{{meta.title}}:{{current_page.author}}</h1>
+			</section>
+		</div>
+		<!-- #Tagline -->
+		<!-- Contents -->
+		<div class="container">
+			<section class="row works-list">
+				{% for page in pages %}
+					{% if page.draft == false and page.author|lower == current_page.author|lower and page.url != current_page.url %}
+						<figure class="col-md-3 col-sm-6"><a href="{{page.url}}"><figcaption>{{page.title}}</figcaption><img src="{{page.thumbnail}}" title="{{page.title}}" alt="{{page.title}}" /></a></figure>
+					{% endif %}
+				{% endfor %}
+			</section>
+			<section class="row">
+				<div class="col-md-3 pull-right more">
+					<a class="btn-more" href="#more" ontouchstart="btn-more-on">More</a>
+				</div>
+			</section>
+		</div>
+		<!-- #Contents -->
+		<!-- Footer -->
+		{% include "_footer.html" %}
+		<!-- #Footer -->
+	</div>
+</body>
+</html>

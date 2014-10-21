@@ -1,0 +1,27 @@
+<html lang="{{ locale }}">
+{% include "_head.html" %}
+<body>
+	<div id="wrapper">
+		<!-- Header -->
+		{% include "_header.html" %}
+		<!-- #Header -->
+		<!-- Tagline -->
+		<div class="container">
+			<section class="jumbotron">
+				<h1 class="title">{{meta.title}}</h1>
+			</section>
+		</div>
+		<!-- #Tagline -->
+		<!-- Contents -->
+		<div class="container">
+			<article>
+				{{content}}
+			</article>
+		</div>
+		<!-- #Contents -->
+		<!-- Footer -->
+		{% include "_footer.html" %}
+		<!-- #Footer -->
+	</div>
+</body>
+</html>

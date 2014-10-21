@@ -13,7 +13,7 @@ def config_loaded(config):
     if _CONFIG.get('POST_ORDER') == 'desc':
         _ORDER_DESC = True
 
-    _ORDER_BY = _CONFIG.get('POST__ORDER_BY') or _ORDER_BY
+    _ORDER_BY = _CONFIG.get('POST_ORDER_BY') or _ORDER_BY
     return
 
 def get_post_data(data, post_meta):

@@ -1,48 +1,40 @@
-{% import theme_config as theme with context %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>{{ site_title }}</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="{{ site_description }}">
-    <link rel="stylesheet" href="{{ theme_url }}/css/style.css">
-    <link rel="shortcut icon" href="{{ theme_url }}/favicon.png">
-</head>
+<html lang="{{ locale }}">
+{% include "_head.html" %}
 <body>
-<header>
-</header>
-  <div class="content">
-    <main class="container">
-    	<div class="row-fluid">
-			<h1>Tinforce Theme</h1>
-			<img src="{{uploads}}/works/anv/anv_1_s.jpg">
-    		<section class="content">
-    		  <h1>{{ site_title }} {{file_path}}123123123123213</h1>
-              <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
-    		</section>
-    		<ul class="nav">
-    		{% for item in navigation %}
-				<li>
-					<a href="{{ item.url }}">{{ item.nav }}</a>
-				</li>
-    		{% endfor %}
-    		</ul>
-    		<ul class="entries">
-    		{% for post in results %}
-    		  <li>
-    		    <a href="{{ post.url }}">
-    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
-                <time>{{ post.date_formatted }}</time>
-                <div>{{ post.description }}</div>
-    		    </a>
-    		  </li>
-    		{% endfor %}
-    		</ul>
-		{% include "pagination.html" %}
-    	</div>
-    </main>
-  </div>
-{% include "footer.html" %}
+	<div id="wrapper">
+		<!-- Header -->
+		{% include "_header.html" %}
+		<!-- #Header -->
+		<!-- Tagline -->
+		<div class="container">
+			<section class="jumbotron">
+				<h1>{{meta.tagline}}</h1>
+			</section>
+		</div>
+		<!-- #Tagline -->
+		<!-- Contents -->
+		<div class="container">
+			<section class="row works-list">
+				{% for work in posts %}
+					{% if work.type == "works" and work.title and work.thumbnail %}
+						<figure class="col-md-3 col-sm-6"><a href="{{work.url}}">
+							<figcaption>{{work.title}}</figcaption>
+							<img src="{{work.thumbnail}}" title="{{work.title}}" alt="{{work.title}}" /></a>
+						</figure>
+					{% endif %}
+				{% endfor %}
+			</section>
+			<section class="row">
+				<div class="col-md-3 pull-right more">
+					<a class="btn-more" href="#more" ontouchstart="btn-more-on">More</a>
+				</div>
+			</section>
+		</div>
+		<!-- #Contents -->
+		<!-- Footer -->
+		{% include "_footer.html" %}
+		<!-- #Footer -->
+	</div>
 </body>
 </html>

@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-
+Thumbnail: %uploads%/dji_photocontest.jpg
 Description: DJI Photo Contest
 Tag: PHP, Wordpress
 

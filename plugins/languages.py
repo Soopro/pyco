@@ -32,7 +32,12 @@ def request_url(request, redirect_to):
 
 def before_render(var,template):
     current_trans = _TRANSLATES[_current_lang]
-    translates = [_TRANSLATES[trans] for trans in _TRANSLATES]
+    translates = []
+    for trans in _TRANSLATES:
+        tmp_trans = _TRANSLATES[trans]
+        tmp_trans.update({"code":trans})
+        translates.append(tmp_trans)
+        
     var["translates"] = translates
     var["language_text"] = current_trans["text"]
     var["locale"] = _LOCALE
