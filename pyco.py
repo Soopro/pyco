@@ -223,27 +223,34 @@ class BaseView(MethodView):
         return self.config.get("THEME_NAME")
 
     def theme_path_for(self, tmpl_name):
-        return os.path.join(self.theme_name, "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT))
+        return "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT)
+        # return os.path.join(self.theme_name, "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT))
 
     # context
     def init_context(self):
         # env context
         config = self.config
         
-        # change static folder
-        current_app.static_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
-
+        if current_app.debug:
+            # change template folder
+            current_app.template_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
+            # change static folder
+            current_app.static_folder = current_app.template_folder
+            # change reload template folder
+            current_app.jinja_env.cache = None
+            current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
+            
+        
         self.view_ctx["config"] = config
         self.view_ctx["base_url"] = config.get("BASE_URL")
         self.view_ctx["theme_name"] = config.get("THEME_NAME")
         self.view_ctx["theme_url"] = STATIC_BASE_URL
-        self.view_ctx["theme_config"] = os.path.join(config.get("THEME_NAME"),THEME_CONFIG_FILE)
+        self.view_ctx["theme_config"] = THEME_CONFIG_FILE
         self.view_ctx["uploads"] = UPLOADS_URL
         self.view_ctx["site_title"] = config.get("SITE_TITLE")
         self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
         self.view_ctx["site_description"] = config.get("SITE_DESCRIPTION")
         
-        current_app.jinja_env.filters['theme'] = self.theme_path_for
         return
 
     #hook
@@ -391,8 +398,8 @@ class UploadsView(MethodView):
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
 app.debug = app.config.get("DEBUG")
-app.static_folder = STATIC_DIR
-app.template_folder = THEMES_DIR
+app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
+app.static_folder = app.template_folder
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
