@@ -15,7 +15,7 @@ Link: http://dev.tinforce.com/sonystore/en
 Task: Complete
 */
 
-[0]: %base_url%/content/works/sonystore_hk.jpg  "SonyStore HK"
+[0]: %image_url%/sonystore_hk.jpg  "SonyStore HK"
 [1]: %image_url%/works/sonystore_hk/sonystore_hk_1_s.jpg  "SonyStore HK"
 [2]: %image_url%/works/sonystore_hk/sonystore_hk_2_s.jpg  "SonyStore HK"
 [3]: %image_url%/works/sonystore_hk/sonystore_hk_3_s.jpg  "SonyStore HK"

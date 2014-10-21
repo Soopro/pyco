@@ -15,7 +15,7 @@ Brief: <p>We.DJI Culture Website. We made fancy interactive animation on this pr
 Link: http://we.dji.com
 Task: Complete
 */
-[0]: %base_url%/content/works/dji_hr.jpg  "We.DJI"
+[0]: %image_url%/dji_hr.jpg  "We.DJI"
 [1]: %image_url%/works/dji_hr/dji_hr_1_s.jpg  "We.DJI"
 [2]: %image_url%/works/dji_hr/dji_hr_2_s.jpg  "We.DJI"
 [3]: %image_url%/works/dji_hr/dji_hr_3_s.jpg  "We.DJI"
@@ -24,7 +24,7 @@ Task: Complete
 [6]: %image_url%/works/dji_hr/dji_hr_6_s.jpg  "We.DJI"
 [7]: %image_url%/works/dji_hr/dji_hr_map_s.jpg  "We.DJI"
 
-![project screenshot.][0](%base_url%/content/works/dji_hr.jpg "screenshot"){.lightbox-gallery}
+[![project screenshot.][0]](%image_url%/dji_hr.jpg "screenshot"){.lightbox-gallery}
 
 [![project screenshot.][7]](%image_url%/works/dji_hr/dji_hr_7.jpg "screenshot"){.lightbox-gallery}
 

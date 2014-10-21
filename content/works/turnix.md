@@ -15,7 +15,7 @@ Link:
 Task: Complate
 */
 
-[0]: %base_url%/content/works/turnix.jpg  "Turnix"
+[0]: %image_url%/turnix.jpg  "Turnix"
 [1]: %image_url%/works/turnix/turnix_2_s.jpg  "Turnix"
 [2]: %image_url%/works/turnix/turnix_3_s.jpg  "Turnix"
 [3]: %image_url%/works/turnix/turnix_4_s.jpg  "Turnix"

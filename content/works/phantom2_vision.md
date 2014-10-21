@@ -16,11 +16,11 @@ Link: http://www.dji.com/product/phantom-2-vision/
 Task: Complate
 */
 
-[0]: %base_url%/content/works/phantom2_vision.jpg  "Phantom 2 Vision"
+[0]: %image_url%/phantom2_vision.jpg  "Phantom 2 Vision"
 [1]: %image_url%/works/phantom2_vision/phantom2_vision_1_s.jpg  "Phantom 2 Vision"
 [2]: %image_url%/works/phantom2_vision/phantom2_vision_2_s.jpg  "Phantom 2 Vision"
 
-[![project screenshot.][0]](%base_url%/content/works/phantom2_vision.jpg "screenshot"){.lightbox-gallery}
+[![project screenshot.][0]](%image_url%/phantom2_vision.jpg "screenshot"){.lightbox-gallery}
 
 [![project screenshot.][1]](%image_url%/works/phantom2_vision/phantom2_vision_1.jpg "screenshot."){.lightbox-gallery}
 

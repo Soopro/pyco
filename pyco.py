@@ -39,21 +39,20 @@ from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
 import traceback
+import markdown
+# import misaka
+# from pygments import highlight
+# from pygments.lexers import get_lexer_by_name
+# from pygments.formatters.html import HtmlFormatter
 
-
-import misaka
-from pygments import highlight
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters.html import HtmlFormatter
-
-class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
-    @staticmethod
-    def block_code(text, lang):
-        if not lang:
-            return '\n<pre><code>%s</code></pre>\n' % text.strip()
-        lexer = get_lexer_by_name(lang, stripall=True)
-        formatter = HtmlFormatter(style="vim", title="%s code" % lang, cssclass="codehilite")
-        return highlight(text, lexer, formatter)
+# class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
+#     @staticmethod
+#     def block_code(text, lang):
+#         if not lang:
+#             return '\n<pre><code>%s</code></pre>\n' % text.strip()
+#         lexer = get_lexer_by_name(lang, stripall=True)
+#         formatter = HtmlFormatter(style="vim", title="%s code" % lang, cssclass="codehilite")
+#         return highlight(text, lexer, formatter)
 
 
 class BaseView(MethodView):
@@ -135,12 +134,12 @@ class BaseView(MethodView):
 
     @staticmethod
     def parse_content(content_string):
-        extensions = misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE | misaka.EXT_AUTOLINK | \
-            misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES | misaka.EXT_SUPERSCRIPT
-        flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
-        render = BleepRenderer(flags=flags)
-        md = misaka.Markdown(render, extensions=extensions)
-        return md.render(content_string)
+        # extensions = misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE | misaka.EXT_AUTOLINK | \
+#             misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES | misaka.EXT_SUPERSCRIPT
+#         flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
+#         render = BleepRenderer(flags=flags)
+#         md = misaka.Markdown(render, extensions=extensions)
+        return markdown.markdown(content_string,['markdown.extensions.codehilite','markdown.extensions.extra'])
 
     # cache
     @staticmethod
@@ -328,7 +327,7 @@ class ContentView(BaseView):
             # parse file content
             meta_string, content_string = self.content_splitter(file_content["content"])
             post_meta=self.parse_post_meta(meta_string)
-
+            post_meta['date_formatted'] = self.format_date(post_meta.get("date", ""))
             redirect_to = {"url":None}
             run_hook("single_post_meta", post_meta = post_meta, redirect_to = redirect_to)
             if redirect_to.get("url"):

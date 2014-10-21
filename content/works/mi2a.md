@@ -15,14 +15,14 @@ Link:
 Task: Complete
 */
 
-[0]: %base_url%/content/works/mi2a.jpg  "mi2a"
+[0]: %image_url%/mi2a.jpg  "mi2a"
 [1]: %image_url%/works/mi2a/mi2a_1_s.jpg  "mi2a"
 [2]: %image_url%/works/mi2a/mi2a_2_s.jpg  "mi2a"
 [3]: %image_url%/works/mi2a/mi2a_3_s.jpg  "mi2a"
 [4]: %image_url%/works/mi2a/mi2a_4_s.jpg  "mi2a"
 [5]: %image_url%/works/mi2a/mi2a_5_s.jpg  "mi2a"
 
-[![project screenshot.][0]](%base_url%/content/works/mi2a.jpg "screenshot"){.lightbox-gallery}
+[![project screenshot.][0]](%image_url%/mi2a.jpg "screenshot"){.lightbox-gallery}
 
 [![project screenshot.][1]](%image_url%/works/mi2a/mi2a_1_s.jpg "screenshot."){.lightbox-gallery}
 

@@ -15,7 +15,7 @@ Brief: <p>DJI and Adobe organized this photo contest. we build the website by Wo
 Link: http://event.dji.com/photocontest/
 Task: Complete
 */
-[0]: %base_url%/content/works/dji_photocontest.jpg  "DJI Photo Contest"
+[0]: %image_url%/dji_photocontest.jpg  "DJI Photo Contest"
 [1]: %image_url%/works/dji_pc/dji_pc_1_s.jpg  "DJI Photo Contest"
 [2]: %image_url%/works/dji_pc/dji_pc_2_s.jpg  "DJI Photo Contest"
 [3]: %image_url%/works/dji_pc/dji_pc_3_s.jpg  "DJI Photo Contest"
