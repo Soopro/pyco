@@ -1,7 +1,7 @@
 /*
 Title: About
 Date: 2014/01/01
-Nav: About
+Nav: Test
 Order: 0
 Tagline: About
 Template: post

@@ -17,7 +17,7 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-THEME_NAME = "default"
+THEME_NAME = "tinforce"
 PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
 "content_types","sort_by_order","taxonomy","pagination","languages"]
 

@@ -232,6 +232,7 @@ class BaseView(MethodView):
         config = self.config
         
         if current_app.debug:
+            current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
             # change template folder
             current_app.template_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
             # change static folder
