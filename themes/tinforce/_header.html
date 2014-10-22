@@ -19,13 +19,11 @@
 		<div id="logo" class="col-md-2 col-sm-2">
 			<a href="{{ base_url }}" class="logo-graph">{{ site_title }}</a>
 		</div>
-
+		{% set navigation = saltshaker(posts,["nav","url"],true) %}
 		<nav id="nav" class="col-md-4 col-sm-4">
 			<ul>
 				{% for item in navigation %}
-					{% if item.nav %}
-					<li><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
-					{% endif %}
+					<li><h1>{{ test }}</h1><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
 				{% endfor %}
 			</ul>
 		</nav>

@@ -5,13 +5,12 @@ PLUGIN_DIR = "plugins/"
 
 THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
-THEME_CONFIG_FILE="config.jinja"
 DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_POST_TMPL_NAME = "post"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
 STATIC_DIR = THEMES_DIR
-STATIC_BASE_URL = "/statics"
+STATIC_BASE_URL = "/static"
 
 UPLOADS_DIR = "uploads/"
 UPLOADS_URL = "/uploads"
@@ -245,7 +244,6 @@ class BaseView(MethodView):
         self.view_ctx["base_url"] = config.get("BASE_URL")
         self.view_ctx["theme_name"] = config.get("THEME_NAME")
         self.view_ctx["theme_url"] = STATIC_BASE_URL
-        self.view_ctx["theme_config"] = THEME_CONFIG_FILE
         self.view_ctx["uploads"] = UPLOADS_URL
         self.view_ctx["site_title"] = config.get("SITE_TITLE")
         self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
