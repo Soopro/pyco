@@ -20,19 +20,19 @@ def salt_shaker(obj, conditions, intersection = False):
     for cond in conditions:
         
         if isinstance(obj, list):
-            if first:
-                results = [i for i in obj if i.get(cond)]
+            if intersection and not first:
+                results = [i for i in results if i.get(cond)]
             else:
-                if intersection:
-                    results = [i for i in results if i.get(cond)]
-                else:
-                    tmp = [i for i in obj if i.get(cond)]
-                    for i in obj:
-                        if i.get(cond) and i not in results:
-                            results.append(i);
+                for i in obj:
+                    if i.get(cond) and i not in results:
+                        results.append(i);
                     
         elif isinstance(obj, dict):
-            results.update({k:v for (k, v) in obj.iteritems() if k == cond and v})
+            if intersection and not first:
+                results.update({k:v for (k, v) in obj.iteritems() if k == cond and v})
+            else:
+                results.update({k:v for (k, v) in obj.iteritems() if k == cond and v})
+                
         if first:
             first = False
 
