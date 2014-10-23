@@ -29,21 +29,21 @@ def get_post_data(data, post_meta):
 
 
 def get_posts(posts, current_post, prev_post, next_post):
-    global _navs
-    _navs = [post for post in posts if post.get("nav")]
-    
-    for item in _navs:
-        try: 
-            order = int(item.get('order'))
-        except Exception:
-            order = None
-
-        item['order'] =  order or 0
-    _navs=sorted(posts,key=lambda x: (x['order'], x[_ORDER_BY]),reverse=_ORDER_DESC)
+    # global _navs
+ #    _navs = [post for post in posts if post.get("nav")]
+ #
+ #    for item in _navs:
+ #        try:
+ #            order = int(item.get('order'))
+ #        except Exception:
+ #            order = None
+ #
+ #        item['order'] =  order or 0
+ #    _navs=sorted(posts,key=lambda x: (x['order'], x[_ORDER_BY]),reverse=_ORDER_DESC)
     
     return
 
 
 def before_render(var,template):
-    var["navigation"] = _navs
+    # var["navigation"] = _navs
     return

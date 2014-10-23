@@ -21,15 +21,22 @@ IGNORE_FILES = []
 
 THEME_NAME = "tinforce"
 PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
-"content_types","sort_by_order","languages","salt_shaker"]
+"content_types","sort_by_order","salt_shaker"]
 
-""" For Plugins """
-#languages
-TRANSLATES = {
-	"en":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
-	"zh":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
+SITE_META = {
+    translates:[
+        {"code":"en","name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
+        {"code":"zh","name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
+    ],
+    
 }
-TRANSLATE_REDIRECT = False
+""" For Plugins """
+# #languages
+# TRANSLATES = {
+#     "en":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
+#     "zh":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
+# }
+# TRANSLATE_REDIRECT = False
 #shortcodes
 SHORTCODES  = [
     {"pattern":"base_url","replacement":""},

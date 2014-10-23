@@ -1,12 +1,15 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-_argments = {}
+_argments = None
+_request = None
 _url = None
     
 def request_url(request, redirect_to):
     global _argments, _url
-    _argments={}
+    _argments = {}
+    _request = request
+    
     for (k,v) in request.args.items():
         _argments.update({k:v})
     _url = request.path
@@ -14,6 +17,7 @@ def request_url(request, redirect_to):
 
 def before_render(var,template):
     var["args"] = _argments
+    var["request"] = _request
     var["add_args"] = add_args
     return
 
