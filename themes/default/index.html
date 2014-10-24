@@ -15,8 +15,8 @@
     <main class="container">
     	<div class="row-fluid">
     		<section class="content">
-    		  <h1>{{ site_title }} {{file_path}}123123123123213</h1>
-              <div class="sub-title">{{ config.get("SITE_DESCRIPTION") or "My Posts" }}</div>
+    		  <h1>{{ site_title }} {{ _('Hello World!') }}</h1>
+              <div class="sub-title"></div>
     		</section>
 			<div>
 				<h2>{{language_text}}</h2>
@@ -28,6 +28,8 @@
 				{% endfor %}
 			</div>
 			<img src="{{uploads}}/works/anv/anv_1_s.jpg">
+			{% import "g" as g with context %}
+			{{ g.navigation }}
     		<ul class="nav">
     		{% for item in navigation %}
 				<li>

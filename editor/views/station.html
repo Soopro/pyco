@@ -1,0 +1,168 @@
+<!-- Menu -->
+<section class="supmice-editor selectable-none sup-editor-menu">
+    <header class="brand">
+        <span class="ico-lg ico-2x"><i class="ico ico-supmice-s"></i></span>
+    </header>
+    <nav class="menu-btn-list">
+        <button class="menu-btn btn" ng-click="toggleToolbar()" ng-class="{'active':show_toolbar}">
+            <i class="ico ico-editor"></i>
+        </button>
+        <button class="menu-btn btn" ng-click="toggleProperty()" ng-class="{'active':show_property}">
+            <i class="ico ico-property"></i>
+        </button>
+        <a class="menu-btn btn" href="{{file.uri}}" target="_blank">
+            <i class="ico ico-eye"></i>
+        </a>
+    </nav>
+    <nav class="menu-btn-list">
+        <button class="menu-btn btn menu-btn-sub" ng-click="save()">
+            <i class="ico ico-save"></i>
+        </button>
+        <button class="menu-btn btn menu-btn-sub" ng-click="close()">
+            <i class="ico ico-back-left"></i>
+        </button>
+    </nav>
+    <footer class="func">
+        <button class="menu-btn btn mdbtn" ng-click="toggleMarkdown()" ng-class="{'active':markdown}" ng-if="settings.markdown">
+            <i class="ico ico-markdown"></i>
+        </button>
+        <button class="menu-btn btn trashbtn" ng-click="delete()" ng-show="!isNewFile">
+            <i class="ico ico-trash"></i>
+        </button>
+    </footer>
+</section>
+<!-- #Menu -->
+<!-- Toolbar -->
+<div class="supmice-editor sup-editor-toolbar selectable-none" ng-show="show_toolbar" ng-class="{'open':show_property, 'disabled': editor_on_blur}" name="sup-editor-toolbar"
+     toolbar-btns="[['h1','h2','h3','h4','p','quote','pre','code'],['i','b','strike','underline','sub','sup'],['ol','ul','outdent','indent','hr','img','a','jleft','jcenter','jright','jfull'],['ud','rd','clear','bomb','html']]"></div>
+<div>
+<!-- #Toolbar -->
+<!-- Components -->
+<div name="sup-editor-components" class="supmice-editor sup-component"></div>
+<!-- #Components -->
+<!-- Property -->
+<section class="supmice-editor sup-editor-property" ng-show="show_property">
+    <header>
+        <h2>Property</h2>
+        <div class="preview-url">URL: <a href="{{file.uri}}" target="_blank">{{file.uri}}</a></div>
+        <button class="btn caretbtn" ng-click="toggleProperty()"><i class="caret ico ico-caret-left"></i></button>
+    </header>
+    <form class="property-form" name="property_form">
+        <fieldset class="form-group">
+            <label>Title</label>
+            <input type="text" value="" placeholder="Title here."  class="form-control" ng-model="file.meta.title"/>
+        </fieldset>
+        <div class="row">
+            <fieldset class="form-group col-md-6">
+                <label>Category</label>
+                <div class="dropdown open">
+                    <select name="categories" ng-options="cat.slug as cat.name for cat in categories" ng-model="file.meta.category" class="form-control">
+                        <option value="">(Empty)</option>
+                    </select>
+                </div>
+            </fieldset>
+            <fieldset class="form-group col-md-6">
+                <label>Template</label>
+                <div class="dropdown open">
+                    <select name="current_template" ng-options="tpl.slug as tpl.name for tpl in templates" ng-model="file.meta.template" class="form-control">
+                        <option value="">(Default)</option>
+                    </select>
+                </div>
+            </fieldset>
+        </div>
+        <div class="row">
+            <fieldset class="form-group col-md-6">
+                <label>Tags</label>
+                <input type="text" value=""  placeholder="Tags here." class="form-control" ng-model="file.meta.tag" />
+            </fieldset>
+            <fieldset class="form-group col-md-6">
+                <label>Thumbnail</label>
+                <div>
+                    <button class="btn btn-default btn-block" ng-if="!file.meta.thumbnail" ng-click="get_thumb()">Select form Media Library</button>
+                    <img class="thumbnail" ng-src="{{file.meta.thumbnail}}" ng-if="file.meta.thumbnail" alt="Thumbnail" ng-click="get_thumb()" />
+                </div>
+            </fieldset>
+        </div>
+        <div class="row">
+            <fieldset class="form-group col-md-12">
+                <label>Description</label>
+                <textarea placeholder="Description here." rows="6" class="form-control" ng-model="file.meta.description"></textarea>
+            </fieldset>
+        </div>
+        <div class="row">
+            
+            <fieldset class="form-group col-md-6">
+                <label class="draftbox">
+                    <input type="checkbox" name="draft" ng-model="file.meta.draft"> Draft
+                </label>
+            </fieldset>
+            <fieldset class="form-group col-md-6 text-right">
+                <button class="btn btn-link" ng-click="toggleAdv();">
+                    <i class="ico" ng-class="{'ico-plus': !show_advopts,'ico-minus': show_advopts}"></i> Advanced Options
+                </button>
+            </fieldset>
+        </div>
+        <!-- Advanced -->
+        <hr>
+        <div class="adv-options" ng-show="show_advopts">
+            <div class="row">
+                <fieldset class="form-group col-md-6">
+                    <label>Date</label>
+                    <input type="text" value="" placeholder="Date here."  maxlength="10" class="form-control" ng-model="file.meta.date"/>
+                    <button class="btn autobtn" ng-click="get_today()"><i class="ico ico-sync"></i></button>
+                </fieldset>
+                <fieldset class="form-group col-md-6">
+                    <label>Author</label>
+                    <input type="text" value="" placeholder="Author here."  class="form-control" ng-model="file.meta.author"/>
+                    <button class="btn autobtn" ng-click="get_author()"><i class="ico ico-sync"></i></button>
+                </fieldset>
+            </div>
+            <div class="row">
+                <fieldset class="form-group col-md-6">
+                    <label>Menu Name</label>
+                    <input type="text" value="" placeholder="Text show on the navbar."  class="form-control" ng-model="file.meta.nav"/>
+                </fieldset>
+                <fieldset class="form-group col-md-6">
+                    <label>Order</label>
+                    <input type="number" maxlength="50" ng-maxlength="50" name="order" value="0" placeholder="0" class="form-control" ng-model="file.meta.order"/>
+                    <div class="error" ng-show="property_form.order.$error.number && property_form.order.$dirty">
+                        <i class="ico ico-x errorico"></i>
+                        <span class="text">Number only!</span>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="row">
+                <fieldset class="form-group col-md-12">
+                    <label>Redirect to</label>
+                    <input type="text" value="" placeholder="Leave it blank if you do not want redirect"  class="form-control" ng-model="file.meta.redirect"/>
+                </fieldset>
+            </div>
+        </div>
+        <!-- #Advanced -->
+        <div class="tips">
+            <p>* Property attributes will saved while you save this page.</p>
+        </div>
+    </form>
+    <footer class="func">
+        <button class="btn btn-primary widebtn pull-right" ng-click="save()" ng-disabled="property_form.$invalid">Save</button>
+    </footer>
+</section>
+<!-- #Property -->
+<!-- Canvas -->
+<section editor-canvas ng-show="!showhtml" class="in-sup-editor" ng-class="{'open':show_property}" config="settings" file="file" template="{{file.meta.template}}" app="{{appSlug}}" type="{{appType}}"></section>
+<!-- #Canvas -->
+<!-- Textarea -->
+<section class="supmice-editor sup-editor-textarea" ng-show="showhtml">
+    <h3 ng-if="markdown" class="title">Editing Markdown</h3>
+    <h3 ng-if="!markdown" class="title">Editing Html</h3>
+    <textarea name="sup-editor-textarea" ng-model="file.content" ng-class="{'open':show_property}"></textarea>
+</section>
+<!-- #Textarea -->
+<!-- Media Panel -->
+<div sup-media-panel slug="{{appSlug}}" template="/views/module/media/model.html"></div>
+<!-- #Media Panel -->
+<!-- FlashMsg -->
+<div class="supmice-editor sup-flashmsg">
+    <div ng-include="'views/flasher.html'"></div>
+</div>
+<!-- #FlashMsg -->

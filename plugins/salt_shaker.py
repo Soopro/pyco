@@ -29,7 +29,7 @@ def salt_shaker(obj, conditions, intersection = False):
                     
         elif isinstance(obj, dict):
             if intersection and not first:
-                results.update({k:v for (k, v) in obj.iteritems() if k == cond and v})
+                results.update({k:v for (k, v) in results.iteritems() if k == cond and v})
             else:
                 results.update({k:v for (k, v) in obj.iteritems() if k == cond and v})
                 

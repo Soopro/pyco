@@ -1,9 +1,10 @@
+{% import "g" as g with context %}
+
 <header id="header" class="container">
 	<div class="row">
+		{{ _('Hello World!') }}
+		{% if translates %}
 		<div id="language" class="col-md-2 col-sm-2 pull-right">
-			{% if translates == false %}
-			<span id="language-switcher" href="#lang" class="language-switcher-btn-disabled">{{language_text}}</span>
-			{% else %}
 			<a id="language-switcher" href="#lang" class="language-switcher-btn" ontouchstart="language-switcher-btn-on">{{language_text}}</a>
 			<div id="lang" class="language-list">
 				{% for trans in translates %}
@@ -14,16 +15,15 @@
 					{% endif %}
 				{% endfor %}
 			</div>
-			{% endif %}
 		</div>
+		{% endif %}
 		<div id="logo" class="col-md-2 col-sm-2">
 			<a href="{{ base_url }}" class="logo-graph">{{ site_title }}</a>
 		</div>
-		{% set navigation = saltshaker(posts,["nav","url"],true) %}
 		<nav id="nav" class="col-md-4 col-sm-4">
 			<ul>
-				{% for item in navigation %}
-					<li><h1>{{ test }}</h1><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
+				{% for item in g.navigation %}
+					<li><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
 				{% endfor %}
 			</ul>
 		</nav>

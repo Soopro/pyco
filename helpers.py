@@ -10,8 +10,6 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("SITE_INDEX_URL", "/")
     app.config.setdefault("SITE_TITLE", "Pyco Site")
     app.config.setdefault("BASE_URL", "/")
-    app.config.setdefault("SITE_AUTHOR", "")
-    app.config.setdefault("SITE_DESCRIPTION", "description")
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
     app.config.setdefault("THEME_NAME", "default")

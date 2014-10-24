@@ -28,8 +28,6 @@ sys.path.insert(0, PLUGIN_DIR)
 from flask import Flask, current_app, request, abort, render_template, make_response, redirect, send_from_directory
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
-import os
-import re
 from helpers import load_config, make_content_response
 from collections import defaultdict
 from hashlib import sha1
@@ -37,8 +35,7 @@ from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
-import traceback
-import markdown
+import os, re, traceback, markdown
 # import misaka
 # from pygments import highlight
 # from pygments.lexers import get_lexer_by_name
@@ -237,20 +234,17 @@ class BaseView(MethodView):
             current_app.static_folder = current_app.template_folder
             # change reload template folder
             current_app.jinja_env.cache = None
+            
             current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
             
-        
-        self.view_ctx["config"] = config
+
         self.view_ctx["base_url"] = config.get("BASE_URL")
-        self.view_ctx["theme_name"] = config.get("THEME_NAME")
         self.view_ctx["theme_url"] = STATIC_BASE_URL
         self.view_ctx["uploads"] = UPLOADS_URL
-        self.view_ctx["site_title"] = config.get("SITE_TITLE")
-        self.view_ctx["site_author"] = config.get("SITE_AUTHOR")
-        self.view_ctx["site_description"] = config.get("SITE_DESCRIPTION")
-        
+        self.view_ctx["site_meta"] = config.get("SITE_META")
+        self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
-
+    
     #hook
     def run_hook(self, hook_name, **references):
         for plugin_module in self.plugins:
@@ -413,6 +407,10 @@ if opts.debug:
 
 app.debug = _DEBUG
 app.jinja_env.autoescape = False
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+app.jinja_env.add_extension('jinja2.ext.i18n')
+app.jinja_env.add_extension('jinja2.ext.do')
+app.jinja_env.add_extension('jinja2.ext.with_')
 app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
 app.static_folder = app.template_folder
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")

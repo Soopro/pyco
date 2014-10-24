@@ -3,14 +3,24 @@ from __future__ import absolute_import
 
 DEBUG = False
 PORT = 5000
-AUTO_INDEX = False
+AUTO_INDEX = False 
+THEME_NAME = "default"
 
-SITE_TITLE = "TEST"
 BASE_URL = "http://localhost:5000"
-SITE_AUTHOR = "DTynn"
-SITE_DESCRIPTION = "123123"
 
-LOCALE = "en"
+SITE_META = {
+    "site_title": "Test Website Title",
+    "site_author": "DTynn",
+    "site_description": "site description",
+    "translates":{
+        "en_US":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
+        "zh_CN":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
+    },
+    "locale":"zh_CN"
+}
+THEME_META = {
+    "theme_name" : THEME_NAME
+}
 
 POST_DATE_FORMAT = "%d, %b %Y"
 
@@ -19,17 +29,9 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-THEME_NAME = "tinforce"
-PLUGINS = ["additional_metas","shortcode","redirect","argments","draft",
+PLUGINS = ["additional_metas","shortcode","redirect","argments","draft","languages",
 "content_types","sort_by_order","salt_shaker"]
 
-SITE_META = {
-    translates:[
-        {"code":"en","name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
-        {"code":"zh","name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
-    ],
-    
-}
 """ For Plugins """
 # #languages
 # TRANSLATES = {
