@@ -19,11 +19,10 @@
     		  <h1>{{ site_title }} {{file_path}}</h1>
               <div class="sub-title">{{ meta.taxonomy}}</div>
     		</section>
-			{{g.max_pages}}
-			{{g.result_length}}
+
     		<ul class="entries">
-			
-			{% for post in g.paged_posts%}
+			{% set booklet = stapler(g.term_posts,paged=g.paged,perpage=g.perpage,post_type=["works"]) %}		
+			{% for post in booklet.posts %}
 	    		  <li>
 	    		    <a href="{{ post.url }}">
 	    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}-{{ post.url }}</h3>
@@ -33,10 +32,10 @@
 	    		  </li>
 			{% endfor %}
     		</ul>
-        {% include "pagination.html" %}
+        	{% include "_pagination.html" %}
     	</div>
     </main>
   </div>
-{% include "footer.html" %}
+{% include "_footer.html" %}
 </body>
 </html>

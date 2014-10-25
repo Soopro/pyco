@@ -4,6 +4,8 @@ Tagline: Works
 Date: 2013/11/01
 Author: Redy
 
+Category: dji
+
 Template: works
 Type: works
 Thumbnail: %uploads%/phantom2_vision.jpg

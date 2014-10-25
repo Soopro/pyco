@@ -284,7 +284,8 @@ class ContentView(BaseView):
         is_site_index = request_url == site_index_url
         auto_index = is_site_index and config.get("AUTO_INDEX")
         self.view_ctx["is_site_index"] = is_site_index
-        self.view_ctx["auto_index"] = auto_index
+        # self.view_ctx["auto_index"] = auto_index
+        self.view_ctx["args"] = {k:v for k,v in request.args.iteritems()}
         
         redirect_to = {"url":None}
         run_hook("request_url", request = request, redirect_to = redirect_to)

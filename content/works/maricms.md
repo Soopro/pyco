@@ -4,6 +4,8 @@ Tagline: Works
 Date: 2011/11/10
 Author: Redy
 
+Order:20
+
 Template: works
 Type: works
 Thumbnail: %uploads%/maricms.jpg

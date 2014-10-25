@@ -5,7 +5,7 @@ from flask import make_response
 
 def load_config(app, config_name="config.py"):
     app.config.from_pyfile(config_name)
-    app.config.setdefault("AUTO_INDEX", True)
+    app.config.setdefault("AUTO_INDEX", False)
     app.config.setdefault("DEBUG", False)
     app.config.setdefault("SITE_INDEX_URL", "/")
     app.config.setdefault("SITE_TITLE", "Pyco Site")

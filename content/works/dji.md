@@ -4,6 +4,8 @@ Tagline: Works
 Date: 2013/05/01
 Author: Redy
 
+Category: dji
+
 Template: works
 Type: works
 Thumbnail: %uploads%/dji.jpg

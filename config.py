@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 DEBUG = False
 PORT = 5000
-AUTO_INDEX = False 
+
 THEME_NAME = "default"
 
 BASE_URL = "http://localhost:5000"
@@ -29,8 +29,8 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-PLUGINS = ["autometas","shortcode","redirect","argments","draft","languages",
-"content_types","sort_by_order","salt_shaker"]
+PLUGINS = ["autometas","shortcode","redirect","draft","languages",
+"content_types","sort_by_order","jinja_helpers"]
 
 """ For Plugins """
 # #languages

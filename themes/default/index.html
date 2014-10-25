@@ -1,3 +1,4 @@
+{% import "g" as g with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,16 +21,12 @@
     		</section>
 			<div>
 				<h2>{{language_text}}</h2>
-				
 				{% for trans in translates %}
 					{{ trans.name }}
 					{{ trans.url }}
 					<br/>
 				{% endfor %}
 			</div>
-			<img src="{{uploads}}/works/anv/anv_1_s.jpg">
-			{% import "g" as g with context %}
-
     		<ul class="nav">
     		{% for item in g.navigation %}
 				<li>
@@ -37,21 +34,22 @@
 				</li>
     		{% endfor %}
     		</ul>
-    		<ul class="entries">
-    		{% for post in paged_posts %}
-    		  <li>
-    		    <a href="{{ post.url }}">
-    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
-                <time>{{ post.date_formatted }}</time>
-                <div>{{ post.description }}</div>
-    		    </a>
-    		  </li>
+			<ul class="entries">
+			{% set booklet = stapler(posts,paged=g.paged,perpage=g.perpage,post_type=["works"]) %}
+    		{% for post in booklet.posts %}
+				<li>
+					<a href="{{ post.url }}">
+					<h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
+					<time>{{ post.date_formatted }}</time>
+					<div>{{ post.description }}</div>
+					</a>
+				</li>
     		{% endfor %}
     		</ul>
-			{% include "pagination.html"%}
+			{% include "_pagination.html" %}
     	</div>
     </main>
   </div>
-{% include "footer.html" %}
+{% include "_footer.html" %}
 </body>
 </html>

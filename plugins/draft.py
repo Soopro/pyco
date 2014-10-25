@@ -17,9 +17,8 @@ def get_post_data(data, post_meta):
     return
 
 def get_posts(posts, current_post, prev_post, next_post):
-    tmp_posts = [post for post in posts if not post.get("draft")]
-    
-    del posts[:]
-    for post in tmp_posts:
-        posts.append(post)
+    for post in posts:
+        if post.get("draft"):
+            i = posts.index(post)
+            posts.pop(i)
     return
