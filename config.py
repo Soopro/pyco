@@ -9,9 +9,11 @@ THEME_NAME = "default"
 BASE_URL = "http://localhost:5000"
 
 SITE_META = {
-    "site_title": "Test Website Title",
-    "site_author": "DTynn",
-    "site_description": "site description",
+    "title": "Test Website Title",
+    "author": "DTynn",
+    "description": "site description",
+    "copyright": "&copy; supmice.com",
+    "license": "#license",
     "translates":{
         "en_US":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
         "zh_CN":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
