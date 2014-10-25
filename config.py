@@ -29,7 +29,7 @@ POST_ORDER = "desc"
 
 IGNORE_FILES = []
 
-PLUGINS = ["additional_metas","shortcode","redirect","argments","draft","languages",
+PLUGINS = ["autometas","shortcode","redirect","argments","draft","languages",
 "content_types","sort_by_order","salt_shaker"]
 
 """ For Plugins """

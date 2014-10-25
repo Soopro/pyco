@@ -24,8 +24,6 @@ def request_url(request, redirect_to):
     if _TRANSLATES:
         global _current_lang
         _current_lang = request.accept_languages.best_match(_TRANSLATES.keys())
-        print request.accept_languages
-        print _current_lang
     return
 
 def before_render(var,template):
@@ -47,8 +45,7 @@ def before_render(var,template):
 #custome functions
 def set_current_language(lang):
     if _TRANSLATES and _THEME_NAME:
-        gettext.install(_THEME_NAME,'languages',unicode=True)
         lang_path = os.path.join(current_app.template_folder,_LANGUAGES_FOLDER)
         tr = gettext.translation(_THEME_NAME, lang_path, languages=[lang], fallback=False)
-        tr.install(True)
+        
         current_app.jinja_env.install_gettext_translations(tr)

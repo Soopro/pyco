@@ -3,8 +3,9 @@ Title: Code View
 Date: 2014/01/01
 Nav: Code Test
 Order: 0
-Tagline: Code View
+Category: none
 Template: post
+Description: This is looks like Python
 */
 
 #### This is looks like Python

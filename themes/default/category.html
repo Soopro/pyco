@@ -1,3 +1,4 @@
+{% import "g" as g with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,18 +17,21 @@
     	<div class="row-fluid">
     		<section class="content">
     		  <h1>{{ site_title }} {{file_path}}</h1>
-              <div class="sub-title">{{ taxonomy}}</div>
+              <div class="sub-title">{{ meta.taxonomy}}</div>
     		</section>
+			{{g.max_pages}}
+			{{g.result_length}}
     		<ul class="entries">
-    		{% for post in results %}
-    		  <li>
-    		    <a href="{{ post.url }}">
-    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
-                <time>{{ post.date_formatted }}</time>
-                <div>{{ post.description }}</div>
-    		    </a>
-    		  </li>
-    		{% endfor %}
+			
+			{% for post in g.paged_posts%}
+	    		  <li>
+	    		    <a href="{{ post.url }}">
+	    		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}-{{ post.url }}</h3>
+	                <time>{{ post.date_formatted }}</time>
+	                <div>{{ post.description }}</div>
+	    		    </a>
+	    		  </li>
+			{% endfor %}
     		</ul>
         {% include "pagination.html" %}
     	</div>

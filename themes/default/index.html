@@ -29,16 +29,16 @@
 			</div>
 			<img src="{{uploads}}/works/anv/anv_1_s.jpg">
 			{% import "g" as g with context %}
-			{{ g.navigation }}
+
     		<ul class="nav">
-    		{% for item in navigation %}
+    		{% for item in g.navigation %}
 				<li>
 					<a href="{{ item.url }}">{{ item.nav }}</a>
 				</li>
     		{% endfor %}
     		</ul>
     		<ul class="entries">
-    		{% for post in results %}
+    		{% for post in paged_posts %}
     		  <li>
     		    <a href="{{ post.url }}">
     		        <h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>

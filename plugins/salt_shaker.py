@@ -18,7 +18,7 @@ def salt_shaker(obj, conditions, intersection = False):
     
     first=True
     for cond in conditions:
-        
+        cond = cond.lower()
         if isinstance(obj, list):
             if intersection and not first:
                 results = [i for i in results if i.get(cond)]
