@@ -4,7 +4,7 @@ from __future__ import absolute_import
 DEBUG = False
 PORT = 5000
 
-THEME_NAME = "default"
+THEME_NAME = "tinforce"
 
 BASE_URL = "http://localhost:5000"
 
@@ -21,7 +21,8 @@ SITE_META = {
     "locale":"zh_CN"
 }
 THEME_META = {
-    "theme_name" : THEME_NAME
+    "theme_name" : THEME_NAME,
+    "perpage": 2
 }
 
 POST_DATE_FORMAT = "%d, %b %Y"

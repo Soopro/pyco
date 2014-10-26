@@ -9,4 +9,4 @@
 
 <!-- paged posts -->
 {% set paged = args.paged|int if args.paged and args.paged|int > 0 else 1 %}
-{% set perpage = site_meta.perpage|int if site_meta.perpage else 6 %}
+{% set perpage = theme_meta.perpage|int if theme_meta.perpage else 6 %}

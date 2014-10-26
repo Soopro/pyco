@@ -234,8 +234,9 @@ class BaseView(MethodView):
             current_app.static_folder = current_app.template_folder
             # change reload template folder
             current_app.jinja_env.cache = None
+            current_app.jinja_loader = FileSystemLoader(current_app.template_folder)
+            # current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
             
-            current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
             
 
         self.view_ctx["base_url"] = config.get("BASE_URL")
