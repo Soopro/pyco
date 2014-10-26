@@ -1,1 +1,12 @@
 {% set navigation = saltshaker(posts,["nav","url"],true) %}
+<!-- taxonomy -->
+{% set terms = saltshaker(posts,[meta.taxonomy]) if meta.taxonomy %}
+{% set raw_posts = terms if terms else posts %}
+{% set term_posts = [] %}
+{% for post in raw_posts if terms and (args.t == post[meta.taxonomy] or not args.t)%}
+	{% do term_posts.append(post) %}
+{% endfor %}
+
+<!-- paged posts -->
+{% set paged = args.paged|int if args.paged and args.paged|int > 0 else 1 %}
+{% set perpage = theme_meta.perpage|int if theme_meta.perpage else 6 %}
