@@ -20,7 +20,6 @@
 			<div id="logo" class="col-md-2 col-sm-2">
 				<a href="#" class="logo-graph" fake>Tinforce</a>
 			</div>
-
 			<nav id="nav" class="col-md-4 col-sm-4">
 				<ul>
 					<li><a href="#" fake>Works</a></li>
@@ -40,7 +39,7 @@
 	<!-- Contents -->
 	<div class="container">
 		<article>
-			<div sup-angular-wysiwyg="sup-editor" name="sup-editor" order="0" toolbar="sup-editor-toolbar" components="sup-editor-components" textarea="sup-editor-textarea" contenteditable="true" ng-model="file.content">
+			<div sup-angular-wysiwyg="sup-editor" ng-model="file.content">
 				<p>Woops. Looks like this page doesn't exist.</p>
 			</div>
 		</article>

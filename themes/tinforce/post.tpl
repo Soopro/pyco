@@ -32,7 +32,7 @@
 	<!-- #Header -->
 	<!-- Tagline -->
 	<div class="container">
-		<section class="jumbotron" ng-init="file.meta.tagline = file.meta.tagline || 'Page Tagline'">
+		<section class="jumbotron">
 			<h1 class="title" sup-editor-meta ng-model="file.meta.tagline">Page Tagline</h1>
 		</section>
 	</div>

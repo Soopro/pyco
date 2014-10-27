@@ -31,7 +31,7 @@
 	</header>
 	<!-- #Header -->
 	<!-- Tagline -->
-	<div class="container" ng-init="file.meta.tagline = file.meta.tagline || 'PERFECT ONLINE SOLUTIONS<br>FOR MICRO BUSINESS.'">
+	<div class="container">
 		<section class="jumbotron">
 			<h1 sup-editor-meta ng-model="file.meta.tagline">PERFECT ONLINE SOLUTIONS<br>FOR MICRO BUSINESS.</h1>
 		</section>

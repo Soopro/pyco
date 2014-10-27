@@ -3,13 +3,13 @@
 var CONFIG = {
     host: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+'/',
     editor_params:{ 
-		'file':'about',
-		'template': 'page',
+		'file':'test',
+		'template': 'works',
 	},
 	site_config:{
 		'locale':'en',
-		'base_url':'http://localhost/~redy/pico',
-		'theme_url':'http://localhost/~redy/pico/themes/tinforce',
+		'base_url':'http://localhost:5000',
+		'theme_url':'http://localhost:5000/static',
 		'site_description':'Site Descrption here......',
 		'site_copyright':'&copy; 2014 tinforce.com',
 		'categories':{

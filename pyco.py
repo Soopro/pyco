@@ -15,6 +15,10 @@ STATIC_BASE_URL = "/static"
 UPLOADS_DIR = "uploads/"
 UPLOADS_URL = "/uploads"
 
+EDITOR_DIR = "editor/"
+EDITOR_URL = "/editor"
+EDITOR_INDEX = "editor/index.html"
+
 CONTENT_DIR = "content/"
 CONTENT_FILE_EXT = ".md"
 CONTENT_DEFAULT_FILENAME = "index"
@@ -25,7 +29,7 @@ CHARSET = "utf8"
 import sys
 sys.path.insert(0, PLUGIN_DIR)
 
-from flask import Flask, current_app, request, abort, render_template, make_response, redirect, send_from_directory
+from flask import Flask, current_app, request, abort, render_template, make_response, redirect, send_from_directory, send_file
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 from helpers import load_config, make_content_response
@@ -388,10 +392,15 @@ class ContentView(BaseView):
         return make_content_response(output['content'], status_code)
 
 
-class UploadsView(MethodView):
+class UploadView(MethodView):
     def get(self, filename):
         return send_from_directory(UPLOADS_DIR, filename)
-
+        
+class EditorView(MethodView):
+    def get(self, filename = None):
+        if not filename:
+            return send_file(EDITOR_INDEX)
+        return send_from_directory(EDITOR_DIR, filename)
 
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
@@ -417,8 +426,11 @@ app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
 app.static_folder = app.template_folder
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
+app.add_url_rule("{}/".format(EDITOR_URL), view_func=EditorView.as_view("editor"))
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
-app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadsView.as_view("uploads"))
+app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.as_view("uploads"))
+app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
+
 
 @app.errorhandler(Exception)
 def errorhandler(err):

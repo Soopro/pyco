@@ -31,7 +31,7 @@
 	</header>
 	<!-- #Header -->
 	<!-- Tagline -->
-	<div class="container" ng-init="file.meta.tagline = file.meta.tagline || 'Works'">
+	<div class="container">
 		<section class="jumbotron">
 			<h1 class="title" sup-editor-meta ng-model="file.meta.tagline">Works</h1>
 			<a href="#" class="btn-list" fake></a>
@@ -43,21 +43,21 @@
 		<section class="row">
 			<div class="col-md-4 col-sm-4 pull-right">
 				<article>
-					<header ng-init="file.meta.title = file.meta.title || 'Works title here'">
+					<header>
 						<h5 sup-editor-meta ng-model="file.meta.title">Works title here</h5>
 					</header>
-					<div sup-editor-meta ng-init="file.meta.brief = file.meta.brief || 'Works brief is here. It is in a paragraph.'" ng-model="file.meta.brief">
+					<div sup-editor-meta ng-model="file.meta.brief">
 						Works brief is here. It is in a paragraph.
 					</div>
 					<ul class="metadata">
-						<li ng-init="file.meta.date = file.meta.date || '1989/12/30'">
+						<li>
 							<p sup-editor-meta ng-model="file.meta.date">1989/12/30</p>
 						</li>
-						<li ng-init="file.meta.task = file.meta.task || 'Task Status'">
+						<li>
 							<p sup-editor-meta ng-model="file.meta.task">Task status</p>
 						</li>
-						<li ng-init="file.meta.link = file.meta.link || 'http://type.works.link.here'">
-							<p><a rel="external" href="#" sup-editor-meta class="fake" ng-model="file.meta.link">http://type.works.link.here</a></p>
+						<li>
+							<p><a rel="external" href="#" sup-editor-meta fake ng-model="file.meta.link">http://type.works.link.here</a></p>
 						</li>
 					</ul>
 				</article>
