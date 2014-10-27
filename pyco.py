@@ -209,6 +209,7 @@ class BaseView(MethodView):
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["description"] = meta.get("description", "")
+            data["content"] = self.parse_content(content_string)
             
             self.run_hook("get_post_data",data = data, post_meta = meta.copy())
             post_data_list.append(data)
