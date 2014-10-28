@@ -22,7 +22,7 @@ supMockEditor.controller('workStationCtrl', [
 		
         $scope.file.slug = params.file;
         $scope.file.meta.template = params.template;
-		$scope.file.meta.picture = 'http://localhost/~redy/pico/uploads/feature_1.jpg';
+		$scope.file.meta.picture = '#';
 		$scope.appType = 'ws';
         $scope.appSlug = 'test';
         $scope.appInfo = {};
