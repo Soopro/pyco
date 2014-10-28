@@ -5,6 +5,7 @@ PLUGIN_DIR = "plugins/"
 
 THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
+TPL_FILE_EXT = ".tpl"
 DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_POST_TMPL_NAME = "post"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
@@ -398,10 +399,21 @@ class UploadView(MethodView):
         return send_from_directory(UPLOADS_DIR, filename)
         
 class EditorView(MethodView):
-    def get(self, filename = None):
+    def get(self, filename=None):
         if not filename:
             return send_file(EDITOR_INDEX)
         return send_from_directory(EDITOR_DIR, filename)
+
+
+class EditTemplateView(BaseView):
+    def get(self, filename=None):
+        if filename:
+            file = ''.join([filename, TPL_FILE_EXT])
+            load_config(current_app)
+            f = os.path.join(current_app.root_path, THEMES_DIR, current_app.config['THEME_NAME'], file)
+
+            return send_file(f, cache_timeout=0)
+
 
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
@@ -431,7 +443,7 @@ app.add_url_rule("{}/".format(EDITOR_URL), view_func=EditorView.as_view("editor"
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
 app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.as_view("uploads"))
 app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
-
+app.add_url_rule("{}/tpl/<path:filename>".format(EDITOR_URL), view_func=EditTemplateView.as_view("tpl_file"))
 
 @app.errorhandler(Exception)
 def errorhandler(err):
