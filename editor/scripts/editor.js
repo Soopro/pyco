@@ -62,7 +62,7 @@ supMockEditor.directive('editorCanvas', function ($http, $compile, EditorTemplat
             return function (scope, element) {
                 scope.now = new Date().getTime();
 				
-				var tpl_url=Config.site_config.theme_url+'/'+scope.template+'.tpl';
+				var tpl_url=Config.site_config.theme_tpl_url+'/'+scope.template;
 				$http.get(tpl_url).success(function(data, status, headers, config) {
 
 					data=replace_template_tag(data,Config.site_config);
