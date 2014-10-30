@@ -20,6 +20,7 @@ SITE_META = {
     },
     "locale":"zh_CN"
 }
+
 THEME_META = {
     "theme_name" : THEME_NAME,
     "perpage": 2

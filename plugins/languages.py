@@ -14,8 +14,7 @@ _THEME_NAME = None
 def config_loaded(config):
     global _LOCALE, _TRANSLATES, _THEME_NAME
     site_meta = config.get("SITE_META",{})
-    theme_meta = config.get("THEME_META",{})
-    _THEME_NAME = theme_meta.get("theme_name")
+    _THEME_NAME = config.get("THEME_NAME")
     _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
     _TRANSLATES = site_meta.get("translates")
     return
@@ -28,7 +27,7 @@ def request_url(request, redirect_to):
 
 def before_render(var,template):
     if _TRANSLATES:
-        set_current_language(_LOCALE)
+        set_current_translation(_LOCALE)
         current_trans = _TRANSLATES[_current_lang]
         translates = []
         for trans in _TRANSLATES:
@@ -43,7 +42,7 @@ def before_render(var,template):
     return
 
 #custome functions
-def set_current_language(lang):
+def set_current_translation(lang):
     if _TRANSLATES and _THEME_NAME:
         lang_path = os.path.join(current_app.template_folder,_LANGUAGES_FOLDER)
         tr = gettext.translation(_THEME_NAME, lang_path, languages=[lang], fallback=False)
