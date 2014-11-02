@@ -13,9 +13,9 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
     app.config.setdefault("THEME_NAME", "default")
-    app.config.setdefault("POST_DATE_FORMAT", "%d, %b %Y")
-    app.config.setdefault("POST_ORDER_BY", "title")
-    app.config.setdefault("POST_ORDER", "asc")
+    app.config.setdefault("PAGE_DATE_FORMAT", "%d, %b %Y")
+    app.config.setdefault("PAGE_ORDER_BY", "title")
+    app.config.setdefault("PAGE_ORDER", "asc")
     return
 
 

@@ -37,18 +37,18 @@ def after_404_load_content(file, content):
     return
 
 
-def before_read_post_meta(headers):
-    print "before read post meta"
+def before_read_page_meta(headers):
+    print "before read page meta"
     return
 
 
-def after_read_post_meta(headers):
-    print "after read post meta"
+def after_read_page_meta(headers):
+    print "after read page meta"
     return
 
 
-def single_post_meta(post_meta, redirect_to):
-    print "post meta"
+def single_page_meta(page_meta, redirect_to):
+    print "page meta"
     return
 
 
@@ -62,13 +62,13 @@ def after_parse_content(content):
     return
 
 
-def get_post_data(data, post_meta):
-    print "get post data"
+def get_page_data(data, page_meta):
+    print "get page data"
     return
 
 
-def get_posts(posts, current_post, prev_post, next_post):
-    print "get posts"
+def get_pages(pages, current_page, prev_page, next_page):
+    print "get pages"
     return
 
 

@@ -7,7 +7,7 @@ THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
 TPL_FILE_EXT = ".tpl"
 DEFAULT_INDEX_TMPL_NAME = "index"
-DEFAULT_POST_TMPL_NAME = "post"
+DEFAULT_PAGE_TMPL_NAME = "page"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
 STATIC_DIR = THEMES_DIR
@@ -122,15 +122,15 @@ class BaseView(MethodView):
             return "", ""
         return m.group("meta"), m.group("content")
 
-    def parse_post_meta(self, meta_string):
+    def parse_page_meta(self, meta_string):
         headers = dict()
-        self.run_hook("before_read_post_meta", headers = headers)
+        self.run_hook("before_read_page_meta", headers = headers)
 
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
                 headers[kv_pair[0].lower()] = kv_pair[1].strip()
-        self.run_hook("after_read_post_meta", headers = headers)
+        self.run_hook("after_read_page_meta", headers = headers)
         return headers
 
     @staticmethod
@@ -150,7 +150,7 @@ class BaseView(MethodView):
                                                       fpath=content_file_full_path)
         return sha1(base).hexdigest()
 
-    # posts
+    # pages
     @staticmethod
     def get_files(base_dir, ext):
         all_files = []
@@ -164,24 +164,24 @@ class BaseView(MethodView):
         date_format = DEFAULT_DATE_FORMAT
         try:
             date_object=datetime.strptime(date, date_format)
-            date_formatted=date_object.strftime(config.get('POST_DATE_FORMAT'))
+            date_formatted=date_object.strftime(config.get('PAGE_DATE_FORMAT'))
         except ValueError:
             date_formatted=date
         return date_formatted
         
-    def get_posts(self):
+    def get_pages(self):
         config = self.config
         base_url = config.get("BASE_URL")
         
-        sort_key=config.get("POST_ORDER_BY")
-        order=config.get("POST_ORDER")
+        sort_key=config.get("PAGE_ORDER_BY")
+        order=config.get("PAGE_ORDER")
         
         reverse = False
         if order == 'desc':
             reverse = True
 
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
-        post_data_list = []
+        page_data_list = []
         for f in files:
             relative_path = f.split(CONTENT_DIR, 1)[1]
             if relative_path.startswith("~") \
@@ -191,7 +191,7 @@ class BaseView(MethodView):
             with open(f, "r") as fh:
                 file_content = fh.read().decode(CHARSET)
             meta_string, content_string = self.content_splitter(file_content)
-            meta = self.parse_post_meta(meta_string)
+            meta = self.parse_page_meta(meta_string)
             data = dict()
             # generate request url
             if relative_path.endswith(CONTENT_FILE_EXT):
@@ -212,11 +212,11 @@ class BaseView(MethodView):
             data["description"] = meta.get("description", "")
             data["content"] = self.parse_content(content_string)
             
-            self.run_hook("get_post_data",data = data, post_meta = meta.copy())
-            post_data_list.append(data)
+            self.run_hook("get_page_data",data = data, page_meta = meta.copy())
+            page_data_list.append(data)
         if sort_key not in ("title", "date"):
             sort_key = "title"
-        return sorted(post_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
+        return sorted(page_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
 
     #theme
     @property
@@ -324,53 +324,53 @@ class ContentView(BaseView):
             
             # parse file content
             meta_string, content_string = self.content_splitter(file_content["content"])
-            post_meta=self.parse_post_meta(meta_string)
-            post_meta['date_formatted'] = self.format_date(post_meta.get("date", ""))
+            page_meta=self.parse_page_meta(meta_string)
+            page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
             redirect_to = {"url":None}
-            run_hook("single_post_meta", post_meta = post_meta, redirect_to = redirect_to)
+            run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
             if redirect_to.get("url"):
                 return redirect(redirect_to["url"], code=302)
 
-            self.view_ctx["meta"] = post_meta
+            self.view_ctx["meta"] = page_meta
             
-            post_content = {}
+            page_content = {}
             
-            post_content['content'] = content_string
-            run_hook("before_parse_content", content = post_content)
+            page_content['content'] = content_string
+            run_hook("before_parse_content", content = page_content)
             
-            post_content['content'] = self.parse_content(post_content['content'])
-            run_hook("after_parse_content", content = post_content)
+            page_content['content'] = self.parse_content(page_content['content'])
+            run_hook("after_parse_content", content = page_content)
             
-            self.view_ctx["content"] = post_content['content']
+            self.view_ctx["content"] = page_content['content']
         # content index
-        posts = self.get_posts()
-        # self.view_ctx["posts"] = filter(lambda x: x["url"] != site_index_url, posts)
-        self.view_ctx["posts"] = posts
-        self.view_ctx["current_post"] = defaultdict(str)
-        self.view_ctx["prev_post"] = defaultdict(str)
-        self.view_ctx["next_post"] = defaultdict(str)
+        pages = self.get_pages()
+        # self.view_ctx["pages"] = filter(lambda x: x["url"] != site_index_url, pages)
+        self.view_ctx["pages"] = pages
+        self.view_ctx["current_page"] = defaultdict(str)
+        self.view_ctx["prev_page"] = defaultdict(str)
+        self.view_ctx["next_page"] = defaultdict(str)
         self.view_ctx["is_front"] = False
         self.view_ctx["is_tail"] = False
-        for post_index, post_data in enumerate(self.view_ctx["posts"]):
+        for page_index, page_data in enumerate(self.view_ctx["pages"]):
             if auto_index:
                 break
-            if post_data["path"] == file['path']:
-                self.view_ctx["current_post"] = post_data
-                if post_index == 0:
+            if page_data["path"] == file['path']:
+                self.view_ctx["current_page"] = page_data
+                if page_index == 0:
                     self.view_ctx["is_front"] = True
                 else:
-                    self.view_ctx["prev_post"] = self.view_ctx["posts"][post_index-1]
-                if post_index == len(self.view_ctx["posts"]) - 1:
+                    self.view_ctx["prev_page"] = self.view_ctx["pages"][page_index-1]
+                if page_index == len(self.view_ctx["pages"]) - 1:
                     self.view_ctx["is_tail"] = True
                 else:
-                    self.view_ctx["next_post"] = self.view_ctx["posts"][post_index+1]
-            post_data.pop("path")
+                    self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
+            page_data.pop("path")
 
-        run_hook("get_posts",posts = self.view_ctx["posts"], current_post = self.view_ctx["current_post"],
-            prev_post = self.view_ctx["prev_post"],next_post = self.view_ctx["next_post"])
+        run_hook("get_pages",pages = self.view_ctx["pages"], current_page = self.view_ctx["current_page"],
+            prev_page = self.view_ctx["prev_page"], next_page = self.view_ctx["next_page"])
         
         template = {}
-        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_POST_TMPL_NAME)
+        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_PAGE_TMPL_NAME)
         
         run_hook("before_render",var = self.view_ctx, template = template)
         
@@ -379,7 +379,7 @@ class ContentView(BaseView):
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
-            template_file_path = self.theme_path_for(DEFAULT_POST_TMPL_NAME)
+            template_file_path = self.theme_path_for(DEFAULT_PAGE_TMPL_NAME)
 
         self.view_ctx["template"] = template['file']
         self.view_ctx["template_file_path"] = template_file_path

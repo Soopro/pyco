@@ -16,22 +16,22 @@ def request_url(request, redirect_to):
     _URL = request.path
     return
 
-def get_post_data(data, post_meta):
-    data["type"] = post_meta.get("type")
+def get_page_data(data, page_meta):
+    data["type"] = page_meta.get("type")
     filter_auto_type(data,data.get("url"));
     return
 
-def single_post_meta(post_meta, redirect_to):
-    post_url = _CONFIG.get("BASE_URL")+_URL
-    filter_auto_type(post_meta, post_url);
+def single_page_meta(page_meta, redirect_to):
+    page_url = _CONFIG.get("BASE_URL")+_URL
+    filter_auto_type(page_meta, page_url);
     return
 
 #custom functions
-def filter_auto_type(meta,post_url):
+def filter_auto_type(meta,page_url):
     base_url = _CONFIG.get("BASE_URL")
 
     if not meta.get("type"):
-        relative_path = post_url.replace(base_url+"/","")
+        relative_path = page_url.replace(base_url+"/","")
         try:
             content_type = relative_path[0:relative_path.index("/")]
         except ValueError:

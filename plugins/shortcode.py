@@ -19,7 +19,7 @@ def config_loaded(config):
     return
 
 
-def after_read_post_meta(headers):
+def after_read_page_meta(headers):
     filter_meta_shortcode(headers)
     return
 

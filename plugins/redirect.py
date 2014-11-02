@@ -1,6 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-def single_post_meta(post_meta,redirect_to):
-    redirect_to["url"]=post_meta.get("redirect")
+def single_page_meta(page_meta,redirect_to):
+    redirect_to["url"]=page_meta.get("redirect")
     return 

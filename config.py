@@ -2,9 +2,9 @@
 from __future__ import absolute_import
 
 DEBUG = False
-PORT = 5000
+PORT = 5500
 
-THEME_NAME = 'tinforce'
+THEME_NAME = 'default'
 
 BASE_URL = "http://localhost:5000"
 
@@ -26,10 +26,10 @@ THEME_META = {
     "perpage": 2
 }
 
-POST_DATE_FORMAT = "%d, %b %Y"
+PAGE_DATE_FORMAT = "%d, %b %Y"
 
-POST_ORDER_BY = "date"
-POST_ORDER = "desc"
+PAGE_ORDER_BY = "date"
+PAGE_ORDER = "desc"
 
 IGNORE_FILES = []
 

@@ -8,17 +8,17 @@ def config_loaded(config):
     _CONFIG = config
     return
 
-def get_post_data(data, post_meta):
-    data["draft"] = post_meta.get("draft")
+def get_page_data(data, page_meta):
+    data["draft"] = page_meta.get("draft")
     if isinstance(data["draft"], (str,unicode)) and data["draft"].lower() == "true":
         data["draft"] = True
     else:
         data["draft"] = False
     return
 
-def get_posts(posts, current_post, prev_post, next_post):
-    for post in posts:
-        if post.get("draft"):
-            i = posts.index(post)
-            posts.pop(i)
+def get_pages(pages, current_page, prev_page, next_page):
+    for page in pages:
+        if page.get("draft"):
+            i = pages.index(page)
+            pages.pop(i)
     return

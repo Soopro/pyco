@@ -5,7 +5,7 @@ from plugin_helpers import generate_pagination
 _CONFIG = {}
 _DEFAULT_PAGINATION_LIMIT  = 10
 _current_page = 1
-_paged_posts = None
+_paged_pages = None
 _pagination = None
 
 def config_loaded(config):
@@ -21,18 +21,18 @@ def request_url(request, redirect_to):
         _current_page = 1
     return
 
-def get_posts(posts, current_post, prev_post, next_post):
-    global _paged_posts, _pagination
-    _paged_posts = _pagination = None
+def get_pages(pages, current_page, prev_page, next_page):
+    global _paged_pages, _pagination
+    _paged_pages = _pagination = None
     
     if _current_page and isinstance(_current_page, int):
         limit = _CONFIG.get("PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT )
-        _paged_posts, _pagination = generate_pagination(_current_page,limit,posts)
+        _paged_pages, _pagination = generate_pagination(_current_page,limit,pages)
     return
 
 def before_render(var,template):
-    if not var.get('paged_posts') and not var.get('pagination'):
-        var['results'] = _paged_posts
+    if not var.get('paged_pages') and not var.get('pagination'):
+        var['results'] = _paged_pages
         var['pagination'] = _pagination
     return
 

@@ -35,13 +35,13 @@
     		{% endfor %}
     		</ul>
 			<ul class="entries">
-			{% set booklet = stapler(posts,paged=g.paged,perpage=g.perpage,post_type=["works"]) %}
-    		{% for post in booklet.posts %}
+			{% set booklet = stapler(pages,paged=g.paged,perpage=g.perpage,content_types=["works"]) %}
+    		{% for page in booklet.pages %}
 				<li>
-					<a href="{{ post.url }}">
-					<h3>{{ post.title }}-{{post.type}}-{{post.order}}</h3>
-					<time>{{ post.date_formatted }}</time>
-					<div>{{ post.description }}</div>
+					<a href="{{ page.url }}">
+					<h3>{{ page.title }}-{{page.type}}-{{page.order}}</h3>
+					<time>{{ page.date_formatted }}</time>
+					<div>{{ page.description }}</div>
 					</a>
 				</li>
     		{% endfor %}

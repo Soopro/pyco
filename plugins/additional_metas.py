@@ -13,24 +13,24 @@ def config_loaded(config):
 
     _CONFIG = config
     
-    if _CONFIG.get('POST_ORDER') == 'desc':
+    if _CONFIG.get('PAGE_ORDER') == 'desc':
         _ORDER_DESC = True
 
-    _ORDER_BY = _CONFIG.get('POST_ORDER_BY') or _ORDER_BY
+    _ORDER_BY = _CONFIG.get('PAGE_ORDER_BY') or _ORDER_BY
     
     _ADDITIONAL_METAS = set(_CONFIG.get("ADDITIONAL_METAS",[]) + _DEFAULT_ADDITIONAL_METAS)
     return
 
 
-def get_post_data(data, post_meta):
+def get_page_data(data, page_meta):
     for key in _ADDITIONAL_METAS:
-        data[key] = post_meta.get(key)
+        data[key] = page_meta.get(key)
     return
 
 
-def get_posts(posts, current_post, prev_post, next_post):
+def get_pages(pages, current_page, prev_page, next_page):
     # global _navs
- #    _navs = [post for post in posts if post.get("nav")]
+ #    _navs = [page for page in pages if page.get("nav")]
  #
  #    for item in _navs:
  #        try:
@@ -39,7 +39,7 @@ def get_posts(posts, current_post, prev_post, next_post):
  #            order = None
  #
  #        item['order'] =  order or 0
- #    _navs=sorted(posts,key=lambda x: (x['order'], x[_ORDER_BY]),reverse=_ORDER_DESC)
+ #    _navs=sorted(pages,key=lambda x: (x['order'], x[_ORDER_BY]),reverse=_ORDER_DESC)
     
     return
 

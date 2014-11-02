@@ -1,7 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-def get_post_data(data, post_meta):
-    for key in post_meta:
-        data[key] = post_meta.get(key)
+def get_page_data(data, page_meta):
+    for key in page_meta:
+        data[key] = page_meta.get(key)
     return

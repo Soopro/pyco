@@ -38,10 +38,10 @@ Description: This is looks like Python
 
 		LOCALE = "en"
 
-		POST_DATE_FORMAT = "%d, %b %Y"
+		PAGE_DATE_FORMAT = "%d, %b %Y"
 
-		POST_ORDER_BY = "date"
-		POST_ORDER = "desc"
+		PAGE_ORDER_BY = "date"
+		PAGE_ORDER = "desc"
 
 		IGNORE_FILES = []
 

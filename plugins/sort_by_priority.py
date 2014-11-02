@@ -11,27 +11,27 @@ def config_loaded(config):
 
     _CONFIG = config
 
-    if _CONFIG.get('POST_ORDER') == 'desc':
+    if _CONFIG.get('PAGE_ORDER') == 'desc':
         _ORDER_DESC = True
 
-    _ORDER_BY = _CONFIG.get('POST_ORDER_BY') or _ORDER_BY
+    _ORDER_BY = _CONFIG.get('PAGE_ORDER_BY') or _ORDER_BY
     return
 
-def get_post_data(data, post_meta):
-    data[_PRIORITY] = post_meta.get(_PRIORITY)
+def get_page_data(data, page_meta):
+    data[_PRIORITY] = page_meta.get(_PRIORITY)
     return
 
-def get_posts(posts, current_post, prev_post, next_post):
-    for post in posts:
+def get_pages(pages, current_page, prev_page, next_page):
+    for page in pages:
         try: 
-            order = int(post.get(_PRIORITY))
+            order = int(page.get(_PRIORITY))
         except Exception:
             order = None
 
-        post[_PRIORITY] =  order or 0
-    _posts=sorted(posts,key=lambda x: (x[_PRIORITY], x[_ORDER_BY]),reverse=_ORDER_DESC)
+        page[_PRIORITY] =  order or 0
+    _pages=sorted(pages,key=lambda x: (x[_PRIORITY], x[_ORDER_BY]),reverse=_ORDER_DESC)
     
-    del posts[:]
-    for post in _posts:
-        posts.append(post)
+    del pages[:]
+    for page in _pages:
+        pages.append(page)
     return

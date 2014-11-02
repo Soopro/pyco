@@ -23,7 +23,7 @@
                         <i class="icon-home"></i>
                     </a>
                 </article>
-                <article class="post">
+                <article class="page">
                     <h2 class="content">第一次测试</h2>
                     <h5>2014/07/25</h5>
                     <section>
@@ -35,7 +35,7 @@
                     <section style="margin-bottom: 2em;">
                         
                             
-                                <a rel="next" style="float:right" class="a-hover" href="/post3">第4次测试 <i class="icon-arrow-right"></i></a>
+                                <a rel="next" style="float:right" class="a-hover" href="/page3">第4次测试 <i class="icon-arrow-right"></i></a>
                         
                     </section>
                 </article>
