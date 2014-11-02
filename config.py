@@ -22,6 +22,9 @@ SITE_META = {
 }
 
 THEME_META = {
+    "content_types":{
+        "page":"Pages",
+    },
     "theme_name" : THEME_NAME,
     "perpage": 2
 }

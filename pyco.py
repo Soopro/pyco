@@ -245,7 +245,7 @@ class BaseView(MethodView):
 
         self.view_ctx["base_url"] = config.get("BASE_URL")
         self.view_ctx["theme_url"] = STATIC_BASE_URL
-        self.view_ctx["uploads"] = UPLOADS_URL
+        self.view_ctx["base_url"] = config.get("BASE_URL")
         self.view_ctx["site_meta"] = config.get("SITE_META")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return

@@ -53,6 +53,8 @@ def glue(args = None):
 def stapler(raw_pages, paged=1, perpage=12, content_types=None):
     macthed_pages = [page for page in raw_pages if not content_types or page.get("type") in content_types]
     max_pages = int(math.ceil(len(macthed_pages)/perpage))
+    if max_pages <1:
+        max_pages = 1
     if paged > max_pages:
         paged = max_pages
     start = (paged-1)*perpage
