@@ -4,7 +4,7 @@ from __future__ import absolute_import
 DEBUG = False
 PORT = 5500
 
-THEME_NAME = 'default'
+THEME_NAME = 'tinforce'
 
 BASE_URL = "http://localhost:5000"
 

@@ -18,7 +18,7 @@
 				<span id="language-switcher" class="language-switcher-btn-disabled">Language</span>
 			</div>
 			<div id="logo" class="col-md-2 col-sm-2">
-				<a href="#" class="logo-graph">Tinforce</a>
+				<a href="#" class="logo-graph">{{site_meta.title}}</a>
 			</div>
 
 			<nav id="nav" class="col-md-4 col-sm-4">
@@ -45,7 +45,7 @@
 	<!-- Footer -->
 	<footer class="container">
 		<hr>
-		<p id="cp">&copy; 2014 Tinforce Digital Studio.</p>
+		<p id="cp">{{site_meta.copyright}}</p>
 	</footer>
 	<!-- #Footer -->
 </div>

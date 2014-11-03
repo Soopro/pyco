@@ -1,23 +1,22 @@
 /*global CONFIG: true */
 /* exported CONFIG */
+var THEME_NAME = 'tinforce'
 var CONFIG = {
     host: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+'/',
     editor_params:{ 
-		'file':'test',
+		'file':'page',
 		'template': 'index',
 	},
 	site_config:{
-		'locale':'en',
-		'base_url':'http://127.0.0.1:5000',
-		'theme_url':'http://127.0.0.1:5000/static',
-        'theme_tpl_url':'http://127.0.0.1:5000/editor/tpl',
-		'site_description':'Site Descrption here......',
-		'site_copyright':'&copy; 2014 tinforce.com',
+		'title':'Site title',
+		'description':'Site Descrption here......',
+		'copyright':'&copy; 2014 Tinforce Digital Studio.',
 		'categories':{
 			'cat_slug':'Cat Name',
 		},
 	},
     theme_config:{
+		'alias':THEME_NAME,
     	'templates':{
     		'template':'Template Name',
     	},

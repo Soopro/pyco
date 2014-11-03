@@ -61,15 +61,15 @@ supMockEditor.directive('editorCanvas', function ($http, $compile, EditorTemplat
         compile: function () {
             return function (scope, element) {
                 scope.now = new Date().getTime();
+				var tpl_url='/editor/tpl/'+scope.template;
+				scope.config = {'site_meta':Config.site_config,'theme_meta':Config.theme_config};
+				scope.site_meta = scope.config.site_meta;
+				scope.theme_meta = scope.config.theme_meta;
 				
-				var tpl_url=Config.site_config.theme_tpl_url+'/'+scope.template;
 				$http.get(tpl_url).success(function(data, status, headers, config) {
-
-					data=replace_template_tag(data,Config.site_config);
-	
                     element.html(data);
                     var A = element[0].querySelectorAll('a[fake]');
-
+					
                     for (var i = 0; i < A.length; i++) {
                         A[i].addEventListener('click', function (e) {
                             e.preventDefault();

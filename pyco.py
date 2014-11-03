@@ -232,20 +232,9 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
-        
-        if current_app.debug:
-            current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
-            # change template folder
-            current_app.template_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
-            # change static folder
-            current_app.static_folder = current_app.template_folder
-            # change reload template folder
-            current_app.jinja_env.cache = None
-            current_app.jinja_loader = FileSystemLoader(current_app.template_folder)
-            # current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
 
         self.view_ctx["base_url"] = config.get("BASE_URL")
-        self.view_ctx["theme_url"] = STATIC_BASE_URL
+        self.view_ctx["theme_url"] = os.path.join(STATIC_BASE_URL,config.get("THEME_NAME"))
         self.view_ctx["base_url"] = config.get("BASE_URL")
         self.view_ctx["site_meta"] = config.get("SITE_META")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
@@ -275,7 +264,7 @@ class ContentView(BaseView):
         self.load_plugins()
         run_hook("plugins_loaded")
 
-        load_config(current_app)
+        # load_config(current_app)
         current_app.debug = _DEBUG
         self.config = current_app.config
         
@@ -413,11 +402,34 @@ class EditTemplateView(BaseView):
     def get(self, filename=None):
         if filename:
             file = ''.join([filename, TPL_FILE_EXT])
-            load_config(current_app)
+
+            # load_config(current_app)
             f = os.path.join(current_app.root_path, THEMES_DIR, current_app.config['THEME_NAME'], file)
 
-            return send_file(f, cache_timeout=0)
+            theme_url = os.path.join(STATIC_BASE_URL,current_app.config.get("THEME_NAME"))
+            base_url = current_app.config.get("BASE_URL")
+            locale = current_app.config.get("SITE_META",{}).get('locale')
+            tmpl_content = helper_parse_template(f)
+            # make fake template context
+            shortcodes  = [
+                {"pattern":u"base_url","replacement":base_url},
+                {"pattern":u"theme_url","replacement":theme_url},
+                {"pattern":u"locale","replacement":locale}
+            ]
+            for code in shortcodes:
+                pattern = helper_make_pattern(code["pattern"])
+                tmpl_content = re.sub(pattern, code["replacement"], tmpl_content)
+            
+            return tmpl_content
 
+def helper_parse_template(path):
+    with open(path, "r") as f:
+        content = f.read()
+        content = content.decode("utf8")
+        return content
+
+def helper_make_pattern(pattern):
+    return re.compile(r"{}\s*{}\s*{}".format('{{',pattern,'}}'), re.IGNORECASE)
 
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
@@ -440,7 +452,7 @@ app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
 app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
-app.static_folder = app.template_folder
+app.static_folder = THEMES_DIR
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
 app.add_url_rule("{}/".format(EDITOR_URL), view_func=EditorView.as_view("editor"))
@@ -448,6 +460,20 @@ app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
 app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.as_view("uploads"))
 app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
 app.add_url_rule("{}/tpl/<path:filename>".format(EDITOR_URL), view_func=EditTemplateView.as_view("tpl_file"))
+
+
+@app.before_request
+def before_request():
+    load_config(current_app)
+    if current_app.debug:
+        current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
+        # change template folder
+        current_app.template_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
+        # change reload template folder
+        current_app.jinja_env.cache = None
+        current_app.jinja_loader = FileSystemLoader(current_app.template_folder)
+        # current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
+
 
 @app.errorhandler(Exception)
 def errorhandler(err):
