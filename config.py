@@ -38,7 +38,7 @@ PAGE_ORDER = "desc"
 
 IGNORE_FILES = []
 
-PLUGINS = ["autometas","shortcode","redirect","draft","languages",
+PLUGINS = ["autometas","redirect","draft","languages",
 "content_types","sort_by_priority","jinja_helpers"]
 
 """ For Plugins """
