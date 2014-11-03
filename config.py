@@ -42,17 +42,3 @@ PLUGINS = ["autometas","redirect","draft","languages",
 "content_types","sort_by_priority","jinja_helpers"]
 
 """ For Plugins """
-# #languages
-# TRANSLATES = {
-#     "en":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
-#     "zh":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
-# }
-# TRANSLATE_REDIRECT = False
-#shortcodes
-SHORTCODES  = [
-    {"pattern":"base_url","replacement":""},
-    {"pattern":"uploads","replacement":"/uploads"},
-    {"pattern":"image_url","replacement":"/uploads"}
-]
-
-ADDITIONAL_METAS = ["nav","link","target","parent","thumbnail"]

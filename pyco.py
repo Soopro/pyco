@@ -325,6 +325,11 @@ class ContentView(BaseView):
         page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
         redirect_to = {"url":None}
         run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
+        
+        tmp_tpl_name=str(page_meta.get('template'))
+        if tmp_tpl_name[0:1]=='_' and not redirect_to["url"]:
+            redirect_to["url"] = os.path.join(config.get('BASE_URL'),CONTENT_NOT_FOUND_FILENAME)
+        
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
 
