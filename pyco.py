@@ -28,6 +28,8 @@ CONTENT_FILE_EXT = ".md"
 CONTENT_DEFAULT_FILENAME = "index"
 CONTENT_NOT_FOUND_FILENAME = "404"
 
+INVISIBLE_PAGE_LIST = [CONTENT_NOT_FOUND_FILENAME]
+
 CHARSET = "utf8"
 
 import sys
@@ -186,6 +188,8 @@ class BaseView(MethodView):
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         page_data_list = []
         for f in files:
+            if f in INVISIBLE_PAGE_LIST:
+                continue
             relative_path = f.split(CONTENT_DIR, 1)[1]
             if relative_path.startswith("~") \
                     or relative_path.startswith("#") \
