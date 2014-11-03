@@ -1,5 +1,3 @@
-{% import "g" as g with context %}
-
 <header id="header" class="container">
 	<div class="row">
 		{{ _('Hello World!') }}
@@ -22,7 +20,7 @@
 		</div>
 		<nav id="nav" class="col-md-4 col-sm-4">
 			<ul>
-				{% for item in g.navigation %}
+				{% for item in g.navigation if g.navigation %}
 					<li><a href="{{ item.url }}" ontouchstart="nav-btn-on">{{ item.nav }}</a></li>
 				{% endfor %}
 			</ul>
