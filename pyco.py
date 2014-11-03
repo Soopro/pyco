@@ -209,9 +209,10 @@ class BaseView(MethodView):
             data["author"] = meta.get("author", "")
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
-            data["description"] = meta.get("description", "")
             data["content"] = self.parse_content(content_string)
-            
+            data["excerpt"] = re.sub(r'<[^>]*?>', '', data["content"])
+            des = meta.get("description")
+            data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data",data = data, page_meta = meta.copy())
             page_data_list.append(data)
         if sort_key not in ("title", "date"):
@@ -342,6 +343,11 @@ class ContentView(BaseView):
             run_hook("after_parse_content", content = page_content)
             
             self.view_ctx["content"] = page_content['content']
+            excerpt = re.sub(r'<[^>]*?>', '', self.view_ctx["content"])
+            self.view_ctx["meta"]["excerpt"] = excerpt
+            des = self.view_ctx["meta"].get("description")
+            self.view_ctx["meta"]["description"] = excerpt if not des else des
+            
         # content index
         pages = self.get_pages()
         # self.view_ctx["pages"] = filter(lambda x: x["url"] != site_index_url, pages)
