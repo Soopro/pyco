@@ -143,7 +143,11 @@ supMockEditor.directive('supEditorMeta', function () {
 					if(ngModel.$viewValue){
 	                    switch(attrs.supEditorWidget){
 	                        case 'media':
-	                            element[0].src=ngModel.$viewValue;
+								if(element[0].src){
+	                                element[0].src=ngModel.$viewValue;
+	                            }else{
+	                                element[0].backgroundImgage=ngModel.$viewValue;    
+	                            }
 	                        break;
 	                        case 'script':
 	                            element.html(ngModel.$viewValue);
