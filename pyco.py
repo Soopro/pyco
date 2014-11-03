@@ -433,7 +433,7 @@ def helper_gen_excerpt(content,theme_meta):
     excerpt = re.sub(r'<[^>]*?>', '', content)
     if excerpt:
         excerpt = " ".join(excerpt.split())
-        excerpt = "{}{}".format(excerpt[0:excerpt_length],excerpt_ellipsis)
+        excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
     return excerpt
 
 def helper_parse_template(path):
