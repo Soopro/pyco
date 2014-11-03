@@ -10,6 +10,9 @@ DEFAULT_INDEX_TMPL_NAME = "index"
 DEFAULT_PAGE_TMPL_NAME = "page"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
+DEFAULT_EXCERPT_LENGTH = 50
+DEFAULT_EXCERPT_ELLIPSIS = "&hellip"
+
 STATIC_DIR = THEMES_DIR
 STATIC_BASE_URL = "/static"
 
@@ -210,7 +213,7 @@ class BaseView(MethodView):
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
-            data["excerpt"] = re.sub(r'<[^>]*?>', '', data["content"])
+            data["excerpt"] = helper_gen_excerpt(data["content"],self.view_ctx["theme_meta"])
             des = meta.get("description")
             data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data",data = data, page_meta = meta.copy())
@@ -287,55 +290,57 @@ class ContentView(BaseView):
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
 
-        if not auto_index:
-            file["path"] = self.get_file_path(request_url)
-            # hook before load content
-            run_hook("before_load_content",file = file)
-            # if not found
-            if file["path"] is None:
-                is_not_found = True
-                status_code = 404
-                file["path"] = self.content_not_found_full_path
-                if not self.check_file_exists(file["path"]):
-                    # without not found file
-                    abort(404)
 
-            # read file content
-            if is_not_found:
-                run_hook("before_404_load_content",file = file)
+        file["path"] = self.get_file_path(request_url)
+        # hook before load content
+        run_hook("before_load_content",file = file)
+        # if not found
+        if file["path"] is None:
+            is_not_found = True
+            status_code = 404
+            file["path"] = self.content_not_found_full_path
+            if not self.check_file_exists(file["path"]):
+                # without not found file
+                abort(404)
 
-            with open(file['path'], "r") as f:
-                file_content['content'] = f.read().decode(CHARSET)
-            
-            
-            if is_not_found:
-                run_hook("after_404_load_content",file = file, content = file_content)
-            run_hook("after_load_content", file = file, content = file_content)
-            
-            # parse file content
-            meta_string, content_string = self.content_splitter(file_content["content"])
-            page_meta=self.parse_page_meta(meta_string)
-            page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
-            redirect_to = {"url":None}
-            run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
-            if redirect_to.get("url"):
-                return redirect(redirect_to["url"], code=302)
+        # read file content
+        if is_not_found:
+            run_hook("before_404_load_content",file = file)
 
-            self.view_ctx["meta"] = page_meta
-            
-            page_content = {}
-            
-            page_content['content'] = content_string
-            run_hook("before_parse_content", content = page_content)
-            
-            page_content['content'] = self.parse_content(page_content['content'])
-            run_hook("after_parse_content", content = page_content)
-            
-            self.view_ctx["content"] = page_content['content']
-            excerpt = re.sub(r'<[^>]*?>', '', self.view_ctx["content"])
-            self.view_ctx["meta"]["excerpt"] = excerpt
-            des = self.view_ctx["meta"].get("description")
-            self.view_ctx["meta"]["description"] = excerpt if not des else des
+        with open(file['path'], "r") as f:
+            file_content['content'] = f.read().decode(CHARSET)
+        
+        
+        if is_not_found:
+            run_hook("after_404_load_content",file = file, content = file_content)
+        run_hook("after_load_content", file = file, content = file_content)
+        
+        # parse file content
+        meta_string, content_string = self.content_splitter(file_content["content"])
+        page_meta=self.parse_page_meta(meta_string)
+        page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
+        redirect_to = {"url":None}
+        run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
+        if redirect_to.get("url"):
+            return redirect(redirect_to["url"], code=302)
+
+        self.view_ctx["meta"] = page_meta
+        
+        page_content = {}
+        
+        page_content['content'] = content_string
+        run_hook("before_parse_content", content = page_content)
+        
+        page_content['content'] = self.parse_content(page_content['content'])
+        run_hook("after_parse_content", content = page_content)
+        
+        self.view_ctx["content"] = page_content['content']
+        
+
+        excerpt = helper_gen_excerpt(self.view_ctx["content"],self.view_ctx["theme_meta"])
+        self.view_ctx["meta"]["excerpt"] = excerpt
+        des = self.view_ctx["meta"].get("description")
+        self.view_ctx["meta"]["description"] = excerpt if not des else des
             
         # content index
         pages = self.get_pages()
@@ -421,6 +426,15 @@ class EditTemplateView(BaseView):
                 tmpl_content = re.sub(pattern, code["replacement"], tmpl_content)
             
             return tmpl_content
+
+def helper_gen_excerpt(content,theme_meta):
+    excerpt_length = theme_meta.get('excerpt_length', DEFAULT_EXCERPT_LENGTH)
+    excerpt_ellipsis = theme_meta.get('excerpt_ellipsis', DEFAULT_EXCERPT_ELLIPSIS)
+    excerpt = re.sub(r'<[^>]*?>', '', content)
+    if excerpt:
+        excerpt = " ".join(excerpt.split())
+        excerpt = "{}{}".format(excerpt[0:excerpt_length],excerpt_ellipsis)
+    return excerpt
 
 def helper_parse_template(path):
     with open(path, "r") as f:

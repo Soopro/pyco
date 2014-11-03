@@ -17,7 +17,7 @@
 		<!-- Contents -->
 		<div class="container">
 			<section class="row works-list">
-				{% for work in posts %}
+				{% for work in pages %}
 					{% if work.type == "works" and work.title and work.thumbnail %}
 						<figure class="col-md-3 col-sm-6"><a href="{{work.url}}">
 							<figcaption>{{work.title}}</figcaption>

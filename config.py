@@ -6,7 +6,7 @@ PORT = 5500
 
 THEME_NAME = 'tinforce'
 
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://localhost:5500"
 
 SITE_META = {
     "title": "Test Website Title",
@@ -26,7 +26,9 @@ THEME_META = {
         "page":"Pages",
     },
     "theme_name" : THEME_NAME,
-    "perpage": 2
+    "perpage": 2,
+    "excerpt_length": 100,
+    "excerpt_ellipsis": "&hellip;",
 }
 
 PAGE_DATE_FORMAT = "%d, %b %Y"
