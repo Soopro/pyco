@@ -146,7 +146,7 @@ supMockEditor.directive('supEditorMeta', function () {
 								if(element[0].src){
 	                                element[0].src=ngModel.$viewValue;
 	                            }else{
-	                                element[0].backgroundImgage=ngModel.$viewValue;    
+	                                element[0].style.backgroundImgage=ngModel.$viewValue;    
 	                            }
 	                        break;
 	                        case 'script':
@@ -161,27 +161,3 @@ supMockEditor.directive('supEditorMeta', function () {
             }
         };
     });
-//for mock editor only
-var re_base_url=/{{\s*base_url\s*}}/gi;
-var re_theme_url=/{{\s*theme_url\s*}}/gi;
-var re_locale=/{{\s*locale\s*}}/gi;
-var re_site_description=/{{\s*site_description\s*}}/gi;
-var re_site_keywords=/{{\s*site_keywords\s*}}/gi;
-var re_site_title=/{{\s*site_title\s*}}/gi;
-var re_site_license=/{{\s*site_license\s*}}/gi;
-var re_site_copyright=/{{\s*site_copyright\s*}}/gi;
-var re_site_contacts=/{{\s*site_contacts\s*}}/gi;
-
-function replace_template_tag(data,params){
-	data=data.replace(re_base_url,params.base_url);
-	data=data.replace(re_theme_url,params.theme_url);
-	data=data.replace(re_locale,params.locale);
-	data=data.replace(re_site_description,params.site_description);
-	data=data.replace(re_site_keywords,params.site_keywords);
-	data=data.replace(re_site_title,params.site_title);
-	data=data.replace(re_site_license,params.site_license);
-	data=data.replace(re_site_copyright,params.site_copyright);
-	data=data.replace(re_site_contacts,params.site_contacts);
-	
-	return data;
-}
