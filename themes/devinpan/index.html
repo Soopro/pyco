@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{site_meta.title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
+	<link href="{{theme_url}}/css/index.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="shortcut icon" href="{{theme_url}}/img/favicon.ico">
+  
+	<script type="text/javascript" src="{{theme_url}}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{{theme_url}}/js/bootstrap.min.js"></script>
+</head>
+{% set backgrounds = saltshaker(pages,["thumbnail"],true) %}
+{%set background = backgrounds|random%}
+<body style="background-image:url('{{background.thumbnail}}')">
+
+
+			<div class="logo-wrapper"><img src="{{meta.logo}}" alt="logo"></div>
+	<a href="{{meta.redirect_url}}"><div class="enter-arrow">
+		<img src="{{theme_url}}/img/enter-arrow.png" alt="enter">
+		<div class="enter-text"><h5>{{content}}</h5>
+		</div>
+	</div></a>
+	</div>
+
+<div class="bg">
+</div>
+{{analytics}}
+</body>
+
+</html>

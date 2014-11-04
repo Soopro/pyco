@@ -1,0 +1,128 @@
+{% import "g" as g with context %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{site_meta.title}} | {{meta.title}}</title>
+
+<!-- Bootstrap -->
+<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
+<!--mThumbnail scroller css-->
+<link rel="stylesheet" href="{{theme_url}}/css/jquery.mThumbnailScroller.css">
+<!--custom CSS-->
+<link href='{{theme_url}}/css/slider.css' rel='stylesheet' >
+<link href='{{theme_url}}/css/font-awesome.css' rel='stylesheet' >
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  <!-- Fav and touch icons -->
+  <link rel="shortcut icon" href="{{theme_url}}/img/favicon.ico">
+  
+</head>
+<body>
+    <!--navbar-->
+	<nav class="navbar navbar-inverse slider-navbar" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed sm-navbtn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <i class="fa fa-angle-double-down fa-2x"></i>
+	      </button>
+	      <a class="navbar-brand" href="#">{{site_meta.title}}</a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+		{% for item in  g.navigation%}
+        <li><a href="{{item.url}}" class="text-uppercase">{{item.nav}}</a></li>
+		{% endfor %}
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+	
+
+    <!--#navbar-->
+	    <div class="lg-custom-navbar">
+	        <div class="navbar-logo" href="">
+	            <img class="navbar-img" src="{{theme_url}}/img/gallerylogo.png" alt="" />
+			</div>
+		      <ul class="nav navbar-nav">
+			{% for item in  g.navigation%}
+	        <li><a href="{{item.url}}" class="text-uppercase">{{item.nav}}</a></li>
+			{% endfor %}
+		      </ul>
+			  </div>
+	<!--        </div>-->
+	
+    <!--sidebar menu-->
+    <div class="pull-right sidebar-menu">
+        <a class="menu-align-right">
+            <i class="fa fa-info fa-2x"></i>
+        </a>
+    </div>
+    <!--#sidebar menu-->
+   <div id="myCarousel" class="carousel carousel-fullscreen slide" data-ride="carousel">
+       <!--carousel item-->
+       <div class="carousel-inner">
+		   {%for item in saltshaker(pages,["thumbnail"],true) if item.type == 'works'%}
+           <div class="item{% if loop.first %} active{% endif %}">
+               <div class="carousel-imgbox invoke-area" style="background: url('{{item.thumbnail}}') ;" ></div>
+               <!--right-menu-->
+               <div class="container">
+                       <div class="row-offcanvas-right sidebar-right" >
+						   <span class="glyphicon glyphicon-remove close-btn pull-right"></span>
+                           <h3>{{item.title}}</h3>
+                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_clock.png" alt="" /></a>
+                           <h5>{{item.date}}</h5>
+                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_location.png" alt="" /></a>
+                           <h5>{{item.location}} </h5>
+                           <br />
+                           <p class="pull-right" >{{item.content}}
+                           </p>
+                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}/img/icon_like.png" alt="" /></a>
+                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}/img/icon_share.png" alt="" /></a>
+                           
+                       </div>
+               </div>
+           </div>
+           {%endfor%}
+	</div>
+	
+   </div>
+   </div>
+   <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+       <span class="glyphicon glyphicon-chevron-left"></span>
+   </a>
+   <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+       <span class="glyphicon glyphicon-chevron-right"></span>
+   </a>
+		<footer>
+        <div id="my-thumbs-list" class="footer">
+                <ul>
+				{%for item in saltshaker(pages,["thumbnail"],false) if item.type == 'works'%}
+                    <li data-target='#myCarousel' data-slide-to='{{loop.index0}}' class="active">
+                        <img class="thumb" src="{{item.thumbnail}}" alt="" />
+                    </li>
+					{%endfor%}
+                </ul>
+        </div>
+	</footer>
+{{analytics}}
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{{theme_url}}/js/jquery.1.11.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{theme_url}}/js/bootstrap.min.js"></script>
+    <!--mThumbnail scroller css-->
+    <script src="{{theme_url}}/js/jquery.mThumbnailScroller.js"></script>
+    <!--custom javascript-->
+    <script src="{{theme_url}}/js/functions.js"></script>
+</body>
+</html>

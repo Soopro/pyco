@@ -4,20 +4,16 @@ from __future__ import absolute_import
 DEBUG = False
 PORT = 5500
 
-THEME_NAME = 'tinforce'
+THEME_NAME = 'devinpan'
 
 BASE_URL = "http://localhost:5500"
 
 SITE_META = {
-    "title": "Test Website Title",
-    "author": "DTynn",
-    "description": "site description",
-    "copyright": "&copy; supmice.com",
+    "title": "DevinPan",
+    "author": "pan",
+    "description": "A invincible super high-end photographer devin pan's website",
+    "copyright": "&copy; devinPan.com",
     "license": "#license",
-    "translates":{
-        "en_US":{"name":u"English", "text":u"Language", "url":u"http://smalltalks.cc"},
-        "zh_CN":{"name":u"简体中文", "text":u"语 言", "url":u"http://cn.smalltalks.cc"}
-    },
     "locale":"zh_CN"
 }
 
@@ -26,9 +22,6 @@ THEME_META = {
         "page":"Pages",
     },
     "theme_name" : THEME_NAME,
-    "perpage": 2,
-    "excerpt_length": 100,
-    "excerpt_ellipsis": "&hellip;",
 }
 
 PAGE_DATE_FORMAT = "%d, %b %Y"

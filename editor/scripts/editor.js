@@ -25,13 +25,6 @@ supMockEditor.config(['$routeProvider',
     }]);
 
 /* Service */
-supMockEditor.factory('EditorTemplate', ['$resource', 'Config',
-    function ($resource, Config) {
-        'use strict';
-        return $resource(Config.tpl, {
-        }, {
-        });
-    }]);
 
 
 // Flash Message
@@ -47,7 +40,7 @@ supMockEditor.service('FlashMsg', ['$rootScope',
     }]);
 
 /* Directive */
-supMockEditor.directive('editorCanvas', function ($http, $compile, EditorTemplate, Config) {
+supMockEditor.directive('editorCanvas', function ($http, $compile,  Config) {
     'use strict';
     return {
         restrict: 'EA',
@@ -88,76 +81,38 @@ supMockEditor.directive('supEditorMeta', function () {
           restrict: 'A', // only activate on element attribute
           require: '?ngModel', // get a hold of NgModelController
           link: function (scope, element, attrs, ngModel) {
-              if (!ngModel) return; // do nothing if no ng-model
-              element[0].setAttribute('contenteditable', true);
-              // Specify how UI should be updated
-			  
-              ngModel.$render = function () {
-				  if(ngModel.$viewValue){
-                  	element.html(ngModel.$viewValue);
-				  }
-              };
-
-              // Listen for change events to enable binding
-              element.on('blur keyup change', function () {
-                  scope.$apply(readViewText);
-              });
-
-              // No need to initialize, AngularJS will initialize the text based on ng-model attribute
-
-              // Write data to the model
-              function readViewText() {
-                  var html = element.html();
-                  // When we clear the content editable the browser leaves a <br> behind
-                  // If strip-br attribute is provided then we strip this out
-                  if (attrs.stripBr && html == '<br>') {
-                      html = '';
-                  }
-                  ngModel.$setViewValue(html);
-              }
+			  	console.log('---> Editor Meta box');
           }
       };
   });
-  supMockEditor.directive('supEditorWidget', function ($rootScope) {
-        return {
-            restrict: 'A',
-            require: '?ngModel', // get a hold of NgModelController
-            link: function (scope, element, attrs, ngModel) {
-                if (!ngModel) return; // do nothing if no ng-model
-                element[0].addEventListener('click', call_update);
-                function call_update(){
-                    switch(attrs.supEditorWidget){
-                        case 'media':
-                            $rootScope.$emit('widget.update_media', scope);
-                        break;
-                        case 'script':
-                            $rootScope.$emit('widget.update_script', scope);
-                        break;
-                    }
-                };
-                scope.update = function (data){
-                    ngModel.$setViewValue(data);
-                    ngModel.$render();
-                };
-                ngModel.$render = function () {
-					if(ngModel.$viewValue){
-	                    switch(attrs.supEditorWidget){
-	                        case 'media':
-								if(element[0].src){
-	                                element[0].src=ngModel.$viewValue;
-	                            }else{
-	                                element[0].style.backgroundImgage=ngModel.$viewValue;    
-	                            }
-	                        break;
-	                        case 'script':
-	                            element.html(ngModel.$viewValue);
-	                        break;
-	                    }
-					}
-                };
-                scope.$on('$destroy', function() {
-                    element[0].removeEventListener('click', call_update);
-                });
-            }
-        };
-    });
+supEditor.directive('supEditorWidget', function ($rootScope) {
+      return {
+          restrict: 'A',
+          require: '?ngModel', // get a hold of NgModelController
+          link: function (scope, element, attrs, ngModel) {
+              if (!ngModel) return; // do nothing if no ng-model
+              element[0].addEventListener('click', call_update);
+            
+              function call_update(e){
+                  if(e.target==element[0]){
+                      switch(attrs.supEditorWidget){
+                          case 'media':
+								console.log('------------------------------------');
+								console.log('Call Media Widget!!');
+								console.log('------------------------------------');
+                          break;
+                          case 'script':
+	  				            console.log('------------------------------------');
+	  				  			console.log('Call Script Widget!!');
+	  				  			console.log('------------------------------------');
+                          break;
+                      }
+                  }
+              };
+            
+              scope.$on('$destroy', function() {
+                  element[0].removeEventListener('click', call_update);
+              });
+          }
+      };
+  });

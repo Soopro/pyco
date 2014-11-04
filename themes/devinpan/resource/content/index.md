@@ -6,6 +6,6 @@ Nav: INDEX
 Priority: 2
 Template: index
 Redirect_url: /gallery
-Logo: http://devinpan.com/uploads/vlogo.png
+Logo: uploads/vlogo.png
 */
 DISCOVER

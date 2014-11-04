@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{site_meta.title}} | {{meta.title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{theme_url}}/css/font-awesome.min.css">
+	<link href="{{theme_url}}/css/contact.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="shortcut icon" href="{{theme_url}}/img/favicon.ico">
+  
+
+	<script type="text/javascript" src="{{theme_url}}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{{theme_url}}/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+	<a href="{{meta.redirect_url}}"><div class="back-arrow"><img src="{{theme_url}}/img/backarrow.png"></div></a>
+<div class="container content-container">
+	<div class="row clearfix">
+		<div class="col-md-12 column text-center">
+			{{content}}
+		</div>
+		</div>
+	</div>
+	<div class="row clearfix follow">
+		<div class="col-sm-4 column">
+			<i class="fa fa-facebook fa-2x"></i>
+		</div>
+		<div class="col-sm-4 column">
+			<i class="fa fa-twitter fa-2x"></i>
+		</div>
+		<div class="col-sm-4 column">
+			<i class="fa fa-pinterest fa-2x"></i>
+		</div>
+	</div>
+</div>
+<div class="bg">
+</div>
+{{analytics}}
+
+</body>
+
+</html>
