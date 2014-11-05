@@ -4,13 +4,13 @@
         <span class="ico-lg ico-2x"><i class="ico ico-supmice-s"></i></span>
     </header>
     <nav class="menu-btn-list">
-        <button class="menu-btn btn" ng-click="toggleToolbar()" ng-class="{'active':show_toolbar}">
+        <!--<button class="menu-btn btn" ng-click="toggleToolbar()" ng-class="{'active':show_toolbar}">
             <i class="ico ico-editor"></i>
-        </button>
+        </button>-->
         <button class="menu-btn btn" ng-click="toggleProperty()" ng-class="{'active':show_property}">
             <i class="ico ico-property"></i>
         </button>
-        <a class="menu-btn btn" href="{{file.uri}}" target="_blank">
+        <a class="menu-btn btn" href="{{file.url}}" target="_blank">
             <i class="ico ico-eye"></i>
         </a>
     </nav>
@@ -44,7 +44,7 @@
 <section class="supmice-editor sup-editor-property" ng-show="show_property">
     <header>
         <h2>Property</h2>
-        <div class="preview-url">URL: <a href="{{file.uri}}" target="_blank">{{file.uri}}</a></div>
+        <div class="preview-url">URL: <a href="{{file.uri}}" target="_blank">{{file.url}}</a></div>
         <button class="btn caretbtn" ng-click="toggleProperty()"><i class="caret ico ico-caret-left"></i></button>
     </header>
     <form class="property-form" name="property_form">
@@ -56,7 +56,7 @@
             <fieldset class="form-group col-md-6">
                 <label>Category</label>
                 <div class="dropdown open">
-                    <select name="categories" ng-options="cat.slug as cat.name for cat in categories" ng-model="file.meta.category" class="form-control">
+                    <select name="categories" ng-options="cat.alias as cat.name for cat in categories" ng-model="file.meta.category" class="form-control">
                         <option value="">(Empty)</option>
                     </select>
                 </div>
@@ -64,7 +64,7 @@
             <fieldset class="form-group col-md-6">
                 <label>Template</label>
                 <div class="dropdown open">
-                    <select name="current_template" ng-options="tpl.slug as tpl.name for tpl in templates" ng-model="file.meta.template" class="form-control">
+                    <select name="current_template" ng-options="tpl.alias as tpl.name for tpl in templates" ng-model="file.meta.template" class="form-control">
                         <option value="">(Default)</option>
                     </select>
                 </div>
@@ -93,7 +93,7 @@
             
             <fieldset class="form-group col-md-6">
                 <label class="draftbox">
-                    <input type="checkbox" name="draft" ng-model="file.meta.draft"> Draft
+                    <input type="checkbox" name="draft" ng-model="draft"> Draft
                 </label>
             </fieldset>
             <fieldset class="form-group col-md-6 text-right">
@@ -108,8 +108,8 @@
             <div class="row">
                 <fieldset class="form-group col-md-6">
                     <label>Date</label>
-                    <input type="text" value="" placeholder="Date here."  maxlength="10" class="form-control" ng-model="file.meta.date"/>
-                    <button class="btn autobtn" ng-click="get_today()"><i class="ico ico-sync"></i></button>
+                    <input type="text" value="" placeholder="Date here."  maxlength="10" class="form-control" ng-model="custom_date"/>
+                    <button class="btn autobtn" ng-click="get_today(true)"><i class="ico ico-sync"></i></button>
                 </fieldset>
                 <fieldset class="form-group col-md-6">
                     <label>Author</label>
@@ -123,16 +123,20 @@
                     <input type="text" value="" placeholder="Text show on the navbar."  class="form-control" ng-model="file.meta.nav"/>
                 </fieldset>
                 <fieldset class="form-group col-md-6">
-                    <label>Order</label>
-                    <input type="number" maxlength="50" ng-maxlength="50" name="order" value="0" placeholder="0" class="form-control" ng-model="file.meta.order"/>
-                    <div class="error" ng-show="property_form.order.$error.number && property_form.order.$dirty">
+                    <label>Priority</label>
+                    <input type="number" maxlength="50" ng-maxlength="50" name="priority" value="0" placeholder="0" class="form-control" ng-model="file.priority"/>
+                    <div class="error" ng-show="property_form.priority.$error.number && property_form.priority.$dirty">
                         <i class="ico ico-x errorico"></i>
                         <span class="text">Number only!</span>
                     </div>
                 </fieldset>
             </div>
             <div class="row">
-                <fieldset class="form-group col-md-12">
+                <fieldset class="form-group col-md-6">
+                    <label>Parent</label>
+                    <input type="text" value="" placeholder="Set parent's alias here"  class="form-control" ng-model="file.meta.parent"/>
+                </fieldset>
+                <fieldset class="form-group col-md-6">
                     <label>Redirect to</label>
                     <input type="text" value="" placeholder="Leave it blank if you do not want redirect"  class="form-control" ng-model="file.meta.redirect"/>
                 </fieldset>
@@ -149,7 +153,7 @@
 </section>
 <!-- #Property -->
 <!-- Canvas -->
-<section editor-canvas ng-show="!showhtml" class="in-sup-editor" ng-class="{'open':show_property}" config="settings" file="file" template="{{file.meta.template}}" app="{{appSlug}}" type="{{appType}}" query="query"></section>
+<section editor-canvas ng-show="!showhtml" class="in-sup-editor" ng-class="{'open':show_property}" file="file" config="config" template="{{file.meta.template}}" app="{{app_alias}}" type="{{app_type}}" query="query"></section>
 <!-- #Canvas -->
 <!-- Textarea -->
 <section class="supmice-editor sup-editor-textarea" ng-show="showhtml">
@@ -159,10 +163,10 @@
 </section>
 <!-- #Textarea -->
 <!-- Media Panel -->
-<div sup-media-panel slug="{{appSlug}}" template="/views/module/media/model.html"></div>
+<div sup-media-panel alias="{{app_alias}}" template="/views/module/media/model.html"></div>
 <!-- #Media Panel -->
 <!-- FlashMsg -->
 <div class="supmice-editor sup-flashmsg">
-    <div ng-include="'views/flasher.html'"></div>
+    <div ng-include="'../views/common/widgets/flasher.html'"></div>
 </div>
 <!-- #FlashMsg -->
