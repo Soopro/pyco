@@ -12,7 +12,7 @@ Version: 1.0
 }
 
 .in-sup-editor .sup-widget{
-	position: relative !important;
+    position: relative !important;
     cursor: pointer;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -89,6 +89,14 @@ Version: 1.0
     user-select: none;
     cursor: pointer;
 }
+.in-sup-editor .sup-widget.sup-widget-wide:before{
+    top: auto;
+    left: auto;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+}
+
 
 .in-sup-editor:focus{
     outline: 0 !important;
@@ -96,19 +104,24 @@ Version: 1.0
 
 .in-sup-editor{
 	margin-left: 60px !important;
-	padding-top: 40px !important;
 	position: relative !important;
 }
-.in-sup-editor.open{
+/*.in-sup-editor.open{
     margin-left: 550px !important;
 }
 .sup-editor-textarea.open,
 .sup-editor-toolbar.open{
     padding-left: 580px;
-}
+}*/
 .in-sup-editor img{
     max-width: 100%;
     height: auto;
+}
+
+.in-sup-editor code{
+	word-break: break-all !important;
+	white-space: normal !important;
+	max-width:100% !important;
 }
 
 .in-sup-editor *{
@@ -116,11 +129,6 @@ Version: 1.0
     -webkit-user-select: text;
     -ms-user-select: text;
     user-select: text;
-}
-.in-sup-editor code{
-	word-break: break-all !important;
-	white-space: normal !important;
-	max-width:100% !important;
 }
 
 /* base editor */
@@ -143,6 +151,7 @@ div[sup-angular-wysiwyg] img{
     padding: 0;
     margin: 0;
     color: inherit;
+    text-transform: none;
     box-sizing:border-box;
     webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -2052,6 +2061,7 @@ hr {
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    cursor: default !important;
 }
 *[unselectable] *,
 .supmice-selectable-none *{
@@ -2066,6 +2076,7 @@ hr {
     -ms-user-select: text;
     user-select: text;
 }
+
 
 /* UI: =Customs
 ----------------------------------------------- */
@@ -2227,6 +2238,9 @@ hr {
     border-right: 1px solid #ccc;
     z-index: 9999;
     overflow: auto;
+    -webkit-box-shadow: 10px 0px 25px 0px rgba(61,61,61,.5);
+    -moz-box-shadow: 10px 0px 25px 0px rgba(61,61,61,.5);
+    box-shadow: 10px 0px 25px 0px rgba(61,61,61,.5);
 }
 .sup-editor-property header h2{
     margin-left: -3px;
