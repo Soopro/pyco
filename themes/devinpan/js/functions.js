@@ -24,6 +24,27 @@ $(document).ready(function() {
 			toggle_menu();
 		}
     });
+	$("#my-thumbs-list").mThumbnailScroller({
+  	  type:"click-20",
+ 	   theme:"buttons-out"
+	});
+	
+	if($("#slider-footer").length >0){
+		var slider_footer = $("#slider-footer .footer")[0];
+		$("#slider-footer").hover(function(){
+			console.log(slider_footer)
+			$(slider_footer).clearQueue()
+			$(slider_footer).animate({bottom:'0'},350);
+		},function(){
+			$(slider_footer).clearQueue()
+			$(slider_footer).animate({bottom:'-80px'},350);
+		
+		});
+	}
+
+	// $(".footer").mouseleave();
+
+
 //     $(document).click(function(e){
 // 			//         var container=$(".carousel-inner .container")[0];
 // 			//         if($.contains(container,e.target)){

@@ -81,7 +81,7 @@
 						   <span class="glyphicon glyphicon-remove close-btn pull-right"></span>
                            <h3>{{item.title}}</h3>
                            <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_clock.png" alt="" /></a>
-                           <h5>{{item.date}}</h5>
+                           <h5>{{item.date_formatted}}</h5>
                            <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_location.png" alt="" /></a>
                            <h5>{{item.location}} </h5>
                            <br />
@@ -104,25 +104,17 @@
    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
        <span class="glyphicon glyphicon-chevron-right"></span>
    </a>
-		<footer>
-        <div id="my-thumbs-list" class="footer">
-                <ul>
-				{%for item in saltshaker(pages,["thumbnail"],false) if item.type == 'works'%}
-                    <li data-target='#myCarousel' data-slide-to='{{loop.index0}}' class="active">
-                        <img class="thumb" src="{{item.thumbnail}}" alt="" />
-                    </li>
-					{%endfor%}
-                </ul>
-        </div>
-	</footer>
-{{analytics}}
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="{{theme_url}}/js/jquery.1.11.1.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{{theme_url}}/js/bootstrap.min.js"></script>
-    <!--mThumbnail scroller css-->
-    <script src="{{theme_url}}/js/jquery.mThumbnailScroller.js"></script>
-    <!--custom javascript-->
-    <script src="{{theme_url}}/js/functions.js"></script>
+<footer id="slider-footer">
+<div id="my-thumbs-list" class="footer">
+        <ul>
+		{%for item in saltshaker(pages,["thumbnail"],true) if item.type == 'works'%}
+            <li data-target='#myCarousel' data-slide-to='{{loop.index0}}' class="active">
+                <img class="thumb" src="{{item.thumbnail}}" alt="" />
+            </li>
+			{%endfor%}
+        </ul>
+</div>
+</footer>
+{% include "_functions.html" %}
 </body>
 </html>

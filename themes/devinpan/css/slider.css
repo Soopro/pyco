@@ -11,6 +11,7 @@
   font-style: normal;
 }
 
+
 html,
 body{
     position: relative;
@@ -35,17 +36,6 @@ nav {
 	margin-bottom:0px;
 }
 
-@media(max-width:768px){
-    nav{
-        display: block;
-	}
-	.menu-align-right{
-        display: none;
-	}
-	.lg-custom-navbar{
-		display:none;
-	}
-}
 .carousel-imgbox{
     width: 100%;
     height: 100%;
@@ -77,10 +67,21 @@ nav {
     border: 0;
     max-height: 100px;
     background-color: rgba(0,0,0,0);
+	cursor:pointer;
 }
 ol{
     list-style: none;
 }
+#slider-footer{
+	position: absolute;
+	bottom: 0;
+	left:0;
+	height:200px;
+	width:100%;
+	z-index: 200;
+	cursor:pointer;
+}
+
 .footer{
     white-space: nowrap;
     position: absolute;
@@ -95,9 +96,6 @@ ol{
 }
 
 
-.footer:hover{
-    bottom: 0px;
-}
 .carousel-indicators .active{
     position: relative;
     width: auto !important;
@@ -119,7 +117,7 @@ ol{
 .sidebar-menu{
     position: absolute;
     right: 30px;
-    top: 55px;
+    top: 50px;
     z-index: 1031;
     background: none;
     cursor: pointer;
@@ -137,7 +135,7 @@ ol{
     padding: 50px 20px;
     color: white;
     z-index: 110;
-    background-color: rgba(10,10,10,.8);
+    background-color: rgba(10,10,10,0.8);
 }
 .sidebar-right h1,
 .sidebar-right h2,
@@ -296,11 +294,12 @@ body.portfolio div{
 	height:70%;
 }
 
+
 .menu-align-right i {
-	height:64px;
-	width:64px;
-	background:rgba(2,2,2,0.5);
-    border:1px solid #222;
+	padding-top:5px;
+	height:70px;
+	width:70px;
+	background:rgba(10,10,10,0.8);
 	display:inline-block;
 	line-height:64px;
 	text-align:center;
@@ -340,4 +339,51 @@ body.portfolio div{
 .navbar-brand {
 	padding-top:18px;
 }
-	
+.close-btn{
+	cursor:pointer;
+}
+
+@media(max-width:850px){
+    nav{
+        display: block;
+	}
+	.menu-align-right{
+        display: none;
+	}
+	.lg-custom-navbar{
+		display:none;
+	}
+}
+
+@media (min-width: 850px) {
+  .navbar-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 850px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+/*    .navbar-collapse.collapse {
+        display: none!important;
+    }*/
+    .navbar-nav {
+        float: none!important;
+        margin: 7.5px -15px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}

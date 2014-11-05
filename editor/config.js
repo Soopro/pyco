@@ -21,4 +21,13 @@ var CONFIG = {
     		'template':'Template Name',
     	},
     },
+	mock_query:{
+		query_sample:[
+			{'alias':'test'},
+			{'title':'Title Test'},
+			{'description':'This is not very long decrtiption for test'},
+			{'date':12323123213}, //timestamp
+			{'updated':12323123213}, //timestamp
+		]
+	}
 };

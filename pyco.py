@@ -176,7 +176,7 @@ class BaseView(MethodView):
         
     def get_pages(self):
         config = self.config
-        base_url = config.get("BASE_URL")
+        base_url = helper_gen_base_url()
         
         sort_key=config.get("PAGE_ORDER_BY")
         order=config.get("PAGE_ORDER")
@@ -207,13 +207,14 @@ class BaseView(MethodView):
             if relative_path.endswith("index"):
                 relative_path = relative_path[:-5]
             
-            # url = "{}/{}".format(base_url,relative_path)
             url = "/{}".format(relative_path)
 
             data["path"] = f
             data["title"] = meta.get("title", "")
             data["url"] = url
             data["author"] = meta.get("author", "")
+            data["date"] = meta.get("date", "")
+            data["updated"] = meta.get("updated", "")
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
@@ -239,10 +240,8 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
-
-        self.view_ctx["base_url"] = config.get("BASE_URL")
-        self.view_ctx["theme_url"] = os.path.join(STATIC_BASE_URL,config.get("THEME_NAME"))
-        self.view_ctx["base_url"] = config.get("BASE_URL")
+        self.view_ctx["base_url"] = helper_gen_base_url()
+        self.view_ctx["theme_url"] = helper_gen_theme_url()
         self.view_ctx["site_meta"] = config.get("SITE_META")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
@@ -420,8 +419,8 @@ class EditTemplateView(BaseView):
             # load_config(current_app)
             f = os.path.join(current_app.root_path, THEMES_DIR, current_app.config['THEME_NAME'], file)
 
-            theme_url = os.path.join(STATIC_BASE_URL,current_app.config.get("THEME_NAME"))
-            base_url = current_app.config.get("BASE_URL")
+            theme_url = helper_gen_theme_url()
+            base_url = helper_gen_base_url()
             locale = current_app.config.get("SITE_META",{}).get('locale')
             tmpl_content = helper_parse_template(f)
             # make fake template context
@@ -435,6 +434,13 @@ class EditTemplateView(BaseView):
                 tmpl_content = re.sub(pattern, code["replacement"], tmpl_content)
             
             return tmpl_content
+
+def helper_gen_base_url():
+    return os.path.join(current_app.config.get("BASE_URL"),'')
+
+def helper_gen_theme_url():
+    return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
+
 
 def helper_gen_excerpt(content,theme_meta):
     excerpt_length = theme_meta.get('excerpt_length', DEFAULT_EXCERPT_LENGTH)
@@ -460,13 +466,17 @@ load_config(app)
 
 
 opt = OptionParser()
+opt.add_option('-s','--server', help='set server mode',
+                action='store_const', dest='server', const=True, default=False)
 opt.add_option('-d','--debug', help='set debug mode',
                 action='store_const', dest='debug', const=True, default=False)
 opts, args = opt.parse_args()
 
 _DEBUG = app.config.get("DEBUG")
-if opts.debug:
-    _DEBUG = opts.debug
+if opts.server:
+    _DEBUG = False
+elif opts.debug:
+    _DEBUG = True
 
 app.debug = _DEBUG
 app.jinja_env.autoescape = False
@@ -491,7 +501,7 @@ def before_request():
     if current_app.debug:
         current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
         # change template folder
-        current_app.template_folder = os.path.join(THEMES_DIR,config.get("THEME_NAME"))
+        current_app.template_folder = os.path.join(THEMES_DIR,current_app.config.get("THEME_NAME"))
         # change reload template folder
         current_app.jinja_env.cache = None
         current_app.jinja_loader = FileSystemLoader(current_app.template_folder)

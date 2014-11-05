@@ -1,7 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-DEBUG = False
+DEBUG = True
 PORT = 5500
 
 THEME_NAME = 'devinpan'
