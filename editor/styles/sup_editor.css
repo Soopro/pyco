@@ -16,7 +16,10 @@ Version: 1.0
 .in-sup-editor [fake-link] *,{
     cursor: default !important;
 }
-.in-sup-editor .sup-widget{
+.in-sup-editor .sup-media,
+.in-sup-editor .sup-widget,
+.in-sup-editor [sup-editor-media],
+.in-sup-editor [sup-editor-widget]{
     position: relative !important;
     cursor: pointer;
     -moz-user-select: none;
@@ -25,7 +28,10 @@ Version: 1.0
     user-select: none;
 }
 
+.in-sup-editor .sup-media:hover,
 .in-sup-editor .sup-widget:hover,
+.in-sup-editor [sup-editor-media]:hover,
+.in-sup-editor [sup-editor-widget]:hover,
 .in-sup-editor [contenteditable="true"]:hover,
 .in-sup-editor [contenteditable="true"] :hover{
     cursor: pointer !important;
@@ -36,8 +42,14 @@ Version: 1.0
     min-height: 50px;
     min-width: 50px;
 }
+.in-sup-editor .sup-media:hover,
+.in-sup-editor .sup-media:focus,
 .in-sup-editor .sup-widget:hover,
 .in-sup-editor .sup-widget:focus,
+.in-sup-editor [sup-editor-media]:hover,
+.in-sup-editor [sup-editor-media]:focus,
+.in-sup-editor [sup-editor-widget]:hover,
+.in-sup-editor [sup-editor-widget]:focus,
 .in-sup-editor [contenteditable="true"]:hover,
 .in-sup-editor [contenteditable="true"] > :hover,
 .in-sup-editor [contenteditable="true"]:focus{
@@ -51,7 +63,11 @@ Version: 1.0
     outline: 1px dotted #333 !important;
 }
 
+.in-sup-editor .sup-media:before,
 .in-sup-editor .sup-widget:before,
+.in-sup-editor .sup-meta:before,
+.in-sup-editor [sup-editor-media]:before,
+.in-sup-editor [sup-editor-widget]:before,
 .in-sup-editor [sup-editor-meta]:before,
 .in-sup-editor [sup-angular-wysiwyg]:before{
     content: "\e615";
@@ -72,21 +88,30 @@ Version: 1.0
     -moz-osx-font-smoothing: grayscale;
 }
 
+.in-sup-editor .sup-media.sup-outline-inverse:before,
 .in-sup-editor .sup-widget.sup-outline-inverse:before,
+.in-sup-editor [sup-editor-media].sup-outline-inverse:before,
+.in-sup-editor [sup-editor-widget].sup-outline-inverse:before,
 .in-sup-editor [sup-editor-meta].sup-outline-inverse:before,
 .in-sup-editor [sup-angular-wysiwyg].sup-outline-inverse:before{
     color: #333;
 }
+.in-sup-editor .sup-meta:before,
 .in-sup-editor [sup-editor-meta]:before{
     content: "\e627";
 }
-.in-sup-editor .sup-widget:before{
+.in-sup-editor .sup-widget:before,
+.in-sup-editor [sup-editor-media]:before,{
     content: "\e618";
 }
-.in-sup-editor .sup-widget.sup-widget-media:before{
+.in-sup-editor .sup-media:before,
+.in-sup-editor [sup-editor-media]:before{
     content: "\e61f";
 }
-.in-sup-editor .sup-widget{
+.in-sup-editor .sup-media,
+.in-sup-editor .sup-widget,
+.in-sup-editor [sup-editor-media],
+.in-sup-editor [sup-editor-widget]{
     /* make none select */
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -94,6 +119,7 @@ Version: 1.0
     user-select: none;
     cursor: pointer;
 }
+.in-sup-editor .sup-media.sup-media-wide:before,
 .in-sup-editor .sup-widget.sup-widget-wide:before{
     top: auto;
     left: auto;
@@ -101,7 +127,6 @@ Version: 1.0
     right: 20px;
     font-size: 24px;
 }
-
 
 .in-sup-editor:focus{
     outline: 0 !important;

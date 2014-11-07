@@ -103,6 +103,27 @@ supMockEditor.directive('supEditorMeta', function () {
           }
       };
   });
+
+supEditor.directive('supEditorMedia', function ($rootScope) {
+      'use strict';
+      return {
+          restrict: 'A',
+          require: '?ngModel', // get a hold of NgModelController
+          link: function (scope, element, attrs, ngModel) {
+              if (!ngModel) return; // do nothing if no ng-model
+              element[0].addEventListener('click', call_update);
+            
+              function call_update(e){
+				console.log('------------------------------------');
+				console.log('Call Media Widget!!');
+				console.log('------------------------------------');
+              };
+              scope.$on('$destroy', function() {
+                  element[0].removeEventListener('click', call_update);
+              });
+          }
+      };
+  });
 supEditor.directive('supEditorWidget', function ($rootScope) {
       return {
           restrict: 'A',
@@ -112,20 +133,9 @@ supEditor.directive('supEditorWidget', function ($rootScope) {
               element[0].addEventListener('click', call_update);
             
               function call_update(e){
-                  if(e.target==element[0]){
-                      switch(attrs.supEditorWidget){
-                          case 'media':
-								console.log('------------------------------------');
-								console.log('Call Media Widget!!');
-								console.log('------------------------------------');
-                          break;
-                          case 'script':
-	  				            console.log('------------------------------------');
-	  				  			console.log('Call Script Widget!!');
-	  				  			console.log('------------------------------------');
-                          break;
-                      }
-                  }
+				console.log('------------------------------------');
+				console.log('Call Script Widget!!');
+				console.log('------------------------------------');
               };
             
               scope.$on('$destroy', function() {
