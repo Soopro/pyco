@@ -4,7 +4,7 @@ from __future__ import absolute_import
 DEBUG = True
 PORT = 5500
 
-THEME_NAME = 'devinpan'
+THEME_NAME = 'default'
 
 BASE_URL = "http://localhost:5500"
 

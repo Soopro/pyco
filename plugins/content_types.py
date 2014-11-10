@@ -25,7 +25,7 @@ def get_page_data(data, page_meta):
 def single_page_meta(page_meta, redirect_to):
     page_url = _CONFIG.get("BASE_URL")+_URL
     filter_auto_type(page_meta, page_url);
-    
+
     global _current_content_type
     _current_content_type = page_meta['type']
     return
@@ -46,6 +46,6 @@ def filter_auto_type(meta,page_url):
             content_type = relative_path[0:relative_path.index("/")]
         except ValueError:
             content_type = _DEFAULT_CONTENT_TYPE
-    
+
         meta["type"] = content_type
     meta["type"] = meta["type"].lower()

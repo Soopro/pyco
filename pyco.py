@@ -45,6 +45,7 @@ from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
+from gettext import gettext, ngettext
 import os, re, traceback, markdown
 # import misaka
 # from pygments import highlight
@@ -98,7 +99,40 @@ class BaseView(MethodView):
         if self.check_file_exists(file_name):
             return file_name
         return None
+    
+    def gen_base_url(self):
+        return os.path.join(current_app.config.get("BASE_URL"),'')
 
+    def gen_theme_url(self):
+        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
+
+    def gen_page_url(self, relative_path):
+        if relative_path.endswith(CONTENT_FILE_EXT):
+            relative_path = relative_path[:-len(CONTENT_FILE_EXT)]
+
+        if relative_path.endswith("index"):
+            relative_path = relative_path[:-5]
+    
+        relative_url = relative_path.replace(CONTENT_DIR,'')
+        url = os.path.join(current_app.config.get("BASE_URL"),relative_url)
+        return url
+    
+    def gen_page_alias(self, relative_path):
+        if relative_path.endswith(CONTENT_FILE_EXT):
+            relative_path = relative_path[:-len(CONTENT_FILE_EXT)]
+        alias = relative_path.split('/')[-1]
+        return alias
+
+    def gen_excerpt(self, content, theme_meta):
+        excerpt_length = theme_meta.get('excerpt_length', DEFAULT_EXCERPT_LENGTH)
+        excerpt_ellipsis = theme_meta.get('excerpt_ellipsis', DEFAULT_EXCERPT_ELLIPSIS)
+        excerpt = re.sub(r'<[^>]*?>', '', content)
+        if excerpt:
+            excerpt = " ".join(excerpt.split())
+            excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
+        return excerpt
+    
+    
     @staticmethod
     def check_file_exists(file_full_path):
         return os.path.isfile(file_full_path)
@@ -176,7 +210,7 @@ class BaseView(MethodView):
         
     def get_pages(self):
         config = self.config
-        base_url = helper_gen_base_url()
+        base_url = self.gen_base_url()
         
         sort_key=config.get("PAGE_ORDER_BY")
         order=config.get("PAGE_ORDER")
@@ -200,25 +234,16 @@ class BaseView(MethodView):
             meta_string, content_string = self.content_splitter(file_content)
             meta = self.parse_page_meta(meta_string)
             data = dict()
-            # generate request url
-            if relative_path.endswith(CONTENT_FILE_EXT):
-                relative_path = relative_path[:-len(CONTENT_FILE_EXT)]
-
-            if relative_path.endswith("index"):
-                relative_path = relative_path[:-5]
-            
-            url = "/{}".format(relative_path)
-
-            data["path"] = f
+            data["alias"] = self.gen_page_alias(f)
+            data["url"] = meta.get("url") or self.gen_page_url(f)
             data["title"] = meta.get("title", "")
-            data["url"] = url
             data["author"] = meta.get("author", "")
             data["date"] = meta.get("date", "")
             data["updated"] = meta.get("updated", "")
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
-            data["excerpt"] = helper_gen_excerpt(data["content"],self.view_ctx["theme_meta"])
+            data["excerpt"] = self.gen_excerpt(data["content"],self.view_ctx["theme_meta"])
             des = meta.get("description")
             data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data",data = data, page_meta = meta.copy())
@@ -240,8 +265,8 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
-        self.view_ctx["base_url"] = helper_gen_base_url()
-        self.view_ctx["theme_url"] = helper_gen_theme_url()
+        self.view_ctx["base_url"] = self.gen_base_url()
+        self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["site_meta"] = config.get("SITE_META")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
@@ -321,6 +346,11 @@ class ContentView(BaseView):
         # parse file content
         meta_string, content_string = self.content_splitter(file_content["content"])
         page_meta=self.parse_page_meta(meta_string)
+        
+        page_meta["alias"] = self.gen_page_alias(file["path"])
+        if not page_meta.get("url"):
+            page_meta["url"] = self.gen_page_url(file["path"])
+
         page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
         redirect_to = {"url":None}
         run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
@@ -343,9 +373,8 @@ class ContentView(BaseView):
         run_hook("after_parse_content", content = page_content)
         
         self.view_ctx["content"] = page_content['content']
-        
 
-        excerpt = helper_gen_excerpt(self.view_ctx["content"],self.view_ctx["theme_meta"])
+        excerpt = self.gen_excerpt(self.view_ctx["content"],self.view_ctx["theme_meta"])
         self.view_ctx["meta"]["excerpt"] = excerpt
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
@@ -362,7 +391,7 @@ class ContentView(BaseView):
         for page_index, page_data in enumerate(self.view_ctx["pages"]):
             if auto_index:
                 break
-            if page_data["path"] == file['path']:
+            if page_data["url"] == request_url:
                 self.view_ctx["current_page"] = page_data
                 if page_index == 0:
                     self.view_ctx["is_front"] = True
@@ -372,7 +401,6 @@ class ContentView(BaseView):
                     self.view_ctx["is_tail"] = True
                 else:
                     self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
-            page_data.pop("path")
 
         run_hook("get_pages",pages = self.view_ctx["pages"], current_page = self.view_ctx["current_page"],
             prev_page = self.view_ctx["prev_page"], next_page = self.view_ctx["next_page"])
@@ -419,10 +447,10 @@ class EditTemplateView(BaseView):
             # load_config(current_app)
             f = os.path.join(current_app.root_path, THEMES_DIR, current_app.config['THEME_NAME'], file)
 
-            theme_url = helper_gen_theme_url()
-            base_url = helper_gen_base_url()
+            theme_url = self.gen_theme_url()
+            base_url = self.gen_base_url()
             locale = current_app.config.get("SITE_META",{}).get('locale')
-            tmpl_content = helper_parse_template(f)
+            tmpl_content = self.parse_template(f)
             # make fake template context
             shortcodes  = [
                 {"pattern":u"base_url","replacement":base_url},
@@ -430,35 +458,27 @@ class EditTemplateView(BaseView):
                 {"pattern":u"locale","replacement":locale}
             ]
             for code in shortcodes:
-                pattern = helper_make_pattern(code["pattern"])
+                pattern = self.make_pattern(code["pattern"])
                 tmpl_content = re.sub(pattern, code["replacement"], tmpl_content)
             
             return tmpl_content
+    
+    def parse_template(self, path):
+        with open(path, "r") as f:
+            content = f.read()
+            content = content.decode("utf8")
+            return content
+    
+    def gen_base_url(self):
+        return os.path.join(current_app.config.get("BASE_URL"),'')
 
-def helper_gen_base_url():
-    return os.path.join(current_app.config.get("BASE_URL"),'')
+    def gen_theme_url(self):
+        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
+    
+    def make_pattern(self, pattern):
+        return re.compile(r"{}\s*{}\s*{}".format('{{',pattern,'}}'), re.IGNORECASE)
 
-def helper_gen_theme_url():
-    return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
 
-
-def helper_gen_excerpt(content,theme_meta):
-    excerpt_length = theme_meta.get('excerpt_length', DEFAULT_EXCERPT_LENGTH)
-    excerpt_ellipsis = theme_meta.get('excerpt_ellipsis', DEFAULT_EXCERPT_ELLIPSIS)
-    excerpt = re.sub(r'<[^>]*?>', '', content)
-    if excerpt:
-        excerpt = " ".join(excerpt.split())
-        excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
-    return excerpt
-
-def helper_parse_template(path):
-    with open(path, "r") as f:
-        content = f.read()
-        content = content.decode("utf8")
-        return content
-
-def helper_make_pattern(pattern):
-    return re.compile(r"{}\s*{}\s*{}".format('{{',pattern,'}}'), re.IGNORECASE)
 
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
@@ -479,11 +499,13 @@ elif opts.debug:
     _DEBUG = True
 
 app.debug = _DEBUG
+# default multi language support
 app.jinja_env.autoescape = False
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
+app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
 app.static_folder = THEMES_DIR
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
@@ -494,12 +516,15 @@ app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.
 app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
 app.add_url_rule("{}/tpl/<path:filename>".format(EDITOR_URL), view_func=EditTemplateView.as_view("tpl_file"))
 
+@app.before_first_request
+def before_first_request():
+    if current_app.debug:
+        current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
 
 @app.before_request
 def before_request():
     load_config(current_app)
     if current_app.debug:
-        current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
         # change template folder
         current_app.template_folder = os.path.join(THEMES_DIR,current_app.config.get("THEME_NAME"))
         # change reload template folder

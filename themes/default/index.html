@@ -16,10 +16,11 @@
     <main class="container">
     	<div class="row-fluid">
     		<section class="content">
-    		  <h1>{{ site_title }} {{ _('Hello World!') }}</h1>
+    		  <h1>{{ site_title }} {{_('Hello World!')}}<h1>
               <div class="sub-title"></div>
     		</section>
-			{{content_type}}
+			{{content_type}}<br/><br/>
+			{{meta}}
 			<div>
 				<h2>{{language_text}}</h2>
 				{% for trans in translates %}
