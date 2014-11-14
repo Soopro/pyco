@@ -1,3 +1,4 @@
+{% import "g" as g with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,8 @@
 	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
 	
 	<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
-	<link href="{{theme_url}}/css/index.css" rel="stylesheet">
+	<link href='{{theme_url}}/css/font-awesome.css' rel='stylesheet' >
+	<link href="{{theme_url}}/css/homepage.css" rel="stylesheet">
 
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -22,26 +24,66 @@
 
   <!-- Fav and touch icons -->
   <link rel="shortcut icon" href="{{theme_url}}/img/favicon.ico">
-  
-	<script type="text/javascript" src="{{theme_url}}/js/jquery.min.js"></script>
-	<script type="text/javascript" src="{{theme_url}}/js/bootstrap.min.js"></script>
+
 </head>
-{% set backgrounds = saltshaker(pages,["thumbnail"],true) %}
-{%set background = backgrounds|random%}
-<body style="background-image:url('{{background.thumbnail}}')">
+<body style="background:url('{{theme_url}}/img/homepage-background.jpg') no-repeat right center;">
 
+{% include '_navbar.html' %}
 
-			<div class="logo-wrapper"><img src="{{meta.logo}}" alt="logo"></div>
-	<a href="{{meta.redirect_url}}"><div class="enter-arrow">
-		<img src="{{theme_url}}/img/enter-arrow.png" alt="enter">
-		<div class="enter-text"><h5>{{content}}</h5>
+<div class="container-fluid">
+	<div class="row">
+		<div class="logo-wrapper col-xs-12">
+			<a href="#">DEVIN PAN</a>
 		</div>
-	</div></a>
 	</div>
-
-<div class="bg">
 </div>
-{% include "_functions.html" %}
+<div class="container-fluid">
+	<div class="gallery-wrapper">
+				{% for item in pages if item.type=='works' %}
+				<div class="custom-col-md-3 custom-col-sm-6 custom-col-xs-12" style="background:url('{{item.thumbnail}}') center no-repeat; background-size:cover">
+		</div>
+		{% endfor %}
+	</div>
+</div>
+<div class="container">
+	<div class="sm-footer">
+			<div class="bottom-info">
+				<ul>
+				<li>+86 123456789</li>
+				<li>diviad@diviadlihoto.com</li>
+				<li>weixin/ weibo</li>
+			</ul>
+			</div>
+			<div class="bottom-copyright">
+			<p>Copyright {{site_meta.copyright}}</p>
+			</div>
+	</div>
+</div>
+		<div class="footer">
+			<div class="bottom-navbar">
+				<ul>
+			      	{%for item in g.navigation%}
+			        <li><a href="{{item.url}}">{{item.nav}}</a></li>
+			        {%endfor%}
+				</ul>
+			</div>
+			<div class="bottom-info">
+				{{content}}
+			</div>
+			<div class="bottom-copyright">
+			<p>Copyright {{site_meta.copyright}}</p>
+			</div>
+		</div>
+
+{{analytics}}
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="{{theme_url}}/js/jquery.1.11.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{{theme_url}}/js/bootstrap.min.js"></script>
+<!--mThumbnail scroller css-->
+<script src="{{theme_url}}/js/jquery.mThumbnailScroller.js"></script>
+<!--custom javascript-->
+<script src="{{theme_url}}/js/homepage.js"></script>
 </body>
 
 </html>

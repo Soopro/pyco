@@ -19,7 +19,7 @@ body{
     overflow: hidden;
     margin: 0;
     padding: 0;
-	background-color:#000;
+    background-color:#000;
 }
 a,
 a:hover{
@@ -27,13 +27,51 @@ a:hover{
     text-decoration: none;
 }
 
+.logo-flag{
+    text-align: center;
+    padding-top:20px;
+    width: 150px;
+    height: 100px;
+    background-color: rgba(5,5,5,1);
+    position: absolute;
+    top: 0;
+    left: 20px;
+    z-index: 2010;
+}
+.logo-flag img{
+    width: 80%;
+}
+
+@media(max-width: 767px){
+    .logo-flag{
+        display: none;
+    }
+
+}
+
+@media (min-width: 768px){
+    .navbar-nav{
+        margin-left: 150px;
+    }
+}
+
+
 nav {
-	z-index:2000;
-	display:none;
+    z-index: 2000;
+}
+
+.navbar{
+    margin-bottom: 0;
+    border-radius:0;
+    border-width: 0;
+}
+
+.navbar-inverse{
+    background: rgba(2,2,2,0.7);
 }
 
 .slider-navbar{
-	margin-bottom:0px;
+    margin-bottom:0px;
 }
 
 .carousel-imgbox{
@@ -67,19 +105,19 @@ nav {
     border: 0;
     max-height: 100px;
     background-color: rgba(0,0,0,0);
-	cursor:pointer;
+    cursor:pointer;
 }
 ol{
     list-style: none;
 }
 #slider-footer{
-	position: absolute;
-	bottom: 0;
-	left:0;
-	height:200px;
-	width:100%;
-	z-index: 200;
-	cursor:pointer;
+    position: absolute;
+    bottom: 0;
+    left:0;
+    height:70px;
+    width:100%;
+    z-index: 200;
+    cursor:pointer;
 }
 
 .footer{
@@ -142,20 +180,20 @@ ol{
 .sidebar-right h3{
     padding: 2px;
     font-family: 'Perpetua', Georgia, serif;
-	font-size:27px;
+    font-size:27px;
 }
 .sidebar-right h4,
 .sidebar-right h5{
     padding-top: 6px;
-	padding-top: 5px;
+    padding-top: 5px;
     font-family: 'Helvetica', Georgia, serif;
-	font-size:10px;
+    font-size:10px;
 
 }
 .sidebar-right h6,
 .sidebar-right p{
     font-family: 'Helvetica', Georgia, serif;
-	font-size:12px;
+    font-size:12px;
 }
 .sidebar-right input{
     background-color: gray;
@@ -187,11 +225,6 @@ ol{
     font-family: 'Bell_MT', Georgia, serif;
 }
 
-.icon-bar{
-    position: absolute;
-    bottom: 30px;
-    right: 15px;
-}
 
 .box-shadow .serif,
 .box-shadow p{
@@ -279,111 +312,72 @@ body.portfolio div{
 
 .navbar-logo{
     height: 70px;
-	width: 150px;
+    width: 150px;
    float: left;
-	display:inline-block;
-	line-height:64px;
-	text-align:center;
-	vertical-align:middle;
-	background-color:#000;
-/*	border:1px solid #666;*/
-	
+    display:inline-block;
+    line-height:64px;
+    text-align:center;
+    vertical-align:middle;
+    background-color:#000;
+/*  border:1px solid #666;*/
+    
 }
 
 .navbar-logo img{
-	height:70%;
+    height:70%;
 }
 
 
 .menu-align-right i {
-	padding-top:5px;
-	height:70px;
-	width:70px;
-	background:rgba(10,10,10,0.8);
-	display:inline-block;
-	line-height:64px;
-	text-align:center;
-	color:#888;
+    padding-top:5px;
+    height:70px;
+    width:70px;
+    background:rgba(10,10,10,0.8);
+    display:inline-block;
+    line-height:64px;
+    text-align:center;
+    color:#888;
 }
 
 .lg-custom-navbar{
-	position:absolute;
-	top:50px;
-	left:50px;
-	z-index:1000;
+    position:absolute;
+    top:50px;
+    left:50px;
+    z-index:1000;
 }
 .lg-custom-navbar .navbar-nav{
-	background:rgba(2,2,2,0.5);
-	height:70px;
+    background:rgba(2,2,2,0.5);
+    height:70px;
 
 }
 .lg-custom-navbar .navbar-nav li>a{
-	height:100%;
-	padding: 27px 15px 0 15px;
-	display:inline-block;
-	height:70px;
-	font-family:'Perpetua';
+    height:100%;
+    padding: 27px 15px 0 15px;
+    display:inline-block;
+    height:70px;
+    font-family:'Perpetua';
 }
 
 .lg-custom-navbar .nav>li>a:hover{
-	background-color:rgba(5,5,5,0.5);
+    background-color:rgba(5,5,5,0.5);
 }
 
 .sm-navbtn{
-	color:#eee;
-	display:inline-block;
-	height:40px;
-	padding-top:8px;
+    color:#eee;
+    display:inline-block;
+    height:40px;
+    padding-top:8px;
 }
 
-.navbar-brand {
-	padding-top:18px;
-}
 .close-btn{
-	cursor:pointer;
+    cursor:pointer;
 }
 
 @media(max-width:850px){
-    nav{
-        display: block;
-	}
-	.menu-align-right{
+    .menu-align-right{
         display: none;
-	}
-	.lg-custom-navbar{
-		display:none;
-	}
-}
-
-@media (min-width: 850px) {
-  .navbar-toggle {
-    display: none;
-  }
-}
-
-@media (max-width: 850px) {
-    .navbar-header {
-        float: none;
     }
-    .navbar-toggle {
-        display: block;
-    }
-    .navbar-collapse {
-        border-top: 1px solid transparent;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-/*    .navbar-collapse.collapse {
-        display: none!important;
-    }*/
-    .navbar-nav {
-        float: none!important;
-        margin: 7.5px -15px;
-    }
-    .navbar-nav>li {
-        float: none;
-    }
-    .navbar-nav>li>a {
-        padding-top: 10px;
-        padding-bottom: 10px;
+    .lg-custom-navbar{
+        display:none;
     }
 }

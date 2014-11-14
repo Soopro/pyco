@@ -415,14 +415,14 @@ class ContentView(BaseView):
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
-            template_file_path = self.theme_path_for(DEFAULT_PAGE_TMPL_NAME)
+            template_file_path = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME)
 
+            
         self.view_ctx["template"] = template['file']
-        self.view_ctx["template_file_path"] = template_file_path
-        
+
         output = {}
         self.view_ctx.get('meta')
-        output['content'] = render_template(self.view_ctx["template_file_path"], **self.view_ctx)
+        output['content'] = render_template(template_file_path, **self.view_ctx)
         
         run_hook("after_render", output = output)
         return make_content_response(output['content'], status_code)

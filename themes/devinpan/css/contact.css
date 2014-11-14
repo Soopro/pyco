@@ -16,59 +16,74 @@ p{
 html,body {
 	position: relative;
 	height: 100%;
-	overflow: hidden;
 	margin: 0;
 	padding: 0;
 }
 
 body{
 	height:100%;
-	color:#ffffff;
-	background:url("../img/contact_bg.jpg") no-repeat center;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-	overflow:auto;
 }
-.bg {
-	background: rgba(0,0,0,0.4);
-	top:0;
-	left:0;
-	width:100%;
-	height:100%;
-	position:fixed;
-	z-index:2;
+
+
+.logo-flag{
+    text-align: center;
+    padding-top:20px;
+    width: 150px;
+    height: 100px;
+    background-color: #777;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    z-index: 2010;
+}
+.logo-flag img{
+    width: 80%;
+}
+
+@media(max-width: 767px){
+    .logo-flag{
+        display: none;
+    }
+
+}
+@media (min-width: 768px){
+	.navbar-nav{
+		margin-left: 150px;
+	}
+}
+
+
+a,
+a:hover{
+    color: white;
+    text-decoration: none;
+}
+.navbar{
+	border-radius:0;
+	border-width: 0;
+}
+.navbar-inverse{
+	background: rgba(2,2,2,0.7);
 }
 .content-container {
 	position:relative;
-	padding-top:100px;
-	max-width:700px;
+	padding-top:90px;
 	height:100%;
 	margin-bottom:20px;
 	z-index:30;
+	max-width: 800px;
 }
 .qrcode-container{
 	padding-top:20px;
 	max-width:400px;
-	margin-left:auto;
-	margin-right:auto;
+
 }
 
 .qrcode-container .qrcode{
 	padding-top:20px;
 	text-align:center;
 }
-.arrow {
-	position:absolute;
-	width:130px;
-	height:140px;
-	top:-50px;
-	left:-120px;
-	background:url("../img/green_arrow.png") no-repeat top left;
-	background-size:100%;
 
-}
 .back-arrow{
 	padding:10px 10px 10px 10px;
 	background: rgba(0,0,0,0.4);

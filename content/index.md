@@ -1,11 +1,15 @@
 /*
-Title: Devinpan professional photographer.
-Description: Pictures on the master at all.
+Title: Digital Studio.
+Description: Micro business online solutions, WeChat / Weibo Totally supported.
 Date: 2012/01/01
 Nav: INDEX
 Priority: 2
-Template: index
+Template: homepage
 Redirect_url: /gallery
-Logo: http://devinpan.com/uploads/vlogo.png
+Logo: uploads/vlogo.png
 */
-DISCOVER
+<ul>
+	<li>+86 123456789</li>
+	<li>diviad@diviadlihoto.com</li>
+	<li>weixin/ weibo</li>
+</ul>

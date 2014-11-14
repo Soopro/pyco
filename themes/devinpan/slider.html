@@ -26,42 +26,8 @@
   
 </head>
 <body>
-    <!--navbar-->
-	<nav class="navbar navbar-inverse slider-navbar" role="navigation">
-	  <div class="container-fluid">
-	    <!-- Brand and toggle get grouped for better mobile display -->
-	    <div class="navbar-header">
-	      <button type="button" class="navbar-toggle collapsed sm-navbtn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-	        <i class="fa fa-angle-double-down fa-2x"></i>
-	      </button>
-	      <a class="navbar-brand" href="#">{{site_meta.title}}</a>
-	    </div>
-
-	    <!-- Collect the nav links, forms, and other content for toggling -->
-	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <ul class="nav navbar-nav">
-		{% for item in  g.navigation%}
-        <li><a href="{{item.url}}" class="text-uppercase">{{item.nav}}</a></li>
-		{% endfor %}
-	      </ul>
-	    </div><!-- /.navbar-collapse -->
-	  </div><!-- /.container-fluid -->
-	</nav>
-	
-
-    <!--#navbar-->
-	    <div class="lg-custom-navbar">
-	        <div class="navbar-logo" href="">
-	            <img class="navbar-img" src="{{theme_url}}/img/gallerylogo.png" alt="" />
-			</div>
-		      <ul class="nav navbar-nav">
-			{% for item in  g.navigation%}
-	        <li><a href="{{item.url}}" class="text-uppercase">{{item.nav}}</a></li>
-			{% endfor %}
-		      </ul>
-			  </div>
-	<!--        </div>-->
-	
+<div class="logo-flag"><img src="{{theme_url}}/img/logo.png"></div>
+{% include '_navbar.html' %}	
     <!--sidebar menu-->
     <div class="pull-right sidebar-menu">
         <a class="menu-align-right">

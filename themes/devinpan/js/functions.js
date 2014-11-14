@@ -2,8 +2,9 @@ $(document).ready(function() {
 //    console.log(window.location.search.substring(1));
 //thumbnails scorller
 	$("#my-thumbs-list").mThumbnailScroller({
-  	  type:"click-20",
- 	   theme:"buttons-out"
+  	  type:"click-23",
+ 	   theme:"buttons-out",
+       speed:30
 });
     if($(location).attr('search').substring(1)){
         $('#myCarousel .item')[0].className='item';
@@ -32,12 +33,12 @@ $(document).ready(function() {
 	if($("#slider-footer").length >0){
 		var slider_footer = $("#slider-footer .footer")[0];
 		$("#slider-footer").hover(function(){
-			console.log(slider_footer)
-			$(slider_footer).clearQueue()
-			$(slider_footer).animate({bottom:'0'},350);
+			console.log(slider_footer);
+			$(slider_footer).clearQueue();
+			$(slider_footer).animate({bottom:'0'},350,'easeOutCubic');
 		},function(){
-			$(slider_footer).clearQueue()
-			$(slider_footer).animate({bottom:'-80px'},350);
+			$(slider_footer).clearQueue();
+			$(slider_footer).animate({bottom:'-80px'},350,'easeOutCubic');
 		
 		});
 	}
