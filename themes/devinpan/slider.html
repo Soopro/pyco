@@ -8,12 +8,12 @@
 <title>{{site_meta.title}} | {{meta.title}}</title>
 
 <!-- Bootstrap -->
-<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
+<link href="{{theme_url}}css/bootstrap.min.css" rel="stylesheet">
 <!--mThumbnail scroller css-->
-<link rel="stylesheet" href="{{theme_url}}/css/jquery.mThumbnailScroller.css">
+<link rel="stylesheet" href="{{theme_url}}css/jquery.mThumbnailScroller.css">
 <!--custom CSS-->
-<link href='{{theme_url}}/css/slider.css' rel='stylesheet' >
-<link href='{{theme_url}}/css/font-awesome.css' rel='stylesheet' >
+<link href='{{theme_url}}css/slider.css' rel='stylesheet' >
+<link href='{{theme_url}}css/font-awesome.css' rel='stylesheet' >
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,11 +22,11 @@
   <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
   <!-- Fav and touch icons -->
-  <link rel="shortcut icon" href="{{theme_url}}/img/favicon.ico">
+  <link rel="shortcut icon" href="{{theme_url}}img/favicon.ico">
   
 </head>
 <body>
-<div class="logo-flag"><img src="{{theme_url}}/img/logo.png"></div>
+<div class="logo-flag"><img src="{{theme_url}}img/logo.png"></div>
 {% include '_navbar.html' %}	
     <!--sidebar menu-->
     <div class="pull-right sidebar-menu">
@@ -39,22 +39,22 @@
        <!--carousel item-->
        <div class="carousel-inner">
 		   {%for item in saltshaker(pages,["thumbnail"],true) if item.type == 'works'%}
-           <div class="item{% if loop.first %} active{% endif %}">
+           <div class="item" alias="{{item.alias}}">
                <div class="carousel-imgbox invoke-area" style="background: url('{{item.thumbnail}}') ;" ></div>
                <!--right-menu-->
                <div class="container">
                        <div class="row-offcanvas-right sidebar-right" >
 						   <span class="glyphicon glyphicon-remove close-btn pull-right"></span>
                            <h3>{{item.title}}</h3>
-                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_clock.png" alt="" /></a>
+                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}img/icon_clock.png" alt="" /></a>
                            <h5>{{item.date_formatted}}</h5>
-                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}/img/icon_location.png" alt="" /></a>
+                           <a class="pull-left" href="javascript:"><img src="{{theme_url}}img/icon_location.png" alt="" /></a>
                            <h5>{{item.location}} </h5>
                            <br />
                            <p class="pull-right" >{{item.content}}
                            </p>
-                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}/img/icon_like.png" alt="" /></a>
-                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}/img/icon_share.png" alt="" /></a>
+                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}img/icon_like.png" alt="" /></a>
+                           <a class="pull-right" href="javascript:"><img src="{{theme_url}}img/icon_share.png" alt="" /></a>
                            
                        </div>
                </div>

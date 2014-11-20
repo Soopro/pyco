@@ -4,9 +4,9 @@ from __future__ import absolute_import
 DEBUG = True
 PORT = 5500
 
-THEME_NAME = 'default'
+THEME_NAME = 'devinpan'
 
-BASE_URL = "http://localhost:5500"
+BASE_URL = "http://devinpan.com/"
 
 SITE_META = {
     "title": "DevinPan",

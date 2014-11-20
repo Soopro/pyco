@@ -1,7 +1,7 @@
 <div style="position:relative;">
-	<link href="{{theme_url}}/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{theme_url}}/css/font-awesome.min.css">
-	<link href="{{theme_url}}/css/contact.css" rel="stylesheet">
+	<link href="{{theme_url}}css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{theme_url}}css/font-awesome.min.css">
+	<link href="{{theme_url}}css/contact.css" rel="stylesheet">
 
 <div class="container content-container">
 	<div class="row clearfix" sup-angular-wysiwyg="sup-editor" ng-model="file.content">
@@ -33,10 +33,10 @@
 				<h1 class="text-center">Rather Prefer Scaning?</h1>
 				<div class="col-md-6 column qrcode">
 					<div class="arrow"></div>
-					<img alt="140x140" src="{{theme_url}}/img/QR1.jpg" class="img-thumbnail">
+					<img alt="140x140" src="{{theme_url}}img/QR1.jpg" class="img-thumbnail">
 				</div>
 				<div class="col-md-6 column qrcode">
-					<img alt="140x140" src="{{theme_url}}/img/QR2.jpg" class="img-thumbnail">
+					<img alt="140x140" src="{{theme_url}}img/QR2.jpg" class="img-thumbnail">
 				</div>
 			
 		</div>

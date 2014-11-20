@@ -1,6 +1,21 @@
 $(document).ready(function() {
 //    console.log(window.location.search.substring(1));
 //thumbnails scorller
+    var items = $(".item");
+    var selected = window.location.hash;
+    if (selected!=''){
+            for (var i=0; i<(items.length); i++){
+            if($(items[i]).attr("alias")==selected.slice(1)){
+            $(items[i]).addClass("active");
+        }
+    };
+    }
+    else{
+        $(items[0]).addClass("active");
+    };
+
+
+
 	$("#my-thumbs-list").mThumbnailScroller({
   	  type:"click-23",
  	   theme:"buttons-out",
@@ -33,7 +48,7 @@ $(document).ready(function() {
 	if($("#slider-footer").length >0){
 		var slider_footer = $("#slider-footer .footer")[0];
 		$("#slider-footer").hover(function(){
-			console.log(slider_footer);
+			// console.log(slider_footer);
 			$(slider_footer).clearQueue();
 			$(slider_footer).animate({bottom:'0'},350,'easeOutCubic');
 		},function(){
