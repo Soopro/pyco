@@ -17,5 +17,6 @@ def generate_pagination(current_page, pagination_limit, resouce_pages):
     pagination["has_next_flip_page"] = current_page < total
     return paged_pages, pagination
 
+
 def page_count(pagination_limit, total):
     return max((total+pagination_limit-1)/pagination_limit, 1)

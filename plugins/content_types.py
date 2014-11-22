@@ -6,6 +6,7 @@ _DEFAULT_CONTENT_TYPE = 'page'
 _URL = ''
 _current_content_type = ''
 
+
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
@@ -17,31 +18,35 @@ def request_url(request, redirect_to):
     _URL = request.path
     return
 
+
 def get_page_data(data, page_meta):
     data["type"] = page_meta.get("type")
-    filter_auto_type(data,data.get("url"));
+    filter_auto_type(data, data.get("url"))
     return
+
 
 def single_page_meta(page_meta, redirect_to):
     page_url = _CONFIG.get("BASE_URL")+_URL
-    filter_auto_type(page_meta, page_url);
+    filter_auto_type(page_meta, page_url)
 
     global _current_content_type
     _current_content_type = page_meta['type']
     return
 
-def before_render(var,template):
-    content_types = _CONFIG.get('THEME_META',{}).get('content_types',{})
-    var["content_type"] = {'alias':_current_content_type, 
-                           'title':content_types.get(_current_content_type)}
+
+def before_render(var, template):
+    content_types = _CONFIG.get('THEME_META', {}).get('content_types', {})
+    var["content_type"] = {'alias': _current_content_type,
+                           'title': content_types.get(_current_content_type)}
     return
 
+
 #custom functions
-def filter_auto_type(meta,page_url):
+def filter_auto_type(meta, page_url):
     base_url = _CONFIG.get("BASE_URL")
 
     if not meta.get("type"):
-        relative_path = page_url.replace(base_url+"/","")
+        relative_path = page_url.replace(base_url+"/", "")
         try:
             content_type = relative_path[0:relative_path.index("/")]
         except ValueError:

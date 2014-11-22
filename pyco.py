@@ -431,7 +431,8 @@ class ContentView(BaseView):
 class UploadView(MethodView):
     def get(self, filename):
         return send_from_directory(UPLOADS_DIR, filename)
-        
+
+
 class EditorView(MethodView):
     def get(self, filename=None):
         if not filename:
@@ -452,7 +453,7 @@ class EditTemplateView(BaseView):
             locale = current_app.config.get("SITE_META",{}).get('locale')
             tmpl_content = self.parse_template(f)
             # make fake template context
-            shortcodes  = [
+            shortcodes = [
                 {"pattern":u"base_url","replacement":base_url},
                 {"pattern":u"theme_url","replacement":theme_url},
                 {"pattern":u"locale","replacement":locale}
@@ -506,7 +507,7 @@ app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
 app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
-app.template_folder = os.path.join(THEMES_DIR,app.config.get("THEME_NAME"))
+app.template_folder = os.path.join(THEMES_DIR, app.config.get("THEME_NAME"))
 app.static_folder = THEMES_DIR
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
@@ -526,7 +527,7 @@ def before_request():
     load_config(current_app)
     if current_app.debug:
         # change template folder
-        current_app.template_folder = os.path.join(THEMES_DIR,current_app.config.get("THEME_NAME"))
+        current_app.template_folder = os.path.join(THEMES_DIR, current_app.config.get("THEME_NAME"))
         # change reload template folder
         current_app.jinja_env.cache = None
         current_app.jinja_loader = FileSystemLoader(current_app.template_folder)

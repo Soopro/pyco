@@ -10,7 +10,7 @@ def config_loaded(config):
 
 def get_page_data(data, page_meta):
     data["draft"] = page_meta.get("draft")
-    if isinstance(data["draft"], (str,unicode)) and data["draft"].lower() == "true":
+    if isinstance(data["draft"], (str, unicode)) and data["draft"].lower() == "true":
         data["draft"] = True
     else:
         data["draft"] = False

@@ -10,10 +10,12 @@ _paged_pages = None
 _pagination = None
 _TAXONOMY_NAME = "taxonomy"
 
+
 def config_loaded(config):
     _CONFIG.update(config)
     return
-    
+
+
 def request_url(request, redirect_to):
     global _term
     try:
@@ -29,15 +31,18 @@ def request_url(request, redirect_to):
         
     return
 
+
 def single_page_meta(page_meta, redirect_to):
     global _tax
     _tax = page_meta.get(_TAXONOMY_NAME).lower() if page_meta.get(_TAXONOMY_NAME) else None
     return
 
+
 def get_page_data(data, page_meta):
     data[_tax] = page_meta.get(_tax).lower() if page_meta.get(_tax) else None
     return
-    
+
+
 def get_pages(pages, current_page, prev_page, next_page):
     global _paged_pages, _pagination
     _paged_pages = _pagination = None
@@ -53,16 +58,18 @@ def get_pages(pages, current_page, prev_page, next_page):
             if _term in page[_tax]:
                 tax_pages.append(page)
 
-        limit = _CONFIG.get("TAXONOMY_PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT )
-        _paged_pages, _pagination = generate_pagination(_current_page,limit,tax_pages)
+        limit = _CONFIG.get("TAXONOMY_PAGINATION_LIMIT", _DEFAULT_PAGINATION_LIMIT)
+        _paged_pages, _pagination = generate_pagination(_current_page, limit, tax_pages)
     return
 
-def before_render(var,template):
+
+def before_render(var, template):
     var['taxonomy'] = _tax
     if _tax:
         var['results'] = _paged_pages
         var['pagination'] = _pagination
     return
+
 
 #custom functions
 def parseTerms(terms_str):
