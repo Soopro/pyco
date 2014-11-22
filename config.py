@@ -4,17 +4,16 @@ from __future__ import absolute_import
 DEBUG = True
 PORT = 5500
 
-THEME_NAME = 'devinpan'
+THEME_NAME = 'default'
 
-BASE_URL = "http://devinpan.com/"
+BASE_URL = "http://127.0.0.1:5500/"
 
 SITE_META = {"title": "DevinPan",
              "author": "pan",
              "description": "A invincible super high-end photographer devin pan's website",
              "copyright": "&copy; devinPan.com",
              "license": "#license",
-             "locale": "zh_CN"
-}
+             "locale": "zh_CN"}
 
 THEME_META = {"content_types": {"page": "Pages",
                                 },

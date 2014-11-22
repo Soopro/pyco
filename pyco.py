@@ -46,7 +46,10 @@ from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
 from gettext import gettext, ngettext
-import os, re, traceback, markdown
+import os
+import re
+import traceback
+import markdown
 # import misaka
 # from pygments import highlight
 # from pygments.lexers import get_lexer_by_name
@@ -101,10 +104,10 @@ class BaseView(MethodView):
         return None
     
     def gen_base_url(self):
-        return os.path.join(current_app.config.get("BASE_URL"),'')
+        return os.path.join(current_app.config.get("BASE_URL"), '')
 
     def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
+        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')
 
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
@@ -114,7 +117,7 @@ class BaseView(MethodView):
             relative_path = relative_path[:-5]
     
         relative_url = relative_path.replace(CONTENT_DIR,'')
-        url = os.path.join(current_app.config.get("BASE_URL"),relative_url)
+        url = os.path.join(current_app.config.get("BASE_URL"), relative_url)
         return url
     
     def gen_page_alias(self, relative_path):
@@ -163,13 +166,13 @@ class BaseView(MethodView):
 
     def parse_page_meta(self, meta_string):
         headers = dict()
-        self.run_hook("before_read_page_meta", headers = headers)
+        self.run_hook("before_read_page_meta", headers=headers)
 
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
                 headers[kv_pair[0].lower()] = kv_pair[1].strip()
-        self.run_hook("after_read_page_meta", headers = headers)
+        self.run_hook("after_read_page_meta", headers=headers)
         return headers
 
     @staticmethod
@@ -179,7 +182,7 @@ class BaseView(MethodView):
 #         flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
 #         render = BleepRenderer(flags=flags)
 #         md = misaka.Markdown(render, extensions=extensions)
-        return markdown.markdown(content_string,['markdown.extensions.codehilite','markdown.extensions.extra'])
+        return markdown.markdown(content_string, ['markdown.extensions.codehilite', 'markdown.extensions.extra'])
 
     # cache
     @staticmethod
@@ -202,8 +205,8 @@ class BaseView(MethodView):
         config = self.config
         date_format = DEFAULT_DATE_FORMAT
         try:
-            date_object=datetime.strptime(date, date_format)
-            date_formatted=date_object.strftime(config.get('PAGE_DATE_FORMAT'))
+            date_object = datetime.strptime(date, date_format)
+            date_formatted = date_object.strftime(config.get('PAGE_DATE_FORMAT'))
         except ValueError:
             date_formatted=date
         return date_formatted
@@ -243,10 +246,10 @@ class BaseView(MethodView):
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
-            data["excerpt"] = self.gen_excerpt(data["content"],self.view_ctx["theme_meta"])
+            data["excerpt"] = self.gen_excerpt(data["content"], self.view_ctx["theme_meta"])
             des = meta.get("description")
             data["description"] = data["excerpt"] if not des else des
-            self.run_hook("get_page_data",data = data, page_meta = meta.copy())
+            self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
         if sort_key not in ("title", "date"):
             sort_key = "title"
@@ -311,17 +314,17 @@ class ContentView(BaseView):
         auto_index = is_site_index and config.get("AUTO_INDEX")
         self.view_ctx["is_site_index"] = is_site_index
         # self.view_ctx["auto_index"] = auto_index
-        self.view_ctx["args"] = {k:v for k,v in request.args.iteritems()}
+        self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
         
         redirect_to = {"url":None}
-        run_hook("request_url", request = request, redirect_to = redirect_to)
+        run_hook("request_url", request=request, redirect_to=redirect_to)
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
 
 
         file["path"] = self.get_file_path(request_url)
         # hook before load content
-        run_hook("before_load_content",file = file)
+        run_hook("before_load_content", file=file)
         # if not found
         if file["path"] is None:
             is_not_found = True
@@ -333,31 +336,31 @@ class ContentView(BaseView):
 
         # read file content
         if is_not_found:
-            run_hook("before_404_load_content",file = file)
+            run_hook("before_404_load_content", file=file)
 
         with open(file['path'], "r") as f:
             file_content['content'] = f.read().decode(CHARSET)
         
         
         if is_not_found:
-            run_hook("after_404_load_content",file = file, content = file_content)
-        run_hook("after_load_content", file = file, content = file_content)
+            run_hook("after_404_load_content", file=file, content=file_content)
+        run_hook("after_load_content", file=file, content=file_content)
         
         # parse file content
         meta_string, content_string = self.content_splitter(file_content["content"])
-        page_meta=self.parse_page_meta(meta_string)
+        page_meta = self.parse_page_meta(meta_string)
         
         page_meta["alias"] = self.gen_page_alias(file["path"])
         if not page_meta.get("url"):
             page_meta["url"] = self.gen_page_url(file["path"])
 
         page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
-        redirect_to = {"url":None}
-        run_hook("single_page_meta", page_meta = page_meta, redirect_to = redirect_to)
+        redirect_to = {"url": None}
+        run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
         
-        tmp_tpl_name=str(page_meta.get('template'))
-        if tmp_tpl_name[0:1]=='_' and not redirect_to["url"]:
-            redirect_to["url"] = os.path.join(config.get('BASE_URL'),CONTENT_NOT_FOUND_FILENAME)
+        tmp_tpl_name = str(page_meta.get('template'))
+        if tmp_tpl_name[0:1] == '_' and not redirect_to["url"]:
+            redirect_to["url"] = os.path.join(config.get('BASE_URL'), CONTENT_NOT_FOUND_FILENAME)
         
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
@@ -365,16 +368,16 @@ class ContentView(BaseView):
         self.view_ctx["meta"] = page_meta
         
         page_content = {}
-        
+
         page_content['content'] = content_string
-        run_hook("before_parse_content", content = page_content)
+        run_hook("before_parse_content", content=page_content)
         
         page_content['content'] = self.parse_content(page_content['content'])
-        run_hook("after_parse_content", content = page_content)
+        run_hook("after_parse_content", content=page_content)
         
         self.view_ctx["content"] = page_content['content']
 
-        excerpt = self.gen_excerpt(self.view_ctx["content"],self.view_ctx["theme_meta"])
+        excerpt = self.gen_excerpt(self.view_ctx["content"], self.view_ctx["theme_meta"])
         self.view_ctx["meta"]["excerpt"] = excerpt
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
@@ -402,8 +405,8 @@ class ContentView(BaseView):
                 else:
                     self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
 
-        run_hook("get_pages",pages = self.view_ctx["pages"], current_page = self.view_ctx["current_page"],
-            prev_page = self.view_ctx["prev_page"], next_page = self.view_ctx["next_page"])
+        run_hook("get_pages", pages=self.view_ctx["pages"], current_page=self.view_ctx["current_page"],
+            prev_page=self.view_ctx["prev_page"], next_page=self.view_ctx["next_page"])
         
         template = {}
         template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_PAGE_TMPL_NAME)
@@ -417,14 +420,13 @@ class ContentView(BaseView):
             template['file'] = None
             template_file_path = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME)
 
-            
         self.view_ctx["template"] = template['file']
 
         output = {}
         self.view_ctx.get('meta')
         output['content'] = render_template(template_file_path, **self.view_ctx)
         
-        run_hook("after_render", output = output)
+        run_hook("after_render", output=output)
         return make_content_response(output['content'], status_code)
 
 
@@ -474,11 +476,10 @@ class EditTemplateView(BaseView):
         return os.path.join(current_app.config.get("BASE_URL"),'')
 
     def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'),'')
+        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')
     
     def make_pattern(self, pattern):
-        return re.compile(r"{}\s*{}\s*{}".format('{{',pattern,'}}'), re.IGNORECASE)
-
+        return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'), re.IGNORECASE)
 
 
 
@@ -487,9 +488,9 @@ load_config(app)
 
 
 opt = OptionParser()
-opt.add_option('-s','--server', help='set server mode',
+opt.add_option('-s', '--server', help='set server mode',
                 action='store_const', dest='server', const=True, default=False)
-opt.add_option('-d','--debug', help='set debug mode',
+opt.add_option('-d', '--debug', help='set debug mode',
                 action='store_const', dest='debug', const=True, default=False)
 opts, args = opt.parse_args()
 
@@ -536,7 +537,7 @@ def before_request():
 
 @app.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = "{}\n{}".format(repr(err),traceback.format_exc())
+    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
     current_app.logger.error(err_msg)
     return make_response(repr(err), 579)
 
