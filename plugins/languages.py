@@ -1,6 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
-import gettext, os
+import gettext
+import os
 from flask import current_app
 
 _DEFAULT_LOCALE = 'en'

@@ -11,7 +11,7 @@ DEFAULT_PAGE_TMPL_NAME = "page"
 DEFAULT_DATE_FORMAT = '%Y/%m/%d'
 
 DEFAULT_EXCERPT_LENGTH = 50
-DEFAULT_EXCERPT_ELLIPSIS = "&hellip"
+DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 
 STATIC_DIR = THEMES_DIR
 STATIC_BASE_URL = "/static"
@@ -35,7 +35,8 @@ CHARSET = "utf8"
 import sys
 sys.path.insert(0, PLUGIN_DIR)
 
-from flask import Flask, current_app, request, abort, render_template, make_response, redirect, send_from_directory, send_file
+from flask import Flask, current_app, request, abort, render_template, \
+    make_response, redirect, send_from_directory, send_file
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 from helpers import load_config, make_content_response
@@ -107,7 +108,7 @@ class BaseView(MethodView):
         return os.path.join(current_app.config.get("BASE_URL"), '')
 
     def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')
+        return os.path.join(STATIC_BASE_URL, current_app.config.get('THEME_NAME'), '')
 
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
@@ -405,16 +406,22 @@ class ContentView(BaseView):
                 else:
                     self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
 
-        run_hook("get_pages", pages=self.view_ctx["pages"], current_page=self.view_ctx["current_page"],
-            prev_page=self.view_ctx["prev_page"], next_page=self.view_ctx["next_page"])
+        run_hook("get_pages",
+                 pages=self.view_ctx["pages"],
+                 current_page=self.view_ctx["current_page"],
+                 prev_page=self.view_ctx["prev_page"],
+                 next_page=self.view_ctx["next_page"])
         
-        template = {}
-        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template", DEFAULT_PAGE_TMPL_NAME)
+        template = dict()
+        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template",
+                                                                                                DEFAULT_PAGE_TMPL_NAME)
         
-        run_hook("before_render",var = self.view_ctx, template = template)
+        run_hook("before_render", var=self.view_ctx, template=template)
         
         template_file_path = self.theme_path_for(template['file'])
-        template_file_absolute_path = os.path.join(current_app.root_path, current_app.template_folder, template_file_path)
+        template_file_absolute_path = os.path.join(current_app.root_path,
+                                                   current_app.template_folder,
+                                                   template_file_path)
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
@@ -452,13 +459,16 @@ class EditTemplateView(BaseView):
 
             theme_url = self.gen_theme_url()
             base_url = self.gen_base_url()
-            locale = current_app.config.get("SITE_META",{}).get('locale')
+            locale = current_app.config.get("SITE_META", {}).get('locale')
             tmpl_content = self.parse_template(f)
             # make fake template context
             shortcodes = [
-                {"pattern":u"base_url","replacement":base_url},
-                {"pattern":u"theme_url","replacement":theme_url},
-                {"pattern":u"locale","replacement":locale}
+                {"pattern": u"base_url",
+                 "replacement": base_url},
+                {"pattern": u"theme_url",
+                 "replacement": theme_url},
+                {"pattern": u"locale",
+                 "replacement": locale}
             ]
             for code in shortcodes:
                 pattern = self.make_pattern(code["pattern"])
@@ -482,16 +492,15 @@ class EditTemplateView(BaseView):
         return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'), re.IGNORECASE)
 
 
-
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
 load_config(app)
 
 
 opt = OptionParser()
 opt.add_option('-s', '--server', help='set server mode',
-                action='store_const', dest='server', const=True, default=False)
+               action='store_const', dest='server', const=True, default=False)
 opt.add_option('-d', '--debug', help='set debug mode',
-                action='store_const', dest='debug', const=True, default=False)
+               action='store_const', dest='debug', const=True, default=False)
 opts, args = opt.parse_args()
 
 _DEBUG = app.config.get("DEBUG")

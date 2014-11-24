@@ -18,6 +18,7 @@ SITE_META = {"title": "DevinPan",
 THEME_META = {"content_types": {"page": "Pages",
                                 },
               "theme_name": THEME_NAME,
+              "excerpt_length": 100
               }
 
 PAGE_DATE_FORMAT = "%d, %b %Y"

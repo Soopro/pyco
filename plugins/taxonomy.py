@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from plugin_helpers import generate_pagination
 
 _CONFIG = {}
-_DEFAULT_PAGINATION_LIMIT  = 10
+_DEFAULT_PAGINATION_LIMIT = 10
 _term = None
 _tax = None
 _paged_pages = None
