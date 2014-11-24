@@ -27,7 +27,7 @@ def get_page_data(data, page_meta):
 
 
 def single_page_meta(page_meta, redirect_to):
-    page_url = _CONFIG.get("BASE_URL")+ _URL
+    page_url = _CONFIG.get("BASE_URL") + _URL
     filter_auto_type(page_meta, page_url)
 
     global _current_content_type

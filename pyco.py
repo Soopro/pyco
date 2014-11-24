@@ -483,7 +483,7 @@ class EditTemplateView(BaseView):
             return content
     
     def gen_base_url(self):
-        return os.path.join(current_app.config.get("BASE_URL"),'')
+        return os.path.join(current_app.config.get("BASE_URL"), '')
 
     def gen_theme_url(self):
         return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')

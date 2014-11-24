@@ -32,9 +32,5 @@ def get_pages(pages, current_page, prev_page, next_page):
             order = None
 
         page[_PRIORITY] = order or 0
-    _pages = sorted(pages, key=lambda x: (x[_PRIORITY], x[_ORDER_BY]), reverse=_ORDER_DESC)
-    
-    del pages[:]
-    for page in _pages:
-        pages.append(page)
+    pages.sort(key=lambda x: (x[_PRIORITY], x[_ORDER_BY]), reverse=_ORDER_DESC)
     return

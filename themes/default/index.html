@@ -12,8 +12,6 @@
 <body>
 <header>
 </header>
-{% set bcs = barcode_scanner(pages,'type') %}
-{{ pages }}
   <div class="content">
     <main class="container">
     	<div class="row-fluid">
@@ -22,7 +20,6 @@
               <div class="sub-title"></div>
     		</section>
 			{{content_type}}<br/><br/>
-			{{meta}}
 			<div>
 				<h2>{{language_text}}</h2>
 				{% for trans in translates %}

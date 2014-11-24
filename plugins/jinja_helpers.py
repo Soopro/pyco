@@ -69,8 +69,8 @@ def stapler(raw_pages, paged=1, perpage=12, content_types=None):
             "paged": paged}
 
 
-def barcode_scanner(raw_pages, condition):
-    ret = {}
+def barcode_scanner(raw_pages, condition="category"):
+    ret = dict()
     for page in raw_pages:
         label = page.get(condition)
         if label:

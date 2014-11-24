@@ -2,7 +2,7 @@
 Title: CONTACT
 Date: 2014/01/01
 Nav: CONTACT
-Priority: 0
+Priority: 100
 Taxonomy: contact
 Template: contact
 Alias: contact
