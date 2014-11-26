@@ -5,10 +5,9 @@ from __future__ import absolute_import
 def generate_pagination(current_page, pagination_limit, resouce_pages):
     total = page_count(pagination_limit, len(resouce_pages))
     current_page = min(current_page, total)
-    start = (current_page-1)*pagination_limit
-    end = current_page*pagination_limit
+    start = (current_page-1) * pagination_limit
+    end = current_page * pagination_limit
 
-    paged_pages = dict()
     paged_pages = resouce_pages[start:end]
 
     pagination = dict()
@@ -19,4 +18,4 @@ def generate_pagination(current_page, pagination_limit, resouce_pages):
 
 
 def page_count(pagination_limit, total):
-    return max((total+pagination_limit-1)/pagination_limit, 1)
+    return max((total+pagination_limit-1) / pagination_limit, 1)

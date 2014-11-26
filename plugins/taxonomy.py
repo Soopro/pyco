@@ -1,6 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
-from plugin_helpers import generate_pagination
+from .plugin_helpers import generate_pagination
 
 _CONFIG = {}
 _DEFAULT_PAGINATION_LIMIT = 10
