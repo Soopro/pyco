@@ -10,7 +10,7 @@ window.addEventListener('load', function() {
             imgUrl = metaList[i].content;
         }
     }
-    if (imgUrl==''){
+    if (imgUrl==undefined){
         imgUrl = document.querySelector('img').src;
     }
 	lineLink = location.href;
