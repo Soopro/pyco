@@ -1,10 +1,10 @@
 #coding=utf-8
 from __future__ import absolute_import
-
+HOST = '0.0.0.0'
 DEBUG = True
 PORT = 5500
 
-THEME_NAME = 'default'
+THEME_NAME = 'tinforce'
 
 BASE_URL = "http://127.0.0.1:5500/"
 
