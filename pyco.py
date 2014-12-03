@@ -527,10 +527,12 @@ app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.
 app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
 app.add_url_rule("{}/tpl/<path:filename>".format(EDITOR_URL), view_func=EditTemplateView.as_view("tpl_file"))
 
+
 @app.before_first_request
 def before_first_request():
     if current_app.debug:
         current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
+
 
 @app.before_request
 def before_request():

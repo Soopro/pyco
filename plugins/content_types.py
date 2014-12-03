@@ -42,20 +42,5 @@ def before_render(var, template):
     return
 
 
-# #custom functions
-# def filter_auto_type(meta, page_url):
-#     base_url = _CONFIG.get("BASE_URL")
-#     print page_url
-#     if not meta.get("type"):
-#         relative_path = page_url.replace(base_url, "")
-#         try:
-#             content_type = relative_path[0:relative_path.index("/")]
-#         except ValueError:
-#             content_type = _DEFAULT_CONTENT_TYPE
-#
-#         meta["type"] = content_type
-#     meta["type"] = meta["type"].lower()
-
-
 def filter_auto_type(meta, page_url):
     meta["type"] = (urlparse(page_url).path.split('/')[1] if not meta.get("type") else _DEFAULT_CONTENT_TYPE).lower()

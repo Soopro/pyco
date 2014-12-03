@@ -5,7 +5,7 @@ var CONFIG = {
     host: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+'/',
     editor_params:{ 
 		'file':'page',
-		'template': 'index',
+		'template': 'page',
 	},
 	site_config:{
 		'title':'Site title',
