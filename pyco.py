@@ -112,18 +112,18 @@ class BaseView(MethodView):
 
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
-            relative_path = relative_path[:-len(CONTENT_FILE_EXT)]
+            relative_path = os.path.splitext(relative_path)[0]
 
         if relative_path.endswith("index"):
             relative_path = relative_path[:-5]
     
-        relative_url = relative_path.replace(CONTENT_DIR,'')
+        relative_url = relative_path.replace(CONTENT_DIR, '')
         url = os.path.join(current_app.config.get("BASE_URL"), relative_url)
         return url
     
     def gen_page_alias(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
-            relative_path = relative_path[:-len(CONTENT_FILE_EXT)]
+            relative_path = os.path.splitext(relative_path)[0]
         alias = relative_path.split('/')[-1]
         return alias
 
@@ -135,8 +135,7 @@ class BaseView(MethodView):
             excerpt = " ".join(excerpt.split())
             excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
         return excerpt
-    
-    
+
     @staticmethod
     def check_file_exists(file_full_path):
         return os.path.isfile(file_full_path)
@@ -216,8 +215,8 @@ class BaseView(MethodView):
         config = self.config
         base_url = self.gen_base_url()
         
-        sort_key=config.get("PAGE_ORDER_BY")
-        order=config.get("PAGE_ORDER")
+        sort_key = config.get("PAGE_ORDER_BY")
+        order = config.get("PAGE_ORDER")
         
         reverse = False
         if order == 'desc':
@@ -252,8 +251,10 @@ class BaseView(MethodView):
             data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
+
         if sort_key not in ("title", "date"):
             sort_key = "title"
+
         return sorted(page_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
 
     #theme
@@ -305,7 +306,7 @@ class ContentView(BaseView):
         
         self.init_context()
         
-        run_hook("config_loaded", config = self.config)
+        run_hook("config_loaded", config=self.config)
         
         config = self.config
         
@@ -317,7 +318,7 @@ class ContentView(BaseView):
         # self.view_ctx["auto_index"] = auto_index
         self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
         
-        redirect_to = {"url":None}
+        redirect_to = {"url": None}
         run_hook("request_url", request=request, redirect_to=redirect_to)
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
@@ -341,7 +342,6 @@ class ContentView(BaseView):
 
         with open(file['path'], "r") as f:
             file_content['content'] = f.read().decode(CHARSET)
-        
         
         if is_not_found:
             run_hook("after_404_load_content", file=file, content=file_content)
@@ -368,7 +368,7 @@ class ContentView(BaseView):
 
         self.view_ctx["meta"] = page_meta
         
-        page_content = {}
+        page_content = dict()
 
         page_content['content'] = content_string
         run_hook("before_parse_content", content=page_content)
