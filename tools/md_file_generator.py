@@ -10,7 +10,7 @@ Location: Shanghai
 Template: works
 Type: works
 Alias:%s
-Thumbnail: /uploads/%s.jpg
+Thumbnail: /uploads/%s
 Description: Turnix Multimedia Studio
 Order:1
 */
@@ -34,9 +34,10 @@ def gen(file):
     if not os.path.isdir(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
     file = clean_filename(file)
-    filename=file.split('/')[-1].split('.')[0]
+    filename_with_ext = file.split('/')[-1]
+    filename = filename_with_ext.split('.')[0]
     f = open(os.path.join(OUTPUT_DIR, filename+'.md'), 'w')
-    f.write(t % (filename, filename, filename))
+    f.write(t % (filename, filename, filename_with_ext))
     f.close()
     print file
 
