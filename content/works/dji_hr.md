@@ -8,7 +8,7 @@ Category: dji
 
 Template: works
 Type: works
-Thumbnail: %uploads%/dji_hr.jpg
+Thumbnail: /uploads/dji_hr.jpg
 Description: We.DJI Culture Website
 Tag: Html5, CSS, Jquery, Parallax
 

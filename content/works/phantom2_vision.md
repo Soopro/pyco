@@ -8,7 +8,7 @@ Category: dji
 
 Template: works
 Type: works
-Thumbnail: %uploads%/phantom2_vision.jpg
+Thumbnail: /uploads/phantom2_vision.jpg
 Description: Phantom 2 Vision product page
 Tag: Phantom, Html, CSS, Jquery
 

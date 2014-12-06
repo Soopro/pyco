@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-Thumbnail: %uploads%/sonystore_hk.jpg
+Thumbnail: /uploads/sonystore_hk.jpg
 Description: SonyStore HK front-end develop
 Tag: Html, CSS
 

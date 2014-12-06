@@ -8,7 +8,7 @@ Order:20
 
 Template: works
 Type: works
-Thumbnail: %uploads%/maricms.jpg
+Thumbnail: /uploads/maricms.jpg
 Description: Ruby On Rails CMS
 Tag: Ruby On Rails, Liquid, Html5, CSS 
 

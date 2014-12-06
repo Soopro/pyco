@@ -6,7 +6,7 @@ Author: Redy
 
 Template: works
 Type: works
-Thumbnail: %uploads%/mi2a.jpg
+Thumbnail: /uploads/mi2a.jpg
 Description: In 2013, I created a multimedia studio, and named called mi2a. In this project
 Tag: Flash, 3D
 
