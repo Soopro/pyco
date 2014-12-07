@@ -29,16 +29,16 @@ def salt_shaker(raw_pages, conditions, intersection=False):
             cond_value = None
         elif isinstance(cond, dict):
             cond_key = cond.keys()[0]
+            print cond_key
             cond_value = cond[cond_key]
+            print cond_value
 
         if isinstance(obj, list):            
             if intersection and results:
-                results = [i for i in results if i.get(cond_key)
-                            and (cond_value == None or i.get(cond_key))]
+                results = [i for i in results if i.get(cond_key) and (cond_value == None or i.get(cond_key))]
             else:
                 for i in obj:
-                    if i.get(cond_key) and i not in results \
-                    and (cond_value == None or i.get(cond_key)):
+                    if i.get(cond_key) and i not in results and (cond_value == None or i.get(cond_key)):
                         results.append(i)
 
         elif isinstance(obj, dict):
@@ -55,7 +55,8 @@ def salt_shaker(raw_pages, conditions, intersection=False):
                             and (cond_value == None or v)}
 
                 results.update(new_items)
-
+    for i in results:
+        print i.get('type')
     return results
 
 

@@ -17,14 +17,11 @@
 		<!-- Contents -->
 		<div class="container">
 			<section class="row works-list">
-				{% for work in pages %}
-					{% if work.type == "works" and work.title and work.thumbnail %}
-                        {{ work.type }}
+				{% for work in saltshaker(pages,[{'type':'lo'},'thumbnail'],true) %}
 						<figure class="col-md-3 col-sm-6"><a href="{{work.url}}">
 							<figcaption>{{work.title}}</figcaption>
 							<img src="{{work.thumbnail}}" title="{{work.title}}" alt="{{work.title}}" /></a>
 						</figure>
-					{% endif %}
 				{% endfor %}
 			</section>
 			<section class="row">
