@@ -45,3 +45,5 @@ linux-amd64/
 
 test.py
 plug
+/content/*
+/uploads/*
