@@ -38,11 +38,11 @@ def salt_shaker(raw_pages, conditions, intersection=False):
             else:
                 for i in obj:
                     if i.get(cond_key) and i not in results \
-                    and (cond_value == None or i.get(cond_key):
+                    and (cond_value == None or i.get(cond_key)):
                         results.append(i)
 
         elif isinstance(obj, dict):
-            if intersection and len(results) > 0:
+            if intersection and results:
                 new_items = {k: v for (k, v) in results.iteritems() 
                             if k == cond_key and v 
                             and (cond_value == None or v)}
@@ -74,10 +74,9 @@ def stapler(raw_pages, paged=1, perpage=12, content_types=None):
 
     max_pages = int(math.ceil(len(macthed_pages)/perpage))
 
-    if max_pages < 1:
-        max_pages = 1
-    if paged > max_pages:
-        paged = max_pages
+    max_pages = max(max_pages, 1)
+    paged = min(max_pages, paged)
+
     start = (paged-1)*perpage
     end = paged*perpage
     result_pages = macthed_pages[start:end]
@@ -96,14 +95,4 @@ def barcode_scanner(raw_pages, condition="category"):
                 ret[label] = 1
             else:
                 ret[label] += 1
-    return ret
-
-
-def time(raw_pages):
-    ret = dict()
-    for page in raw_pages:
-        date = page.get('date')
-        if date not in ret:
-            ret[date] = []
-        ret[date].append(page)
     return ret
