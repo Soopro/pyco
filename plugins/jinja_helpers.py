@@ -13,8 +13,9 @@ def before_render(var, template):
 
 
 #custom functions
-def salt_shaker(obj, conditions, intersection=False):
+def salt_shaker(raw_pages, conditions, intersection=False):
     results = None
+    obj = raw_pages
     if not isinstance(conditions, list) or len(conditions) > 10:
         return "Excessive"
     if isinstance(obj, list):
@@ -22,25 +23,38 @@ def salt_shaker(obj, conditions, intersection=False):
     elif isinstance(obj, dict):
         results = {}
 
-    first = True
     for cond in conditions:
-        cond = cond.lower()
-        if isinstance(obj, list):
-            if intersection and not first:
-                results = [i for i in results if i.get(cond)]
+        if isinstance(cond, str):
+            cond_key = cond.lower()
+            cond_value = None
+        elif isinstance(cond, dict):
+            cond_key = cond.keys()[0]
+            cond_value = cond[cond_key]
+
+        if isinstance(obj, list):            
+            if intersection and len(results) > 0:
+                results = [i for i in results if i.get(cond_key)
+                            and (cond_value == None or i.get(cond_key))]
             else:
                 for i in obj:
-                    if i.get(cond) and i not in results:
+                    if i.get(cond_key) and i not in results \
+                    and (cond_value == None or i.get(cond_key):
                         results.append(i)
 
         elif isinstance(obj, dict):
-            if intersection and not first:
-                results.update({k: v for (k, v) in results.iteritems() if k == cond and v})
+            if intersection and len(results) > 0:
+                new_items = {k: v for (k, v) in results.iteritems() 
+                            if k == cond_key and v 
+                            and (cond_value == None or v)}
+
+                results.update(new_items)
+
             else:
-                results.update({k: v for (k, v) in obj.iteritems() if k == cond and v})
-                
-        if first:
-            first = False
+                new_items = {k: v for (k, v) in obj.iteritems() 
+                            if k == cond_key and v 
+                            and (cond_value == None or v)}
+
+                results.update(new_items)
 
     return results
 
@@ -49,13 +63,17 @@ def glue(args=None):
     argments = {k: v for k, v in request.args.items()}
     if isinstance(args, dict):
         argments.update(args)
-    url = request.path+"?"+"&".join(['%s=%s' % (key, value) for (key, value) in argments.items()])
+    url = request.path+"?"+"&".join(
+                ['%s=%s' % (key, value) for (key, value) in argments.items()])
     return url
 
 
 def stapler(raw_pages, paged=1, perpage=12, content_types=None):
-    macthed_pages = [page for page in raw_pages if not content_types or page.get("type") in content_types]
+    macthed_pages = [page for page in raw_pages 
+                    if not content_types or page.get("type") in content_types]
+
     max_pages = int(math.ceil(len(macthed_pages)/perpage))
+
     if max_pages < 1:
         max_pages = 1
     if paged > max_pages:
