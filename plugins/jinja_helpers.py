@@ -32,7 +32,7 @@ def salt_shaker(raw_pages, conditions, intersection=False):
             cond_value = cond[cond_key]
 
         if isinstance(obj, list):            
-            if intersection and len(results) > 0:
+            if intersection and results:
                 results = [i for i in results if i.get(cond_key)
                             and (cond_value == None or i.get(cond_key))]
             else:
@@ -63,23 +63,22 @@ def glue(args=None):
     argments = {k: v for k, v in request.args.items()}
     if isinstance(args, dict):
         argments.update(args)
-    url = request.path+"?"+"&".join(
-                ['%s=%s' % (key, value) for (key, value) in argments.items()])
+    url = request.path+"?"+"&".join(['%s=%s' % (key, value) for (key, value) in argments.items()])
     return url
 
 
 def stapler(raw_pages, paged=1, perpage=12, content_types=None):
-    macthed_pages = [page for page in raw_pages 
-                    if not content_types or page.get("type") in content_types]
+    matched_pages = [page for page in raw_pages
+                     if not content_types or page.get("type") in content_types]
 
-    max_pages = int(math.ceil(len(macthed_pages)/perpage))
+    max_pages = int(math.ceil(len(matched_pages)/perpage))
 
     max_pages = max(max_pages, 1)
     paged = min(max_pages, paged)
 
     start = (paged-1)*perpage
     end = paged*perpage
-    result_pages = macthed_pages[start:end]
+    result_pages = matched_pages[start:end]
     
     return {"pages": result_pages,
             "max": max_pages,

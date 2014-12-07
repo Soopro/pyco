@@ -7,7 +7,7 @@ Author: Redy
 Category: dji
 
 Template: works
-Type: works
+Type: lo
 Thumbnail: /uploads/dji_hr.jpg
 Description: We.DJI Culture Website
 Tag: Html5, CSS, Jquery, Parallax

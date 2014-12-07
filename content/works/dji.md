@@ -7,7 +7,7 @@ Author: Redy
 Category: dji
 
 Template: works
-Type: works
+Type: lo
 Thumbnail: /uploads/dji.jpg
 Description: DJI Official Website
 Tag: Html, CSS, Wordpress
