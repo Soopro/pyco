@@ -97,3 +97,13 @@ def barcode_scanner(raw_pages, condition="category"):
             else:
                 ret[label] += 1
     return ret
+
+
+def time(raw_pages):
+    ret = dict()
+    for page in raw_pages:
+        date = page.get('date')
+        if date not in ret:
+            ret[date] = []
+        ret[date].append(page)
+    return ret
