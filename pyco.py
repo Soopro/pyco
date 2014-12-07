@@ -206,7 +206,8 @@ class BaseView(MethodView):
         date_format = DEFAULT_DATE_FORMAT
         try:
             date_object = datetime.strptime(date, date_format)
-            date_formatted = date_object.strftime(config.get('PAGE_DATE_FORMAT'))
+            date_formatted = date_object.strftime(
+                                config.get('PAGE_DATE_FORMAT'))
         except ValueError:
             date_formatted=date
         return date_formatted
