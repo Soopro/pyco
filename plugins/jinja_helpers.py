@@ -14,50 +14,60 @@ def before_render(var, template):
 
 
 #custom functions
-def salt_shaker(obj, conditions, intersection=False):
-    results = None
-    if not isinstance(conditions, list) or len(conditions) > 10:
+def salt_shaker(raw_pages, conditions, intersection=False):
+    #return a list of result matched conditions.
+    #result_pages = salt_shaker(pages, [{'type':'test'},'thumbnail'],
+    #               intersection=False)
+
+    results = []
+    obj = raw_pages
+    if not isinstance(conditions, list) or len(conditions) > 10 \
+    and not isinstance(obj, (list,dict)):
         return "Excessive"
-    if isinstance(obj, list):
-        results = []
-    elif isinstance(obj, dict):
-        results = {}
 
-    first = True
     for cond in conditions:
-        cond = cond.lower()
-        if isinstance(obj, list):
-            if intersection and not first:
-                results = [i for i in results if i.get(cond)]
-            else:
-                for i in obj:
-                    if i.get(cond) and i not in results:
-                        results.append(i)
+        if isinstance(cond, str):
+            cond_key = cond.lower()
+            cond_value = None
+        elif isinstance(cond, dict):
+            cond_key = cond.keys()[0]
+            cond_value = cond[cond_key]
 
-        elif isinstance(obj, dict):
-            if intersection and not first:
-                results.update({k: v for (k, v) in results.iteritems() if k == cond and v})
-            else:
-                results.update({k: v for (k, v) in obj.iteritems() if k == cond and v})
+        if isinstance(obj, dict) and not results:
+            new_items = {k: v for (k, v) in obj.iteritems()
+                        if k == cond_key and v 
+                        and (cond_value == None or cond_value == v)}
+            results.append(new_items)
+            continue
 
-        if first:
-            first = False
+        if intersection and results:
+            results = [i for i in results if i.get(cond_key)
+                        and (cond_value == i.get(cond_key)
+                           or cond_value == None)]
+        else:
+            for i in obj:
+                if i.get(cond_key) and i not in results \
+                and (cond_value == None or cond_value == i.get(cond_key)):
+                    results.append(i)
 
     return results
 
 
 def glue(args=None):
+    #return a path + args, but not domain.
+    #relative_path_args = glue(args)
     argments = {k: v for k, v in request.args.items()}
     if isinstance(args, dict):
         argments.update(args)
-    url = request.path+"?"+"&".join(['%s=%s' % (key, value) for (key, value) in argments.items()])
+    url = request.path+"?"+"&".join(
+                ['%s=%s' % (key, value) for (key, value) in argments.items()])
     return url
 
 
-def stapler(raw_pages, paged=1, perpage=12, content_types=None):
-    matched_pages = [page for page in raw_pages
-                     if not content_types or page.get("type") in content_types]
-
+def stapler(raw_pages, paged=1, perpage=12):
+    #return dict for paginator.
+    #booklet = stapler(pages, paged=1, perpage=12)
+    matched_pages = raw_pages
     max_pages = int(math.ceil(len(matched_pages)/perpage))
 
     max_pages = max(max_pages, 1)
@@ -73,6 +83,8 @@ def stapler(raw_pages, paged=1, perpage=12, content_types=None):
 
 
 def barcode_scanner(raw_pages, condition="category"):
+    #return dict with category alias and count.
+    #cate_count = barcode_scanner(raw_pages, condition="tag")
     ret = dict()
     for page in raw_pages:
         label = page.get(condition)
