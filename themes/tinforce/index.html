@@ -12,12 +12,11 @@
 			<section class="jumbotron">
 				<h1>{{meta.tagline}}</h1>
 			</section>
-		</div>
+		</div>}
 		<!-- #Tagline -->
 		<!-- Contents -->
 		<div class="container">
 			<section class="row works-list">
-
 				{% for work in saltshaker(pages,['type','thumbnail'],True) %}
 						<figure class="col-md-3 col-sm-6"><a href="{{work.url}}">
 							<figcaption>{{work.title}}</figcaption>
@@ -36,5 +35,15 @@
 		{% include "_footer.html" %}
 		<!-- #Footer -->
 	</div>
+        {% set sorted_pages = sort_by_date(saltshaker(pages,["thumbnail","type"], true)) %}
+        {% for item in sorted_pages%}
+            {% if item.date not in current_date %}
+            {% set current_date = item.date %}
+            {{ item.date }}
+                body
+            {% else %}
+                body
+            {% endif %}
+        {% endfor %}
 </body>
 </html>

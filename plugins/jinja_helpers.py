@@ -9,48 +9,40 @@ def before_render(var, template):
     var["stapler"] = stapler
     var["glue"] = glue
     var["barcode_scanner"] = barcode_scanner
+    var["sort_by_date"] = sort_by_date
     return
 
 
 #custom functions
-def salt_shaker(raw_pages, conditions, intersection=False):
-    results = []
-    obj = raw_pages
+def salt_shaker(obj, conditions, intersection=False):
+    results = None
     if not isinstance(conditions, list) or len(conditions) > 10:
         return "Excessive"
+    if isinstance(obj, list):
+        results = []
+    elif isinstance(obj, dict):
+        results = {}
 
+    first = True
     for cond in conditions:
-        if isinstance(cond, str):
-            cond_key = cond.lower()
-            cond_value = None
-        elif isinstance(cond, dict):
-            cond_key = cond.keys()[0]
-            cond_value = cond.get(cond_key)
-
-        if isinstance(obj, list):            
-            if intersection and results:
-                results = [i for i in results if i.get(cond_key) and (cond_value is None or cond_value == i.get(cond_key))]
+        cond = cond.lower()
+        if isinstance(obj, list):
+            if intersection and not first:
+                results = [i for i in results if i.get(cond)]
             else:
                 for i in obj:
-                    if i.get(cond_key) and i not in results and (cond_value is None or cond_value == i.get(cond_key)):
+                    if i.get(cond) and i not in results:
                         results.append(i)
 
         elif isinstance(obj, dict):
-            if intersection and results:
-                new_items = {k: v for (k, v) in results
-                            if k == cond_key and v 
-                            and (cond_value == None or cond_value == v)}
-
-                results.append(new_items)
-
+            if intersection and not first:
+                results.update({k: v for (k, v) in results.iteritems() if k == cond and v})
             else:
-                new_items = {k: v for (k, v) in obj.iteritems() 
-                            if k == cond_key and v 
-                            and (cond_value == None or cond_value == v)}
+                results.update({k: v for (k, v) in obj.iteritems() if k == cond and v})
 
-                results.append(new_items)
-    # for i in results:
-    #     print i.get('type')
+        if first:
+            first = False
+
     return results
 
 
@@ -90,3 +82,7 @@ def barcode_scanner(raw_pages, condition="category"):
             else:
                 ret[label] += 1
     return ret
+
+
+def sort_by_date(raw_pages, key='date', reverse=True):
+    return sorted(raw_pages, key=lambda x: (x.get(key)), reverse=reverse)
