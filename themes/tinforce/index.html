@@ -17,7 +17,8 @@
 		<!-- Contents -->
 		<div class="container">
 			<section class="row works-list">
-				{% for work in saltshaker(pages,[{'type':'lo'},'thumbnail'],true) %}
+
+				{% for work in saltshaker(pages,['type','thumbnail'],True) %}
 						<figure class="col-md-3 col-sm-6"><a href="{{work.url}}">
 							<figcaption>{{work.title}}</figcaption>
 							<img src="{{work.thumbnail}}" title="{{work.title}}" alt="{{work.title}}" /></a>

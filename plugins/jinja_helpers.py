@@ -14,14 +14,10 @@ def before_render(var, template):
 
 #custom functions
 def salt_shaker(raw_pages, conditions, intersection=False):
-    results = None
+    results = []
     obj = raw_pages
     if not isinstance(conditions, list) or len(conditions) > 10:
         return "Excessive"
-    if isinstance(obj, list):
-        results = []
-    elif isinstance(obj, dict):
-        results = {}
 
     for cond in conditions:
         if isinstance(cond, str):
@@ -29,34 +25,32 @@ def salt_shaker(raw_pages, conditions, intersection=False):
             cond_value = None
         elif isinstance(cond, dict):
             cond_key = cond.keys()[0]
-            print cond_key
-            cond_value = cond[cond_key]
-            print cond_value
+            cond_value = cond.get(cond_key)
 
         if isinstance(obj, list):            
             if intersection and results:
-                results = [i for i in results if i.get(cond_key) and (cond_value == None or i.get(cond_key))]
+                results = [i for i in results if i.get(cond_key) and (cond_value is None or cond_value == i.get(cond_key))]
             else:
                 for i in obj:
-                    if i.get(cond_key) and i not in results and (cond_value == None or i.get(cond_key)):
+                    if i.get(cond_key) and i not in results and (cond_value is None or cond_value == i.get(cond_key)):
                         results.append(i)
 
         elif isinstance(obj, dict):
             if intersection and results:
-                new_items = {k: v for (k, v) in results.iteritems() 
+                new_items = {k: v for (k, v) in results
                             if k == cond_key and v 
-                            and (cond_value == None or v)}
+                            and (cond_value == None or cond_value == v)}
 
-                results.update(new_items)
+                results.append(new_items)
 
             else:
                 new_items = {k: v for (k, v) in obj.iteritems() 
                             if k == cond_key and v 
-                            and (cond_value == None or v)}
+                            and (cond_value == None or cond_value == v)}
 
-                results.update(new_items)
-    for i in results:
-        print i.get('type')
+                results.append(new_items)
+    # for i in results:
+    #     print i.get('type')
     return results
 
 
