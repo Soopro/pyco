@@ -35,15 +35,11 @@
 		{% include "_footer.html" %}
 		<!-- #Footer -->
 	</div>
-        {% set sorted_pages = sort_by_date(saltshaker(pages,["thumbnail","type"], true)) %}
-        {% for item in sorted_pages%}
-            {% if item.date not in current_date %}
-            {% set current_date = item.date %}
-            {{ item.date }}
-                body
-            {% else %}
-                body
-            {% endif %}
-        {% endfor %}
+{% for date,group in time_machine(pages) %}
+    {{ date }}:<br/>
+    {% for item in group %}
+        {{ item.title }}<br/>
+    {% endfor %}
+{% endfor %}
 </body>
 </html>

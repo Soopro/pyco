@@ -2,6 +2,8 @@
 from __future__ import absolute_import
 from flask import request
 import math
+from itertools import groupby
+import datetime
 
 
 def before_render(var, template):
@@ -9,7 +11,7 @@ def before_render(var, template):
     var["stapler"] = stapler
     var["glue"] = glue
     var["barcode_scanner"] = barcode_scanner
-    var["sort_by_date"] = sort_by_date
+    var["time_machine"] = time_machine
     return
 
 
@@ -96,5 +98,20 @@ def barcode_scanner(raw_pages, condition="category"):
     return ret
 
 
-def sort_by_date(raw_pages, key='date', reverse=True):
-    return sorted(raw_pages, key=lambda x: (x.get(key)), reverse=reverse)
+def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
+    def parse_datetime(date):
+        d = datetime.datetime.strptime(date, time_format)
+        if precision == 'year':
+            return d.year,
+        elif precision == 'month':
+            return d.year, d.month
+        elif precision == 'day':
+            return d.year, d.month, d.day
+        elif precision == 'hour':
+            return d.year, d.month, d.day, d.hour
+        elif precision == 'minute':
+            return d.year, d.month, d.day, d.hour, d.minute
+        elif precision == 'second':
+            return d.year, d.month, d.day, d.hour, d.minute, d.second
+    pages = sorted(filter(lambda x: x.get('date'), raw_pages), key=lambda x: x['date'], reverse=True)
+    return groupby(pages, key=lambda x: parse_datetime(x.get('date')))
