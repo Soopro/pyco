@@ -98,7 +98,8 @@ def barcode_scanner(raw_pages, condition="category"):
     return ret
 
 
-def time_machine(raw_pages, precision='year', time_format='%Y/%m/%d'):
+def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
+
     def parse_datetime(date):
         d = datetime.datetime.strptime(date, time_format)
         if precision == 'year':
@@ -113,6 +114,8 @@ def time_machine(raw_pages, precision='year', time_format='%Y/%m/%d'):
             return d.year, d.month, d.day, d.hour, d.minute
         elif precision == 'second':
             return d.year, d.month, d.day, d.hour, d.minute, d.second
+        else:
+            raise ValueError("arg precision must be 'year', 'month', 'day', 'hour', 'minute' or 'second'.")
     pages = sorted(filter(lambda x: x.get('date'), raw_pages), key=lambda x: x['date'], reverse=True)
 
     # iterator version

@@ -12,7 +12,7 @@
 			<section class="jumbotron">
 				<h1>{{meta.tagline}}</h1>
 			</section>
-		</div>}
+		</div>
 		<!-- #Tagline -->
 		<!-- Contents -->
 		<div class="container">
@@ -35,7 +35,7 @@
 		{% include "_footer.html" %}
 		<!-- #Footer -->
 	</div>
-{% for date,group in time_machine(pages) %}
+{% for date,group in time_machine(pages,precision='lol') %}
     {{ date }}:<br/>
     {% for item in group %}
         {{ item.title }}<br/>
