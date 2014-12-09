@@ -98,7 +98,7 @@ def barcode_scanner(raw_pages, condition="category"):
     return ret
 
 
-def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
+def time_machine(raw_pages, precision='year', time_format='%Y/%m/%d'):
     def parse_datetime(date):
         d = datetime.datetime.strptime(date, time_format)
         if precision == 'year':
@@ -114,4 +114,12 @@ def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
         elif precision == 'second':
             return d.year, d.month, d.day, d.hour, d.minute, d.second
     pages = sorted(filter(lambda x: x.get('date'), raw_pages), key=lambda x: x['date'], reverse=True)
-    return groupby(pages, key=lambda x: parse_datetime(x.get('date')))
+
+    # iterator version
+    # return groupby(pages, key=lambda x: parse_datetime(x.get('date')))
+
+    # list version
+    ret = []
+    for date, group in groupby(pages, key=lambda x: parse_datetime(x.get('date'))):
+        ret.append((date, [x for x in group]))
+    return ret
