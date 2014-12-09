@@ -123,6 +123,7 @@ def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
 
     # list version
     ret = []
-    for date, group in groupby(pages, key=lambda x: parse_datetime(x.get('date'))):
+    raw_group = groupby(pages, key=lambda x: parse_datetime(x.get('date')))
+    for date, group in raw_group:
         ret.append((date, [x for x in group]))
     return ret
