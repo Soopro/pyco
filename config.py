@@ -4,7 +4,7 @@ HOST = '0.0.0.0'
 DEBUG = True
 PORT = 5500
 
-THEME_NAME = 'tinforce'
+THEME_NAME = 'default'
 
 BASE_URL = "http://127.0.0.1:5500/"
 

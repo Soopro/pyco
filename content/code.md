@@ -4,7 +4,7 @@ Date: 2014/01/01
 Nav: Code Test
 Order: 0
 Category: none
-Template: post
+Template: page
 Description: This is looks like Python
 */
 

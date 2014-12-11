@@ -19,14 +19,8 @@
     		  <h1>{{ site_title }} {{_('Hello World!')}}<h1>
               <div class="sub-title"></div>
     		</section>
-			{{content_type}}<br/><br/>
 			<div>
 				<h2>{{language_text}}</h2>
-				{% for trans in translates %}
-					{{ trans.name }}
-					{{ trans.url }}
-					<br/>
-				{% endfor %}
 			</div>
     		<ul class="nav">
     		{% for item in g.navigation %}
@@ -36,7 +30,7 @@
     		{% endfor %}
     		</ul>
 			<ul class="entries">
-			{% set booklet = stapler(pages,paged=g.paged,perpage=g.perpage,content_types=["works"]) %}
+			{% set booklet = stapler(pages,paged=g.paged,perpage=g.perpage) %}
     		{% for page in booklet.pages %}
 				<li>
 					<a href="{{ page.url }}">

@@ -35,7 +35,7 @@
 		{% include "_footer.html" %}
 		<!-- #Footer -->
 	</div>
-{% for date,group in time_machine(pages,precision='lol') %}
+{% for date,group in time_machine(pages) %}
     {{ date }}:<br/>
     {% for item in group %}
         {{ item.title }}<br/>

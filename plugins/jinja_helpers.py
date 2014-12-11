@@ -17,10 +17,10 @@ def before_render(var, template):
 
 #custom functions
 def salt_shaker(raw_pages, conditions, intersection=False):
-    #return a list of result matched conditions.
-    #result_pages = salt_shaker(pages, [{'type':'test'},'thumbnail'],
-    #               intersection=False)
-
+    """return a list of result matched conditions.
+    result_pages = salt_shaker(pages, [{'type':'test'},'thumbnail'],
+                  intersection=False)
+    """
     results = []
     obj = raw_pages
     if not isinstance(conditions, list) or len(conditions) > 10 \
@@ -56,8 +56,9 @@ def salt_shaker(raw_pages, conditions, intersection=False):
 
 
 def glue(args=None):
-    #return a path + args, but not domain.
-    #relative_path_args = glue(args)
+    """return a path + args, but not domain.
+    relative_path_args = glue(args)
+    """
     argments = {k: v for k, v in request.args.items()}
     if isinstance(args, dict):
         argments.update(args)
@@ -67,8 +68,9 @@ def glue(args=None):
 
 
 def stapler(raw_pages, paged=1, perpage=12):
-    #return dict for paginator.
-    #booklet = stapler(pages, paged=1, perpage=12)
+    """return dict for paginator.
+    booklet = stapler(pages, paged=1, perpage=12)
+    """
     matched_pages = raw_pages
     max_pages = int(math.ceil(len(matched_pages)/perpage))
 
@@ -85,8 +87,9 @@ def stapler(raw_pages, paged=1, perpage=12):
 
 
 def barcode_scanner(raw_pages, condition="category"):
-    #return dict with category alias and count.
-    #cate_count = barcode_scanner(raw_pages, condition="tag")
+    """return dict with category alias and count.
+    cate_count = barcode_scanner(raw_pages, condition="tag")
+    """
     ret = dict()
     for page in raw_pages:
         label = page.get(condition)
@@ -99,7 +102,9 @@ def barcode_scanner(raw_pages, condition="category"):
 
 
 def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
+    """
 
+    """
     def parse_datetime(date):
         d = datetime.datetime.strptime(date, time_format)
         if precision == 'year':
