@@ -272,7 +272,9 @@ class BaseView(MethodView):
         if sort_key not in ("title", "date"):
             sort_key = "title"
 
-        return sorted(page_data_list, key=lambda x: u"{}_{}".format(x[sort_key], x["title"]), reverse=reverse)
+        return sorted(page_data_list, 
+                      key=lambda x: u"{}_{}".format(x[sort_key], x["title"]),
+                      reverse=reverse)
 
     #theme
     @property
@@ -519,7 +521,8 @@ class EditTemplateView(BaseView):
         return os.path.join(current_app.config.get("BASE_URL"), '')
 
     def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')
+        return os.path.join(STATIC_BASE_URL,
+                            current_app.config.get('THEME_NAME'), '')
     
     def make_pattern(self, pattern):
         return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'),
@@ -573,10 +576,12 @@ def before_request():
     load_config(current_app)
     if current_app.debug:
         # change template folder
-        current_app.template_folder = os.path.join(THEMES_DIR, current_app.config.get("THEME_NAME"))
+        current_app.template_folder = os.path.join(THEMES_DIR,
+                                      current_app.config.get("THEME_NAME"))
         # change reload template folder
         current_app.jinja_env.cache = None
-        current_app.jinja_loader = FileSystemLoader(current_app.template_folder)
+        tpl_folder = current_app.template_folder
+        current_app.jinja_loader = FileSystemLoader(tpl_folder)
         # current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
 
 
