@@ -99,7 +99,8 @@ class BaseView(MethodView):
         if self.check_file_exists(file_name):
             return file_name
 
-        file_name = os.path.join(base_path, "{}{}".format(CONTENT_DEFAULT_FILENAME, CONTENT_FILE_EXT))
+        tmp_fname = "{}{}".format(CONTENT_DEFAULT_FILENAME, CONTENT_FILE_EXT)
+        file_name = os.path.join(base_path,tmp_fname)
         if self.check_file_exists(file_name):
             return file_name
         return None
@@ -108,7 +109,8 @@ class BaseView(MethodView):
         return os.path.join(current_app.config.get("BASE_URL"), '')
 
     def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL, current_app.config.get('THEME_NAME'), '')
+        return os.path.join(STATIC_BASE_URL,
+                            current_app.config.get('THEME_NAME'), '')
 
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
@@ -128,8 +130,12 @@ class BaseView(MethodView):
         return alias
 
     def gen_excerpt(self, content, theme_meta):
-        excerpt_length = theme_meta.get('excerpt_length', DEFAULT_EXCERPT_LENGTH)
-        excerpt_ellipsis = theme_meta.get('excerpt_ellipsis', DEFAULT_EXCERPT_ELLIPSIS)
+        excerpt_length = theme_meta.get('excerpt_length',
+                                        DEFAULT_EXCERPT_LENGTH)
+                                        
+        excerpt_ellipsis = theme_meta.get('excerpt_ellipsis',
+                                          DEFAULT_EXCERPT_ELLIPSIS)
+                                          
         excerpt = re.sub(r'<[^>]*?>', '', content)
         if excerpt:
             excerpt = " ".join(excerpt.split())
@@ -182,14 +188,20 @@ class BaseView(MethodView):
 #         flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
 #         render = BleepRenderer(flags=flags)
 #         md = misaka.Markdown(render, extensions=extensions)
-        return markdown.markdown(content_string, ['markdown.extensions.codehilite', 'markdown.extensions.extra'])
+        return markdown.markdown(content_string,
+                                 ['markdown.extensions.codehilite',
+                                 'markdown.extensions.extra'])
 
     # cache
     @staticmethod
     def generate_etag(content_file_full_path):
         file_stat = os.stat(content_file_full_path)
-        base = "{mtime:0.0f}_{size:d}_{fpath}".format(mtime=file_stat.st_mtime, size=file_stat.st_size,
-                                                      fpath=content_file_full_path)
+        base = "{mtime:0.0f}_{size:d}_{fpath}".format(
+                    mtime=file_stat.st_mtime,
+                    size=file_stat.st_size,
+                    fpath=content_file_full_path
+                )
+                    
         return sha1(base).hexdigest()
 
     # pages
@@ -197,7 +209,10 @@ class BaseView(MethodView):
     def get_files(base_dir, ext):
         all_files = []
         for root, directory, files in os.walk(base_dir):
-            file_full_paths = [os.path.join(root, f) for f in filter(lambda x: x.endswith(ext), files)]
+            file_full_paths = [
+                os.path.join(root, f) 
+                for f in filter(lambda x: x.endswith(ext), files)
+            ]
             all_files.extend(file_full_paths)
         return all_files
 
@@ -247,7 +262,8 @@ class BaseView(MethodView):
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
-            data["excerpt"] = self.gen_excerpt(data["content"], self.view_ctx["theme_meta"])
+            data["excerpt"] = self.gen_excerpt(data["content"],
+                                               self.view_ctx["theme_meta"])
             des = meta.get("description")
             data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
@@ -349,20 +365,26 @@ class ContentView(BaseView):
         run_hook("after_load_content", file=file, content=file_content)
         
         # parse file content
-        meta_string, content_string = self.content_splitter(file_content["content"])
+        tmp_file_content = file_content["content"]
+        meta_string, content_string = self.content_splitter(tmp_file_content)
+
         page_meta = self.parse_page_meta(meta_string)
         
         page_meta["alias"] = self.gen_page_alias(file["path"])
         if not page_meta.get("url"):
             page_meta["url"] = self.gen_page_url(file["path"])
 
-        page_meta['date_formatted'] = self.format_date(page_meta.get("date", ""))
+        tmp_date = page_meta.get("date", "")
+        page_meta['date_formatted'] = self.format_date(tmp_date)
         redirect_to = {"url": None}
-        run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
+        run_hook("single_page_meta",
+                 page_meta=page_meta,
+                 redirect_to=redirect_to)
         
         tmp_tpl_name = str(page_meta.get('template'))
         if tmp_tpl_name[0:1] == '_' and not redirect_to["url"]:
-            redirect_to["url"] = os.path.join(config.get('BASE_URL'), CONTENT_NOT_FOUND_FILENAME)
+            redirect_to["url"] = os.path.join(config.get('BASE_URL'),
+                                              CONTENT_NOT_FOUND_FILENAME)
         
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
@@ -379,7 +401,8 @@ class ContentView(BaseView):
         
         self.view_ctx["content"] = page_content['content']
 
-        excerpt = self.gen_excerpt(self.view_ctx["content"], self.view_ctx["theme_meta"])
+        excerpt = self.gen_excerpt(self.view_ctx["content"],
+                                   self.view_ctx["theme_meta"])
         self.view_ctx["meta"]["excerpt"] = excerpt
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
@@ -401,11 +424,13 @@ class ContentView(BaseView):
                 if page_index == 0:
                     self.view_ctx["is_front"] = True
                 else:
-                    self.view_ctx["prev_page"] = self.view_ctx["pages"][page_index-1]
+                    prev_page = self.view_ctx["pages"][page_index-1]
+                    self.view_ctx["prev_page"] = prev_page
                 if page_index == len(self.view_ctx["pages"]) - 1:
                     self.view_ctx["is_tail"] = True
                 else:
-                    self.view_ctx["next_page"] = self.view_ctx["pages"][page_index+1]
+                    next_page = self.view_ctx["pages"][page_index+1]
+                    self.view_ctx["next_page"] = next_page
 
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
@@ -414,8 +439,12 @@ class ContentView(BaseView):
                  next_page=self.view_ctx["next_page"])
         
         template = dict()
-        template['file'] = DEFAULT_INDEX_TMPL_NAME if auto_index else self.view_ctx["meta"].get("template",
-                                                                                                DEFAULT_PAGE_TMPL_NAME)
+
+        if auto_index:
+            template['file'] = DEFAULT_INDEX_TMPL_NAME
+        else:
+            template['file'] = self.view_ctx["meta"].get("template",
+                                                       DEFAULT_PAGE_TMPL_NAME)
         
         run_hook("before_render", var=self.view_ctx, template=template)
         
@@ -432,7 +461,8 @@ class ContentView(BaseView):
 
         output = {}
         self.view_ctx.get('meta')
-        output['content'] = render_template(template_file_path, **self.view_ctx)
+        output['content'] = render_template(template_file_path,
+                                                 **self.view_ctx)
         
         run_hook("after_render", output=output)
         return make_content_response(output['content'], status_code)
@@ -456,7 +486,8 @@ class EditTemplateView(BaseView):
             file = ''.join([filename, TPL_FILE_EXT])
 
             # load_config(current_app)
-            f = os.path.join(current_app.root_path, THEMES_DIR, current_app.config['THEME_NAME'], file)
+            f = os.path.join(current_app.root_path, THEMES_DIR,
+                             current_app.config['THEME_NAME'], file)
 
             theme_url = self.gen_theme_url()
             base_url = self.gen_base_url()
@@ -473,7 +504,8 @@ class EditTemplateView(BaseView):
             ]
             for code in shortcodes:
                 pattern = self.make_pattern(code["pattern"])
-                tmpl_content = re.sub(pattern, code["replacement"], tmpl_content)
+                tmpl_content = re.sub(pattern, code["replacement"],
+                                                     tmpl_content)
             
             return tmpl_content
     
@@ -490,7 +522,8 @@ class EditTemplateView(BaseView):
         return os.path.join(STATIC_BASE_URL,current_app.config.get('THEME_NAME'), '')
     
     def make_pattern(self, pattern):
-        return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'), re.IGNORECASE)
+        return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'),
+                                                         re.IGNORECASE)
 
 
 app = Flask(__name__, static_url_path=STATIC_BASE_URL)
