@@ -421,7 +421,7 @@ class ContentView(BaseView):
         for page_index, page_data in enumerate(self.view_ctx["pages"]):
             if auto_index:
                 break
-            if page_data["url"] == request_url:
+            if page_data["url"] == page_meta["url"]:
                 self.view_ctx["current_page"] = page_data
                 if page_index == 0:
                     self.view_ctx["is_front"] = True
