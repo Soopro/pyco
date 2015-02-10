@@ -10,8 +10,8 @@ def before_render(var, template):
     var["saltshaker"] = salt_shaker
     var["stapler"] = stapler
     var["glue"] = glue
-    var["barcode_scanner"] = barcode_scanner
-    var["time_machine"] = time_machine
+    var["barcode"] = barcode_scanner
+    var["timemachine"] = time_machine
     return
 
 
@@ -55,15 +55,24 @@ def salt_shaker(raw_pages, conditions, intersection=False):
     return results
 
 
-def glue(args=None):
+def glue(args = None, url = None):
     """return a path + args, but not domain.
     relative_path_args = glue(args)
     """
-    argments = {k: v for k, v in request.args.items()}
+    argments = {k:v for k,v in request.args.items()}
+    if not url:
+        url = request.path
     if isinstance(args, dict):
         argments.update(args)
-    url = request.path+"?"+"&".join(
-                ['%s=%s' % (key, value) for (key, value) in argments.items()])
+
+    conn_symbol = "?"
+    if conn_symbol in url:
+        conn_symbol = "&"
+    
+    new_args = "&".join(['%s=%s' % (key, value) 
+                    for (key, value) in argments.items()])
+
+    url="{}{}{}".format(url, conn_symbol, new_args)
     return url
 
 
@@ -81,9 +90,11 @@ def stapler(raw_pages, paged=1, perpage=12):
     end = paged*perpage
     result_pages = matched_pages[start:end]
     
-    return {"pages": result_pages,
-            "max": max_pages,
-            "paged": paged}
+    return {
+        "pages": result_pages,
+        "max": max_pages,
+        "paged": paged
+    }
 
 
 def barcode_scanner(raw_pages, condition="category"):

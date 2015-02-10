@@ -39,7 +39,10 @@ from flask import Flask, current_app, request, abort, render_template, \
     make_response, redirect, send_from_directory, send_file
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
+
 from helpers import load_config, make_content_response
+from filters import filter_thumbnail
+
 from collections import defaultdict
 from hashlib import sha1
 from werkzeug.datastructures import ImmutableDict
@@ -556,6 +559,11 @@ app.jinja_env.add_extension('jinja2.ext.with_')
 app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 app.template_folder = os.path.join(THEMES_DIR, app.config.get("THEME_NAME"))
 app.static_folder = THEMES_DIR
+
+# add custom filters
+app.jinja_env.filters['thumbnail'] = filter_thumbnail
+
+
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
 app.add_url_rule("{}/".format(EDITOR_URL), view_func=EditorView.as_view("editor"))
