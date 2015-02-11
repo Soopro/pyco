@@ -43,13 +43,16 @@ def before_render(var, template):
         var["language_text"] = current_trans["text"]
     
     var["locale"] = _LOCALE
+    var["lang"] = _LOCALE.split('_')[0]
     return
 
 
-#custome functions
+# custome functions
 def set_current_translation(lang):
     if _TRANSLATES and _THEME_NAME:
-        lang_path = os.path.join(current_app.template_folder, _LANGUAGES_FOLDER)
-        tr = gettext.translation(_THEME_NAME, lang_path, languages=[lang], fallback=False)
+        lang_path = os.path.join(current_app.template_folder,
+                                 _LANGUAGES_FOLDER)
+        tr = gettext.translation(_THEME_NAME, 
+                                 lang_path, languages=[lang], fallback=False)
         
         current_app.jinja_env.install_gettext_translations(tr)

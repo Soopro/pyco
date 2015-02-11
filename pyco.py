@@ -6,9 +6,10 @@ PLUGIN_DIR = "plugins/"
 THEMES_DIR = "themes/"
 TEMPLATE_FILE_EXT = ".html"
 TPL_FILE_EXT = ".tpl"
-DEFAULT_INDEX_TMPL_NAME = "index"
-DEFAULT_PAGE_TMPL_NAME = "page"
-DEFAULT_DATE_FORMAT = '%Y/%m/%d'
+DEFAULT_THEME_CONFIG = "config.json"
+
+DEFAULT_TEMPLATE = "index"
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
 DEFAULT_EXCERPT_LENGTH = 50
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
@@ -16,27 +17,27 @@ DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 STATIC_DIR = THEMES_DIR
 STATIC_BASE_URL = "/static"
 
-UPLOADS_DIR = "uploads/"
-UPLOADS_URL = "/uploads"
+UPLOADS_DIR = "uploads"
 
-EDITOR_DIR = "editor/"
-EDITOR_URL = "/editor"
-EDITOR_INDEX = "editor/index.html"
+EDITOR_DIR = "editor"
+EDITOR_INDEX = "index.html"
 
-CONTENT_DIR = "content/"
+CONTENT_DIR = "content"
 CONTENT_FILE_EXT = ".md"
-CONTENT_DEFAULT_FILENAME = "index"
-CONTENT_NOT_FOUND_FILENAME = "404"
 
-INVISIBLE_PAGE_LIST = [CONTENT_NOT_FOUND_FILENAME]
+DEFAULT_INDEX_ALIAS = "index"
+DEFAULT_404_ALIAS = "error_404"
+
+INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
 
 CHARSET = "utf8"
 
 import sys
 sys.path.insert(0, PLUGIN_DIR)
 
-from flask import Flask, current_app, request, abort, render_template, \
-    make_response, redirect, send_from_directory, send_file
+from flask import (Flask, current_app, request, abort, render_template,
+                   make_response, redirect, send_from_directory, send_file)
+
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
@@ -50,23 +51,7 @@ from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
 from gettext import gettext, ngettext
-import os
-import re
-import traceback
-import markdown
-# import misaka
-# from pygments import highlight
-# from pygments.lexers import get_lexer_by_name
-# from pygments.formatters.html import HtmlFormatter
-
-# class BleepRenderer(misaka.HtmlRenderer, misaka.SmartyPants):
-#     @staticmethod
-#     def block_code(text, lang):
-#         if not lang:
-#             return '\n<pre><code>%s</code></pre>\n' % text.strip()
-#         lexer = get_lexer_by_name(lang, stripall=True)
-#         formatter = HtmlFormatter(style="vim", title="%s code" % lang, cssclass="codehilite")
-#         return highlight(text, lexer, formatter)
+import os, re, traceback, markdown, json
 
 
 class BaseView(MethodView):
@@ -74,12 +59,17 @@ class BaseView(MethodView):
         super(BaseView, self).__init__()
         self.plugins = []
         self.config = current_app.config
-        
         self.view_ctx = dict()
-        self.view_ctx["tmp"] = dict()
-        self.ext_ctx = dict()
         return
-
+    
+    def load_theme_config(self):
+        theme_config_file = os.path.join(THEMES_DIR,
+                                         self.config['THEME_NAME'],
+                                         DEFAULT_THEME_CONFIG)
+        json_data = open(theme_config_file)
+        self.config['THEME_META'] = json.load(json_data)
+        json_data.close()
+    
     def load_plugins(self):
         loaded_plugins = []
         plugins = self.config.get("PLUGINS")
@@ -102,7 +92,7 @@ class BaseView(MethodView):
         if self.check_file_exists(file_name):
             return file_name
 
-        tmp_fname = "{}{}".format(CONTENT_DEFAULT_FILENAME, CONTENT_FILE_EXT)
+        tmp_fname = "{}{}".format(DEFAULT_INDEX_ALIAS, CONTENT_FILE_EXT)
         file_name = os.path.join(base_path,tmp_fname)
         if self.check_file_exists(file_name):
             return file_name
@@ -119,10 +109,10 @@ class BaseView(MethodView):
         if relative_path.endswith(CONTENT_FILE_EXT):
             relative_path = os.path.splitext(relative_path)[0]
 
-        if relative_path.endswith("index"):
+        if relative_path.endswith(DEFAULT_INDEX_ALIAS):
             relative_path = relative_path[:-5]
-    
-        relative_url = relative_path.replace(CONTENT_DIR, '')
+
+        relative_url = relative_path.replace(CONTENT_DIR+"/", '')
         url = os.path.join(current_app.config.get("BASE_URL"), relative_url)
         return url
     
@@ -152,7 +142,7 @@ class BaseView(MethodView):
     # content
     @property
     def content_not_found_relative_path(self):
-        return "{}{}".format(CONTENT_NOT_FOUND_FILENAME, CONTENT_FILE_EXT)
+        return "{}{}".format(DEFAULT_404_ALIAS, CONTENT_FILE_EXT)
 
     @property
     def content_not_found_full_path(self):
@@ -186,11 +176,6 @@ class BaseView(MethodView):
 
     @staticmethod
     def parse_content(content_string):
-        # extensions = misaka.EXT_NO_INTRA_EMPHASIS | misaka.EXT_FENCED_CODE | misaka.EXT_AUTOLINK | \
-#             misaka.EXT_LAX_HTML_BLOCKS | misaka.EXT_TABLES | misaka.EXT_SUPERSCRIPT
-#         flags = misaka.HTML_TOC | misaka.HTML_USE_XHTML
-#         render = BleepRenderer(flags=flags)
-#         md = misaka.Markdown(render, extensions=extensions)
         return markdown.markdown(content_string,
                                  ['markdown.extensions.codehilite',
                                  'markdown.extensions.extra'])
@@ -222,10 +207,11 @@ class BaseView(MethodView):
     def format_date(self, date):
         config = self.config
         date_format = DEFAULT_DATE_FORMAT
+        theme_meta_options = self.view_ctx["theme_meta"].get("options")
+        to_foramt = theme_meta_options.get('date_format')
         try:
             date_object = datetime.strptime(date, date_format)
-            date_formatted = date_object.strftime(
-                                config.get('PAGE_DATE_FORMAT'))
+            date_formatted = date_object.strftime(to_foramt)
         except ValueError:
             date_formatted=date
         return date_formatted
@@ -234,8 +220,7 @@ class BaseView(MethodView):
         config = self.config
         base_url = self.gen_base_url()
         
-        theme_meta = self.view_ctx["theme_meta"]
-        theme_meta_options = theme_meta.get("options")
+        theme_meta_options = self.view_ctx["theme_meta"].get("options")
         
         # sortby
         sort_desc = True
@@ -254,7 +239,7 @@ class BaseView(MethodView):
         for f in files:
             if f in INVISIBLE_PAGE_LIST:
                 continue
-            relative_path = f.split(CONTENT_DIR, 1)[1]
+            relative_path = f.split(CONTENT_DIR+"/", 1)[1]
             if relative_path.startswith("~") \
                     or relative_path.startswith("#") \
                     or relative_path in self.content_ignore_files:
@@ -279,7 +264,8 @@ class BaseView(MethodView):
             data["description"] = data["excerpt"] if not des else des
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
-
+      
+        
         return sorted(page_data_list, 
                       key=lambda x: (x['priority'], x[sort_key]),
                       reverse=sort_desc)
@@ -297,8 +283,10 @@ class BaseView(MethodView):
     def init_context(self):
         # env context
         config = self.config
+        self.view_ctx["app_id"] = "APP_ID_PLACE_HOLDER"
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
+        self.view_ctx["libs_url"] = config.get("LIBS_HOST")
         self.view_ctx["site_meta"] = config.get("SITE_META")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
@@ -324,25 +312,19 @@ class ContentView(BaseView):
         file_content = {"content": None}
         
         # load
+        self.config = current_app.config
+        self.load_theme_config()
         self.load_plugins()
         run_hook("plugins_loaded")
 
-        # load_config(current_app)
         current_app.debug = _DEBUG
-        self.config = current_app.config
-        
+      
         self.init_context()
         
         run_hook("config_loaded", config=self.config)
         
         config = self.config
-        
-        request_url = request.path
-        site_index_url = config.get("SITE_INDEX_URL")
-        is_site_index = request_url == site_index_url
-        auto_index = is_site_index and config.get("AUTO_INDEX")
-        self.view_ctx["is_site_index"] = is_site_index
-        # self.view_ctx["auto_index"] = auto_index
+
         self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
         
         redirect_to = {"url": None}
@@ -351,7 +333,7 @@ class ContentView(BaseView):
             return redirect(redirect_to["url"], code=302)
 
 
-        file["path"] = self.get_file_path(request_url)
+        file["path"] = self.get_file_path(request.path)
         # hook before load content
         run_hook("before_load_content", file=file)
         # if not found
@@ -394,7 +376,7 @@ class ContentView(BaseView):
         tmp_tpl_name = str(page_meta.get('template'))
         if tmp_tpl_name[0:1] == '_' and not redirect_to["url"]:
             redirect_to["url"] = os.path.join(config.get('BASE_URL'),
-                                              CONTENT_NOT_FOUND_FILENAME)
+                                              DEFAULT_404_ALIAS)
         
         if redirect_to.get("url"):
             return redirect(redirect_to["url"], code=302)
@@ -417,44 +399,20 @@ class ContentView(BaseView):
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
             
-        # content index
+        # content
         pages = self.get_pages()
-        # self.view_ctx["pages"] = filter(lambda x: x["url"] != site_index_url, pages)
         self.view_ctx["pages"] = pages
-        self.view_ctx["current_page"] = defaultdict(str)
-        self.view_ctx["prev_page"] = defaultdict(str)
-        self.view_ctx["next_page"] = defaultdict(str)
-        self.view_ctx["is_front"] = False
-        self.view_ctx["is_tail"] = False
-        for page_index, page_data in enumerate(self.view_ctx["pages"]):
-            if auto_index:
-                break
-            if page_data["url"] == page_meta["url"]:
-                self.view_ctx["current_page"] = page_data
-                if page_index == 0:
-                    self.view_ctx["is_front"] = True
-                else:
-                    prev_page = self.view_ctx["pages"][page_index-1]
-                    self.view_ctx["prev_page"] = prev_page
-                if page_index == len(self.view_ctx["pages"]) - 1:
-                    self.view_ctx["is_tail"] = True
-                else:
-                    next_page = self.view_ctx["pages"][page_index+1]
-                    self.view_ctx["next_page"] = next_page
+        self.view_ctx["current_page"] = self.view_ctx["meta"].copy()
+        self.view_ctx["current_page"]["content"] = self.view_ctx["content"]
 
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
-                 current_page=self.view_ctx["current_page"],
-                 prev_page=self.view_ctx["prev_page"],
-                 next_page=self.view_ctx["next_page"])
+                 current_page=self.view_ctx["current_page"])
         
         template = dict()
 
-        if auto_index:
-            template['file'] = DEFAULT_INDEX_TMPL_NAME
-        else:
-            template['file'] = self.view_ctx["meta"].get("template",
-                                                       DEFAULT_PAGE_TMPL_NAME)
+        template['file'] = self.view_ctx["meta"].get("template",
+                                                     DEFAULT_TEMPLATE)
         
         run_hook("before_render", var=self.view_ctx, template=template)
         
@@ -465,7 +423,7 @@ class ContentView(BaseView):
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
-            template_file_path = self.theme_path_for(DEFAULT_INDEX_TMPL_NAME)
+            template_file_path = self.theme_path_for(DEFAULT_TEMPLATE)
 
         self.view_ctx["template"] = template['file']
 
@@ -486,7 +444,7 @@ class UploadView(MethodView):
 class EditorView(MethodView):
     def get(self, filename=None):
         if not filename:
-            return send_file(EDITOR_INDEX)
+            return send_file(os.path.join(EDITOR_DIR, EDITOR_INDEX))
         return send_from_directory(EDITOR_DIR, filename)
 
 
@@ -571,11 +529,11 @@ app.jinja_env.filters['thumbnail'] = filter_thumbnail
 
 # app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
 app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
-app.add_url_rule("{}/".format(EDITOR_URL), view_func=EditorView.as_view("editor"))
+app.add_url_rule("/{}/".format(EDITOR_DIR), view_func=EditorView.as_view("editor"))
 app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
-app.add_url_rule("{}/<path:filename>".format(UPLOADS_URL), view_func=UploadView.as_view("uploads"))
-app.add_url_rule("{}/<path:filename>".format(EDITOR_URL), view_func=EditorView.as_view("editor_static"))
-app.add_url_rule("{}/tpl/<path:filename>".format(EDITOR_URL), view_func=EditTemplateView.as_view("tpl_file"))
+app.add_url_rule("/{}/<path:filename>".format(UPLOADS_DIR), view_func=UploadView.as_view("uploads"))
+app.add_url_rule("/{}/<path:filename>".format(EDITOR_DIR), view_func=EditorView.as_view("editor_static"))
+app.add_url_rule("/{}/tpl/<path:filename>".format(EDITOR_DIR), view_func=EditTemplateView.as_view("tpl_file"))
 
 
 @app.before_first_request

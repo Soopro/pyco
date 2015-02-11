@@ -4,7 +4,6 @@ Tagline: Works
 Date: 2009/11/06
 Author: Redy
 Template: works
-Type: hi
 Thumbnail: /uploads/anv.jpg
 Description: Full Flash, XML Content Rendering Engine with ActionScript 3.0
 Tag: Flash, XML

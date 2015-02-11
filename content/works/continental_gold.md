@@ -3,9 +3,7 @@ Title: Continental Gold
 Tagline: Works
 Date: 2011/03/14
 Author: Redy
-
 Template: works
-Type: hi
 Thumbnail: /uploads/continental_gold.jpg
 Description: Continental Gold official website front-end develop
 Tag: Html, CSS

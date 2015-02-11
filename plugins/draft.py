@@ -19,7 +19,7 @@ def get_page_data(data, page_meta):
     return
 
 
-def get_pages(pages, current_page, prev_page, next_page):
+def get_pages(pages, current_page):
     for page in pages:
         if page.get("draft"):
             i = pages.index(page)

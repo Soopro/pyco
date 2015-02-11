@@ -5,17 +5,15 @@ from flask import make_response
 
 def load_config(app, config_name="config.py"):
     app.config.from_pyfile(config_name)
-    app.config.setdefault("AUTO_INDEX", False)
     app.config.setdefault("DEBUG", False)
-    app.config.setdefault("SITE_INDEX_URL", "/")
-    app.config.setdefault("SITE_TITLE", "Pyco Site")
     app.config.setdefault("BASE_URL", "/")
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
     app.config.setdefault("THEME_NAME", "default")
-    app.config.setdefault("PAGE_DATE_FORMAT", "%d, %b %Y")
-    app.config.setdefault("PAGE_ORDER_BY", "title")
-    app.config.setdefault("PAGE_ORDER", "asc")
+    app.config.setdefault("HOST", "0.0.0.0")
+    app.config.setdefault("PORT", 5500)
+    app.config.setdefault("SITE_META",{})
+    app.config.setdefault("THEME_META",{})
     return
 
 

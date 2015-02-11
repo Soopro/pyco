@@ -18,7 +18,7 @@ def before_render(var, template):
 #custom functions
 def salt_shaker(raw_pages, conditions, intersection=False):
     """return a list of result matched conditions.
-    result_pages = salt_shaker(pages, [{'type':'test'},'thumbnail'],
+    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
                   intersection=False)
     """
     results = []
