@@ -234,12 +234,20 @@ class BaseView(MethodView):
         config = self.config
         base_url = self.gen_base_url()
         
-        sort_key = config.get("PAGE_ORDER_BY")
-        order = config.get("PAGE_ORDER")
+        theme_meta = self.view_ctx["theme_meta"]
+        theme_meta_options = theme_meta.get("options")
         
-        reverse = False
-        if order == 'desc':
-            reverse = True
+        # sortby
+        sort_desc = True
+        params_sortby = theme_meta_options.get("sortby", "updated")
+        if params_sortby[0:1] == '-':
+            sort_desc = False
+            params_sortby = params_sortby[1:]
+        elif params_sortby[0:1] == '+':
+            params_sortby = params_sortby[1:]
+    
+        sort_key = params_sortby
+
 
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         page_data_list = []
@@ -259,9 +267,9 @@ class BaseView(MethodView):
             data["alias"] = self.gen_page_alias(f)
             data["url"] = meta.get("url") or self.gen_page_url(f)
             data["title"] = meta.get("title", "")
+            data["priority"] = meta.get("priority", 0)
             data["author"] = meta.get("author", "")
-            data["date"] = meta.get("date", "")
-            data["updated"] = meta.get("updated", "")
+            data["updated"] = meta.get("updated", 0)
             data["date"] = meta.get("date", "")
             data["date_formatted"] = self.format_date(meta.get("date", ""))
             data["content"] = self.parse_content(content_string)
@@ -272,12 +280,9 @@ class BaseView(MethodView):
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
 
-        if sort_key not in ("title", "date"):
-            sort_key = "title"
-
         return sorted(page_data_list, 
-                      key=lambda x: u"{}_{}".format(x[sort_key], x["title"]),
-                      reverse=reverse)
+                      key=lambda x: (x['priority'], x[sort_key]),
+                      reverse=sort_desc)
 
     #theme
     @property
