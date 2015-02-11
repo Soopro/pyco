@@ -208,10 +208,11 @@ class BaseView(MethodView):
         config = self.config
         date_format = DEFAULT_DATE_FORMAT
         theme_meta_options = self.view_ctx["theme_meta"].get("options")
-        to_foramt = theme_meta_options.get('date_format')
+        to_format = theme_meta_options.get('date_format')
         try:
             date_object = datetime.strptime(date, date_format)
-            date_formatted = date_object.strftime(to_foramt)
+            _fmted = date_object.strftime(to_format.encode('utf-8'))
+            date_formatted = _fmted.decode('utf-8')
         except ValueError:
             date_formatted=date
         return date_formatted

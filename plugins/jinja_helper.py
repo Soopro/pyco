@@ -28,7 +28,7 @@ def salt_shaker(raw_pages, conditions, intersection=False):
         return "Excessive"
 
     for cond in conditions:
-        if isinstance(cond, str):
+        if isinstance(cond, (str,unicode)):
             cond_key = cond.lower()
             cond_value = None
         elif isinstance(cond, dict):

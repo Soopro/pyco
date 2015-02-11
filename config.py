@@ -8,7 +8,7 @@ PORT = 5500
 
 THEME_NAME = 'default'
 
-BASE_URL = "http://127.0.0.1:5500/"
+BASE_URL = "http://localhost:5500/"
 
 SITE_META = {
     "title": "DevinPan",

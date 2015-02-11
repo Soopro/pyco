@@ -2,7 +2,6 @@
 Title: Code View
 Date: 2014/01/01
 Nav: Code Test
-Order: 0
 Category: none
 Template: page
 Description: This is looks like Python
