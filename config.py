@@ -8,18 +8,38 @@ THEME_NAME = 'default'
 
 BASE_URL = "http://127.0.0.1:5500/"
 
-SITE_META = {"title": "DevinPan",
-             "author": "pan",
-             "description": "A invincible super high-end photographer devin pan's website",
-             "copyright": "&copy; devinPan.com",
-             "license": "#license",
-             "locale": "zh_CN"}
+SITE_META = {
+    "title": "DevinPan",
+    "author": "pan",
+    "description": "A invincible super high-end photographer devin pan's website",
+    "copyright": "&copy; devinPan.com",
+    "license": "#license",
+    "locale": "zh_CN"
+}
 
-THEME_META = {"content_types": {"page": "Pages",
-                                },
-              "theme_name": THEME_NAME,
-              "excerpt_length": 100
-              }
+THEME_META = {
+	"alias":"tinforce",
+	"title":"Tinforce Theme",
+	"thumbnail":"tinforce.png",
+	"previews":[],
+	"description":"It's for Tinforce digital design studio. A simple profolio website, host most of our works.",
+	
+    "templates":{
+    "index":"Homepage",
+    "page":"Page",
+    "works":"Works",
+    "error_404":"404"
+    },
+  
+    "options":{
+    	"sortby":"date",
+    	"excerpt_length":162,
+    	"excerpt_ellipsis":"&hellip;",
+    	"date_format": "%B %d, %Y",
+    	"perpage":12,
+    "markdown": False
+    }
+}
 
 PAGE_DATE_FORMAT = "%d, %b %Y"
 
@@ -33,7 +53,6 @@ PLUGINS = ["autometas",
            "draft",
            "languages",
            "content_types",
-           "sort_by_priority",
            "jinja_helpers"]
 
 """ For Plugins """
