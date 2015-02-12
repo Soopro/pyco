@@ -208,7 +208,6 @@ class BaseView(MethodView):
     
         sort_key = params_sortby
 
-
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         page_data_list = []
         for f in files:
@@ -382,19 +381,6 @@ class ContentView(BaseView):
         self.view_ctx["pages"] = pages
         self.view_ctx["current_page"] = self.view_ctx["meta"].copy()
         self.view_ctx["current_page"]["content"] = self.view_ctx["content"]
-        
-        # content types
-        _type = self.view_ctx["current_page"]["type"]
-        content_types = config.get("SITE_META",{}).get("content_types",[])
-        current_content_type = {}
-        for ctype in content_types:
-            if ctype.get("alias") == _type:
-                current_content_type = ctype
-                break;
-        self.view_ctx["content_type"] = {
-            'alias':current_content_type.get('alias'),
-            'title':current_content_type.get('title')
-        }
         
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],

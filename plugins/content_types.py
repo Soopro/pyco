@@ -1,6 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 from urlparse import urlparse
+import os
 
 _CONFIG = {}
 _DEFAULT_CONTENT_TYPE = 'page'
@@ -27,18 +28,25 @@ def get_page_data(data, page_meta):
 
 
 def single_page_meta(page_meta, redirect_to):
-    page_url = _CONFIG.get("BASE_URL") + _URL
+    base_url = _CONFIG.get("BASE_URL")
+    page_url = os.path.join(base_url, _URL)
     filter_auto_type(page_meta, page_url)
-
     global _current_content_type
     _current_content_type = page_meta['type']
     return
 
 
 def before_render(var, template):
-    content_types = _CONFIG.get('THEME_META', {}).get('content_types', {})
-    var["content_type"] = {'alias': _current_content_type,
-                           'title': content_types.get(_current_content_type)}
+    # content types
+    _type = var["current_page"]["type"]
+    content_types = _CONFIG.get("SITE_META",{}).get("content_types",[])
+    current_content_type = {}
+    for ctype in content_types:
+        if ctype.get("alias") == _type:
+            current_content_type = ctype
+            break;
+
+    var["current_type"] = current_content_type
     return
 
 

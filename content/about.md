@@ -4,7 +4,7 @@ Date: 2014/01/01
 Nav: About
 Order: 0
 Category: none
-Template: post
+Template: page
 */
 
 <section class="row">
