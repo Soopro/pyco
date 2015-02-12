@@ -9,11 +9,37 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("BASE_URL", "/")
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
+    app.config.setdefault("INVISIBLE_PAGE_LIST",[])
     app.config.setdefault("THEME_NAME", "default")
     app.config.setdefault("HOST", "0.0.0.0")
     app.config.setdefault("PORT", 5500)
     app.config.setdefault("SITE_META",{})
     app.config.setdefault("THEME_META",{})
+    app.config.setdefault("CHARSET","utf8")
+    
+    app.config.setdefault("PLUGIN_DIR","plugins/")
+    app.config.setdefault("THEMES_DIR","themes/")
+    app.config.setdefault("TEMPLATE_FILE_EXT",".html")
+    
+    app.config.setdefault("DEFAULT_SITE_META_FILE","site.json")
+    app.config.setdefault("DEFAULT_THEME_META_FILE","config.json")
+    
+    app.config.setdefault("DEFAULT_TEMPLATE","index")
+    
+    app.config.setdefault("DEFAULT_DATE_FORMAT","%Y-%m-%d")
+    app.config.setdefault("DEFAULT_EXCERPT_LENGTH",50)
+    app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS","&hellip;")
+    
+    app.config.setdefault("STATIC_BASE_URL","/static")
+    app.config.setdefault("UPLOADS_DIR","uploads")
+    app.config.setdefault("THUMBNAILS_DIR","thumbnails")
+    app.config.setdefault("EDITOR_DIR","editor")
+    app.config.setdefault("EDITOR_INDEX","index.html")
+    app.config.setdefault("CONTENT_DIR","content")
+    app.config.setdefault("CONTENT_FILE_EXT",".md")
+    app.config.setdefault("DEFAULT_INDEX_ALIAS","index")
+    app.config.setdefault("DEFAULT_404_ALIAS","error_404")
+    
     return
 
 

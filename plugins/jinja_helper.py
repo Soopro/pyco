@@ -1,10 +1,14 @@
 #coding=utf-8
 from __future__ import absolute_import
-from flask import request
-import math
+from flask import request, current_app
 from itertools import groupby
-import datetime
+import math, os, datetime
 
+
+def plugins_loaded():
+    current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
+    current_app.jinja_env.filters["type"] = filter_contenttype
+    return
 
 def before_render(var, template):
     var["saltshaker"] = salt_shaker
@@ -13,6 +17,29 @@ def before_render(var, template):
     var["barcode"] = barcode_scanner
     var["timemachine"] = time_machine
     return
+
+
+#custom filters
+def filter_thumbnail(pic_url):
+    try:
+        pic_url = str(pic_url)
+    except Exception:
+        return pic_url
+
+    static_host = current_app.config.get("STATIC_HOST")
+    if static_host not in pic_url:
+        return pic_url
+    
+    UPLOAD_DIR = current_app.config.get("UPLOAD_DIR")
+    thumbnails_dir = current_app.config.get("THUMBNAILS_DIR")
+    THUMB_DIR = os.path.join(UPLOAD_FOLDER,thumbnails_dir)
+    new_pic_url = pic_url.replace(UPLOAD_FOLDER,THUMB_FOLDER)
+    
+    return new_pic_url
+
+
+def filter_contenttype(raw_pages, ctype=None):
+    return salt_shaker(raw_pages,[{"type":ctype}])
 
 
 #custom functions

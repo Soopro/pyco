@@ -1,40 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-PLUGIN_DIR = "plugins/"
-
-THEMES_DIR = "themes/"
-TEMPLATE_FILE_EXT = ".html"
-TPL_FILE_EXT = ".tpl"
-DEFAULT_THEME_CONFIG = "config.json"
-
-DEFAULT_TEMPLATE = "index"
-DEFAULT_DATE_FORMAT = '%Y-%m-%d'
-
-DEFAULT_EXCERPT_LENGTH = 50
-DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
-
-STATIC_DIR = THEMES_DIR
-STATIC_BASE_URL = "/static"
-
-UPLOADS_DIR = "uploads"
-
-EDITOR_DIR = "editor"
-EDITOR_INDEX = "index.html"
-
-CONTENT_DIR = "content"
-CONTENT_FILE_EXT = ".md"
-
-DEFAULT_INDEX_ALIAS = "index"
-DEFAULT_404_ALIAS = "error_404"
-
-INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
-
-CHARSET = "utf8"
-
-import sys
-sys.path.insert(0, PLUGIN_DIR)
-
 from flask import (Flask, current_app, request, abort, render_template,
                    make_response, redirect, send_from_directory, send_file)
 
@@ -42,7 +8,6 @@ from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
 from helpers import load_config, make_content_response
-from filters import filter_thumbnail
 
 from collections import defaultdict
 from hashlib import sha1
@@ -51,7 +16,7 @@ from types import ModuleType
 from datetime import datetime
 from optparse import OptionParser
 from gettext import gettext, ngettext
-import os, re, traceback, markdown, json
+import sys, os, re, traceback, markdown, json
 
 
 class BaseView(MethodView):
@@ -62,13 +27,19 @@ class BaseView(MethodView):
         self.view_ctx = dict()
         return
     
-    def load_theme_config(self):
-        theme_config_file = os.path.join(THEMES_DIR,
+    def load_metas(self):
+        theme_meta_file = os.path.join(THEMES_DIR,
                                          self.config['THEME_NAME'],
-                                         DEFAULT_THEME_CONFIG)
-        json_data = open(theme_config_file)
-        self.config['THEME_META'] = json.load(json_data)
-        json_data.close()
+                                         DEFAULT_THEME_META_FILE)
+        theme_meta = open(theme_meta_file)
+        self.config['THEME_META'] = json.load(theme_meta)
+        theme_meta.close()
+        
+        site_meta_file = os.path.join(CONTENT_DIR, DEFAULT_SITE_META_FILE)
+        site_meta = open(site_meta_file)
+        self.config['SITE_META'] = json.load(site_meta)
+        site_meta.close()
+        
     
     def load_plugins(self):
         loaded_plugins = []
@@ -175,10 +146,13 @@ class BaseView(MethodView):
         return headers
 
     @staticmethod
-    def parse_content(content_string):
-        return markdown.markdown(content_string,
-                                 ['markdown.extensions.codehilite',
-                                 'markdown.extensions.extra'])
+    def parse_content(content_string, is_markdown=True):
+        if is_markdown:
+            return markdown.markdown(content_string,
+                                     ['markdown.extensions.codehilite',
+                                     'markdown.extensions.extra'])
+        else:
+            return content_string
 
     # cache
     @staticmethod
@@ -240,11 +214,13 @@ class BaseView(MethodView):
         for f in files:
             if f in INVISIBLE_PAGE_LIST:
                 continue
+
             relative_path = f.split(CONTENT_DIR+"/", 1)[1]
             if relative_path.startswith("~") \
-                    or relative_path.startswith("#") \
-                    or relative_path in self.content_ignore_files:
+                or relative_path.startswith("#") \
+                or relative_path in self.content_ignore_files:
                 continue
+
             with open(f, "r") as fh:
                 file_content = fh.read().decode(CHARSET)
             meta_string, content_string = self.content_splitter(file_content)
@@ -314,7 +290,7 @@ class ContentView(BaseView):
         
         # load
         self.config = current_app.config
-        self.load_theme_config()
+        self.load_metas()
         self.load_plugins()
         run_hook("plugins_loaded")
 
@@ -389,7 +365,8 @@ class ContentView(BaseView):
         page_content['content'] = content_string
         run_hook("before_parse_content", content=page_content)
         
-        page_content['content'] = self.parse_content(page_content['content'])
+        page_content['content'] = self.parse_content(page_content['content'],
+                                                     page_meta.get("markdown"))
         run_hook("after_parse_content", content=page_content)
         
         self.view_ctx["content"] = page_content['content']
@@ -399,17 +376,31 @@ class ContentView(BaseView):
         self.view_ctx["meta"]["excerpt"] = excerpt
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
-            
+
         # content
         pages = self.get_pages()
         self.view_ctx["pages"] = pages
         self.view_ctx["current_page"] = self.view_ctx["meta"].copy()
         self.view_ctx["current_page"]["content"] = self.view_ctx["content"]
-
+        
+        # content types
+        _type = self.view_ctx["current_page"]["type"]
+        content_types = config.get("SITE_META",{}).get("content_types",[])
+        current_content_type = {}
+        for ctype in content_types:
+            if ctype.get("alias") == _type:
+                current_content_type = ctype
+                break;
+        self.view_ctx["content_type"] = {
+            'alias':current_content_type.get('alias'),
+            'title':current_content_type.get('title')
+        }
+        
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
                  current_page=self.view_ctx["current_page"])
         
+        # template
         template = dict()
 
         template['file'] = self.view_ctx["meta"].get("template",
@@ -442,64 +433,49 @@ class UploadView(MethodView):
         return send_from_directory(UPLOADS_DIR, filename)
 
 
-class EditorView(MethodView):
-    def get(self, filename=None):
-        if not filename:
-            return send_file(os.path.join(EDITOR_DIR, EDITOR_INDEX))
-        return send_from_directory(EDITOR_DIR, filename)
-
-
-class EditTemplateView(BaseView):
-    def get(self, filename=None):
-        if filename:
-            file = ''.join([filename, TPL_FILE_EXT])
-
-            # load_config(current_app)
-            f = os.path.join(current_app.root_path, THEMES_DIR,
-                             current_app.config['THEME_NAME'], file)
-
-            theme_url = self.gen_theme_url()
-            base_url = self.gen_base_url()
-            locale = current_app.config.get("SITE_META", {}).get('locale')
-            tmpl_content = self.parse_template(f)
-            # make fake template context
-            shortcodes = [
-                {"pattern": u"base_url",
-                 "replacement": base_url},
-                {"pattern": u"theme_url",
-                 "replacement": theme_url},
-                {"pattern": u"locale",
-                 "replacement": locale}
-            ]
-            for code in shortcodes:
-                pattern = self.make_pattern(code["pattern"])
-                tmpl_content = re.sub(pattern, code["replacement"],
-                                                     tmpl_content)
-            
-            return tmpl_content
-    
-    def parse_template(self, path):
-        with open(path, "r") as f:
-            content = f.read()
-            content = content.decode("utf8")
-            return content
-    
-    def gen_base_url(self):
-        return os.path.join(current_app.config.get("BASE_URL"), '')
-
-    def gen_theme_url(self):
-        return os.path.join(STATIC_BASE_URL,
-                            current_app.config.get('THEME_NAME'), '')
-    
-    def make_pattern(self, pattern):
-        return re.compile(r"{}\s*{}\s*{}".format('{{', pattern, '}}'),
-                                                         re.IGNORECASE)
-
-
-app = Flask(__name__, static_url_path=STATIC_BASE_URL)
+# create app
+app = Flask(__name__)
 load_config(app)
 
+# init config
+PLUGIN_DIR = app.config.get("PLUGIN_DIR")
+THEMES_DIR = app.config.get("THEMES_DIR")
 
+TEMPLATE_FILE_EXT = app.config.get("TEMPLATE_FILE_EXT")
+
+DEFAULT_SITE_META_FILE = app.config.get("DEFAULT_SITE_META_FILE")
+DEFAULT_THEME_META_FILE = app.config.get("DEFAULT_THEME_META_FILE")
+
+DEFAULT_TEMPLATE = app.config.get("DEFAULT_TEMPLATE")
+DEFAULT_DATE_FORMAT = app.config.get("DEFAULT_DATE_FORMAT")
+
+DEFAULT_EXCERPT_LENGTH = app.config.get("DEFAULT_EXCERPT_LENGTH")
+DEFAULT_EXCERPT_ELLIPSIS = app.config.get("DEFAULT_EXCERPT_ELLIPSIS")
+
+STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
+STATIC_HOST = app.config.get("STATIC_HOST")
+LIBS_HOST = app.config.get("LIBS_HOST")
+
+UPLOADS_DIR = app.config.get("UPLOADS_DIR")
+THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")
+
+EDITOR_DIR = app.config.get("EDITOR_DIR")
+EDITOR_INDEX = app.config.get("EDITOR_INDEX")
+
+CONTENT_DIR = app.config.get("CONTENT_DIR")
+CONTENT_FILE_EXT = app.config.get("CONTENT_FILE_EXT")
+
+DEFAULT_INDEX_ALIAS = app.config.get("DEFAULT_INDEX_ALIAS")
+DEFAULT_404_ALIAS = app.config.get("DEFAULT_404_ALIAS")
+
+INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
+
+CHARSET = app.config.get("CHARSET")
+
+# make importable for plugin folder
+sys.path.insert(0, PLUGIN_DIR)
+
+# options for start app
 opt = OptionParser()
 opt.add_option('-s', '--server', help='set server mode',
                action='store_const', dest='server', const=True, default=False)
@@ -513,7 +489,9 @@ if opts.server:
 elif opts.debug:
     _DEBUG = True
 
+# init app
 app.debug = _DEBUG
+
 # default multi language support
 app.jinja_env.autoescape = False
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
@@ -523,24 +501,29 @@ app.jinja_env.add_extension('jinja2.ext.with_')
 app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 app.template_folder = os.path.join(THEMES_DIR, app.config.get("THEME_NAME"))
 app.static_folder = THEMES_DIR
+app.static_url_path = STATIC_BASE_URL
 
-# add custom filters
-app.jinja_env.filters['thumbnail'] = filter_thumbnail
+# routes
+app.add_url_rule(
+    STATIC_BASE_URL + '/<path:filename>',
+    endpoint='static', view_func=app.send_static_file)
 
+app.add_url_rule("/", defaults={"_": ""},
+    view_func=ContentView.as_view("index"))
 
-# app.add_url_rule("/favicon.ico", redirect_to="{}/favicon.ico".format(STATIC_BASE_URL), endpoint="favicon.ico")
-app.add_url_rule("/", defaults={"_": ""}, view_func=ContentView.as_view("index"))
-app.add_url_rule("/{}/".format(EDITOR_DIR), view_func=EditorView.as_view("editor"))
-app.add_url_rule("/<path:_>", view_func=ContentView.as_view("content"))
-app.add_url_rule("/{}/<path:filename>".format(UPLOADS_DIR), view_func=UploadView.as_view("uploads"))
-app.add_url_rule("/{}/<path:filename>".format(EDITOR_DIR), view_func=EditorView.as_view("editor_static"))
-app.add_url_rule("/{}/tpl/<path:filename>".format(EDITOR_DIR), view_func=EditTemplateView.as_view("tpl_file"))
+app.add_url_rule("/<path:_>", 
+    view_func=ContentView.as_view("content"))
+    
+app.add_url_rule("/{}/<path:filename>".format(UPLOADS_DIR),
+    view_func=UploadView.as_view("uploads"))
 
 
 @app.before_first_request
 def before_first_request():
     if current_app.debug:
-        current_app.logger.debug("Pyco is running in DEBUG mode !!! Jinja2 template folder is about to reload.")
+        current_app.logger.debug(
+            "Pyco is running in DEBUG mode !!! " +
+            "Jinja2 template folder is about to reload.")
 
 
 @app.before_request
