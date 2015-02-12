@@ -30,17 +30,30 @@ def request_url(request, redirect_to):
 
 
 def before_render(var, template):
+    """ translates json sample
+    {
+       "zh_CN":{"name":"汉语","url":"http://....."},
+       "en_US":{"name":"English","url":"http://....."}
+    }
+    """
     if _TRANSLATES:
-        set_current_translation(_LOCALE)
-        current_trans = _TRANSLATES[_current_lang]
-        translates = []
-        for trans in _TRANSLATES:
-            tmp_trans = _TRANSLATES[trans]
-            tmp_trans.update({"code": trans})
-            translates.append(tmp_trans)
+        translates = _TRANSLATES
+        trans_list = []
         
-        var["translates"] = translates
-        var["language_text"] = current_trans["text"]
+        # directly append if is list
+        if isinstance(translates,list):
+            for trans in translates:
+                if trans.get('code'):
+                    trans_list.append(trans)
+
+        # change to list if is dict
+        if isinstance(translates,dict) and len(translates)>1:
+            for trans in translates:
+                tmp_trans = translates[trans]
+                tmp_trans.update({"code":trans})
+                trans_list.append(tmp_trans)
+        
+        var["translates"] = trans_list
     
     var["locale"] = _LOCALE
     var["lang"] = _LOCALE.split('_')[0]
@@ -48,11 +61,12 @@ def before_render(var, template):
 
 
 # custome functions
-def set_current_translation(lang):
-    if _TRANSLATES and _THEME_NAME:
+def set_current_translation(locale):
+    if locale and isinstance(locale,(str,unicode)) and _THEME_NAME:
         lang_path = os.path.join(current_app.template_folder,
                                  _LANGUAGES_FOLDER)
-        tr = gettext.translation(_THEME_NAME, 
-                                 lang_path, languages=[lang], fallback=False)
+
+        tr = gettext.translation(_THEME_NAME, lang_path, 
+                                 languages=[locale], fallback=False)
         
-        current_app.jinja_env.install_gettext_translations(tr)
+        current_app.jinja_env.install_gettext_translations(tr, newstyle=True)
