@@ -36,7 +36,7 @@ class BaseView(MethodView):
         theme_meta = open(theme_meta_file)
         try:
             self.config['THEME_META'] = json.load(theme_meta)
-        except Exception e:
+        except Exception as e:
             raise e
         theme_meta.close()
         
@@ -44,7 +44,7 @@ class BaseView(MethodView):
         site_meta = open(site_meta_file)
         try:
             self.config['SITE_META'] = json.load(site_meta)
-        except Exception e:
+        except Exception as e:
             raise e
         site_meta.close()
         
