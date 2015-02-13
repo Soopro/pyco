@@ -1,6 +1,4 @@
 import os
-import string
-import re
 
 UPLOADS_DIR = 'uploads'
 
