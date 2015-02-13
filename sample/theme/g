@@ -1,0 +1,4 @@
+{% set opts = theme_meta.options %}
+{% set navigation = saltshaker(pages,["nav","url"],true) %}
+{% set paged = args.paged|int if args.paged and args.paged|int > 0 else 1 %}
+{% set perpage = opts.perpage|int if opts.perpage else 6 %}
