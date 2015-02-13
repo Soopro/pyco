@@ -17,8 +17,6 @@ from datetime import datetime
 from optparse import OptionParser
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json
-# make importable for plugin folder
-sys.path.insert(0, PLUGIN_DIR)
 
 
 class BaseView(MethodView):
@@ -465,6 +463,9 @@ DEFAULT_404_ALIAS = app.config.get("DEFAULT_404_ALIAS")
 INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
 
 CHARSET = app.config.get("CHARSET")
+
+# make importable for plugin folder
+sys.path.insert(0, PLUGIN_DIR)
 
 # options for start app
 opt = OptionParser()
