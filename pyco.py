@@ -29,15 +29,21 @@ class BaseView(MethodView):
     
     def load_metas(self):
         theme_meta_file = os.path.join(THEMES_DIR,
-                                         self.config['THEME_NAME'],
-                                         DEFAULT_THEME_META_FILE)
+                                       self.config['THEME_NAME'],
+                                       DEFAULT_THEME_META_FILE)
         theme_meta = open(theme_meta_file)
-        self.config['THEME_META'] = json.load(theme_meta)
+        try:
+            self.config['THEME_META'] = json.load(theme_meta)
+        except Exception e:
+            raise e
         theme_meta.close()
         
         site_meta_file = os.path.join(CONTENT_DIR, DEFAULT_SITE_META_FILE)
         site_meta = open(site_meta_file)
-        self.config['SITE_META'] = json.load(site_meta)
+        try:
+            self.config['SITE_META'] = json.load(site_meta)
+        except Exception e:
+            raise e
         site_meta.close()
         
     
