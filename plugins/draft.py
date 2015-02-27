@@ -11,17 +11,18 @@ def config_loaded(config):
 
 
 def get_page_data(data, page_meta):
-    data["draft"] = page_meta.get("draft")
-    if isinstance(data["draft"], (str, unicode)) and data["draft"].lower() == "true":
-        data["draft"] = True
+    data["status"] = page_meta.get("status")
+    if isinstance(data["status"], (str, unicode)) \
+    and data["status"].lower() == "true":
+        data["status"] = True
     else:
-        data["draft"] = False
+        data["stauts"] = False
     return
 
 
 def get_pages(pages, current_page):
     for page in pages:
-        if page.get("draft"):
+        if page.get("status"):
             i = pages.index(page)
             pages.pop(i)
     return

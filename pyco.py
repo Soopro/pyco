@@ -230,20 +230,8 @@ class BaseView(MethodView):
                 file_content = fh.read().decode(CHARSET)
             meta_string, content_string = self.content_splitter(file_content)
             meta = self.parse_page_meta(meta_string)
-            data = dict()
-            data["alias"] = self.gen_page_alias(f)
-            data["url"] = meta.get("url") or self.gen_page_url(f)
-            data["title"] = meta.get("title", "")
-            data["priority"] = meta.get("priority", 0)
-            data["author"] = meta.get("author", "")
-            data["updated"] = meta.get("updated", 0)
-            data["date"] = meta.get("date", "")
-            data["date_formatted"] = self.format_date(meta.get("date", ""))
-            data["content"] = self.parse_content(content_string)
-            data["excerpt"] = self.gen_excerpt(data["content"],
-                                               self.view_ctx["theme_meta"])
-            des = meta.get("description")
-            data["description"] = data["excerpt"] if not des else des
+            data = self.parse_file_attrs(meta, f, content_string, False)
+
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
       
@@ -260,7 +248,33 @@ class BaseView(MethodView):
     def theme_path_for(self, tmpl_name):
         return "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT)
         # return os.path.join(self.theme_name, "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT))
-
+    
+    # attrs
+    def parse_file_attrs(self, meta, file_path, content_string,
+                         escape_content=True):
+        data = dict()
+        for m in meta:
+            data[m] = meta[m]
+        data["alias"] = self.gen_page_alias(file_path)
+        data["url"] = meta.get("url") or self.gen_page_url(file_path)
+        data["title"] = meta.get("title", "")
+        data["priority"] = meta.get("priority", 0)
+        data["author"] = meta.get("author", "")
+        # data['status'] = meta.get('status') # define by plugin
+        # data['type'] = meta.get('type') # define by plugin
+        data["updated"] = meta.get("updated", 0)
+        data["date"] = meta.get("date", "")
+        data["date_formatted"] = self.format_date(meta.get("date", ""))
+        content = self.parse_content(content_string)
+        data["excerpt"] = self.gen_excerpt(content,
+                                           self.view_ctx["theme_meta"])
+        des = meta.get("description")
+        data["description"] = data["excerpt"] if not des else des
+        
+        if not escape_content:
+            data["content"] = content
+        return data
+    
     # context
     def init_context(self):
         # env context
@@ -343,14 +357,11 @@ class ContentView(BaseView):
         meta_string, content_string = self.content_splitter(tmp_file_content)
 
         page_meta = self.parse_page_meta(meta_string)
+        page_meta = self.parse_file_attrs(page_meta, file["path"],
+                                          content_string)
         
-        page_meta["alias"] = self.gen_page_alias(file["path"])
-        if not page_meta.get("url"):
-            page_meta["url"] = self.gen_page_url(file["path"])
-
-        tmp_date = page_meta.get("date", "")
-        page_meta['date_formatted'] = self.format_date(tmp_date)
         redirect_to = {"url": None}
+
         run_hook("single_page_meta",
                  page_meta=page_meta,
                  redirect_to=redirect_to)
