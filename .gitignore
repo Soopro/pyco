@@ -1,6 +1,5 @@
 *.cache
 *.py[co]
-config.py
 
 .idea/
 
