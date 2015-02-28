@@ -14,13 +14,13 @@ def single_page_meta(page_meta, redirect_to):
     return
 
 def get_page_data(data, page_meta):
-    data["status"] = page_meta.get("status")
+    data["status"] = int(page_meta.get("status",1))
     return
 
 
 def get_pages(pages, current_page):
     for page in pages:
-        if page.get("status") not 1:
+        if page.get("status") is not 1:
             i = pages.index(page)
             pages.pop(i)
     return
