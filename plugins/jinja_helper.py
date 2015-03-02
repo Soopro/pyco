@@ -11,11 +11,11 @@ def plugins_loaded():
     return
 
 def before_render(var, template):
-    var["saltshaker"] = salt_shaker
+    var["saltshaker"] = saltshaker
     var["stapler"] = stapler
     var["glue"] = glue
-    var["barcode"] = barcode_scanner
-    var["timemachine"] = time_machine
+    var["barcode"] = barcode
+    var["timemachine"] = timemachine
     return
 
 
@@ -43,7 +43,7 @@ def filter_contenttype(raw_pages, ctype=None):
 
 
 #custom functions
-def salt_shaker(raw_pages, conditions, intersection=False):
+def saltshaker(raw_pages, conditions, intersection=False):
     """return a list of result matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
                   intersection=False)
@@ -124,9 +124,9 @@ def stapler(raw_pages, paged=1, perpage=12):
     }
 
 
-def barcode_scanner(raw_pages, condition="category"):
+def barcode(raw_pages, condition="category"):
     """return dict with category alias and count.
-    cate_count = barcode_scanner(raw_pages, condition="tag")
+    cate_count = barcode(raw_pages, condition="tag")
     """
     ret = dict()
     for page in raw_pages:
@@ -139,9 +139,11 @@ def barcode_scanner(raw_pages, condition="category"):
     return ret
 
 
-def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
-    """
-
+def timemachine(raw_pages, filed='date',
+                precision='month', time_format='%Y-%m-%d'):
+    """return list of pages sort by time.
+    sorted_pages = timemachine(raw_pages, filed='date', precision='month',
+                               time_format='%Y-%m-%d')
     """
     def parse_datetime(date):
         d = datetime.datetime.strptime(date, time_format)
@@ -158,15 +160,18 @@ def time_machine(raw_pages, precision='month', time_format='%Y/%m/%d'):
         elif precision == 'second':
             return d.year, d.month, d.day, d.hour, d.minute, d.second
         else:
-            raise ValueError("arg precision must be 'year', 'month', 'day', 'hour', 'minute' or 'second'.")
-    pages = sorted(filter(lambda x: x.get('date'), raw_pages), key=lambda x: x['date'], reverse=True)
+            raise ValueError("arg precision invalid.")
+
+    pages = sorted(filter(lambda x: x.get(filed), raw_pages),
+                   key=lambda x: x[filed], 
+                   reverse=True)
 
     # iterator version
     # return groupby(pages, key=lambda x: parse_datetime(x.get('date')))
 
     # list version
     ret = []
-    raw_group = groupby(pages, key=lambda x: parse_datetime(x.get('date')))
+    raw_group = groupby(pages, key=lambda x: parse_datetime(x.get(filed)))
     for date, group in raw_group:
         ret.append((date, [x for x in group]))
     return ret

@@ -8,9 +8,5 @@
     "translates":{
        "zh_CN":{"name":"汉语","url":"http://....."},
        "en_US":{"name":"English","url":"http://....."}
-    },
-    "content_types":[
-      {"alias":"page", "title":"Pages"},
-      {"alias":"works", "title":"Works"}
-    ]
+    }
 }

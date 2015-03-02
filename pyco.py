@@ -196,6 +196,34 @@ class BaseView(MethodView):
         except ValueError:
             date_formatted=date
         return date_formatted
+    
+    
+    def get_taxonomies(self):
+        taxonomies = self.view_ctx["theme_meta"].get("taxonomy")
+        terms = self.view_ctx["site_meta"].get("terms")
+        tax_dict = {}
+        for tax in taxonomies:
+            tax_dict[tax["alias"]] = {
+                "title": tax.get("title"),
+                "alias": tax.get("alias"),
+                "locked": tax.get("locked"),
+                "content_types": tax.get("content_types"),
+                "terms": [
+                    {
+                        "alias": x.get("alias"),
+                        "title": x.get("title"),
+                        "locked": x.get("locked"),
+                        "parent": x.get("parent"),
+                        "taxonomy": tax.get("alias"),
+                        "updated": x.get("updated")
+                    }
+                    for x in terms[tax.get("alias")]
+                ]
+            }
+            # del terms[tax["alias"]]
+        
+        return tax_dict
+        
         
     def get_pages(self):
         config = self.config
@@ -392,7 +420,11 @@ class ContentView(BaseView):
         self.view_ctx["meta"]["excerpt"] = excerpt
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
-
+        
+        # taxonomy
+        self.view_ctx["taxonomies"] = self.get_taxonomies()
+        self.view_ctx["taxs"] = self.view_ctx["taxonomies"]
+        
         # content
         pages = self.get_pages()
         self.view_ctx["pages"] = pages

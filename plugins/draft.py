@@ -19,8 +19,13 @@ def get_page_data(data, page_meta):
 
 
 def get_pages(pages, current_page):
+    new_pages = []
     for page in pages:
-        if page.get("status") is not 1:
-            i = pages.index(page)
-            pages.pop(i)
+        if page.get("status") is 1:
+            new_pages.append(page)
+    
+    del pages[:]
+    for page in new_pages:
+        pages.append(page)
+
     return

@@ -39,7 +39,7 @@ def single_page_meta(page_meta, redirect_to):
 def before_render(var, template):
     # content types
     _type = var["current_page"]["type"]
-    content_types = _CONFIG.get("SITE_META",{}).get("content_types",[])
+    content_types = _CONFIG.get("THEME_META",{}).get("content_types",[])
     current_content_type = {}
     for ctype in content_types:
         if ctype.get("alias") == _type:
