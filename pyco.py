@@ -197,6 +197,9 @@ class BaseView(MethodView):
             date_formatted=date
         return date_formatted
     
+    def get_menus(self):
+        menus = self.view_ctx["site_meta"].get("terms",{})
+        return menus
     
     def get_taxonomies(self):
         taxonomies = self.view_ctx["theme_meta"].get("taxonomies",[])
@@ -424,9 +427,12 @@ class ContentView(BaseView):
         des = self.view_ctx["meta"].get("description")
         self.view_ctx["meta"]["description"] = excerpt if not des else des
         
+        # menu
+        self.view_ctx["menu"] = self.get_menus()
+        
         # taxonomy
-        self.view_ctx["taxonomies"] = self.get_taxonomies()
-        self.view_ctx["taxs"] = self.view_ctx["taxonomies"]
+        self.view_ctx["taxonomy"] = self.get_taxonomies()
+        self.view_ctx["tax"] = self.view_ctx["taxonomy"]
         
         # content
         pages = self.get_pages()
