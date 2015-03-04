@@ -203,6 +203,9 @@ class BaseView(MethodView):
         terms = self.view_ctx["site_meta"].get("terms",{})
         tax_dict = {}
         for tax in taxonomies:
+            
+            current_terms = terms.get(tax.get("alias"),[])
+            
             tax_dict[tax["alias"]] = {
                 "title": tax.get("title"),
                 "alias": tax.get("alias"),
@@ -217,7 +220,7 @@ class BaseView(MethodView):
                         "taxonomy": tax.get("alias"),
                         "updated": x.get("updated")
                     }
-                    for x in terms.get(tax.get("alias"),[])]
+                    for x in current_terms
                 ]
             }
             # del terms[tax["alias"]]
