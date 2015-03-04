@@ -430,6 +430,14 @@ class ContentView(BaseView):
         self.view_ctx["pages"] = pages
         self.view_ctx["current_page"] = self.view_ctx["meta"].copy()
         self.view_ctx["current_page"]["content"] = self.view_ctx["content"]
+        content_types = self.view_ctx["site_meta"].get("content_types")
+        
+        current_content_type = self.view_ctx["current_page"].get("type")
+
+        self.view_ctx["current_type"] = {
+            'alias':current_content_type,
+            'title':content_types.get(current_content_type)
+        }
         
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
