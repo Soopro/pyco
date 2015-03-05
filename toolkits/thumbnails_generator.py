@@ -1,6 +1,10 @@
 import os
 
 UPLOADS_DIR = 'uploads'
+THUMBNAILS_DIR = 'thumbnails'
+THUMBNAILS_H = 360
+THUMBNAILS_W = 360
+
 
 def generate_thumbnail(filename):
 
@@ -18,8 +22,11 @@ def generate_thumbnail(filename):
         try:
             im = Image.open(os.path.join(UPLOADS_DIR, filename))
             w, h = im.size
-            im.thumbnail((w*THUMBNAILS_H/h, THUMBNAILS_H), Image.ANTIALIAS)
-            thumbnail_folder = _thumbnail_path(app_alias)
+            if w < h:
+                im.thumbnail((w*THUMBNAILS_H/h, THUMBNAILS_H), Image.ANTIALIAS)
+            else:
+                im.thumbnail((THUMBNAILS_W, h*THUMBNAILS_W/w), Image.ANTIALIAS)
+            thumbnail_folder = os.path.join(UPLOADS_DIR, THUMBNAILS_DIR)
             if not os.path.exists(thumbnail_folder):
                 os.makedirs(thumbnail_folder)
             im.save(os.path.join(_thumbnail_path(app_alias), filename))

@@ -219,7 +219,7 @@ class BaseView(MethodView):
                         "alias": x.get("alias"),
                         "title": x.get("title"),
                         "locked": x.get("locked"),
-                        "parent": x.get("parent"),
+                        "meta": {},
                         "taxonomy": tax.get("alias"),
                         "updated": x.get("updated")
                     }
