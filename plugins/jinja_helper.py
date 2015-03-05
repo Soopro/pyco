@@ -32,14 +32,14 @@ def filter_thumbnail(pic_url):
     
     UPLOAD_DIR = current_app.config.get("UPLOAD_DIR")
     thumbnails_dir = current_app.config.get("THUMBNAILS_DIR")
-    THUMB_DIR = os.path.join(UPLOAD_FOLDER,thumbnails_dir)
-    new_pic_url = pic_url.replace(UPLOAD_FOLDER,THUMB_FOLDER)
+    THUMB_DIR = os.path.join(UPLOAD_DIR, thumbnails_dir)
+    new_pic_url = pic_url.replace(UPLOAD_DIR, THUMB_DIR)
     
     return new_pic_url
 
 
 def filter_contenttype(raw_pages, ctype=None):
-    return salt_shaker(raw_pages,[{"type":ctype}])
+    return saltshaker(raw_pages, [{"type": ctype}])
 
 
 #custom functions
