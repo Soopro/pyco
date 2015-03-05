@@ -32,14 +32,14 @@ def filter_thumbnail(pic_url):
     
     UPLOAD_DIR = current_app.config.get("UPLOAD_DIR")
     thumbnails_dir = current_app.config.get("THUMBNAILS_DIR")
-    THUMB_DIR = os.path.join(UPLOAD_FOLDER,thumbnails_dir)
-    new_pic_url = pic_url.replace(UPLOAD_FOLDER,THUMB_FOLDER)
+    THUMB_DIR = os.path.join(UPLOAD_DIR, thumbnails_dir)
+    new_pic_url = pic_url.replace(UPLOAD_DIR, THUMB_DIR)
     
     return new_pic_url
 
 
 def filter_contenttype(raw_pages, ctype=None):
-    return salt_shaker(raw_pages,[{"type":ctype}])
+    return saltshaker(raw_pages, [{"type": ctype}])
 
 
 #custom functions
@@ -138,7 +138,7 @@ def barcode(raw_pages, condition="category"):
                 ret[label] += 1
     return ret
 
-
+#TODO adding timestamp and datetime
 def timemachine(raw_pages, filed='date',
                 precision='month', time_format='%Y-%m-%d'):
     """return list of pages sort by time.
@@ -146,21 +146,28 @@ def timemachine(raw_pages, filed='date',
                                time_format='%Y-%m-%d')
     """
     def parse_datetime(date):
-        d = datetime.datetime.strptime(date, time_format)
-        if precision == 'year':
-            return d.year,
-        elif precision == 'month':
-            return d.year, d.month
-        elif precision == 'day':
-            return d.year, d.month, d.day
-        elif precision == 'hour':
-            return d.year, d.month, d.day, d.hour
-        elif precision == 'minute':
-            return d.year, d.month, d.day, d.hour, d.minute
-        elif precision == 'second':
-            return d.year, d.month, d.day, d.hour, d.minute, d.second
+        if isinstance(date, str):
+            date = datetime.datetime.strptime(date, time_format)
+        elif isinstance(date, int):
+            date = datetime.datetime.fromtimestamp(date)
+        elif isinstance(date, datetime):
+            date = date
         else:
-            raise ValueError("arg precision invalid.")
+            raise ValueError("invalid date format.It should be str, timestamp(int) or datetime object")
+
+        get_group_key = {'year': lambda x: x.year,
+                         'month': lambda x: (x.year, x.month),
+                         'day': lambda x: (x.year, x.month, x.day),
+                         'hour': lambda x: (x.month, x.day, x.hour, x.minute),
+                         'minute': lambda x: (x.month, x.day, x.hour, x.minute),
+                         'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)}
+
+        try:
+            get_group_key[precision](date)
+        except Exception:
+            raise ValueError("invalid precision, precision must be 'year', 'month' or 'day'.")
+
+
 
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
                    key=lambda x: x[filed], 
