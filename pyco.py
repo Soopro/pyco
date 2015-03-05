@@ -219,6 +219,7 @@ class BaseView(MethodView):
                         "alias": x.get("alias"),
                         "title": x.get("title"),
                         "locked": x.get("locked"),
+                        "priority": x.get("priority"),
                         "meta": x.get("meta",{}),
                         "taxonomy": tax.get("alias"),
                         "updated": x.get("updated")
