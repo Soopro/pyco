@@ -26,7 +26,7 @@ def generate_thumbnail(filename):
         except IOError as e:
             raise e
     else:
-        raise 'generate thumbnail failed: unknown file type.'
+        raise ValueError('generate thumbnail failed: unknown file type.')
 
 
 def walkfiles(source):
