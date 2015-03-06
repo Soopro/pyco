@@ -7,14 +7,9 @@ THUMBNAILS_H = 360
 THUMBNAILS_W = 360
 
 
-def generate_thumbnail(dirpath, filename):
-    file = os.path.join(dirpath, filename)
-    print file
-    if not os.path.isfile(file):
-        return
+def generate_thumbnail(filename):
     # get file type from filename
     file_type = os.path.splitext(filename)[1][1:].upper()
-    print file
     thumbnail_format = {
         'JPG': 'JPEG',
         'JPEG': 'JPEG',
@@ -25,15 +20,15 @@ def generate_thumbnail(dirpath, filename):
 
     if format_type:
         try:
-            im = Image.open(file)
+            im = Image.open(filename)
             w, h = im.size
             if w < h:
                 im.thumbnail((w*THUMBNAILS_H/h, THUMBNAILS_H), Image.ANTIALIAS)
             else:
                 im.thumbnail((THUMBNAILS_W, h*THUMBNAILS_W/w), Image.ANTIALIAS)
-            if not os.path.exists(os.path.join(THUMBNAILS_DIR, dirpath)):
-                os.makedirs(os.path.join(THUMBNAILS_DIR, dirpath))
-            im.save(os.path.join(THUMBNAILS_DIR, file))
+            if not os.path.exists(THUMBNAILS_DIR):
+                os.makedirs(THUMBNAILS_DIR)
+            im.save(os.path.join(THUMBNAILS_DIR, filename))
         except IOError as e:
             raise e
     else:
@@ -41,10 +36,11 @@ def generate_thumbnail(dirpath, filename):
 
 
 def walkfiles(source):
-    for dirpath, dirnames, filenames in os.walk(source):
-        for filename in filenames:
-            generate_thumbnail(dirpath, filename)
+    for f in os.listdir(source):
+        if os.path.isfile(f):
+            print f
+            generate_thumbnail(f)
 
 if __name__ == '__main__':
-    os.chdir('..')
-    walkfiles(UPLOADS_DIR)
+    os.chdir(os.path.join('..', UPLOADS_DIR))
+    walkfiles('.')
