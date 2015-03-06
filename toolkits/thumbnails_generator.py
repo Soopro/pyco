@@ -1,4 +1,5 @@
 import os
+from PIL import Image
 
 UPLOADS_DIR = 'uploads'
 THUMBNAILS_DIR = 'thumbnails'
@@ -6,10 +7,14 @@ THUMBNAILS_H = 360
 THUMBNAILS_W = 360
 
 
-def generate_thumbnail(filename):
-
+def generate_thumbnail(dirpath, filename):
+    file = os.path.join(dirpath, filename)
+    print file
+    if not os.path.isfile(file):
+        return
     # get file type from filename
     file_type = os.path.splitext(filename)[1][1:].upper()
+    print file
     thumbnail_format = {
         'JPG': 'JPEG',
         'JPEG': 'JPEG',
@@ -20,16 +25,15 @@ def generate_thumbnail(filename):
 
     if format_type:
         try:
-            im = Image.open(os.path.join(UPLOADS_DIR, filename))
+            im = Image.open(file)
             w, h = im.size
             if w < h:
                 im.thumbnail((w*THUMBNAILS_H/h, THUMBNAILS_H), Image.ANTIALIAS)
             else:
                 im.thumbnail((THUMBNAILS_W, h*THUMBNAILS_W/w), Image.ANTIALIAS)
-            thumbnail_folder = os.path.join(UPLOADS_DIR, THUMBNAILS_DIR)
-            if not os.path.exists(thumbnail_folder):
-                os.makedirs(thumbnail_folder)
-            im.save(os.path.join(_thumbnail_path(app_alias), filename))
+            if not os.path.exists(os.path.join(THUMBNAILS_DIR, dirpath)):
+                os.makedirs(os.path.join(THUMBNAILS_DIR, dirpath))
+            im.save(os.path.join(THUMBNAILS_DIR, file))
         except IOError as e:
             raise e
     else:
@@ -38,9 +42,9 @@ def generate_thumbnail(filename):
 
 def walkfiles(source):
     for dirpath, dirnames, filenames in os.walk(source):
-        for file in filenames:
-            generate_thumbnail(file)
-
+        for filename in filenames:
+            generate_thumbnail(dirpath, filename)
 
 if __name__ == '__main__':
+    os.chdir('..')
     walkfiles(UPLOADS_DIR)
