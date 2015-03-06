@@ -138,7 +138,7 @@ def barcode(raw_pages, condition="category"):
                 ret[label] += 1
     return ret
 
-#TODO adding timestamp and datetime
+
 def timemachine(raw_pages, filed='date',
                 precision='month', time_format='%Y-%m-%d'):
     """return list of pages sort by time.
@@ -163,7 +163,7 @@ def timemachine(raw_pages, filed='date',
                          'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)}
 
         try:
-            get_group_key[precision](date)
+            return get_group_key[precision](date)
         except Exception:
             raise ValueError("invalid precision, precision must be 'year', 'month' or 'day'.")
 
