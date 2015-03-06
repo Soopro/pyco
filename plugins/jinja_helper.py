@@ -155,18 +155,19 @@ def timemachine(raw_pages, filed='date',
         else:
             raise ValueError("invalid date format.It should be str, timestamp(int) or datetime object")
 
-        get_group_key = {'year': lambda x: x.year,
-                         'month': lambda x: (x.year, x.month),
-                         'day': lambda x: (x.year, x.month, x.day),
-                         'hour': lambda x: (x.month, x.day, x.hour, x.minute),
-                         'minute': lambda x: (x.month, x.day, x.hour, x.minute),
-                         'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)}
+        get_group_key = {
+            'year': lambda x: x.year,
+            'month': lambda x: (x.year, x.month),
+            'day': lambda x: (x.year, x.month, x.day),
+            'hour': lambda x: (x.month, x.day, x.hour, x.minute),
+            'minute': lambda x: (x.month, x.day, x.hour, x.minute),
+            'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)
+        }
 
         try:
             return get_group_key[precision](date)
         except Exception:
             raise ValueError("invalid precision, precision must be 'year', 'month' or 'day'.")
-
 
 
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
