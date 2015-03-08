@@ -14,9 +14,8 @@ from hashlib import sha1
 from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
-from optparse import OptionParser
 from gettext import gettext, ngettext
-import sys, os, re, traceback, markdown, json
+import sys, os, re, getopt, traceback, markdown, json
 
 
 class BaseView(MethodView):
@@ -529,18 +528,22 @@ CHARSET = app.config.get("CHARSET")
 sys.path.insert(0, PLUGIN_DIR)
 
 # options for start app
-opt = OptionParser()
-opt.add_option('-s', '--server', help='set server mode',
-               action='store_const', dest='server', const=True, default=False)
-opt.add_option('-d', '--debug', help='set debug mode',
-               action='store_const', dest='debug', const=True, default=False)
-opts, args = opt.parse_args()
+opts, args = getopt.getopt(sys.argv[1:], "pd", ["production","debug"])
+
+is_debug_mode = False
+is_prd_mode = False
+for op, value in opts:
+    if op == "-p" or op == "--production":
+        is_prd_mode = True
+    elif op == "-d" or op == "--debug":
+        is_debug_mode = False
 
 _DEBUG = app.config.get("DEBUG")
-if opts.server:
-    _DEBUG = False
-elif opts.debug:
+
+if is_debug_mode:
     _DEBUG = True
+elif is_prd_mode:
+    _DEBUG = False
 
 # init app
 app.debug = _DEBUG
