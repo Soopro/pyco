@@ -15,7 +15,7 @@ from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
 from gettext import gettext, ngettext
-import sys, os, re, getopt, traceback, markdown, json
+import sys, os, re, traceback, markdown, json, argparse
 
 
 class BaseView(MethodView):
@@ -527,22 +527,29 @@ CHARSET = app.config.get("CHARSET")
 # make importable for plugin folder
 sys.path.insert(0, PLUGIN_DIR)
 
-# options for start app
-opts, args = getopt.getopt(sys.argv[1:], "pd", ["production","debug"])
-
-is_debug_mode = False
-is_prd_mode = False
-for op, value in opts:
-    if op == "-p" or op == "--production":
-        is_prd_mode = True
-    elif op == "-d" or op == "--debug":
-        is_debug_mode = False
-
 _DEBUG = app.config.get("DEBUG")
 
-if is_debug_mode:
+# options for start app
+parser = argparse.ArgumentParser(
+                description='Options of starting Pyco server.')
+
+parser.add_argument('-p', '--production', 
+                    dest='server_mode',
+                    action='store_const',
+                    const="PRD",
+                    help='Manually start with production mode.')
+
+parser.add_argument('-d', '--debug', 
+                    dest='server_mode',
+                    action='store_const',
+                    const="DEBUG",
+                    help='Manually start debug mode.')
+
+args = parser.parse_args()
+
+if args.server_mode is "DEBUG":
     _DEBUG = True
-elif is_prd_mode:
+elif args.server_mode is "PRD":
     _DEBUG = False
 
 # init app
