@@ -14,9 +14,8 @@ from hashlib import sha1
 from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
-from optparse import OptionParser
 from gettext import gettext, ngettext
-import sys, os, re, traceback, markdown, json
+import sys, os, re, traceback, markdown, json, argparse
 
 
 class BaseView(MethodView):
@@ -528,19 +527,30 @@ CHARSET = app.config.get("CHARSET")
 # make importable for plugin folder
 sys.path.insert(0, PLUGIN_DIR)
 
-# options for start app
-opt = OptionParser()
-opt.add_option('-s', '--server', help='set server mode',
-               action='store_const', dest='server', const=True, default=False)
-opt.add_option('-d', '--debug', help='set debug mode',
-               action='store_const', dest='debug', const=True, default=False)
-opts, args = opt.parse_args()
-
 _DEBUG = app.config.get("DEBUG")
-if opts.server:
-    _DEBUG = False
-elif opts.debug:
+
+# options for start app
+parser = argparse.ArgumentParser(
+                description='Options of starting Pyco server.')
+
+parser.add_argument('-p', '--production', 
+                    dest='server_mode',
+                    action='store_const',
+                    const="PRD",
+                    help='Manually start with production mode.')
+
+parser.add_argument('-d', '--debug', 
+                    dest='server_mode',
+                    action='store_const',
+                    const="DEBUG",
+                    help='Manually start debug mode.')
+
+args = parser.parse_args()
+
+if args.server_mode is "DEBUG":
     _DEBUG = True
+elif args.server_mode is "PRD":
+    _DEBUG = False
 
 # init app
 app.debug = _DEBUG
