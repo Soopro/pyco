@@ -545,7 +545,7 @@ parser.add_argument('-d', '--debug',
                     const="DEBUG",
                     help='Manually start debug mode.')
 
-args = parser.parse_args()
+args, unknown = parser.parse_known_args()
 
 if args.server_mode is "DEBUG":
     _DEBUG = True
