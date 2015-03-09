@@ -533,7 +533,7 @@ _DEBUG = app.config.get("DEBUG")
 parser = argparse.ArgumentParser(
                 description='Options of starting Pyco server.')
 
-parser.add_argument('-p', '--production', 
+parser.add_argument('-s', '--production', 
                     dest='server_mode',
                     action='store_const',
                     const="PRD",
