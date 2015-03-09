@@ -9,7 +9,9 @@ THUMBNAILS_W = 360
 
 def generate_thumbnail(filename):
     # get file type from filename
+
     file_type = os.path.splitext(filename)[1][1:].upper()
+
     thumbnail_format = {
         'JPG': 'JPEG',
         'JPEG': 'JPEG',
@@ -17,7 +19,6 @@ def generate_thumbnail(filename):
         'GIF': 'GIF'
     }
     format_type = thumbnail_format.get(file_type)
-
     if format_type:
         try:
             im = Image.open(filename)
@@ -32,7 +33,7 @@ def generate_thumbnail(filename):
         except IOError as e:
             raise e
     else:
-        raise ValueError('generate thumbnail failed: unknown file type.')
+        pass
 
 
 def walkfiles(source):
