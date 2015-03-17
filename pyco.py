@@ -1,7 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-from flask import (Flask, current_app, request, abort, render_template,
+from flask import (Flask, current_app, request, abort, render_template, g,
                    make_response, redirect, send_from_directory, send_file)
 
 from flask.views import MethodView
@@ -69,7 +69,7 @@ class BaseView(MethodView):
             return file_name
 
         tmp_fname = "{}{}".format(DEFAULT_INDEX_ALIAS, CONTENT_FILE_EXT)
-        file_name = os.path.join(base_path,tmp_fname)
+        file_name = os.path.join(base_path, tmp_fname)
         if self.check_file_exists(file_name):
             return file_name
         return None
@@ -233,7 +233,6 @@ class BaseView(MethodView):
         
     def get_pages(self):
         config = self.config
-        base_url = self.gen_base_url()
         
         theme_meta_options = self.view_ctx["theme_meta"].get("options")
         
@@ -348,7 +347,7 @@ class ContentView(BaseView):
         run_hook("plugins_loaded")
 
         current_app.debug = _DEBUG
-      
+
         self.init_context()
         
         run_hook("config_loaded", config=self.config)

@@ -8,6 +8,7 @@ import math, os, datetime
 def plugins_loaded():
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
     current_app.jinja_env.filters["type"] = filter_contenttype
+    current_app.jinja_env.filters["url"] = filter_url
     return
 
 def before_render(var, template):
@@ -41,6 +42,13 @@ def filter_thumbnail(pic_url):
 def filter_contenttype(raw_pages, ctype=None):
     return saltshaker(raw_pages, [{"type": ctype}])
 
+
+def filter_url(url):
+    if url_validator(url):
+        return url
+    else:
+        base_url = os.path.join(current_app.config.get("BASE_URL"), '')
+        return os.path.join(base_url, url.rstrip('/'))
 
 #custom functions
 def saltshaker(raw_pages, conditions, intersection=False):
