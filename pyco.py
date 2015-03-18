@@ -197,7 +197,7 @@ class BaseView(MethodView):
         return date_formatted
     
     def get_menus(self):
-        menus = self.view_ctx["site_meta"].get("terms",{})
+        menus = self.view_ctx["site_meta"].get("menus",{})
         return menus
     
     def get_taxonomies(self):
