@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from flask import request, current_app
 from itertools import groupby
-import math, os, datetime
+import math, os, datetime, re
 
 
 def plugins_loaded():
@@ -44,7 +44,7 @@ def filter_contenttype(raw_pages, ctype=None):
 
 
 def filter_url(url):
-    if url_validator(url):
+    if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
         base_url = os.path.join(current_app.config.get("BASE_URL"), '')
