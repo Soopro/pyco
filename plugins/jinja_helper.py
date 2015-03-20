@@ -116,7 +116,7 @@ def stapler(raw_pages, paged=1, perpage=12):
     booklet = stapler(pages, paged=1, perpage=12)
     """
     matched_pages = raw_pages
-    max_pages = int(math.ceil(len(matched_pages)/perpage))
+    max_pages = int(math.ceil(len(matched_pages)/float(perpage)))
 
     max_pages = max(max_pages, 1)
     paged = min(max_pages, paged)
