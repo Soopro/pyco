@@ -211,7 +211,6 @@ class BaseView(MethodView):
             tax_dict[tax["alias"]] = {
                 "title": tax.get("title"),
                 "alias": tax.get("alias"),
-                "locked": tax.get("locked"),
                 "content_types": tax.get("content_types"),
                 "terms": [
                     {
