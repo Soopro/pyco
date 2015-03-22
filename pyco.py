@@ -289,7 +289,7 @@ class BaseView(MethodView):
         for m in meta:
             data[m] = meta[m]
         data["alias"] = self.gen_page_alias(file_path)
-        data["url"] = meta.get("url") or self.gen_page_url(file_path)
+        data["url"] = self.gen_page_url(file_path)
         data["title"] = meta.get("title", "")
         data["priority"] = meta.get("priority", 0)
         data["author"] = meta.get("author", "")
