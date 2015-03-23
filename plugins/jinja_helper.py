@@ -35,8 +35,8 @@ def filter_thumbnail(pic_url):
     THUMB_DIR = os.path.join(UPLOAD_DIR,
                              current_app.config.get("THUMBNAILS_DIR"))
 
-    pattern = "/{}/".foramt(UPLOAD_DIR)
-    replacement = "/{}/".foramt(THUMB_DIR)
+    pattern = "/{}/".format(UPLOAD_DIR)
+    replacement = "/{}/".format(THUMB_DIR)
     new_pic_url = pic_url.replace(pattern, replacement)
     
     return new_pic_url
