@@ -137,16 +137,24 @@ def stapler(raw_pages, paged=1, perpage=12):
 
 def barcode(raw_pages, condition="category"):
     """return dict with category alias and count.
-    cate_count = barcode(raw_pages, condition="tag")
+    cate_count = barcode(raw_pages, condition="tags")
     """
     ret = dict()
-    for page in raw_pages:
-        label = page.get(condition)
-        if label:
-            if label not in ret:
-                ret[label] = 1
+    def count(term):
+        if term:
+            if term not in ret:
+                ret[term] = 1
             else:
-                ret[label] += 1
+                ret[term] += 1
+
+    for page in raw_pages:
+        term = page.get(condition)
+        if isinstance(term, (list, dict)):
+            obj = label if isinstance(term, dict) else xrange(len(term))
+            for i in obj:
+                count(obj[i])
+        else:
+            count(term)
     return ret
 
 

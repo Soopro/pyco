@@ -15,7 +15,7 @@ from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
 from gettext import gettext, ngettext
-import sys, os, re, traceback, markdown, json, argparse
+import sys, os, re, traceback, markdown, json, argparse, ast
 
 
 class BaseView(MethodView):
@@ -146,7 +146,17 @@ class BaseView(MethodView):
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
-                headers[kv_pair[0].lower()] = kv_pair[1].strip()
+                _tmp_value = kv_pair[1].strip()
+                try:
+                    _tmp_value = ast.literal_eval(_tmp_value)
+                except Exception:
+                    pass
+                try:
+                    _tmp_value = json.load(_tmp_value)
+                except Exception:
+                    pass
+
+                headers[kv_pair[0].lower()] = _tmp_value
         self.run_hook("after_read_page_meta", headers=headers)
         return headers
 
