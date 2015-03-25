@@ -148,7 +148,7 @@ class BaseView(MethodView):
             if len(kv_pair) == 2:
                 _tmp_value = kv_pair[1].strip()
                 try:
-                    _tmp_value = ast.literal_eval(_tmp_value)
+                    _tmp_value = set(ast.literal_eval(_tmp_value))
                 except Exception:
                     pass
                 try:
