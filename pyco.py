@@ -148,15 +148,14 @@ class BaseView(MethodView):
             if len(kv_pair) == 2:
                 _tmp_value = kv_pair[1].strip()
                 try:
-                    _tmp_value = set(ast.literal_eval(_tmp_value))
+                    _tmp_value = ast.literal_eval(_tmp_value)
                 except Exception:
                     pass
-                try:
-                    _tmp_value = json.load(_tmp_value)
-                except Exception:
-                    pass
+                if isinstance(_tmp_value, list) and all(map(lambda x: isinstance(x, unicode), _tmp_value)):
+                    _tmp_value = set(_tmp_value)
 
                 headers[kv_pair[0].lower()] = _tmp_value
+
         self.run_hook("after_read_page_meta", headers=headers)
         return headers
 
