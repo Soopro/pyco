@@ -151,9 +151,9 @@ class BaseView(MethodView):
                     _tmp_value = ast.literal_eval(_tmp_value)
                 except Exception:
                     pass
-                if isinstance(_tmp_value, list) and \
-                        all(map(lambda x: isinstance(x, unicode), _tmp_value)):
-                    _tmp_value = set(_tmp_value)
+                # if isinstance(_tmp_value, list) and \
+                #         all(map(lambda x: isinstance(x, unicode), _tmp_value)):
+                #     _tmp_value = set(_tmp_value)
 
                 headers[kv_pair[0].lower()] = _tmp_value
 
