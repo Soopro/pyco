@@ -22,10 +22,8 @@ def before_render(var, template):
 
 #custom filters
 def filter_thumbnail(pic_url):
-    try:
-        pic_url = str(pic_url)
-    except Exception:
-        return pic_url
+   if not isinstance(pic_url,(str,unicode)):
+       return url
 
     static_host = current_app.config.get("STATIC_HOST")
     if static_host not in pic_url:
@@ -43,10 +41,14 @@ def filter_thumbnail(pic_url):
 
 
 def filter_contenttype(raw_pages, ctype=None):
+    if not isinstance(raw_pages, (list,dict)):
+        return raw_pages
     return saltshaker(raw_pages, [{"type": ctype}])
 
 
 def filter_url(url):
+    if not isinstance(url,(str,unicode)):
+        return url
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
