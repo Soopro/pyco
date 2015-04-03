@@ -22,8 +22,9 @@ def before_render(var, template):
 
 #custom filters
 def filter_thumbnail(pic_url):
-   if not isinstance(pic_url,(str,unicode)):
-       return url
+
+    if not isinstance(pic_url, (str, unicode)):
+        return pic_url
 
     static_host = current_app.config.get("STATIC_HOST")
     if static_host not in pic_url:

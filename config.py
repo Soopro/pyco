@@ -6,7 +6,7 @@ DEBUG = True
 HOST = '0.0.0.0'
 PORT = 5500
 
-THEME_NAME = 'tinforce'
+THEME_NAME = 'devinpan'
 
 BASE_URL = "http://localhost:5500/"
 

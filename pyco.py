@@ -621,4 +621,4 @@ def errorhandler(err):
 if __name__ == "__main__":
     host = app.config.get("HOST")
     port = app.config.get("PORT")
-    app.run(host=host, port=port)
+    app.run(host=host, port=port, debug=True)
