@@ -446,9 +446,6 @@ class ContentView(BaseView):
         # content
         pages = self.get_pages()
         self.view_ctx["pages"] = pages
-
-        is_front = page_meta.get("url") == self.gen_base_url()
-        self.view_ctx["is_front"] = is_front
         
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
