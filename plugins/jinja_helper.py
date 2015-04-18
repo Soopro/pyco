@@ -56,7 +56,7 @@ def filter_url(url, include_args=True):
         return url
     else:
         base_url = os.path.join(current_app.config.get("BASE_URL"), '')
-        return os.path.join(base_url, url.rstrip('/'))
+        return os.path.join(base_url, url.strip('/'))
 
 #custom functions
 def saltshaker(raw_pages, conditions, intersection=False):

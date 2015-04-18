@@ -209,6 +209,17 @@ class BaseView(MethodView):
     
     def get_menus(self):
         menus = self.view_ctx["site_meta"].get("menus",{})
+        base_url = current_app.config.get("BASE_URL")
+        def process_menu_url(menu):
+            for item in menu:
+                url = item.get("url","").strip('/')
+                if not re.match("^(?:http|ftp)s?://", url):
+                    item["url"] = os.path.join(base_url, url.strip('/'))
+                item["nodes"] = process_menu_url(item.get("nodes",[]))
+            return menu
+        for menu in menus:
+            menus[menu] = process_menu_url(menus[menu])
+
         return menus
     
     def get_taxonomies(self):
