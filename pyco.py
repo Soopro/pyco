@@ -382,7 +382,7 @@ class ContentView(BaseView):
         site_redirect_url = helper_process_url(redirect_to.get("url"),
                                                self.config.get("BASE_URL"))
         if site_redirect_url and request.url != site_redirect_url:
-            return redirect(site_redirect_url, code=302)
+            return redirect(site_redirect_url, code=301)
 
 
         file["path"] = self.get_file_path(request.path)

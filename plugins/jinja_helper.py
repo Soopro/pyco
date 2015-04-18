@@ -4,6 +4,12 @@ from flask import request, current_app
 from itertools import groupby
 import math, os, datetime, re
 
+_CONFIG = {}
+
+def config_loaded(config):
+    global _CONFIG
+    _CONFIG = config
+    return
 
 def plugins_loaded():
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
@@ -26,13 +32,12 @@ def filter_thumbnail(pic_url):
     if not isinstance(pic_url, (str, unicode)):
         return pic_url
 
-    static_host = current_app.config.get("STATIC_HOST")
+    static_host = _CONFIG.get("STATIC_HOST")
     if static_host not in pic_url:
         return pic_url
     
-    UPLOAD_DIR = current_app.config.get("UPLOAD_DIR")
-    THUMB_DIR = os.path.join(UPLOAD_DIR,
-                             current_app.config.get("THUMBNAILS_DIR"))
+    UPLOAD_DIR = _CONFIG.get("UPLOAD_DIR")
+    THUMB_DIR = os.path.join(UPLOAD_DIR, _CONFIG.get("THUMBNAILS_DIR"))
 
     pattern = "/{}/".format(UPLOAD_DIR)
     replacement = "/{}/".format(THUMB_DIR)
@@ -55,7 +60,7 @@ def filter_url(url, include_args=True):
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
-        base_url = os.path.join(current_app.config.get("BASE_URL"), '')
+        base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
         return os.path.join(base_url, url.strip('/'))
 
 #custom functions

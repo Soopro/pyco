@@ -49,10 +49,10 @@ IGNORE_FILES = []
 
 
 PLUGINS = ["autometas",
-           "redirect",
            "draft",
            "languages",
            "content_types",
+           "redirect",
            "jinja_helper"]
 
 """ For Plugins """
