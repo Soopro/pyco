@@ -51,7 +51,7 @@ def filter_url(url, include_args=True):
     if not isinstance(url,(str,unicode)):
         return url
     if not include_args:
-        url = url[: url.find("?")]
+        url = url.split("?")[0]
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
