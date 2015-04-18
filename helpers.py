@@ -1,5 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
+import os, re
 from flask import make_response
 
 
@@ -50,3 +51,14 @@ def make_content_response(output, status_code, etag=None):
     if etag is not None:
         response.set_etag(etag)
     return response
+
+def helper_process_url(url, base_url):
+    if not isinstance(url,(str,unicode)):
+        return url
+
+    if re.match("^(?:http|ftp)s?://", url):
+        return url
+    else:
+        base_url = os.path.join(base_url, '')
+        url = os.path.join(base_url, url.strip('/'))
+        return url

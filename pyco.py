@@ -7,7 +7,7 @@ from flask import (Flask, current_app, request, abort, render_template, g,
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
-from helpers import load_config, make_content_response
+from helpers import load_config, make_content_response, helper_process_url
 
 from collections import defaultdict
 from hashlib import sha1
@@ -379,8 +379,10 @@ class ContentView(BaseView):
         
         redirect_to = {"url": None}
         run_hook("request_url", request=request, redirect_to=redirect_to)
-        if redirect_to.get("url"):
-            return redirect(redirect_to["url"], code=302)
+        site_redirect_url = helper_process_url(redirect_to.get("url"),
+                                               self.config.get("BASE_URL"))
+        if site_redirect_url and request.url != site_redirect_url:
+            return redirect(site_redirect_url, code=302)
 
 
         file["path"] = self.get_file_path(request.path)
@@ -424,8 +426,10 @@ class ContentView(BaseView):
         if tmp_tpl_name[0:1] == '_' and not redirect_to["url"]:
             redirect_to["url"] = os.path.join(config.get('BASE_URL'),
                                               DEFAULT_404_ALIAS)
-        
-        if redirect_to.get("url"):
+
+        content_redirect_to = helper_process_url(redirect_to.get("url"),
+                                                 self.config.get("BASE_URL"))
+        if content_redirect_to and request.url != content_redirect_to:
             return redirect(redirect_to["url"], code=302)
 
         self.view_ctx["meta"] = page_meta
