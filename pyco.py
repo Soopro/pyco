@@ -34,7 +34,8 @@ class BaseView(MethodView):
         try:
             self.config['THEME_META'] = json.load(theme_meta)
         except Exception as e:
-            raise e
+            err_msg = "Load Theme Meta faild: {}".format(str(e))
+            raise Exception(err_msg)
         theme_meta.close()
         
         site_meta_file = os.path.join(CONTENT_DIR, DEFAULT_SITE_META_FILE)
@@ -42,7 +43,8 @@ class BaseView(MethodView):
         try:
             self.config['SITE_META'] = json.load(site_meta)
         except Exception as e:
-            raise e
+            err_msg = "Load Site Meta faild: {}".format(str(e))
+            raise Exception(err_msg)
         site_meta.close()
         
     
@@ -84,9 +86,11 @@ class BaseView(MethodView):
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
             relative_path = os.path.splitext(relative_path)[0]
-
-        if relative_path.endswith(DEFAULT_INDEX_ALIAS):
-            relative_path = relative_path[:-5]
+        front_page_content_path = "{}/{}".format(CONTENT_DIR,
+                                                 DEFAULT_INDEX_ALIAS)
+        if relative_path.endswith(front_page_content_path):
+            len_index_str = len(DEFAULT_INDEX_ALIAS)
+            relative_path = relative_path[:-len_index_str]
 
         relative_url = relative_path.replace(CONTENT_DIR+"/", '')
         url = os.path.join(current_app.config.get("BASE_URL"), relative_url)
@@ -151,9 +155,6 @@ class BaseView(MethodView):
                     _tmp_value = ast.literal_eval(_tmp_value)
                 except Exception:
                     pass
-                # if isinstance(_tmp_value, list) and \
-                #         all(map(lambda x: isinstance(x, unicode), _tmp_value)):
-                #     _tmp_value = set(_tmp_value)
 
                 headers[kv_pair[0].lower()] = _tmp_value
 
@@ -429,11 +430,11 @@ class ContentView(BaseView):
         
         self.view_ctx["content"] = page_content['content']
 
-        excerpt = self.gen_excerpt(self.view_ctx["content"],
-                                   self.view_ctx["theme_meta"])
-        self.view_ctx["meta"]["excerpt"] = excerpt
-        des = self.view_ctx["meta"].get("description")
-        self.view_ctx["meta"]["description"] = excerpt if not des else des
+        # excerpt = self.gen_excerpt(self.view_ctx["content"],
+        #                            self.view_ctx["theme_meta"])
+        # self.view_ctx["meta"]["excerpt"] = excerpt
+        # des = self.view_ctx["meta"].get("description")
+        # self.view_ctx["meta"]["description"] = excerpt if not des else des
         
         # menu
         self.view_ctx["menu"] = self.get_menus()
@@ -445,20 +446,13 @@ class ContentView(BaseView):
         # content
         pages = self.get_pages()
         self.view_ctx["pages"] = pages
-        self.view_ctx["current_page"] = self.view_ctx["meta"].copy()
-        self.view_ctx["current_page"]["content"] = self.view_ctx["content"]
-        content_types = self.view_ctx["site_meta"].get("content_types")
-        
-        current_content_type = self.view_ctx["current_page"].get("type")
 
-        self.view_ctx["current_type"] = {
-            'alias':current_content_type,
-            'title':content_types.get(current_content_type)
-        }
+        is_front = page_meta.get("url") == self.gen_base_url()
+        self.view_ctx["is_front"] = is_front
         
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
-                 current_page=self.view_ctx["current_page"])
+                 current_page=self.view_ctx["meta"])
         
         # template
         template = dict()
