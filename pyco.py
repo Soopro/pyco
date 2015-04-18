@@ -212,8 +212,9 @@ class BaseView(MethodView):
         base_url = current_app.config.get("BASE_URL")
         def process_menu_url(menu):
             for item in menu:
-                url = item.get("url","").strip('/')
-                if not re.match("^(?:http|ftp)s?://", url):
+                url = item.get("url")
+                if not isinstance(url, (str, unicode)) \
+                and not re.match("^(?:http|ftp)s?://", url):
                     item["url"] = os.path.join(base_url, url.strip('/'))
                 item["nodes"] = process_menu_url(item.get("nodes",[]))
             return menu
