@@ -47,9 +47,11 @@ def filter_contenttype(raw_pages, ctype=None):
     return saltshaker(raw_pages, [{"type": ctype}])
 
 
-def filter_url(url):
+def filter_url(url, include_args=True):
     if not isinstance(url,(str,unicode)):
         return url
+    if not include_args:
+        url = url[: url.find("?")]
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
