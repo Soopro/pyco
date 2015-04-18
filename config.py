@@ -6,7 +6,7 @@ DEBUG = True
 HOST = '0.0.0.0'
 PORT = 5500
 
-THEME_NAME = 'devinpan'
+THEME_NAME = 'dev'
 
 BASE_URL = "http://localhost:5500/"
 
