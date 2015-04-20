@@ -53,7 +53,7 @@ def make_content_response(output, status_code, etag=None):
     return response
 
 def helper_process_url(url, base_url):
-    if not isinstance(url,(str,unicode)):
+    if not url or not isinstance(url,(str,unicode)):
         return url
 
     if re.match("^(?:http|ftp)s?://", url):
