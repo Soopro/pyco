@@ -41,7 +41,7 @@ class BaseView(MethodView):
         site_meta_file = os.path.join(CONTENT_DIR, DEFAULT_SITE_META_FILE)
         site_meta = open(site_meta_file)
         try:
-            self.config['SITE_META'] = json.load(site_meta)
+            self.config['SITE'] = json.load(site_meta)
         except Exception as e:
             err_msg = "Load Site Meta faild: {}".format(str(e))
             raise Exception(err_msg)
@@ -208,7 +208,7 @@ class BaseView(MethodView):
         return date_formatted
     
     def get_menus(self):
-        menus = self.view_ctx["site_meta"].get("menus",{})
+        menus = self.config['SITE'].get("menus",{})
         base_url = current_app.config.get("BASE_URL")
         def process_menu_url(menu):
             for item in menu:
@@ -224,8 +224,8 @@ class BaseView(MethodView):
         return menus
     
     def get_taxonomies(self):
-        taxonomies = self.view_ctx["theme_meta"].get("taxonomies",[])
-        terms = self.view_ctx["site_meta"].get("terms",{})
+        taxonomies = self.config['THEME_META'].get("taxonomies",[])
+        terms = self.config['SITE'].get("terms",{})
         tax_dict = {}
         for tax in taxonomies:
             
@@ -338,7 +338,7 @@ class BaseView(MethodView):
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = config.get("LIBS_HOST")
-        self.view_ctx["site_meta"] = config.get("SITE_META")
+        self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
     
