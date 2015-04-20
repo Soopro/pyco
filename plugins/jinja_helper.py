@@ -15,6 +15,7 @@ def plugins_loaded():
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
     current_app.jinja_env.filters["type"] = filter_contenttype
     current_app.jinja_env.filters["url"] = filter_url
+    current_app.jinja_env.filters["path"] = filter_path
     return
 
 def before_render(var, template):
@@ -52,16 +53,27 @@ def filter_contenttype(raw_pages, ctype=None):
     return saltshaker(raw_pages, [{"type": ctype}])
 
 
-def filter_url(url, include_args=True):
+def filter_url(url, remove_args=False):
     if not isinstance(url,(str,unicode)):
         return url
-    if not include_args:
+    if remove_args:
         url = url.split("?")[0]
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
         base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
         return os.path.join(base_url, url.strip('/'))
+
+def filter_path(url, remove_args=True):
+    if not isinstance(url,(str,unicode)):
+        return url
+    if remove_args:
+        url = url.split("?")[0]
+    base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
+    url = url.split(base_url)[-1]
+    url = url.strip('/')
+    return "/{}".format(url)
+
 
 #custom functions
 def saltshaker(raw_pages, conditions, intersection=False):
