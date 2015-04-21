@@ -15,7 +15,7 @@ _THEME_NAME = None
 
 def config_loaded(config):
     global _LOCALE, _TRANSLATES, _THEME_NAME
-    site_meta = config.get("SITE_META", {})
+    site_meta = config.get("SITE", {}).get("meta", {})
     _THEME_NAME = config.get("THEME_NAME")
     _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
     _TRANSLATES = site_meta.get("translates")

@@ -14,7 +14,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("THEME_NAME", "default")
     app.config.setdefault("HOST", "0.0.0.0")
     app.config.setdefault("PORT", 5500)
-    app.config.setdefault("SITE_META",{})
+    app.config.setdefault("SITE",{})
     app.config.setdefault("THEME_META",{})
     app.config.setdefault("CHARSET","utf8")
     
