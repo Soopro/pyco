@@ -172,9 +172,9 @@ def barcode(raw_pages, condition="category"):
     for page in raw_pages:
         term = page.get(condition)
         if isinstance(term, (list, dict)):
-            obj = label if isinstance(term, dict) else xrange(len(term))
+            obj = term if isinstance(term, dict) else xrange(len(term))
             for i in obj:
-                count(obj[i])
+                count(term[i])
         else:
             count(term)
     return ret

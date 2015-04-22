@@ -61,7 +61,6 @@ def after_parse_content(content):
     print "after parse content"
     return
 
-
 def get_page_data(data, page_meta):
     print "get page data"
     return

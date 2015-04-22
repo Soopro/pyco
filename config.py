@@ -53,6 +53,7 @@ PLUGINS = ["autometas",
            "languages",
            "content_types",
            "redirect",
+           "marker",
            "jinja_helper"]
 
 """ For Plugins """

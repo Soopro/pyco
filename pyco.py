@@ -220,7 +220,6 @@ class BaseView(MethodView):
             return menu
         for menu in menus:
             menus[menu] = process_menu_url(menus[menu])
-        print menus
         return menus
     
     def get_taxonomies(self):
@@ -280,7 +279,7 @@ class BaseView(MethodView):
                 or relative_path.startswith("#") \
                 or relative_path in self.content_ignore_files:
                 continue
-
+            
             with open(f, "r") as fh:
                 file_content = fh.read().decode(CHARSET)
             meta_string, content_string = self.content_splitter(file_content)
@@ -414,7 +413,8 @@ class ContentView(BaseView):
         meta_string, content_string = self.content_splitter(tmp_file_content)
 
         page_meta = self.parse_page_meta(meta_string)
-        page_meta = self.parse_file_attrs(page_meta, file["path"],
+        page_meta = self.parse_file_attrs(page_meta,
+                                          file["path"],
                                           content_string)
         
         redirect_to = {"url": None}
