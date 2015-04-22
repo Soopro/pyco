@@ -213,14 +213,14 @@ class BaseView(MethodView):
         def process_menu_url(menu):
             for item in menu:
                 url = item.get("url")
-                if not isinstance(url, (str, unicode)) \
+                if isinstance(url, (str, unicode)) \
                 and not re.match("^(?:http|ftp)s?://", url):
                     item["url"] = os.path.join(base_url, url.strip('/'))
                 item["nodes"] = process_menu_url(item.get("nodes",[]))
             return menu
         for menu in menus:
             menus[menu] = process_menu_url(menus[menu])
-
+        print menus
         return menus
     
     def get_taxonomies(self):
