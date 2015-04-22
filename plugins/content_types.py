@@ -38,7 +38,7 @@ def single_page_meta(page_meta, redirect_to):
 
 def before_render(var, template):
     # content types
-    content_types = var["site_meta"].get("content_types")
+    content_types = _CONFIG["SITE"].get("content_types")
     current_content_type = var["meta"].get("type","")
     
     var["content_type"] = {
