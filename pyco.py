@@ -493,7 +493,8 @@ class ContentView(BaseView):
             template_file_path = self.theme_path_for(DEFAULT_TEMPLATE)
 
         self.view_ctx["template"] = template['file']
-
+        self.view_ctx["sa"] = {}
+        
         output = {}
         self.view_ctx.get('meta')
         output['content'] = render_template(template_file_path,
