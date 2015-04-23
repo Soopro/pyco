@@ -146,13 +146,23 @@ class BaseView(MethodView):
     def parse_page_meta(self, meta_string):
         headers = dict()
         self.run_hook("before_read_page_meta", headers=headers)
-
+        
+        def convert_unicode(item):
+            if isinstance(item, (dict, list)):
+                obj = item if isinstance(item, dict) else xrange(len(item))
+                for i in obj:
+                    item[i] = convert_unicode(item[i])
+            elif isinstance(item, str):
+                item = item.decode("utf-8")
+            return item
+        
         for line in meta_string.split("\n"):
             kv_pair = line.split(":", 1)
             if len(kv_pair) == 2:
                 _tmp_value = kv_pair[1].strip()
                 try:
                     _tmp_value = ast.literal_eval(_tmp_value)
+                    _tmp_value = convert_unicode(_tmp_value)
                 except Exception:
                     pass
 

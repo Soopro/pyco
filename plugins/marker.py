@@ -24,13 +24,13 @@ def before_render(var, template):
 def replace(content):
     uploads_dir = os.path.join(_CONFIG["BASE_URL"], _CONFIG["UPLOADS_DIR"], "")
     re_uploads_dir = re.compile(uploads_pattern, re.IGNORECASE)
-    return re.sub(re_uploads_dir, uploads_dir, content)
+    return re.sub(re_uploads_dir, unicode(uploads_dir), content)
     
-def parser_replace(config):
-    if isinstance(config, (dict, list)):
-        obj = config if isinstance(config, dict) else xrange(len(config))
+def parser_replace(item):
+    if isinstance(item, (dict, list)):
+        obj = item if isinstance(item, dict) else xrange(len(item))
         for i in obj:
-            config[i] = parser_replace(config[i])
-    elif isinstance(config, (str, unicode)):
-        config = replace(config)
-    return config
+            item[i] = parser_replace(item[i])
+    elif isinstance(item, (str, unicode)):
+        item = replace(item)
+    return item
