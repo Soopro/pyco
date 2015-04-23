@@ -51,6 +51,7 @@ PLUGINS = ["autometas",
            "languages",
            "content_types",
            "redirect",
+           "template",
            "marker",
            "jinja_helper"]
 

@@ -479,11 +479,10 @@ class ContentView(BaseView):
         # template
         template = dict()
 
-        template['file'] = self.view_ctx["meta"].get("template",
-                                                     DEFAULT_TEMPLATE)
+        template['file'] = self.view_ctx["meta"].get("template")
         
         run_hook("before_render", var=self.view_ctx, template=template)
-        
+
         template_file_path = self.theme_path_for(template['file'])
         template_file_absolute_path = os.path.join(current_app.root_path,
                                                    current_app.template_folder,
