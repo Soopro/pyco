@@ -336,7 +336,6 @@ class BaseView(MethodView):
         self.view_ctx["app_id"] = "APP_ID_PLACE_HOLDER"
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
-        self.view_ctx["libs_url"] = config.get("LIBS_HOST")
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         return
@@ -520,8 +519,6 @@ DEFAULT_EXCERPT_LENGTH = app.config.get("DEFAULT_EXCERPT_LENGTH")
 DEFAULT_EXCERPT_ELLIPSIS = app.config.get("DEFAULT_EXCERPT_ELLIPSIS")
 
 STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
-STATIC_HOST = app.config.get("STATIC_HOST")
-LIBS_HOST = app.config.get("LIBS_HOST")
 
 UPLOADS_DIR = app.config.get("UPLOADS_DIR")
 THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")

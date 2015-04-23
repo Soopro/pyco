@@ -28,8 +28,6 @@ DEFAULT_EXCERPT_LENGTH = 50
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 
 STATIC_BASE_URL = "/static"
-STATIC_HOST = BASE_URL+"static/"
-LIBS_HOST = "http://libs.soopro.com"
 
 UPLOADS_DIR = "uploads"
 THUMBNAILS_DIR = "thumbnails"

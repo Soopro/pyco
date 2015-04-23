@@ -33,15 +33,16 @@ def filter_thumbnail(pic_url):
     if not isinstance(pic_url, (str, unicode)):
         return pic_url
 
-    static_host = _CONFIG.get("STATIC_HOST")
-    if static_host not in pic_url:
+    base_url = _CONFIG.get("BASE_URL")
+    uploads_dir = _CONFIG.get("UPLOADS_DIR")
+    uploads_path = os.path.join(base_url, uploads_dir)
+    if uploads_path not in pic_url:
         return pic_url
     
-    UPLOAD_DIR = _CONFIG.get("UPLOAD_DIR")
-    THUMB_DIR = os.path.join(UPLOAD_DIR, _CONFIG.get("THUMBNAILS_DIR"))
+    thumb_dir = os.path.join(uploads_dir, _CONFIG.get("THUMBNAILS_DIR"))
 
-    pattern = "/{}/".format(UPLOAD_DIR)
-    replacement = "/{}/".format(THUMB_DIR)
+    pattern = "/{}/".format(uploads_dir)
+    replacement = "/{}/".format(thumb_dir)
     new_pic_url = pic_url.replace(pattern, replacement)
     
     return new_pic_url

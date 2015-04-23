@@ -76,7 +76,7 @@ def get_pages(pages, current_page):
 #     return
 
 
-def before_render(var,template):
+def before_render(var, template):
     print "before render"
     return
 

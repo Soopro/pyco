@@ -14,8 +14,10 @@ def config_loaded(config):
 
     return
 
-def after_render(output):
-    output["content"] = replace(output["content"])
+def before_render(var, template):
+    # output["content"] = replace(output["content"])
+    for key in var:
+        var[key] = parser_replace(var[key])
     return
 
 # custom functions
@@ -24,11 +26,11 @@ def replace(content):
     re_uploads_dir = re.compile(uploads_pattern, re.IGNORECASE)
     return re.sub(re_uploads_dir, uploads_dir, content)
     
-# def parser_config(config):
-#     if isinstance(config, (dict, list)):
-#         obj = config if isinstance(config, dict) else xrange(len(config))
-#         for i in obj:
-#             config[i] = parser_config(config[i])
-#     elif isinstance(config, (str, unicode)):
-#         config = replace(config)
-#     return config
+def parser_replace(config):
+    if isinstance(config, (dict, list)):
+        obj = config if isinstance(config, dict) else xrange(len(config))
+        for i in obj:
+            config[i] = parser_replace(config[i])
+    elif isinstance(config, (str, unicode)):
+        config = replace(config)
+    return config
