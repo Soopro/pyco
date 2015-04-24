@@ -1,3 +1,4 @@
 Flask==0.10.1
 Pygments==1.6
 markdown==2.5.1
+PyYAML==3.11

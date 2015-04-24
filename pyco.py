@@ -313,6 +313,11 @@ class BaseView(MethodView):
         return "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT)
         # return os.path.join(self.theme_name, "{}{}".format(tmpl_name, TEMPLATE_FILE_EXT))
     
+    def theme_absolute_path_for(self, tmpl_path):
+        return os.path.join(current_app.root_path,
+                            current_app.template_folder,
+                            tmpl_path)
+    
     # attrs
     def parse_file_attrs(self, meta, file_path, content_string,
                          escape_content=True):
@@ -484,10 +489,9 @@ class ContentView(BaseView):
         run_hook("before_render", var=self.view_ctx, template=template)
 
         template_file_path = self.theme_path_for(template['file'])
-        template_file_absolute_path = os.path.join(current_app.root_path,
-                                                   current_app.template_folder,
-                                                   template_file_path)
-
+        template_file_absolute_path = self.theme_absolute_path_for(
+                                                        template_file_path)
+            
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
             template_file_path = self.theme_path_for(DEFAULT_TEMPLATE)
