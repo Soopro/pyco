@@ -147,26 +147,37 @@ class BaseView(MethodView):
         headers = dict()
         self.run_hook("before_read_page_meta", headers=headers)
         
-        def convert_unicode(item):
-            if isinstance(item, (dict, list)):
-                obj = item if isinstance(item, dict) else xrange(len(item))
-                for i in obj:
-                    item[i] = convert_unicode(item[i])
-            elif isinstance(item, str):
-                item = item.decode("utf-8")
-            return item
-        
-        for line in meta_string.split("\n"):
-            kv_pair = line.split(":", 1)
-            if len(kv_pair) == 2:
-                _tmp_value = kv_pair[1].strip()
+        def convert_data(x):
+            if isinstance(x, dict):
+                return dict((k.lower(), convert_data(v)) 
+                             for k, v in x.iteritems())
+            elif isinstance(x, list):
+                return list([convert_data(i) for i in x])
+            elif isinstance(x, str):
+                return x.decode("utf-8")
+            elif isinstance(x, (unicode, int, float, bool)):
+                return x
+            else:
                 try:
-                    _tmp_value = ast.literal_eval(_tmp_value)
-                    _tmp_value = convert_unicode(_tmp_value)
-                except Exception:
+                    x = str(x).decode("utf-8")
+                except Exception as e:
+                    print e
                     pass
-
-                headers[kv_pair[0].lower()] = _tmp_value
+            return x
+        
+        yaml_data = yaml.safe_load(meta_string)
+        headers = convert_data(yaml_data)
+#         for line in meta_string.split("\n"):
+#             kv_pair = line.split(":", 1)
+#             if len(kv_pair) == 2:
+#                 _tmp_value = kv_pair[1].strip()
+#                 try:
+#                     _tmp_value = ast.literal_eval(_tmp_value)
+#                     _tmp_value = convert_unicode(_tmp_value)
+#                 except Exception:
+#                     pass
+#
+#                 headers[kv_pair[0].lower()] = _tmp_value
 
         self.run_hook("after_read_page_meta", headers=headers)
         return headers
@@ -213,8 +224,8 @@ class BaseView(MethodView):
             date_object = datetime.strptime(date, date_format)
             _fmted = date_object.strftime(to_format.encode('utf-8'))
             date_formatted = _fmted.decode('utf-8')
-        except ValueError:
-            date_formatted=date
+        except Exception as e:
+            date_formatted = date
         return date_formatted
     
     def get_menus(self):
@@ -326,14 +337,14 @@ class BaseView(MethodView):
             data[m] = meta[m]
         data["alias"] = self.gen_page_alias(file_path)
         data["url"] = self.gen_page_url(file_path)
-        data["title"] = meta.get("title", "")
+        data["title"] = meta.get("title", u"")
         data["priority"] = meta.get("priority", 0)
-        data["author"] = meta.get("author", "")
+        data["author"] = meta.get("author", u"")
         # data['status'] = meta.get('status') # define by plugin
         # data['type'] = meta.get('type') # define by plugin
         data["updated"] = meta.get("updated", 0)
-        data["date"] = meta.get("date", "")
-        data["date_formatted"] = self.format_date(meta.get("date", ""))
+        data["date"] = meta.get("date", u"")
+        data["date_formatted"] = self.format_date(meta.get("date", u""))
         content = self.parse_content(content_string)
         data["excerpt"] = self.gen_excerpt(content,
                                            self.view_ctx["theme_meta"])
