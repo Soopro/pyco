@@ -46,8 +46,7 @@ INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
 IGNORE_FILES = []
 
 
-PLUGINS = ["autometas",
-           "draft",
+PLUGINS = ["draft",
            "languages",
            "content_types",
            "redirect",

@@ -306,7 +306,6 @@ class BaseView(MethodView):
             meta_string, content_string = self.content_splitter(file_content)
             meta = self.parse_page_meta(meta_string)
             data = self.parse_file_attrs(meta, f, content_string, False)
-
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
       
@@ -491,7 +490,6 @@ class ContentView(BaseView):
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
                  current_page=self.view_ctx["meta"])
-        
         # template
         template = dict()
 
