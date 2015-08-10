@@ -24,6 +24,7 @@ class BaseView(MethodView):
         self.plugins = []
         self.config = current_app.config
         self.view_ctx = dict()
+        os.chdir(BASE_DIR)
         return
     
     def load_metas(self):
@@ -527,6 +528,8 @@ app = Flask(__name__)
 load_config(app)
 
 # init config
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
 PLUGIN_DIR = app.config.get("PLUGIN_DIR")
 THEMES_DIR = app.config.get("THEMES_DIR")
 
@@ -560,7 +563,7 @@ INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
 CHARSET = app.config.get("CHARSET")
 
 # make importable for plugin folder
-sys.path.insert(0, PLUGIN_DIR)
+sys.path.insert(0, os.path.join(BASE_DIR, PLUGIN_DIR))
 
 _DEBUG = app.config.get("DEBUG")
 
@@ -642,7 +645,7 @@ def before_request():
 def errorhandler(err):
     err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
     current_app.logger.error(err_msg)
-    return make_response(repr(err), 579)
+    return make_response(str(err), 579)
 
 
 if __name__ == "__main__":
