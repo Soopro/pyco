@@ -78,11 +78,11 @@ class BaseView(MethodView):
         return None
     
     def gen_base_url(self):
-        return os.path.join(current_app.config.get("BASE_URL"), '')
+        return os.path.join(current_app.config.get("BASE_URL"))
 
     def gen_theme_url(self):
         return os.path.join(STATIC_BASE_URL,
-                            current_app.config.get('THEME_NAME'), '')
+                            current_app.config.get('THEME_NAME'))
 
     def gen_page_url(self, relative_path):
         if relative_path.endswith(CONTENT_FILE_EXT):
