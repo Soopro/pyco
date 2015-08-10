@@ -336,6 +336,10 @@ class BaseView(MethodView):
         for m in meta:
             data[m] = meta[m]
         data["alias"] = self.gen_page_alias(file_path)
+        if data["alias"] == DEFAULT_INDEX_ALIAS:
+            data["is_front"] = True
+        if data["alias"] == DEFAULT_404_ALIAS:
+            data["is_404"] = True
         data["url"] = self.gen_page_url(file_path)
         data["title"] = meta.get("title", u"")
         data["priority"] = meta.get("priority", 0)
@@ -548,9 +552,6 @@ STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
 
 UPLOADS_DIR = app.config.get("UPLOADS_DIR")
 THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")
-
-EDITOR_DIR = app.config.get("EDITOR_DIR")
-EDITOR_INDEX = app.config.get("EDITOR_INDEX")
 
 CONTENT_DIR = app.config.get("CONTENT_DIR")
 CONTENT_FILE_EXT = app.config.get("CONTENT_FILE_EXT")

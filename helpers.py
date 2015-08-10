@@ -34,8 +34,6 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("STATIC_BASE_URL","/static")
     app.config.setdefault("UPLOADS_DIR","uploads")
     app.config.setdefault("THUMBNAILS_DIR","thumbnails")
-    app.config.setdefault("EDITOR_DIR","editor")
-    app.config.setdefault("EDITOR_INDEX","index.html")
     app.config.setdefault("CONTENT_DIR","content")
     app.config.setdefault("CONTENT_FILE_EXT",".md")
     app.config.setdefault("DEFAULT_INDEX_ALIAS","index")

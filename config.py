@@ -32,9 +32,6 @@ STATIC_BASE_URL = "/static"
 UPLOADS_DIR = "uploads"
 THUMBNAILS_DIR = "thumbnails"
 
-EDITOR_DIR = "editor"
-EDITOR_INDEX = "index.html"
-
 CONTENT_DIR = "content"
 CONTENT_FILE_EXT = ".md"
 
