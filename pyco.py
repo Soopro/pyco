@@ -24,7 +24,8 @@ class BaseView(MethodView):
         self.plugins = []
         self.config = current_app.config
         self.view_ctx = dict()
-        os.chdir(BASE_DIR)
+        # os.chdir(BASE_DIR)
+        # live reload will fail if chdir.
         return
     
     def load_metas(self):
@@ -515,9 +516,9 @@ class ContentView(BaseView):
         
         output = {}
         self.view_ctx.get('meta')
+
         output['content'] = render_template(template_file_path,
-                                                 **self.view_ctx)
-        
+                                            **self.view_ctx)
         run_hook("after_render", output=output)
         return make_content_response(output['content'], status_code)
 
@@ -552,6 +553,9 @@ STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
 
 UPLOADS_DIR = app.config.get("UPLOADS_DIR")
 THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")
+
+EDITOR_DIR = app.config.get("EDITOR_DIR")
+EDITOR_INDEX = app.config.get("EDITOR_INDEX")
 
 CONTENT_DIR = app.config.get("CONTENT_DIR")
 CONTENT_FILE_EXT = app.config.get("CONTENT_FILE_EXT")
