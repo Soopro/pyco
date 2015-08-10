@@ -8,7 +8,7 @@ PORT = 5500
 
 THEME_NAME = 'dev'
 
-BASE_URL = "http://localhost:5500/"
+BASE_URL = "http://localhost:5500"
 
 CHARSET = "utf8"
 
