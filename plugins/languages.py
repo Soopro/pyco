@@ -10,13 +10,12 @@ _LOCALE = None
 _TRANSLATES = {}
 _current_lang = None
 _LANGUAGES_FOLDER = 'languages'
-_THEME_NAME = None
+_TRANS_FILE = 'translate'
 
 
 def config_loaded(config):
-    global _LOCALE, _TRANSLATES, _THEME_NAME
+    global _LOCALE, _TRANSLATES
     site_meta = config.get("SITE", {}).get("meta", {})
-    _THEME_NAME = config.get("THEME_NAME")
     _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
     _TRANSLATES = site_meta.get("translates")
     return
@@ -36,25 +35,27 @@ def before_render(var, template):
        "en_US":{"name":"English","url":"http://....."}
     }
     """
+    trans_list = []
+    
     if _TRANSLATES:
         translates = _TRANSLATES
-        trans_list = []
         
         # directly append if is list
-        if isinstance(translates,list):
+        if isinstance(translates, list):
             for trans in translates:
                 if trans.get('code'):
                     trans_list.append(trans)
 
         # change to list if is dict
-        if isinstance(translates,dict) and len(translates)>1:
+        if isinstance(translates, dict) and len(translates) > 1:
             for trans in translates:
                 tmp_trans = translates[trans]
-                tmp_trans.update({"code":trans})
+                tmp_trans.update({"code": trans})
                 trans_list.append(tmp_trans)
-        
-        var["translates"] = trans_list
+
+    set_current_translation(_LOCALE)
     
+    var["translates"] = trans_list
     var["locale"] = _LOCALE
     var["lang"] = _LOCALE.split('_')[0]
     return
@@ -62,11 +63,11 @@ def before_render(var, template):
 
 # custome functions
 def set_current_translation(locale):
-    if locale and isinstance(locale,(str,unicode)) and _THEME_NAME:
+    if locale and isinstance(locale,(str,unicode)):
         lang_path = os.path.join(current_app.template_folder,
                                  _LANGUAGES_FOLDER)
 
-        tr = gettext.translation(_THEME_NAME, lang_path, 
+        tr = gettext.translation(_TRANS_FILE, lang_path, 
                                  languages=[locale], fallback=False)
-        
+        print tr
         current_app.jinja_env.install_gettext_translations(tr, newstyle=True)
