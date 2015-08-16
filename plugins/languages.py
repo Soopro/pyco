@@ -68,6 +68,6 @@ def set_current_translation(locale):
                                  _LANGUAGES_FOLDER)
 
         tr = gettext.translation(_TRANS_FILE, lang_path, 
-                                 languages=[locale], fallback=False)
+                                 languages=[locale], fallback=True)
         
         current_app.jinja_env.install_gettext_translations(tr, newstyle=True)
