@@ -649,8 +649,10 @@ def before_request():
 @app.errorhandler(Exception)
 def errorhandler(err):
     err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
+    err_html_msg = "<h1>{}</h1><p>{}</p>".format(repr(err),
+                                          traceback.format_exc())
     current_app.logger.error(err_msg)
-    return make_response(str(err), 579)
+    return make_response(err_html_msg, 579)
 
 
 if __name__ == "__main__":
