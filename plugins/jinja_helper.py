@@ -21,6 +21,7 @@ def plugins_loaded():
 def before_render(var, template):
     var["saltshaker"] = saltshaker
     var["stapler"] = stapler
+    var["rope"] = rope
     var["glue"] = glue
     var["barcode"] = barcode
     var["timemachine"] = timemachine
@@ -48,14 +49,14 @@ def filter_thumbnail(pic_url):
     return new_pic_url
 
 
-def filter_contenttype(raw_pages, ctype=None):
-    if not isinstance(raw_pages, (list,dict)):
+def filter_contenttype(raw_pages, ctype=None, limit=None, sortby=None):
+    if not isinstance(raw_pages, (list, dict)):
         return raw_pages
-    return saltshaker(raw_pages, [{"type": ctype}])
+    return saltshaker(raw_pages, [{"type": ctype}], limit=limit, sortby=sortby)
 
 
 def filter_url(url, remove_args=False):
-    if not isinstance(url,(str,unicode)):
+    if not isinstance(url,(str, unicode)):
         return url
     if remove_args:
         url = url.split("?")[0]
@@ -77,12 +78,40 @@ def filter_path(url, remove_args=True):
 
 
 #custom functions
-def saltshaker(raw_pages, conditions, intersection=False):
+def rope(pages, sortby, desc=True, priority=True):
+    if not isinstance(pages, list) or not isinstance(sortby, (str, unicode)):
+        return pages
+        
+    sort_desc = desc
+    
+    if sortby[0:1] == '-':
+        sort_desc = False
+        sort_key = sortby[1:]
+    elif sortby[0:1] == '+':
+        sort_key = sortby[1:]
+    
+    if not sort_key:
+        sort_key = 'updated'
+        
+    if not priority:
+        return sorted(pages, key=lambda x:x[sort_key],
+                      reverse=sort_desc)
+    else:
+        return sorted(pages, key=lambda x: (x['priority'], x[sort_key]),
+                      reverse=sort_desc)
+
+def saltshaker(raw_pages, conditions, intersection=False, 
+               limit=None, sortby=None):
     """return a list of result matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
-                  intersection=False)
+                              intersection=False, limit=12, sortby='updated')
     """
     results = []
+    try:
+        limit = int(limit)
+    except:
+        limit = 0
+
     obj = raw_pages
     if not isinstance(conditions, list) or len(conditions) > 10 \
     and not isinstance(obj, (list,dict)):
@@ -112,6 +141,14 @@ def saltshaker(raw_pages, conditions, intersection=False):
                 if i.get(cond_key) and i not in results \
                 and (cond_value == None or cond_value == i.get(cond_key)):
                     results.append(i)
+    # sortby
+    if sortby:
+        results = rope(results, sortby)
+    
+    # limit
+    if limit > 0:
+        results = results[0:limit]
+        # do not limit in loop, because results is not settled down.
 
     return results
 
@@ -181,8 +218,8 @@ def barcode(raw_pages, condition="category"):
     return ret
 
 
-def timemachine(raw_pages, filed='date',
-                precision='month', time_format='%Y-%m-%d'):
+def timemachine(raw_pages, filed='date', precision='month',
+                time_format='%Y-%m-%d'):
     """return list of pages sort by time.
     sorted_pages = timemachine(raw_pages, filed='date', precision='month',
                                time_format='%Y-%m-%d')
@@ -195,7 +232,8 @@ def timemachine(raw_pages, filed='date',
         elif isinstance(date, datetime):
             date = date
         else:
-            raise ValueError("invalid date format.It should be str, timestamp(int) or datetime object")
+            raise ValueError("invalid date format.It should be str, \
+                              timestamp(int) or datetime object")
 
         get_group_key = {
             'year': lambda x: x.year,
@@ -209,7 +247,8 @@ def timemachine(raw_pages, filed='date',
         try:
             return get_group_key[precision](date)
         except Exception:
-            raise ValueError("invalid precision, precision must be 'year', 'month' or 'day'.")
+            raise ValueError("invalid precision, precision must be 'year', \
+                              'month' or 'day'.")
 
 
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
