@@ -7,7 +7,8 @@ from flask import (Flask, current_app, request, abort, render_template, g,
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
-from helpers import load_config, make_content_response, helper_process_url
+from helpers import (load_config, make_content_response, 
+                     helper_process_url, sortby)
 
 from collections import defaultdict
 from hashlib import sha1
@@ -279,17 +280,6 @@ class BaseView(MethodView):
         config = self.config
         
         theme_meta_options = self.view_ctx["theme_meta"].get("options")
-        
-        # sortby
-        sort_desc = True
-        params_sortby = theme_meta_options.get("sortby", "updated")
-        if params_sortby[0:1] == '-':
-            sort_desc = False
-            params_sortby = params_sortby[1:]
-        elif params_sortby[0:1] == '+':
-            params_sortby = params_sortby[1:]
-    
-        sort_key = params_sortby
 
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         page_data_list = []
@@ -310,11 +300,18 @@ class BaseView(MethodView):
             data = self.parse_file_attrs(meta, f, content_string, False)
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
-      
+
+        # sortby
+        sort_desc = True
+        sort_keys = ['priority']
+        sort_by = theme_meta_options.get("sortby", "updated")
         
-        return sorted(page_data_list, 
-                      key=lambda x: (x['priority'], x[sort_key]),
-                      reverse=sort_desc)
+        if isinstance(sort_by, (str, unicode)):
+            sort_keys.append(sort_by)
+        elif isinstance(sort_by, list):
+            sort_keys = sort_keys + sort_by
+        
+        return sortby(page_data_list, sort_keys, reverse=sort_desc)
 
     #theme
     @property

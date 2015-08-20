@@ -1,8 +1,12 @@
 #coding=utf-8
 from __future__ import absolute_import
+
 from flask import request, current_app
 from itertools import groupby
 import math, os, datetime, re
+
+from helpers import sortby
+
 
 _CONFIG = {}
 
@@ -49,10 +53,11 @@ def filter_thumbnail(pic_url):
     return new_pic_url
 
 
-def filter_contenttype(raw_pages, ctype=None, limit=None, sortby=None):
+def filter_contenttype(raw_pages, ctype=None, limit=None, sort_by=None):
     if not isinstance(raw_pages, (list, dict)):
         return raw_pages
-    return saltshaker(raw_pages, [{"type": ctype}], limit=limit, sortby=sortby)
+    return saltshaker(raw_pages, [{"type": ctype}], limit=limit,
+                      sort_by=sort_by)
 
 
 def filter_url(url, remove_args=False):
@@ -78,33 +83,26 @@ def filter_path(url, remove_args=True):
 
 
 #custom functions
-def rope(pages, sortby, desc=True, priority=True):
-    if not isinstance(pages, list) or not isinstance(sortby, (str, unicode)):
-        return pages
-        
+def rope(pages, sort_by, desc=True, priority=True):
     sort_desc = desc
+    sort_keys = []
     
-    if sortby[0:1] == '-':
-        sort_desc = False
-        sort_key = sortby[1:]
-    elif sortby[0:1] == '+':
-        sort_key = sortby[1:]
+    if priority:
+        sort_keys = ['priority']
     
-    if not sort_key:
-        sort_key = 'updated'
-        
-    if not priority:
-        return sorted(pages, key=lambda x:x[sort_key],
-                      reverse=sort_desc)
-    else:
-        return sorted(pages, key=lambda x: (x['priority'], x[sort_key]),
-                      reverse=sort_desc)
+    if isinstance(sort_by, (str, unicode)):
+        sort_keys.append(sort_by)
+    elif isinstance(sort_by, list):
+        sort_keys = sort_keys + sort_by
+    
+    return sortby(pages, sort_keys, desc)
+
 
 def saltshaker(raw_pages, conditions, intersection=False, 
-               limit=None, sortby=None):
+               limit=None, sort_by=None):
     """return a list of result matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
-                              intersection=False, limit=12, sortby='updated')
+                              intersection=False, limit=12, sort_by='updated')
     """
     results = []
     try:
@@ -141,9 +139,9 @@ def saltshaker(raw_pages, conditions, intersection=False,
                 if i.get(cond_key) and i not in results \
                 and (cond_value == None or cond_value == i.get(cond_key)):
                     results.append(i)
-    # sortby
-    if sortby:
-        results = rope(results, sortby)
+    # sort by
+    if sort_by and hasattr(rope, '__call__'):
+        results = rope(results, sort_by, True)
     
     # limit
     if limit > 0:
@@ -219,10 +217,10 @@ def barcode(raw_pages, condition="category"):
 
 
 def timemachine(raw_pages, filed='date', precision='month',
-                time_format='%Y-%m-%d'):
+                time_format='%Y-%m-%d', reverse=True):
     """return list of pages sort by time.
     sorted_pages = timemachine(raw_pages, filed='date', precision='month',
-                               time_format='%Y-%m-%d')
+                               time_format='%Y-%m-%d',reverse=True)
     """
     def parse_datetime(date):
         if isinstance(date, str):
@@ -252,8 +250,8 @@ def timemachine(raw_pages, filed='date', precision='month',
 
 
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
-                   key=lambda x: x[filed], 
-                   reverse=True)
+                   key = lambda x: x[filed], 
+                   reverse = reverse)
 
     # iterator version
     # return groupby(pages, key=lambda x: parse_datetime(x.get('date')))

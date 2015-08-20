@@ -60,3 +60,23 @@ def helper_process_url(url, base_url):
         base_url = os.path.join(base_url, '')
         url = os.path.join(base_url, url.strip('/'))
         return url
+
+
+from functools import cmp_to_key
+def sortby(source, keys, reverse=False):    
+    def compare(a, b):
+        for key in keys:
+            k_rev = 1
+            if key[0:1] == '-':
+                k_rev = -1
+                key = key[1:]
+            elif key[0:1] == '+':
+                key = key[1:]
+        
+            if a.get(key) < b.get(key):
+                return -1 * k_rev
+            if a.get(key) > b.get(key):
+                return 1 * k_rev
+        return 0
+
+    return sorted(source, key=cmp_to_key(compare), reverse=reverse)
