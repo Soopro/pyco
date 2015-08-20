@@ -93,52 +93,65 @@ def rope(pages, sort_by, desc=True, priority=True):
     if isinstance(sort_by, (str, unicode)):
         sort_keys.append(sort_by)
     elif isinstance(sort_by, list):
-        sort_keys = sort_keys + sort_by
+        sort_keys = sort_keys + [key for key in sort_by 
+                                 if isinstance(key, (str, unicode))]
     
     return sortby(pages, sort_keys, desc)
 
 
-def saltshaker(raw_pages, conditions, intersection=False, 
-               limit=None, sort_by=None):
+def saltshaker(raw_salts, conditions, limit= None, 
+                          intersection = True, sort_by= None):
+
     """return a list of result matched conditions.
-    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
-                              intersection=False, limit=12, sort_by='updated')
+    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'], limit=12,
+                                      intersection=False, sort_by='updated')
     """
     results = []
     try:
         limit = int(limit)
     except:
         limit = 0
-
-    obj = raw_pages
-    if not isinstance(conditions, list) or len(conditions) > 10 \
-    and not isinstance(obj, (list,dict)):
+    
+    if not isinstance(conditions, list) \
+    and not isinstance(raw_salts, (list, dict)):
         return "Excessive"
+    
+    # process if raw salts is dict
+    if isinstance(raw_salts, dict):
+        salts = []
+        for k,v in raw_salts.iteritems():
+            v['_saltkey'] = k
+            salts.append(v)
+    else:
+        salts = raw_salts
+    
+    
+    def match_cond(cond_value, target_value):
+        if cond_value == None:
+            return True
+        elif isinstance(cond_value, bool):
+            return cond_value == bool(target_value)
+        else:
+            return cond_value == target_value
 
     for cond in conditions:
-        if isinstance(cond, (str,unicode)):
+        if isinstance(cond, (str, unicode)):
             cond_key = cond.lower()
             cond_value = None
         elif isinstance(cond, dict):
             cond_key = cond.keys()[0]
             cond_value = cond[cond_key]
-
-        if isinstance(obj, dict) and not results:
-            new_items = {k: v for (k, v) in obj.iteritems()
-                        if k == cond_key and v 
-                        and (cond_value == None or cond_value == v)}
-            results.append(new_items)
-            continue
+        
 
         if intersection and results:
-            results = [i for i in results if i.get(cond_key)
-                        and (cond_value == i.get(cond_key)
-                           or cond_value == None)]
+            results = [i for i in results if cond_key in i
+                       and match_cond(cond_value, i.get(cond_key))]
         else:
-            for i in obj:
-                if i.get(cond_key) and i not in results \
-                and (cond_value == None or cond_value == i.get(cond_key)):
+            for i in salts:
+                if cond_key in i and i not in results \
+                and match_cond(cond_value, i.get(cond_key)):
                     results.append(i)
+
     # sort by
     if sort_by and hasattr(rope, '__call__'):
         results = rope(results, sort_by, True)
@@ -147,7 +160,6 @@ def saltshaker(raw_pages, conditions, intersection=False,
     if limit > 0:
         results = results[0:limit]
         # do not limit in loop, because results is not settled down.
-
     return results
 
 

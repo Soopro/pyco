@@ -309,7 +309,8 @@ class BaseView(MethodView):
         if isinstance(sort_by, (str, unicode)):
             sort_keys.append(sort_by)
         elif isinstance(sort_by, list):
-            sort_keys = sort_keys + sort_by
+            sort_keys = sort_keys + [key for key in sort_by 
+                                     if isinstance(key, (str, unicode))]
         
         return sortby(page_data_list, sort_keys, reverse=sort_desc)
 
