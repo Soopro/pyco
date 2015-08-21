@@ -7,8 +7,8 @@ from flask import (Flask, current_app, request, abort, render_template, g,
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
-from helpers import (load_config, make_content_response, 
-                     helper_process_url, sortby)
+from helpers import (load_config, make_content_response,
+                     helper_make_dotted_dict, helper_process_url, sortby)
 
 from collections import defaultdict
 from hashlib import sha1
@@ -510,10 +510,12 @@ class ContentView(BaseView):
 
         self.view_ctx["template"] = template['file']
         self.view_ctx["sa"] = {}
+
+        # make dotted able
+        for k,v in self.view_ctx.iteritems():
+            self.view_ctx[k] = helper_make_dotted_dict(v) 
         
         output = {}
-        self.view_ctx.get('meta')
-
         output['content'] = render_template(template_file_path,
                                             **self.view_ctx)
         run_hook("after_render", output=output)

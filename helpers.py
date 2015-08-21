@@ -80,3 +80,21 @@ def sortby(source, keys, reverse=False):
         return 0
 
     return sorted(source, key=cmp_to_key(compare), reverse=reverse)
+    
+
+from werkzeug.datastructures import ImmutableDict
+class DottedImmutableDict(ImmutableDict):
+    def __getattr__(self, item):
+        try:
+            v = self.__getitem__(item)
+        except KeyError:
+            return ''
+        if isinstance(v, dict):
+            v = DottedImmutableDict(v)
+        return v
+
+def helper_make_dotted_dict(obj):
+    if isinstance(obj, dict):
+        return DottedImmutableDict(obj)
+    else: 
+        return obj
