@@ -278,8 +278,6 @@ class BaseView(MethodView):
         
     def get_pages(self):
         config = self.config
-        
-        theme_meta_options = self.view_ctx["theme_meta"].get("options")
 
         files = self.get_files(CONTENT_DIR, CONTENT_FILE_EXT)
         page_data_list = []
@@ -302,6 +300,7 @@ class BaseView(MethodView):
             page_data_list.append(data)
 
         # sortby
+        theme_meta_options = self.view_ctx["theme_meta"].get("options")
         sort_desc = True
         sort_keys = ['priority']
         sort_by = theme_meta_options.get("sortby", "updated")
