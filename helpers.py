@@ -96,5 +96,10 @@ class DottedImmutableDict(ImmutableDict):
 def helper_make_dotted_dict(obj):
     if isinstance(obj, dict):
         return DottedImmutableDict(obj)
+    elif isinstance(obj, list):
+        new_obj = []
+        for i in obj:
+            new_obj.append(DottedImmutableDict(i))
+        return new_obj
     else: 
         return obj
