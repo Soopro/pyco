@@ -7,7 +7,7 @@ from flask import (Flask, current_app, request, abort, render_template, g,
 from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
-from helpers import (load_config, make_content_response,
+from helpers import (load_config, make_content_response, url_validator,
                      helper_make_dotted_dict, helper_process_url, sortby)
 
 from collections import defaultdict
@@ -233,17 +233,18 @@ class BaseView(MethodView):
     
     def get_menus(self):
         menus = self.config['SITE'].get("menus",{})
-        # base_url = current_app.config.get("BASE_URL")
-        # def process_menu_url(menu):
-        #     for item in menu:
-        #         link = item.get("link")
-        #         if isinstance(link, (str, unicode)) \
-        #         and not re.match("^(?:http|ftp)s?://", link):
-        #             item["href"] = os.path.join(base_url, link.strip('/'))
-        #         item["nodes"] = process_menu_url(item.get("nodes",[]))
-        #     return menu
-        # for menu in menus:
-        #     menus[menu] = process_menu_url(menus[menu])
+        base_url = current_app.config.get("BASE_URL")
+        def process_menu_url(menu):
+            for item in menu:
+                link = item.get("link")
+                if not url_validator(link):
+                    item["url"] = os.path.join(base_url, link.strip('/'))
+                else:
+                    item["url"] = link
+                item["nodes"] = process_menu_url(item.get("nodes",[]))
+            return menu
+        for menu in menus:
+            menus[menu] = process_menu_url(menus[menu])
         return menus
     
     def get_taxonomies(self):

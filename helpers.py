@@ -103,3 +103,15 @@ def helper_make_dotted_dict(obj):
         return new_obj
     else: 
         return obj
+        
+
+def url_validator(val):
+    if not val:
+        return False
+    try:
+        if re.match("^(?:http|ftp)s?://", val):
+            return True
+        else:
+            return False
+    except:
+        return False
