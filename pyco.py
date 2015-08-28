@@ -563,6 +563,7 @@ DEFAULT_404_ALIAS = app.config.get("DEFAULT_404_ALIAS")
 
 INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
 
+SYS_ICON_LIST = app.config.get("SYS_ICON_LIST")
 CHARSET = app.config.get("CHARSET")
 
 # make importable for plugin folder
@@ -634,6 +635,8 @@ def before_first_request():
 @app.before_request
 def before_request():
     load_config(current_app)
+    if request.path.strip("/") in SYS_ICON_LIST:
+        abort(404)
     if current_app.debug:
         # change template folder
         current_app.template_folder = os.path.join(THEMES_DIR,

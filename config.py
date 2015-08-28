@@ -45,6 +45,9 @@ INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
 
 IGNORE_FILES = []
 
+SYS_ICON_LIST = ['favicon.ico', 
+                 'apple-touch-icon-precomposed.png',
+                 'apple-touch-icon.png']
 
 PLUGINS = ["draft",
            "languages",

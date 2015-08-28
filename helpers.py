@@ -18,6 +18,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("SITE",{})
     app.config.setdefault("THEME_META",{})
     app.config.setdefault("CHARSET","utf8")
+    app.config.setdefault("SYS_ICON_LIST",[])
     
     app.config.setdefault("PLUGIN_DIR","plugins")
     app.config.setdefault("THEMES_DIR","themes")
