@@ -378,7 +378,7 @@ class BaseView(MethodView):
         return
 
 
-class ContentView(BaseView):
+class EditorView(BaseView):
     def get(self, _):
         # init
         status_code = 200
@@ -523,9 +523,6 @@ class ContentView(BaseView):
         return make_content_response(output['content'], status_code)
 
 
-class UploadView(MethodView):
-    def get(self, filename):
-        return send_from_directory(UPLOADS_DIR, filename)
 
 
 # create app
@@ -538,7 +535,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 PLUGIN_DIR = app.config.get("PLUGIN_DIR")
 THEMES_DIR = app.config.get("THEMES_DIR")
 
-TEMPLATE_FILE_EXT = app.config.get("TEMPLATE_FILE_EXT")
+TEMPLATE_FILE_EXT = app.config.get("EDITOR_TEMPLATE_FILE_EXT")
 
 DEFAULT_SITE_META_FILE = app.config.get("DEFAULT_SITE_META_FILE")
 DEFAULT_THEME_META_FILE = app.config.get("DEFAULT_THEME_META_FILE")
@@ -546,67 +543,24 @@ DEFAULT_THEME_META_FILE = app.config.get("DEFAULT_THEME_META_FILE")
 DEFAULT_TEMPLATE = app.config.get("DEFAULT_TEMPLATE")
 DEFAULT_DATE_FORMAT = app.config.get("DEFAULT_DATE_FORMAT")
 
-DEFAULT_EXCERPT_LENGTH = app.config.get("DEFAULT_EXCERPT_LENGTH")
-DEFAULT_EXCERPT_ELLIPSIS = app.config.get("DEFAULT_EXCERPT_ELLIPSIS")
-
-STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
-
-UPLOADS_DIR = app.config.get("UPLOADS_DIR")
-THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")
-
-
-CONTENT_DIR = app.config.get("CONTENT_DIR")
-CONTENT_FILE_EXT = app.config.get("CONTENT_FILE_EXT")
-
 DEFAULT_INDEX_ALIAS = app.config.get("DEFAULT_INDEX_ALIAS")
 DEFAULT_404_ALIAS = app.config.get("DEFAULT_404_ALIAS")
 
-INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
+DEFAULT_EXCERPT_LENGTH = app.config.get("DEFAULT_EXCERPT_LENGTH")
+DEFAULT_EXCERPT_ELLIPSIS = app.config.get("DEFAULT_EXCERPT_ELLIPSIS")
 
+EDITOR_BASE_URL = app.config.get("EDITOR_BASE_URL")
+EDITOR_DIR = app.config.get("EDITOR_DIR")
 CHARSET = app.config.get("CHARSET")
 
 # make importable for plugin folder
 sys.path.insert(0, os.path.join(BASE_DIR, PLUGIN_DIR))
 
-_DEBUG = app.config.get("DEBUG")
-
-# options for start app
-parser = argparse.ArgumentParser(
-                description='Options of starting Pyco server.')
-
-parser.add_argument('-s', '--production', 
-                    dest='server_mode',
-                    action='store_const',
-                    const="PRD",
-                    help='Manually start with production mode.')
-
-parser.add_argument('-d', '--debug', 
-                    dest='server_mode',
-                    action='store_const',
-                    const="DEBUG",
-                    help='Manually start debug mode.')
-
-args, unknown = parser.parse_known_args()
-
-if args.server_mode is "DEBUG":
-    _DEBUG = True
-elif args.server_mode is "PRD":
-    _DEBUG = False
-
 # init app
-app.debug = _DEBUG
+app.debug = app.config.get("DEBUG", True)
 app.template_folder = os.path.join(THEMES_DIR, app.config.get("THEME_NAME"))
-app.static_folder = THEMES_DIR
-app.static_url_path = STATIC_BASE_URL
-
-# extend jinja
-app.jinja_env.autoescape = False
-app.jinja_env.add_extension('jinja2.ext.loopcontrols')
-app.jinja_env.add_extension('jinja2.ext.i18n')
-app.jinja_env.add_extension('jinja2.ext.do')
-app.jinja_env.add_extension('jinja2.ext.with_')
-app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
-
+app.static_folder = EDITOR_DIR
+app.static_url_path = EDITOR_BASE_URL
 
 # routes
 app.add_url_rule(
@@ -621,14 +575,6 @@ app.add_url_rule("/<path:_>",
     
 app.add_url_rule("/{}/<path:filename>".format(UPLOADS_DIR),
     view_func=UploadView.as_view("uploads"))
-
-
-@app.before_first_request
-def before_first_request():
-    if current_app.debug:
-        current_app.logger.debug(
-            "Pyco is running in DEBUG mode !!! " +
-            "Jinja2 template folder is about to reload.")
 
 
 @app.before_request
@@ -648,13 +594,23 @@ def before_request():
 @app.errorhandler(Exception)
 def errorhandler(err):
     err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
-    err_html_msg = "<h1>{}</h1><p>{}</p>".format(repr(err),
-                                          traceback.format_exc())
     current_app.logger.error(err_msg)
-    return make_response(err_html_msg, 500)
+    headers = dict()
+    headers["Content-Type"] = "application/json"
+    output_error = {
+        "errcode": 500,
+        "errmsg": "Pyco Editor Simulation Error",
+        "erraffix": '',
+        "request":{
+            "request_api": request.path,
+            "request_method": request.method,
+            "request_body": None,
+        }
+    }
+    return make_response(json.dumps(output_error), 500, headers)
 
 
 if __name__ == "__main__":
     host = app.config.get("HOST")
-    port = app.config.get("PORT")
+    port = app.config.get("EDITOR_PORT")
     app.run(host=host, port=port, debug=True)

@@ -14,12 +14,13 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("THEME_NAME", "default")
     app.config.setdefault("HOST", "0.0.0.0")
     app.config.setdefault("PORT", 5500)
+    app.config.setdefault("EDITOR_PORT", 5550)
     app.config.setdefault("SITE",{})
     app.config.setdefault("THEME_META",{})
     app.config.setdefault("CHARSET","utf8")
     
-    app.config.setdefault("PLUGIN_DIR","plugins/")
-    app.config.setdefault("THEMES_DIR","themes/")
+    app.config.setdefault("PLUGIN_DIR","plugins")
+    app.config.setdefault("THEMES_DIR","themes")
     app.config.setdefault("TEMPLATE_FILE_EXT",".html")
     
     app.config.setdefault("DEFAULT_SITE_META_FILE","site.json")
@@ -32,13 +33,16 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS","&hellip;")
     
     app.config.setdefault("STATIC_BASE_URL","/static")
-    app.config.setdefault("EDITOR_BASE_URL","/editor")
     app.config.setdefault("UPLOADS_DIR","uploads")
     app.config.setdefault("THUMBNAILS_DIR","thumbnails")
     app.config.setdefault("CONTENT_DIR","content")
     app.config.setdefault("CONTENT_FILE_EXT",".md")
     app.config.setdefault("DEFAULT_INDEX_ALIAS","index")
     app.config.setdefault("DEFAULT_404_ALIAS","error_404")
+    
+    app.config.setdefault("EDITOR_DIR","editor")
+    app.config.setdefault("EDITOR_BASE_URL","/editor")
+    app.config.setdefault("EDITOR_TEMPLATE_FILE_EXT",".tpl")
     
     return
 

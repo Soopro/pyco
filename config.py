@@ -5,6 +5,7 @@ DEBUG = True
 
 HOST = '0.0.0.0'
 PORT = 5500
+EDITOR_PORT = 5550
 
 THEME_NAME = 'dev'
 
@@ -12,9 +13,9 @@ BASE_URL = "http://localhost:5500"
 
 CHARSET = "utf8"
 
-PLUGIN_DIR = "plugins/"
+PLUGIN_DIR = "plugins"
 
-THEMES_DIR = "themes/"
+THEMES_DIR = "themes"
 TEMPLATE_FILE_EXT = ".html"
 TPL_FILE_EXT = ".tpl"
 
@@ -30,6 +31,7 @@ DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 STATIC_BASE_URL = "/static"
 EDITOR_BASE_URL = "/editor"
 
+EDITOR_DIR = "editor"
 UPLOADS_DIR = "uploads"
 THUMBNAILS_DIR = "thumbnails"
 
