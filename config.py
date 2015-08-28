@@ -28,6 +28,7 @@ DEFAULT_EXCERPT_LENGTH = 50
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 
 STATIC_BASE_URL = "/static"
+EDITOR_BASE_URL = "/editor"
 
 UPLOADS_DIR = "uploads"
 THUMBNAILS_DIR = "thumbnails"

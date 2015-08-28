@@ -32,6 +32,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS","&hellip;")
     
     app.config.setdefault("STATIC_BASE_URL","/static")
+    app.config.setdefault("EDITOR_BASE_URL","/editor")
     app.config.setdefault("UPLOADS_DIR","uploads")
     app.config.setdefault("THUMBNAILS_DIR","thumbnails")
     app.config.setdefault("CONTENT_DIR","content")
