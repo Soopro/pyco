@@ -24,16 +24,16 @@ from pyco import BaseView
 
 class EditorTpl(BaseView):
     def get(self, tmpl):
-        self.config = current_app.config
         self.load_metas()
-        site_meta = self.config.get("SITE",{}).get("meta")
-        theme_meta = self.config.get("THEME_META")
+        config = self.config
+        site_meta = config.get("SITE",{}).get("meta")
+        theme_meta = config.get("THEME_META")
         locale = site_meta.get("locale", 'en')
         theme_textdomain = theme_meta.get("textdomain")
         
         theme_folder = current_app.template_folder
         
-        tmpl_file = "{}{}".format(tmpl, TPL_FILE_EXT)
+        tmpl_file = "{}{}".format(tmpl, config.get('TPL_FILE_EXT'))
         tmpl_path = os.path.join(theme_folder, tmpl_file)
         tmpl_content = helper_parse_template(tmpl_path)
         tmpl_content = helper_translate_template(tmpl_content,
@@ -59,9 +59,9 @@ class EditorView(BaseView):
         file_content = {"content": None}
         
         # load
-        self.config = current_app.config
+        config = self.config
         self.load_metas()
-        self.load_plugins()
+        self.load_plugins(config.get("EDITOR_PLUGINS"))
         run_hook("plugins_loaded")
 
         current_app.debug = self.config.get("DEBUG", True)
@@ -70,8 +70,9 @@ class EditorView(BaseView):
         
         run_hook("config_loaded", config=self.config)
         
-        config = self.config
-
+        base_url = config.get("BASE_URL")
+        charset = config.get('CHARSET')
+        
         self.view_ctx["args"] = {}
         
         # run_hook("request_url", request=request, redirect_to=redirect_to)
@@ -93,7 +94,7 @@ class EditorView(BaseView):
             run_hook("before_404_load_content", file=file)
 
         with open(file['path'], "r") as f:
-            file_content['content'] = f.read().decode(CHARSET)
+            file_content['content'] = f.read().decode(charset)
         
         if is_not_found:
             run_hook("after_404_load_content", file=file, content=file_content)
@@ -151,15 +152,6 @@ class EditorView(BaseView):
         template['file'] = self.view_ctx["meta"].get("template")
         
         run_hook("before_render", var=self.view_ctx, template=template)
-
-        # make dotted able
-        # for k,v in self.view_ctx.iteritems():
-        #     self.view_ctx[k] = helper_make_dotted_dict(v)
-        #
-        # output = {}
-        # output['content'] = render_template(template_file_path,
-        #                                     **self.view_ctx)
-        # run_hook("after_render", output=output)
         return make_json_response(self.view_ctx)
 
 
@@ -169,53 +161,17 @@ class EditorView(BaseView):
 app = Flask(__name__)
 load_config(app)
 
-# init config
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-PLUGIN_DIR = app.config.get("PLUGIN_DIR")
-THEMES_DIR = app.config.get("THEMES_DIR")
-
-TEMPLATE_FILE_EXT = app.config.get("TEMPLATE_FILE_EXT")
-
-DEFAULT_SITE_META_FILE = app.config.get("DEFAULT_SITE_META_FILE")
-DEFAULT_THEME_META_FILE = app.config.get("DEFAULT_THEME_META_FILE")
-
-DEFAULT_TEMPLATE = app.config.get("DEFAULT_TEMPLATE")
-DEFAULT_DATE_FORMAT = app.config.get("DEFAULT_DATE_FORMAT")
-
-DEFAULT_EXCERPT_LENGTH = app.config.get("DEFAULT_EXCERPT_LENGTH")
-DEFAULT_EXCERPT_ELLIPSIS = app.config.get("DEFAULT_EXCERPT_ELLIPSIS")
-
-STATIC_BASE_URL = app.config.get("STATIC_BASE_URL")
-
-UPLOADS_DIR = app.config.get("UPLOADS_DIR")
-THUMBNAILS_DIR = app.config.get("THUMBNAILS_DIR")
-
-
-CONTENT_DIR = app.config.get("CONTENT_DIR")
-CONTENT_FILE_EXT = app.config.get("CONTENT_FILE_EXT")
-
-DEFAULT_INDEX_ALIAS = app.config.get("DEFAULT_INDEX_ALIAS")
-DEFAULT_404_ALIAS = app.config.get("DEFAULT_404_ALIAS")
-
-INVISIBLE_PAGE_LIST = app.config.get("INVISIBLE_PAGE_LIST")
-
-SYS_ICON_LIST = app.config.get("SYS_ICON_LIST")
-CHARSET = app.config.get("CHARSET")
-
-# editor
-TPL_FILE_EXT = app.config.get("TPL_FILE_EXT")
-EDITOR_BASE_URL = app.config.get("EDITOR_BASE_URL")
-EDITOR_DIR = app.config.get("EDITOR_DIR")
-
 # make importable for plugin folder
-sys.path.insert(0, os.path.join(BASE_DIR, PLUGIN_DIR))
+sys.path.insert(0, os.path.join(app.config.get("BASE_DIR"),
+                                app.config.get("PLUGIN_DIR")))
 
 # init app
 app.debug = app.config.get("DEBUG", True)
-app.template_folder = os.path.join(THEMES_DIR, app.config.get("THEME_NAME"))
-app.static_folder = EDITOR_DIR
-app.static_url_path = EDITOR_BASE_URL
+app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
+                                   app.config.get("THEME_NAME"))
+
+app.static_folder = app.config.get("THEMES_DIR")
+app.static_url_path = app.config.get("STATIC_BASE_URL")
 
 # extend jinja
 app.jinja_env.add_extension('jinja2.ext.i18n')
@@ -224,7 +180,7 @@ app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
 # routes
 app.add_url_rule(
-    EDITOR_BASE_URL + '/<path:filename>',
+    app.static_url_path + '/<path:filename>',
     endpoint='static', view_func=app.send_static_file)
 
 app.add_url_rule("/content/<path:_>",
@@ -238,9 +194,9 @@ app.add_url_rule("/tpl/<tmpl>",
 def before_request():
     load_config(current_app)
     if current_app.debug:
-        # change template folder
-        current_app.template_folder = os.path.join(THEMES_DIR,
-                                      current_app.config.get("THEME_NAME"))
+        themes_dir = current_app.config.get("THEMES_DIR")
+        theme_name = current_app.config.get("THEME_NAME")
+        current_app.template_folder = os.path.join(themes_dir, theme_name)
         # change reload template folder
         current_app.jinja_env.cache = None
         tpl_folder = current_app.template_folder

@@ -581,7 +581,7 @@ sys.path.insert(0, os.path.join(app.config.get("BASE_DIR"),
 
 
 # init app
-app.debug = app.config.get("DEBUG")
+app.debug = app.config.get("DEBUG", True)
 app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
                                    app.config.get("THEME_NAME"))
 
