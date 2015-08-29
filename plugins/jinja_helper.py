@@ -16,6 +16,8 @@ def config_loaded(config):
     return
 
 def plugins_loaded():
+    if current_app.editor:
+        return
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
     current_app.jinja_env.filters["type"] = filter_contenttype
     current_app.jinja_env.filters["url"] = filter_url
@@ -23,6 +25,8 @@ def plugins_loaded():
     return
 
 def before_render(var, template):
+    if current_app.editor:
+        return
     var["saltshaker"] = saltshaker
     var["stapler"] = stapler
     var["rope"] = rope

@@ -61,7 +61,7 @@ class EditorView(BaseView):
         # load
         config = self.config
         self.load_metas()
-        self.load_plugins(config.get("EDITOR_PLUGINS"))
+        self.load_plugins(config.get("PLUGINS"))
         run_hook("plugins_loaded")
 
         current_app.debug = self.config.get("DEBUG", True)
@@ -166,6 +166,7 @@ sys.path.insert(0, os.path.join(app.config.get("BASE_DIR"),
                                 app.config.get("PLUGIN_DIR")))
 
 # init app
+app.editor = True
 app.debug = app.config.get("DEBUG", True)
 app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
                                    app.config.get("THEME_NAME"))

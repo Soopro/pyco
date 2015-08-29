@@ -62,11 +62,4 @@ PLUGINS = ["draft",
            "marker",
            "jinja_helper"]
 
-EDITOR_PLUGINS = ["draft",
-                  "languages",
-                  "content_types",
-                  "redirect",
-                  "template",
-                  "marker"]
-
 """ For Plugins """
