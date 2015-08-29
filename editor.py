@@ -159,8 +159,10 @@ class EditorView(BaseView):
         return make_json_response(self.get_data())
 
 class EditorQuery(EditorView):
-    def get(self, _):
+    def get(self):
         req = request.json
+        if not req:
+            req = {}
         query_fields = self.config.get('CONTENT_QUERY_FIELDS')
         
         params_fields = req.get('query_fields', {})
@@ -174,14 +176,13 @@ class EditorQuery(EditorView):
         results=[]
         for page in pages:
             for k, v in params_fields.iteritems():
-                if k not in query_fields:
+                if k in query_fields:
                     continue
                 if k not in page and page[k] != v:
                     continue
             for k, v in params_attrs.iteritems():
                 if k not in page and (v in ['*', ''] or page[k] != v):
-                    continue 
-
+                    continue
             results.append(page)
         
         # sortby
@@ -225,6 +226,9 @@ app.add_url_rule(
 
 app.add_url_rule("/content/<path:_>",
     view_func=EditorView.as_view("editor_content"))
+
+app.add_url_rule("/query",
+    view_func=EditorQuery.as_view("editor_query"))
 
 app.add_url_rule("/tpl/<tmpl>",
     view_func=EditorTpl.as_view("editor_tpl"))
