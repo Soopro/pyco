@@ -1,5 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
+import os
 
 DEBUG = True
 
@@ -8,6 +9,8 @@ PORT = 5500
 EDITOR_PORT = 5550
 
 THEME_NAME = 'dev'
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 BASE_URL = "http://localhost:5500"
 
@@ -18,6 +21,8 @@ PLUGIN_DIR = "plugins"
 THEMES_DIR = "themes"
 TEMPLATE_FILE_EXT = ".html"
 TPL_FILE_EXT = ".tpl"
+
+MAX_MODE_TYPES = ["ws"]
 
 DEFAULT_SITE_META_FILE = "site.json"
 DEFAULT_THEME_META_FILE = "config.json"
@@ -56,5 +61,12 @@ PLUGINS = ["draft",
            "template",
            "marker",
            "jinja_helper"]
+
+EDITOR_PLUGINS = ["draft",
+                  "languages",
+                  "content_types",
+                  "redirect",
+                  "template",
+                  "marker"]
 
 """ For Plugins """
