@@ -48,7 +48,7 @@ class EditorTpl(BaseView):
 
 
 class EditorView(BaseView):
-    def get(self, _):
+    def get_data(self):
         # init
         status_code = 200
         is_not_found = False
@@ -152,10 +152,49 @@ class EditorView(BaseView):
         template['file'] = self.view_ctx["meta"].get("template")
         
         run_hook("before_render", var=self.view_ctx, template=template)
-        return make_json_response(self.view_ctx)
+        
+        return self.view_ctx
+        
+    def get(self, _):
+        return make_json_response(self.get_data())
 
+class EditorQuery(EditorView):
+    def get(self, _):
+        req = request.json
+        query_fields = self.config.get('CONTENT_QUERY_FIELDS')
+        
+        params_fields = req.get('query_fields', {})
+        params_attrs = req.get('query_metas', {})
+        params_length = req.get('query_length', 12)
+        params_sortby = req.get('query_sortby', ['updated'])
+        
+        raw_data = self.get_data()
+        pages = raw_data.get('pages', [])
+        
+        results=[]
+        for page in pages:
+            for k, v in params_fields.iteritems():
+                if k not in query_fields:
+                    continue
+                if k not in page and page[k] != v:
+                    continue
+            for k, v in params_attrs.iteritems():
+                if k not in page and (v in ['*', ''] or page[k] != v):
+                    continue 
 
-
+            results.append(page)
+        
+        # sortby
+        sort_desc = True
+        sort_keys = ['priority'] + [key for key in params_sortby 
+                                    if isinstance(key, (str, unicode))]
+        results = sortby(results, sort_keys, reverse=True)
+        results = results[0:params_length]
+        
+        output = {
+            "results": results
+        }
+        return make_json_response(output)
 
 # create app
 app = Flask(__name__)

@@ -47,7 +47,9 @@ DEFAULT_INDEX_ALIAS = "index"
 DEFAULT_404_ALIAS = "error_404"
 
 INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
-
+CONTENT_QUERY_FIELDS = ['alias', 'content_type', 
+                        'priority', 'locked' 'updated']
+                        
 IGNORE_FILES = []
 
 SYS_ICON_LIST = ['favicon.ico', 
