@@ -20,7 +20,6 @@ PLUGIN_DIR = "plugins"
 
 THEMES_DIR = "themes"
 TEMPLATE_FILE_EXT = ".html"
-TPL_FILE_EXT = ".tpl"
 
 MAX_MODE_TYPES = ["ws"]
 
@@ -45,8 +44,7 @@ DEFAULT_INDEX_ALIAS = "index"
 DEFAULT_404_ALIAS = "error_404"
 
 INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
-CONTENT_QUERY_FIELDS = ['alias', 'content_type', 
-                        'priority', 'locked' 'updated']
+
                         
 IGNORE_FILES = []
 
@@ -54,6 +52,8 @@ SYS_ICON_LIST = ['favicon.ico',
                  'apple-touch-icon-precomposed.png',
                  'apple-touch-icon.png']
 
+
+# plugins
 PLUGINS = ["draft",
            "languages",
            "content_types",
