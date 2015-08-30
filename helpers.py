@@ -114,7 +114,7 @@ def url_validator(val):
     if not val:
         return False
     try:
-        if re.match("^(?:http|ftp)s?://", val):
+        if re.match("^[\w]+:", val):
             return True
         else:
             return False

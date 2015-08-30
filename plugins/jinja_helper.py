@@ -5,7 +5,7 @@ from flask import request, current_app
 from itertools import groupby
 import math, os, datetime, re
 
-from helpers import sortby
+from helpers import sortby, url_validator
 
 
 _CONFIG = {}
@@ -23,8 +23,6 @@ def plugins_loaded():
     return
 
 def before_render(var, template):
-    if current_app.editor:
-        return
     var["saltshaker"] = saltshaker
     var["stapler"] = stapler
     var["rope"] = rope
@@ -67,7 +65,7 @@ def filter_url(url, remove_args=False):
         return url
     if remove_args:
         url = url.split("?")[0]
-    if re.match("^(?:http|ftp)s?://", url):
+    if url_validator(url):
         return url
     else:
         base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
