@@ -598,9 +598,8 @@ app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
 
 # routes
-app.add_url_rule(
-    app.static_url_path + '/<path:filename>',
-    endpoint='static', view_func=app.send_static_file)
+app.add_url_rule(app.static_url_path + '/<path:filename>',
+    view_func=app.send_static_file, endpoint='static')
 
 app.add_url_rule("/", defaults={"_": ""},
     view_func=ContentView.as_view("index"))

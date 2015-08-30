@@ -14,7 +14,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("THEME_NAME", "default")
     app.config.setdefault("HOST", "0.0.0.0")
     app.config.setdefault("PORT", 5500)
-    app.config.setdefault("EDITOR_PORT", 5550)
+    
     app.config.setdefault("SITE",{})
     app.config.setdefault("THEME_META",{})
     app.config.setdefault("CHARSET","utf8")
@@ -43,10 +43,6 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_INDEX_ALIAS","index")
     app.config.setdefault("DEFAULT_404_ALIAS","error_404")
     
-    app.config.setdefault("EDITOR_DIR","editor")
-    app.config.setdefault("EDITOR_BASE_URL","/editor")
-    app.config.setdefault("EDITOR_TEMPLATE_FILE_EXT",".tpl")
-    
     return
 
 
@@ -57,12 +53,7 @@ def make_content_response(output, status_code, etag=None):
     if etag is not None:
         response.set_etag(etag)
     return response
-    
-def make_json_response(output, status_code=200):
-    headers = dict()
-    headers["Content-Type"] = "application/json"
-    resp = make_response(json.dumps(output), status_code, headers)
-    return resp
+
 
 def helper_process_url(url, base_url):
     if not url or not isinstance(url,(str,unicode)):
@@ -129,53 +120,3 @@ def url_validator(val):
             return False
     except:
         return False
-        
-#
-# translate tpl
-#
-def helper_parse_template(path):
-    with open(path, "r") as f:
-        content = f.read()
-        content = content.decode("utf8")
-        content = re.sub(r'<(script).*?</\1>(?s)', u'', content)
-        return re.sub(r'<script\s*.*?>', u'', content)
-
-
-
-LANGUAGES_FOLDER = u"languages"
-TRANSLATE_FILE = u"translate"
-def helper_translate_template(content, theme_folder, locale, textdomain=None):
-    if not locale or not isinstance(locale, (str, unicode)):
-        return content
-        
-    if not textdomain:
-        textdomain = TRANSLATE_FILE
-    
-    # make i18n support
-    lang_path = os.path.join(theme_folder, LANGUAGES_FOLDER)
-
-    tr = gettext.translation(textdomain, lang_path,
-                             languages=[locale], fallback=True)
-
-    
-    trans_regex = re.compile(r'(\{\{[^\}]*(_\(\s*["\']\s*'+\
-                             r'(.*?)["\']\s*\))[^\}]*\}\})',
-                             re.DOTALL | re.IGNORECASE | re.MULTILINE)
-
-    trans_ex_regex = re.compile(r'(=\s*["\'][^\>]*(_\(\s*["\']\s*'+\
-                                r'(.*?)["\']\s*\))[^\>]*["\'])',
-                                re.DOTALL | re.IGNORECASE | re.MULTILINE)
-
-    def _text_trans(match, trans, text, content):
-        trans_text = tr.gettext(text).decode("utf8")
-        trans_match = match.replace(trans, u"'{}'".format(trans_text))
-        content = content.replace(match, trans_match)
-        return content
-        
-    for match, trans, text in trans_regex.findall(content):
-        content = _text_trans(match, trans, text, content)
-
-    for match, trans, text in trans_ex_regex.findall(content):
-        content = _text_trans(match, trans, text, content)
-
-    return content
