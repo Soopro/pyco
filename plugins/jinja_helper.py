@@ -96,7 +96,7 @@ def rope(pages, sort_by, desc=True, priority=True):
         sort_keys = sort_keys + [key for key in sort_by 
                                  if isinstance(key, (str, unicode))]
     
-    return sortby(pages, sort_keys, desc)
+    return sortby(pages, sort_keys, sort_desc)
 
 
 def saltshaker(raw_salts, conditions, limit= None, 
