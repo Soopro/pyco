@@ -95,7 +95,10 @@ class BaseView(MethodView):
     def gen_theme_url(self):
         return os.path.join(self.config.get('STATIC_BASE_URL'),
                             self.config.get('THEME_NAME'))
-
+    
+    def gen_libs_url(self):
+        return self.config.get("LIBS_URL")
+    
     def gen_page_url(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
@@ -392,6 +395,7 @@ class BaseView(MethodView):
         self.view_ctx["app_id"] = "APP_ID_PLACE_HOLDER"
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
+        self.view_ctx["libs_url"] = self.gen_libs_url()
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         self.view_ctx["sa"] = {

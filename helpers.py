@@ -8,6 +8,7 @@ def load_config(app, config_name="config.py"):
     app.config.from_pyfile(config_name)
     app.config.setdefault("DEBUG", False)
     app.config.setdefault("BASE_URL", "/")
+    app.config.setdefault("LIBS_URL", "http://libs.soopro.com")
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
     app.config.setdefault("INVISIBLE_PAGE_LIST",[])

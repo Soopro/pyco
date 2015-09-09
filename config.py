@@ -14,6 +14,8 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 BASE_URL = "http://localhost:5500"
 
+LIBS_URL = "http://libs.soopro.com"
+
 CHARSET = "utf8"
 
 PLUGIN_DIR = "plugins"
