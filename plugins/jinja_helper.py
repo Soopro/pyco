@@ -72,7 +72,7 @@ def filter_url(url, remove_args=False):
         return os.path.join(base_url, url.strip('/'))
 
 def filter_path(url, remove_args=True):
-    if not isinstance(url,(str,unicode)):
+    if not isinstance(url,(str, unicode)):
         return url
     if remove_args:
         url = url.split("?")[0]
@@ -83,7 +83,10 @@ def filter_path(url, remove_args=True):
 
 
 #custom functions
-def rope(pages, sort_by, desc = True, priority = True):
+def rope(raw_pages, sort_by, desc = True, priority = True):
+    """return a list of sorted results.
+    result_pages = rope(pages, sort_by="updated", desc=True, priority=True)
+    """
     sort_desc = desc
     sort_keys = []
     
@@ -96,13 +99,13 @@ def rope(pages, sort_by, desc = True, priority = True):
         sort_keys = sort_keys + [key for key in sort_by 
                                  if isinstance(key, (str, unicode))]
     
-    return sortby(pages, sort_keys, sort_desc)
+    return sortby(raw_pages, sort_keys, sort_desc)
 
 
 def saltshaker(raw_salts, conditions, limit = None, 
                           intersection = True, sort_by = None):
 
-    """return a list of result matched conditions.
+    """return a list of results matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'], limit=12,
                                       intersection=False, sort_by='updated')
     """
@@ -164,19 +167,27 @@ def saltshaker(raw_salts, conditions, limit = None,
 
 
 def glue(args = None, url = None):
-    """return a path + args, but not domain.
+    """return a url with added args.
     relative_path_args = glue(args)
     """
+    base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
+    base_path = os.path.join(_CONFIG.get("BASE_PATH"), '')
+    
     argments = {k:v for k,v in request.args.items()}
     if not url:
-        url = request.base_url
+        if base_path:
+            _path = request.path.replace(base_path, '').lstrip('/')
+        else:
+            _path = request.path.lstrip('/')
+        url = os.path.join(base_url, _path)
+
     if isinstance(args, dict):
-        argments.update(args)
+        argments.update(args)    
 
     conn_symbol = "?"
     if conn_symbol in url:
         conn_symbol = "&"
-    
+
     new_args = "&".join(['%s=%s' % (key, value) 
                     for (key, value) in argments.items()])
 
@@ -197,7 +208,7 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     start = (paged-1)*perpage
     end = paged*perpage
     result_pages = matched_pages[start:end]
-    
+
     return {
         "pages": result_pages,
         "max": max_pages,
@@ -205,9 +216,9 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     }
 
 
-def barcode(raw_pages, condition = "category"):
-    """return dict with category alias and count.
-    cate_count = barcode(raw_pages, condition="tags")
+def barcode(raw_pages, field = "category"):
+    """return dict count entries has same value of specified field.
+    count = barcode(pages, field="category")
     """
     ret = dict()
     def count(term):
@@ -218,7 +229,7 @@ def barcode(raw_pages, condition = "category"):
                 ret[term] += 1
 
     for page in raw_pages:
-        term = page.get(condition)
+        term = page.get(field)
         if isinstance(term, (list, dict)):
             obj = term if isinstance(term, dict) else xrange(len(term))
             for i in obj:
@@ -230,35 +241,34 @@ def barcode(raw_pages, condition = "category"):
 
 def timemachine(raw_pages, filed = 'date', precision = 'month',
                 time_format = '%Y-%m-%d', reverse = True):
-    """return list of pages sort by time.
-    sorted_pages = timemachine(raw_pages, filed='date', precision='month',
+    """return list of pages grouped by datetime.
+    sorted_pages = timemachine(pages, filed='date', precision='month',
                                time_format='%Y-%m-%d',reverse=True)
     """
+    get_group_key = {
+        'year': lambda x: x.year,
+        'month': lambda x: (x.year, x.month),
+        'day': lambda x: (x.year, x.month, x.day),
+        'hour': lambda x: (x.month, x.day, x.hour, x.minute),
+        'minute': lambda x: (x.month, x.day, x.hour, x.minute),
+        'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)
+    }
+    
     def parse_datetime(date):
-        if isinstance(date, str):
+        if isinstance(date, (str, unicode)):
             date = datetime.datetime.strptime(date, time_format)
         elif isinstance(date, int):
             date = datetime.datetime.fromtimestamp(date)
-        elif isinstance(date, datetime):
+        elif isinstance(date, datetime.datetime):
             date = date
         else:
-            raise ValueError("invalid date format.It should be str, \
+            raise ValueError("invalid date format. \
+                              It should be str, unicode, \
                               timestamp(int) or datetime object")
-
-        get_group_key = {
-            'year': lambda x: x.year,
-            'month': lambda x: (x.year, x.month),
-            'day': lambda x: (x.year, x.month, x.day),
-            'hour': lambda x: (x.month, x.day, x.hour, x.minute),
-            'minute': lambda x: (x.month, x.day, x.hour, x.minute),
-            'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)
-        }
-
         try:
-            return get_group_key[precision](date)
+            return get_group_key.get(precision, 'month')(date)
         except Exception:
-            raise ValueError("invalid precision, precision must be 'year', \
-                              'month' or 'day'.")
+            raise ValueError("invalid precision, precision must be str.")
 
 
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
@@ -273,4 +283,5 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
     raw_group = groupby(pages, key=lambda x: parse_datetime(x.get(filed)))
     for date, group in raw_group:
         ret.append((date, [x for x in group]))
+
     return ret
