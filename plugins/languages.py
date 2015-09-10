@@ -18,6 +18,8 @@ def config_loaded(config):
     site_meta = config.get("SITE", {}).get("meta", {})
     _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
     _TRANSLATES = site_meta.get("translates")
+    if _TRANSLATES:
+        del config["SITE"]["meta"]["translates"]
     return
 
 
