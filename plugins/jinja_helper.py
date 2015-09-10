@@ -83,7 +83,7 @@ def filter_path(url, remove_args=True):
 
 
 #custom functions
-def rope(pages, sort_by, desc=True, priority=True):
+def rope(pages, sort_by, desc = True, priority = True):
     sort_desc = desc
     sort_keys = []
     
@@ -99,8 +99,8 @@ def rope(pages, sort_by, desc=True, priority=True):
     return sortby(pages, sort_keys, sort_desc)
 
 
-def saltshaker(raw_salts, conditions, limit= None, 
-                          intersection = True, sort_by= None):
+def saltshaker(raw_salts, conditions, limit = None, 
+                          intersection = True, sort_by = None):
 
     """return a list of result matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'], limit=12,
@@ -184,7 +184,7 @@ def glue(args = None, url = None):
     return url
 
 
-def stapler(raw_pages, paged=1, perpage=12):
+def stapler(raw_pages, paged = 1, perpage = 12):
     """return dict for paginator.
     booklet = stapler(pages, paged=1, perpage=12)
     """
@@ -205,7 +205,7 @@ def stapler(raw_pages, paged=1, perpage=12):
     }
 
 
-def barcode(raw_pages, condition="category"):
+def barcode(raw_pages, condition = "category"):
     """return dict with category alias and count.
     cate_count = barcode(raw_pages, condition="tags")
     """
@@ -228,8 +228,8 @@ def barcode(raw_pages, condition="category"):
     return ret
 
 
-def timemachine(raw_pages, filed='date', precision='month',
-                time_format='%Y-%m-%d', reverse=True):
+def timemachine(raw_pages, filed = 'date', precision = 'month',
+                time_format = '%Y-%m-%d', reverse = True):
     """return list of pages sort by time.
     sorted_pages = timemachine(raw_pages, filed='date', precision='month',
                                time_format='%Y-%m-%d',reverse=True)
