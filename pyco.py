@@ -450,6 +450,7 @@ class ContentView(BaseView):
         charset = config.get('CHARSET')
         
         self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
+        self.view_ctx["request"] = request
         
         redirect_to = {"url": None}
         run_hook("request_url", request=request, redirect_to=redirect_to)

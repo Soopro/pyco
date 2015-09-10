@@ -169,7 +169,7 @@ def glue(args = None, url = None):
     """
     argments = {k:v for k,v in request.args.items()}
     if not url:
-        url = request.path
+        url = request.base_url
     if isinstance(args, dict):
         argments.update(args)
 
