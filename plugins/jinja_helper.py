@@ -216,9 +216,9 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     }
 
 
-def barcode(raw_pages, field = "category"):
+def barcode(raw_pages, field = "category", sort = True, desc = True):
     """return dict count entries has same value of specified field.
-    count = barcode(pages, field="category")
+    count = barcode(pages, field="category", sort=True, desc=True)
     """
     ret = dict()
     def count(term):
@@ -233,10 +233,20 @@ def barcode(raw_pages, field = "category"):
         if isinstance(term, (list, dict)):
             obj = term if isinstance(term, dict) else xrange(len(term))
             for i in obj:
+                if not isinstance(term[i], (str, unicode)):
+                    continue
                 count(term[i])
         else:
             count(term)
-    return ret
+    
+    bars = []
+    for k,v in ret.iteritems():
+        bars.append({"key":k, "count": v})
+    
+    if sort:
+        bars = sortby(bars, "count", desc)
+    
+    return bars
 
 
 def timemachine(raw_pages, filed = 'date', precision = 'month',

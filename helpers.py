@@ -70,7 +70,13 @@ def helper_process_url(url, base_url):
 
 
 from functools import cmp_to_key
-def sortby(source, keys, reverse=False):    
+def sortby(source, sort_keys, reverse=False):
+    keys = []
+    if isinstance(sort_keys, (str, unicode)):
+        keys.append(sort_keys)
+    elif isinstance(sort_keys, list):
+        keys = [key for key in sort_keys if isinstance(key, (str, unicode))]
+    
     def compare(a, b):
         for key in keys:
             k_rev = 1
