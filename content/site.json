@@ -1,0 +1,40 @@
+{
+  "type":"ws",
+  "content_types": {
+    "post": "Posts",
+    "page": "Pages"
+  },
+  "menus": {
+    "primary": [
+      {
+        "alias": "home",
+        "meta": {},
+        "nodes": [],
+        "title": "Home",
+        "link": "/"
+      },
+      {
+        "alias": "page",
+        "meta": {},
+        "nodes": [],
+        "title": "Static Page",
+        "link": "/page"
+      }
+    ]
+  },
+  "meta": {
+    "logo":null,
+    "author": "redy",
+    "copyright": "2015 © Soopro Co., Ltd.",
+    "description": "A multi-functional online marketing toolkit which combines Website, WeChat, Alipay, Broadcasting of member activities and advertisment ...",
+    "license": "#license",
+    "locale": "en_US",
+    "title": "Soopro"
+  },
+  "terms":{
+    "category":[
+      {"alias":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
+      {"alias":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+	"alias": "default",
+  "license": "MIT",
+  "author": "Redy",
+	"title": "Default Theme",
+  
+	"thumbnail": "thumbnail.png",
+  "capability": "ws",
+	"previews": ["preview.jpg"],
+	"description": "This is a simple default theme for pyco.",
+	
+  "templates":{
+    "index": "Homepage",
+    "page": "Static Page",
+    "post": "Posts",
+    "error_404": "404"
+  },
+  
+  "mode": 0,
+  
+  "content_types":[
+    {"alias":"post", "title":"Posts"}
+  ],
+  
+  "taxonomies":[
+    { 
+      "alias":"category",
+      "title":"Categories",
+      "content_types":["post"]
+    }
+  ],
+  
+	"options":{
+		"sortby": "date",
+		"excerpt_length": 162,
+		"excerpt_ellipsis": "&hellip;",
+		"date_format": "%Y-%m-%d",
+		"perpage": 6
+	}
+}
