@@ -190,7 +190,7 @@ In each `.md` separate `meta` and `content`.
 
 
 
-```
+```markdown
 /*
 Date: '2014-01-01'
 Priority: 0
