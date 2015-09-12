@@ -1,5 +1,4 @@
 {
-  "type":"ws",
   "content_types": {
     "post": "Posts",
     "page": "Pages"
@@ -23,18 +22,24 @@
     ]
   },
   "meta": {
+    "alias":"pyco",
+    "type":"ws",
     "logo":null,
     "author": "redy",
-    "copyright": "2015 © Soopro Co., Ltd.",
-    "description": "A multi-functional online marketing toolkit which combines Website, WeChat, Alipay, Broadcasting of member activities and advertisment ...",
-    "license": "#license",
+    "copyright": "2015 Made by Pyco.",
+    "description": "A simple example of Pyco side ...",
+    "license": "MIT",
     "locale": "en_US",
-    "title": "Soopro"
+    "title": "Pyco"
   },
-  "terms":{
-    "category":[
-      {"alias":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
-      {"alias":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
-    ]
-  }
+  "taxonomy":{
+      "category": {
+        "title":"Category",
+        "content_types": ["post"],
+        "terms": [
+          {"alias":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
+          {"alias":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
+        ]
+      }
+    }
 }

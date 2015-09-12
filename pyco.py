@@ -18,6 +18,9 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
+__version_info__ = ('1', '5', '0')
+__version__ = '.'.join(__version_info__)
+
 
 class BaseView(MethodView):
     def __init__(self):
@@ -54,8 +57,6 @@ class BaseView(MethodView):
             err_msg = "Load Site Meta faild: {}".format(str(e))
             raise Exception(err_msg)
         site_meta.close()
-        self.type = config['SITE'].get('type')
-        self.max_mode = self.type in config.get('MAX_MODE_TYPES')
         
     
     def load_plugins(self, plugins):
@@ -271,28 +272,23 @@ class BaseView(MethodView):
         return menus
     
     def get_taxonomies(self):
-        taxonomies = self.config['THEME_META'].get("taxonomies",[])
-        terms = self.config['SITE'].get("terms",{})
+        taxs = self.config['SITE'].get("taxonomy",{})
         tax_dict = {}
-        for tax in taxonomies:
-            
-            current_terms = terms.get(tax.get("alias"),[])
-            
-            tax_dict[tax["alias"]] = {
-                "title": tax.get("title"),
-                "alias": tax.get("alias"),
-                "content_types": tax.get("content_types"),
+        for k,v in taxs.iteritems():
+            tax_dict[k] = {
+                "title": v.get("title"),
+                "alias": k,
+                "content_types": v.get("content_types"),
                 "terms": [
                     {
                         "alias": x.get("alias"),
                         "title": x.get("title"),
-                        "locked": x.get("locked"),
                         "priority": x.get("priority"),
                         "meta": x.get("meta",{}),
-                        "taxonomy": tax.get("alias"),
+                        "taxonomy": k,
                         "updated": x.get("updated")
                     }
-                    for x in current_terms
+                    for x in v.get("terms", [])
                 ]
             }
             # del terms[tax["alias"]]
@@ -616,12 +612,9 @@ app.add_url_rule("/{}/<path:filename>".format(app.config.get("UPLOADS_DIR")),
     view_func=UploadView.as_view("uploads"))
 
 
-@app.before_first_request
-def before_first_request():
-    if current_app.debug:
-        current_app.logger.debug(
-            "Pyco is running in DEBUG mode !!! " +
-            "Jinja2 template folder is about to reload.")
+# @app.before_first_request
+# def before_first_request():
+#
 
 
 @app.before_request
@@ -653,4 +646,13 @@ def errorhandler(err):
 if __name__ == "__main__":
     host = app.config.get("HOST")
     port = app.config.get("PORT")
+    
+    print "-------------------------------------------------------"
+    print "Pyco: {}".format(__version__)
+    print "-------------------------------------------------------"
+    if app.debug:
+        debug_msg = "\n".join(["Pyco is running in DEBUG mode !!!",
+        "Jinja2 template folder is about to reload."])
+        print(debug_msg)
+
     app.run(host=host, port=port, debug=True)
