@@ -129,7 +129,7 @@ def saltshaker(raw_salts, conditions, limit = None,
         salts = raw_salts
     
     
-    def match_cond(cond_value, target_value):
+    def match_cond(cond_value, target_value, neq=False):
         if cond_value == None:
             return True
         elif isinstance(cond_value, bool):
@@ -138,21 +138,27 @@ def saltshaker(raw_salts, conditions, limit = None,
             return cond_value == target_value
 
     for cond in conditions:
+        cond_neq = False
         if isinstance(cond, (str, unicode)):
             cond_key = cond.lower()
             cond_value = None
         elif isinstance(cond, dict):
-            cond_key = cond.keys()[0]
-            cond_value = cond[cond_key]
-        
-
+            if cond.get('neq'):
+                cond_neq = True
+                del cond['neq']
+            if cond:
+                cond_key = cond.keys()[0]
+                cond_value = cond[cond_key]
+            else:
+                continue
+            
         if intersection and results:
             results = [i for i in results if cond_key in i
-                       and match_cond(cond_value, i.get(cond_key))]
+                       and match_cond(cond_value, i.get(cond_key), cond_neq)]
         else:
             for i in salts:
                 if cond_key in i and i not in results \
-                and match_cond(cond_value, i.get(cond_key)):
+                and match_cond(cond_value, i.get(cond_key, cond_neq)):
                     results.append(i)
 
     # sort by

@@ -1,0 +1,10 @@
+{% set opts = theme_meta.options %}
+{% set paged = args.paged|int if args.paged and args.paged|int > 0 else 1 %}
+{% set perpage = opts.perpage|int if opts.perpage else 6 %}
+
+
+{% set default_home_bg = theme_url + '/img/home-bg.jpg' %}
+{% set default_post_bg = theme_url + '/img/post-bg.jpg' %}
+{% set default_page_bg = theme_url + '/img/page-bg.jpg' %}
+{% set default_contact_bg = theme_url + '/img/contact-bg.jpg' %}
+{% set default_404_bg = theme_url + '/img/home-bg.jpg' %}
