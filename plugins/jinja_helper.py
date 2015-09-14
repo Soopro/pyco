@@ -133,9 +133,15 @@ def saltshaker(raw_salts, conditions, limit = None,
         if cond_value == None:
             return True
         elif isinstance(cond_value, bool):
-            return cond_value == bool(target_value)
+            if neq:
+                return cond_value != bool(target_value)
+            else:
+                return cond_value == bool(target_value)
         else:
-            return cond_value == target_value
+            if neq:
+                return cond_value != target_value
+            else:
+                return cond_value == target_value
 
     for cond in conditions:
         cond_neq = False
