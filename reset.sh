@@ -1,2 +1,2 @@
 #!/bin/bash
-cp -R backups/* ./
+cp -v -R backups/* ./
