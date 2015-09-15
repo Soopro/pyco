@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '5', '0')
+__version_info__ = ('1', '5', '1')
 __version__ = '.'.join(__version_info__)
 
 
@@ -318,8 +318,12 @@ class BaseView(MethodView):
             with open(f, "r") as fh:
                 file_content = fh.read().decode(charset)
             meta_string, content_string = self.content_splitter(file_content)
-            meta = self.parse_page_meta(meta_string)
-            data = self.parse_file_attrs(meta, f, content_string, False)
+            try:
+                meta = self.parse_page_meta(meta_string)
+                data = self.parse_file_attrs(meta, f, content_string, False)
+            except Exception as e:
+                e.current_file = f
+                raise e
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
 
@@ -482,11 +486,16 @@ class ContentView(BaseView):
         # parse file content
         tmp_file_content = file_content["content"]
         meta_string, content_string = self.content_splitter(tmp_file_content)
-
-        page_meta = self.parse_page_meta(meta_string)
-        page_meta = self.parse_file_attrs(page_meta,
-                                          file["path"],
-                                          content_string)
+        
+        
+        try:
+            page_meta = self.parse_page_meta(meta_string)
+            page_meta = self.parse_file_attrs(page_meta,
+                                              file["path"],
+                                              content_string)
+        except Exception as e:
+            e.current_file = file["path"]
+            raise e
         
         redirect_to = {"url": None}
 
@@ -636,9 +645,15 @@ def before_request():
 
 @app.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
-    err_html_msg = "<h1>{}</h1><p>{}</p>".format(repr(err),
-                                          traceback.format_exc())
+    curr_file = ''
+    if 'current_file' in dir(err):
+        curr_file = err.current_file
+    err_msg = "{}: {}\n{}".format(repr(err),
+                                  curr_file,
+                                  traceback.format_exc())
+    err_html_msg = "<h1>{}: {}</h1><p>{}</p>".format(repr(err),
+                                                     curr_file,
+                                                     traceback.format_exc())
     current_app.logger.error(err_msg)
     return make_response(err_html_msg, 500)
 
