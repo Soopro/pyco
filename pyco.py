@@ -182,7 +182,7 @@ class BaseView(MethodView):
                 return list([convert_data(i) for i in x])
             elif isinstance(x, str):
                 return x.decode("utf-8")
-            elif isinstance(x, (unicode, int, float, bool)):
+            elif isinstance(x, (unicode, int, float, bool)) or x is None:
                 return x
             else:
                 try:
