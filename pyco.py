@@ -561,7 +561,10 @@ class ContentView(BaseView):
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
             default_template = config.get('DEFAULT_TEMPLATE')
-            template_file_path = self.theme_path_for(default_template)
+            if is_not_found:
+                abort(404)
+            else:    
+                template_file_path = self.theme_path_for(default_template)
 
 
         # make dotted able
