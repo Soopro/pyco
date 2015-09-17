@@ -210,11 +210,11 @@ class BaseView(MethodView):
         return headers
 
     @staticmethod
-    def parse_content(content_string, is_markdown=True):
-        if is_markdown:
-            return markdown.markdown(content_string,
-                                     ['markdown.extensions.codehilite',
-                                     'markdown.extensions.extra'])
+    def parse_content(content_string):
+        use_markdown = self.config.get("USE_MARKDOWN")
+        if use_markdown:
+            markdown_exts = self.config.get("MARKDOWN_EXTENSIONS", [])
+            return markdown.markdown(content_string, markdown_exts)
         else:
             return content_string
 
@@ -521,8 +521,7 @@ class ContentView(BaseView):
         page_content['content'] = content_string
         run_hook("before_parse_content", content=page_content)
         
-        page_content['content'] = self.parse_content(page_content['content'],
-                                                     page_meta.get("markdown"))
+        page_content['content'] = self.parse_content(page_content['content'])
         run_hook("after_parse_content", content=page_content)
         
         self.view_ctx["content"] = page_content['content']

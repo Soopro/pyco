@@ -55,6 +55,9 @@ SYS_ICON_LIST = ['favicon.ico',
                  'apple-touch-icon-precomposed.png',
                  'apple-touch-icon.png']
 
+USE_MARKDOWN = False
+MARKDOWN_EXTENSIONS = ['gfm']
+
 
 # plugins
 PLUGINS = ["draft",
