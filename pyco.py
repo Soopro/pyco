@@ -211,9 +211,9 @@ class BaseView(MethodView):
 
     @staticmethod
     def parse_content(content_string):
-        use_markdown = self.config.get("USE_MARKDOWN")
+        use_markdown = current_app.config.get("USE_MARKDOWN")
         if use_markdown:
-            markdown_exts = self.config.get("MARKDOWN_EXTENSIONS", [])
+            markdown_exts = current_app.config.get("MARKDOWN_EXTENSIONS", [])
             return markdown.markdown(content_string, markdown_exts)
         else:
             return content_string
