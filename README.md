@@ -47,6 +47,7 @@ Learn Jinja2 from here [Jinja2 Docs](http://jinja.pocoo.org/docs/dev/templates)
 Pyco supported plugins. We already provider several plugins, such as:
   * `draft`: add `status` support in contents. when you want mark a content as draft, just set status to `0`. (`1` for publish)
   * `languages`: add multi-languages support for pyco.
+  * `is`: add `is_front`, `is_404`, `is_current` support.
   * `contect_types`: automatically processing content_types for content which don't have `type` attribute.
   * `redirect`: process redirect for content.
   * `template`: given a default `template` alias base on `type` for content which don't have template attribute.
@@ -175,7 +176,7 @@ Global content data for whole site.
 ```
 
 
-## Content
+## Single Content
 
 All Content is host by `.md` file put in `content` folder.
 Use folder to define different `content types`. (folder must be latin or number or - or _ )
@@ -204,3 +205,11 @@ Title: Static Page
 <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
 
 ```
+
+## Template context
+
+Learn more about template context. 
+
+[Go this repo](https://github.com/Soopro/rafiki/)
+
+https://github.com/Soopro/rafiki/blob/master/jinja2_template.md
