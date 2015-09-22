@@ -56,3 +56,4 @@ def filter_auto_type(meta, page_url):
             meta["type"] = url_parts[1].lower()
         else:
             meta["type"] = _DEFAULT_CONTENT_TYPE
+    meta["content_type"] = meta["type"]

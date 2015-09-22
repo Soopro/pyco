@@ -63,6 +63,7 @@ MARKDOWN_EXTENSIONS = ['gfm']
 PLUGINS = ["draft",
            "languages",
            "content_types",
+           "is",
            "redirect",
            "template",
            "marker",

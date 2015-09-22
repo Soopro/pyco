@@ -358,17 +358,12 @@ class BaseView(MethodView):
     def parse_file_attrs(self, meta, file_path, content_string,
                          escape_content=True):
         
-        default_index_alias = self.config.get("DEFAULT_INDEX_ALIAS")
-        default_404_alias = self.config.get("DEFAULT_404_ALIAS")
+        
         
         data = dict()
         for m in meta:
             data[m] = meta[m]
         data["alias"] = self.gen_page_alias(file_path)
-        if data["alias"] == default_index_alias:
-            data["is_front"] = True
-        if data["alias"] == default_404_alias:
-            data["is_404"] = True
         data["url"] = self.gen_page_url(file_path)
         data["title"] = meta.get("title", u"")
         data["priority"] = meta.get("priority", 0)
