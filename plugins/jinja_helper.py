@@ -7,7 +7,7 @@ import math, os, datetime, re
 
 from helpers import sortby, url_validator
 
-
+ERROR_EXCESSIVE = "Excessive"
 _CONFIG = {}
 
 def config_loaded(config):
@@ -117,7 +117,7 @@ def saltshaker(raw_salts, conditions, limit = None,
     
     if not isinstance(conditions, list) \
     and not isinstance(raw_salts, (list, dict)):
-        return "Excessive"
+        return ERROR_EXCESSIVE
     
     # process if raw salts is dict
     if isinstance(raw_salts, dict):
@@ -307,3 +307,47 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
         ret.append((date, [x for x in group]))
 
     return ret
+    
+
+def gutter(raw_pages, structures):
+    """return a list of grouped pages by structures. 
+    bookpages = gutter(pages, menu.gutter.nodes)
+    tip: the second param is list contain structure, must be a 2 level menu.
+    etc., 'chapter' host 'pages', use 'page.id' to relate with source pages.
+    """
+    
+    if not isinstance(structures, list) or not isinstance(raw_pages, list):
+        return ERROR_EXCESSIVE
+    
+    def _find_source(ref, source):
+        try:
+            for f in source:
+                if f.get('id') and f.get('id') == ref.get('id'):
+                    return f
+            return None
+        except:
+            return None
+    
+    results = []
+    for struct in structures:
+        group = {
+            'alias': struct.get('alias'),
+            'title': struct.get('title'),
+            'meta': struct.get('meta'),
+            'pages': struct.get('nodes'),
+        }
+        pages = group['pages']
+        badlist = []
+        for i, p in enumerate(pages):
+            page = _find_source(p, raw_pages)
+            if not p or not page:
+                badlist.append(i)
+                continue
+            p.update(page)
+        
+        for idx in reversed(badlist):
+            pages.pop(idx)
+        
+        results.append(group)
+    
+    return results
