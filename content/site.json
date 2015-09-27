@@ -19,6 +19,26 @@
         "title": "Static Page",
         "link": "/page"
       }
+    ],
+    "gutter": [
+      {
+        "alias": "chapter-1",
+        "meta": {},
+        "nodes": [
+          { 
+            "id":"index.md",
+            "alias": "xxx",
+            "title": "xxx"
+          },
+          { 
+            "id":"page.md",
+            "alias": "xxx",
+            "title": "xxx"
+          }
+        ],
+        "title": "Home",
+        "link": "/"
+      }
     ]
   },
   "meta": {

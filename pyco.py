@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '6', '0')
+__version_info__ = ('1', '6', '1')
 __version__ = '.'.join(__version_info__)
 
 
@@ -100,6 +100,11 @@ class BaseView(MethodView):
     def gen_libs_url(self):
         return self.config.get("LIBS_URL")
     
+    def gen_id(self, relative_path):
+        content_dir = self.config.get('CONTENT_DIR')
+        page_id = relative_path.replace(content_dir+"/", '', 1).lstrip('/')
+        return page_id
+    
     def gen_page_url(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
@@ -112,9 +117,10 @@ class BaseView(MethodView):
         if relative_path.endswith(front_page_content_path):
             len_index_str = len(default_index_alias)
             relative_path = relative_path[:-len_index_str]
-
-        relative_url = relative_path.replace(content_dir+"/", '')
-        url = os.path.join(self.config.get("BASE_URL"), relative_url)
+ 
+        relative_url = relative_path.replace(content_dir, '', 1)
+        url = os.path.join(self.config.get("BASE_URL"),
+                           relative_url.lstrip('/'))
         return url
     
     def gen_page_alias(self, relative_path):
@@ -357,12 +363,11 @@ class BaseView(MethodView):
     # attrs
     def parse_file_attrs(self, meta, file_path, content_string,
                          escape_content=True):
-        
-        
-        
+
         data = dict()
         for m in meta:
             data[m] = meta[m]
+        data["id"] = self.gen_id(file_path)
         data["alias"] = self.gen_page_alias(file_path)
         data["url"] = self.gen_page_url(file_path)
         data["title"] = meta.get("title", u"")
@@ -628,6 +633,16 @@ def before_request():
     load_config(current_app)
     if request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
         abort(404)
+    
+    base_url = current_app.config.get("BASE_URL")
+    base_path = current_app.config.get("BASE_PATH")
+    uploads_dir = current_app.config.get("UPLOADS_DIR")
+    
+    g.curr_base_url = base_url
+    g.curr_base_path = base_path
+    g.request_path = request.path.replace(base_path, '', 1)
+    g.static_host = os.path.join(base_url, uploads_dir)
+    
     if current_app.debug:
         # change template folder
         themes_dir = current_app.config.get("THEMES_DIR")

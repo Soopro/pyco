@@ -1,7 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-from flask import request, current_app
+from flask import request, current_app, g
 from itertools import groupby
 import math, os, datetime, re
 
@@ -29,35 +29,33 @@ def before_render(var, template):
     var["glue"] = glue
     var["barcode"] = barcode
     var["timemachine"] = timemachine
+    var["gutter"] = gutter
     return
 
 
 #custom filters
+def filter_contenttype(raw_pages, ctype = None, limit = None, sort_by = None):
+    if not isinstance(raw_pages, (list, dict)):
+        return raw_pages
+    return saltshaker(raw_pages, [{"type": ctype}], 
+                                 limit = limit, sort_by = sort_by)
+                      
 def filter_thumbnail(pic_url):
-
     if not isinstance(pic_url, (str, unicode)):
         return pic_url
-
-    base_url = _CONFIG.get("BASE_URL")
-    uploads_dir = _CONFIG.get("UPLOADS_DIR")
-    uploads_path = os.path.join(base_url, uploads_dir)
-    if uploads_path not in pic_url:
+    
+    if g.static_host not in pic_url:
         return pic_url
     
-    thumb_dir = os.path.join(uploads_dir, _CONFIG.get("THUMBNAILS_DIR"))
-
+    uploads_dir = "uploads"
+    thumb_dir = os.path.join(uploads_dir, "thumbnails")
+    
     pattern = "/{}/".format(uploads_dir)
     replacement = "/{}/".format(thumb_dir)
-    new_pic_url = pic_url.replace(pattern, replacement)
+    new_pic_url = pic_url.replace(pattern, replacement, 1)
     
     return new_pic_url
 
-
-def filter_contenttype(raw_pages, ctype=None, limit=None, sort_by=None):
-    if not isinstance(raw_pages, (list, dict)):
-        return raw_pages
-    return saltshaker(raw_pages, [{"type": ctype}], limit=limit,
-                      sort_by=sort_by)
 
 
 def filter_url(url, remove_args=False):
@@ -68,18 +66,19 @@ def filter_url(url, remove_args=False):
     if url_validator(url):
         return url
     else:
-        base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
-        return os.path.join(base_url, url.strip('/'))
+        return os.path.join(g.curr_base_url, url.strip('/'))
 
-def filter_path(url, remove_args=True):
-    if not isinstance(url,(str, unicode)):
+def filter_path(url, remove_args = True):
+    if not isinstance(url, (str, unicode)):
         return url
     if remove_args:
         url = url.split("?")[0]
-    base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
-    url = url.split(base_url)[-1]
-    url = url.strip('/')
-    return "/{}".format(url)
+    try:
+        path = url.split(g.curr_base_url)[-1]
+    except:
+        path = url
+    return path.strip('/')
+
 
 
 #custom functions
@@ -182,24 +181,21 @@ def glue(args = None, url = None):
     """return a url with added args.
     relative_path_args = glue(args)
     """
-    base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
-    base_path = os.path.join(_CONFIG.get("BASE_PATH"), '')
-    
     argments = {k:v for k,v in request.args.items()}
     if not url:
-        if base_path:
-            _path = request.path.replace(base_path, '').lstrip('/')
-        else:
-            _path = request.path.lstrip('/')
-        url = os.path.join(base_url, _path)
-
+        try:
+            _path = g.request_path or request.path
+        except:
+            _path = request.path
+        
+        url = os.path.join(g.curr_base_url, _path.lstrip('/'))
     if isinstance(args, dict):
-        argments.update(args)    
+        argments.update(args)
 
     conn_symbol = "?"
     if conn_symbol in url:
         conn_symbol = "&"
-
+    
     new_args = "&".join(['%s=%s' % (key, value) 
                     for (key, value) in argments.items()])
 

@@ -1,11 +1,13 @@
 #coding=utf-8
 from __future__ import absolute_import
+
+from flask import g
 from urlparse import urlparse
 import os
 
 _CONFIG = {}
 _DEFAULT_CONTENT_TYPE = 'page'
-_URL = ''
+_REQUEST_PATH = ''
 _current_content_type = ''
 
 
@@ -16,22 +18,20 @@ def config_loaded(config):
 
             
 def request_url(request, redirect_to):
-    global _URL
-    _URL = request.path
     return
 
 
 def get_page_data(data, page_meta):
     data["type"] = page_meta.get("type")
-    filter_auto_type(data, data.get("url"))
+    filter_auto_type(data, data.get("url", '').replace(g.curr_base_url, ''))
+    data["content_type"] = data["type"]
     return
 
 
 def single_page_meta(page_meta, redirect_to):
-    base_url = os.path.join(_CONFIG.get("BASE_URL"), '')
-    page_url = os.path.join(base_url, _URL)
-    filter_auto_type(page_meta, page_url)
     global _current_content_type
+    filter_auto_type(page_meta, g.request_path)
+    page_meta["content_type"] = page_meta["type"]
     _current_content_type = page_meta['type']
     return
 
@@ -49,11 +49,10 @@ def before_render(var, template):
 
 
 # custome functions
-def filter_auto_type(meta, page_url):
+def filter_auto_type(meta, page_path):
     if not meta.get("type"):
-        url_parts = urlparse(page_url).path.split('/')
-        if len(url_parts) > 2:
-            meta["type"] = url_parts[1].lower()
+        path_parts = page_path.split('/')
+        if len(path_parts) > 2:
+            meta["type"] = path_parts[1].lower()
         else:
             meta["type"] = _DEFAULT_CONTENT_TYPE
-    meta["content_type"] = meta["type"]
