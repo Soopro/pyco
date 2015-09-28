@@ -189,6 +189,8 @@ In each `.md` separate `meta` and `content`.
 
 * `content`: After `/* ... */` is Content, must be simple HTML code here is recommend. which not recommend is use complex html with styles or classes, those content will very difficult to maintain after upload to our system. (better to use html just like markdown could do.) The complex content you have use theme to deal with not rich text contents.
 
+* `wildcard`: 
+  1. `\$uploads\`: Will replace to true uploads base url. ***Must use***.
 
 
 ```markdown
@@ -199,6 +201,9 @@ Status: 1
 Category: haha
 Template: page
 Title: Static Page
+Featured_img:
+  src: '\$uploads\cover_img.png'
+  title: 'cover image'
 */
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo  ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis   dis parturient montes, nascetur ridiculus mus.</p>
 
