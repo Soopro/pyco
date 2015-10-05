@@ -25,6 +25,7 @@ def plugins_loaded():
 def before_render(var, template):
     var["saltshaker"] = saltshaker
     var["stapler"] = stapler
+    var["straw"] = straw
     var["rope"] = rope
     var["glue"] = glue
     var["barcode"] = barcode
@@ -101,9 +102,19 @@ def rope(raw_pages, sort_by, desc = True, priority = True):
     return sortby(raw_pages, sort_keys, sort_desc)
 
 
+def straw(raw_pages, pid):
+    """return a page by 'id'.
+    next_page = straw(pages, next_id)
+    """
+    try:
+        result = [page for page in raw_pages if page["id"] == pid][0]
+    except:
+        result = None
+    return result
+
+
 def saltshaker(raw_salts, conditions, limit = None, 
                           intersection = True, sort_by = None):
-
     """return a list of results matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'], limit=12,
                                       intersection=False, sort_by='updated')
@@ -348,9 +359,9 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
 #
 #     return results
 
-def gutter(page_meta, structures):
+def gutter(pid, structures):
     """return a dict of next/prev page by structures.
-    page_gutter = gutter(meta, menu.gutter.nodes)
+    page_gutter = gutter(meta.id, menu.gutter.nodes)
     """
     next_page = None
     prev_page = None
@@ -359,15 +370,17 @@ def gutter(page_meta, structures):
         for p in struct.get('nodes', []):
             if curr_page is not None:
                 next_page = {
+                    'id': p.get('id'),
                     'title': p.get('title'),
                     'alias': p.get('alias'),
                     'url': p.get('url'),
                 }
                 break
-            elif p.get('id') and p.get('id') == page_meta.get('id'):
+            elif p.get('id') and p.get('id') == pid:
                 curr_page = p
             else:
                 prev_page = {
+                    'id': p.get('id'),
                     'title': p.get('title'),
                     'alias': p.get('alias'),
                     'url': p.get('url'),
