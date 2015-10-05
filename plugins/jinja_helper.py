@@ -305,45 +305,80 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
     return ret
     
 
-def gutter(raw_pages, structures):
-    """return a list of grouped pages by structures. 
-    bookpages = gutter(pages, menu.gutter.nodes)
-    tip: the second param is list contain structure, must be a 2 level menu.
-    etc., 'chapter' host 'pages', use 'page.id' to relate with source pages.
+# def gutter(raw_pages, structures):
+#     """return a list of grouped pages by structures.
+#     bookpages = gutter(pages, menu.gutter.nodes)
+#     tip: the second param is list contain structure, must be a 2 level menu.
+#     etc., 'chapter' host 'pages', use 'page.id' to relate with source pages.
+#     """
+#
+#     if not isinstance(structures, list) or not isinstance(raw_pages, list):
+#         return ERROR_EXCESSIVE
+#
+#     def _find_source(ref, source):
+#         try:
+#             for f in source:
+#                 if f.get('id') and f.get('id') == ref.get('id'):
+#                     return f
+#             return None
+#         except:
+#             return None
+#
+#     results = []
+#     for struct in structures:
+#         group = {
+#             'alias': struct.get('alias'),
+#             'title': struct.get('title'),
+#             'meta': struct.get('meta'),
+#             'pages': struct.get('nodes'),
+#         }
+#         pages = group['pages']
+#         badlist = []
+#         for i, p in enumerate(pages):
+#             page = _find_source(p, raw_pages)
+#             if not p or not page:
+#                 badlist.append(i)
+#                 continue
+#             p.update(page)
+#
+#         for idx in reversed(badlist):
+#             pages.pop(idx)
+#
+#         results.append(group)
+#
+#     return results
+
+def gutter(page_meta, structures):
+    """return a dict of next/prev page by structures.
+    page_gutter = gutter(meta, menu.gutter.nodes)
     """
-    
-    if not isinstance(structures, list) or not isinstance(raw_pages, list):
-        return ERROR_EXCESSIVE
-    
-    def _find_source(ref, source):
-        try:
-            for f in source:
-                if f.get('id') and f.get('id') == ref.get('id'):
-                    return f
-            return None
-        except:
-            return None
-    
-    results = []
+    next_page = None
+    prev_page = None
+    curr_page = None
     for struct in structures:
-        group = {
-            'alias': struct.get('alias'),
-            'title': struct.get('title'),
-            'meta': struct.get('meta'),
-            'pages': struct.get('nodes'),
-        }
-        pages = group['pages']
-        badlist = []
-        for i, p in enumerate(pages):
-            page = _find_source(p, raw_pages)
-            if not p or not page:
-                badlist.append(i)
-                continue
-            p.update(page)
-        
-        for idx in reversed(badlist):
-            pages.pop(idx)
-        
-        results.append(group)
-    
-    return results
+        for p in struct.get('nodes', []):
+            if curr_page is not None:
+                next_page = {
+                    'title': p.get('title'),
+                    'alias': p.get('alias'),
+                    'url': p.get('url'),
+                }
+                break
+            elif p.get('id') and p.get('id') == page_meta.get('id'):
+                curr_page = p
+            else:
+                prev_page = {
+                    'title': p.get('title'),
+                    'alias': p.get('alias'),
+                    'url': p.get('url'),
+                }
+        if next_page is not None:
+            break
+
+    if not curr_page:
+        next_page = prev_page = None
+
+    return {
+        'prev_page': prev_page,
+        'next_page': next_page
+    }
