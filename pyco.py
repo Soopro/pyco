@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '6', '3')
+__version_info__ = ('1', '6', '4')
 __version__ = '.'.join(__version_info__)
 
 

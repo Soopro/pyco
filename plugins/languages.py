@@ -8,7 +8,6 @@ _DEFAULT_LOCALE = 'en'
 _TRANSLATE_REDIRECT = False
 _LOCALE = None
 _TRANSLATES = {}
-_current_lang = None
 _LANGUAGES_FOLDER = 'languages'
 _TRANS_FILE = 'translate'
 
@@ -23,13 +22,6 @@ def config_loaded(config):
     return
 
 
-def request_url(request, redirect_to):
-    if _TRANSLATES:
-        global _current_lang
-        _current_lang = request.accept_languages.best_match(_TRANSLATES.keys())
-    return
-
-
 def before_render(var, template):
     """ translates json sample
     {
@@ -38,10 +30,9 @@ def before_render(var, template):
     }
     """
     trans_list = []
+    translates = _TRANSLATES
     
-    if _TRANSLATES:
-        translates = _TRANSLATES
-        
+    if translates:
         # directly append if is list
         if isinstance(translates, list):
             for trans in translates:
@@ -49,7 +40,7 @@ def before_render(var, template):
                     trans_list.append(trans)
 
         # change to list if is dict
-        if isinstance(translates, dict) and len(translates) > 1:
+        if isinstance(translates, dict):
             for trans in translates:
                 tmp_trans = translates[trans]
                 tmp_trans.update({"code": trans})
