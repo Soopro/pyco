@@ -83,23 +83,22 @@ def filter_path(url, remove_args = True):
 
 
 #custom functions
-def rope(raw_pages, sort_by, desc = True, priority = True):
+def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", desc=True, priority=True)
     """
-    sort_desc = desc
     sort_keys = []
-    
+
     if priority:
-        sort_keys = ['priority']
-    
+        sort_keys = ['-priority'] if desc else ['priority']
+        
     if isinstance(sort_by, (str, unicode)):
         sort_keys.append(sort_by)
     elif isinstance(sort_by, list):
         sort_keys = sort_keys + [key for key in sort_by 
                                  if isinstance(key, (str, unicode))]
     
-    return sortby(raw_pages, sort_keys, sort_desc)
+    return sortby(raw_pages, sort_keys, desc)
 
 
 def straw(raw_pages, pid):

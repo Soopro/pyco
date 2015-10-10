@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '6', '2')
+__version_info__ = ('1', '6', '3')
 __version__ = '.'.join(__version_info__)
 
 
@@ -336,7 +336,7 @@ class BaseView(MethodView):
         # sortby
         theme_meta_options = self.view_ctx["theme_meta"].get("options")
         sort_desc = True
-        sort_keys = ['priority']
+        sort_keys = ['-priority']
         sort_by = theme_meta_options.get("sortby", "updated")
         
         if isinstance(sort_by, (str, unicode)):

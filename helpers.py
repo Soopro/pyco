@@ -70,29 +70,35 @@ def helper_process_url(url, base_url):
 
 
 from functools import cmp_to_key
-def sortby(source, sort_keys, reverse=False):
-    keys = []
-    if isinstance(sort_keys, (str, unicode)):
-        keys.append(sort_keys)
-    elif isinstance(sort_keys, list):
-        keys = [key for key in sort_keys if isinstance(key, (str, unicode))]
+def sortby(source, sort_keys, reverse = False):
+    keys = {}
     
+    def process_key(key):
+        if key.startswith('-'):
+            key = key.lstrip('-')
+            revs = -1
+        else:
+            key = key.lstrip('+')
+            revs = 1
+        keys.update({key: revs})
+         
+    if isinstance(sort_keys, (str, unicode)):
+        process_key(sort_keys)
+    elif isinstance(sort_keys, list):
+        for key in sort_keys:
+            if not isinstance(key, (str, unicode)):
+                continue
+            process_key(key)
+
     def compare(a, b):
-        for key in keys:
-            k_rev = 1
-            if key[0:1] == '-':
-                k_rev = -1
-                key = key[1:]
-            elif key[0:1] == '+':
-                key = key[1:]
-        
+        for key, value in keys.iteritems():
             if a.get(key) < b.get(key):
-                return -1 * k_rev
+                return -1 * value
             if a.get(key) > b.get(key):
-                return 1 * k_rev
+                return 1 * value
         return 0
 
-    return sorted(source, key=cmp_to_key(compare), reverse=reverse)
+    return sorted(source, key = cmp_to_key(compare), reverse = reverse)
     
 
 from werkzeug.datastructures import ImmutableDict
