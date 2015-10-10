@@ -43,6 +43,3 @@ linux-amd64/
 *.conf
 *.log
 
-test.py
-plug
-/uploads/*
