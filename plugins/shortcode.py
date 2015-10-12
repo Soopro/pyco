@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 import os, re, time
 
-uploads_pattern = r"\/\$uploads\/"
+uploads_pattern = r"\[\%uploads\%\]"
 _CONFIG = {}
 
 def config_loaded(config):

@@ -66,7 +66,7 @@ PLUGINS = ["draft",
            "is",
            "redirect",
            "template",
-           "marker",
+           "shortcode",
            "jinja_helper"]
 
 """ For Plugins """
