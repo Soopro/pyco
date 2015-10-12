@@ -22,7 +22,7 @@ def before_render(var, template):
 
 # custom functions
 def replace(content):
-    uploads_dir = os.path.join(_CONFIG["BASE_URL"], _CONFIG["UPLOADS_DIR"], "")
+    uploads_dir = os.path.join(_CONFIG["BASE_URL"], _CONFIG["UPLOADS_DIR"])
     re_uploads_dir = re.compile(uploads_pattern, re.IGNORECASE)
     return re.sub(re_uploads_dir, unicode(uploads_dir), content)
     

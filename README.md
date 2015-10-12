@@ -189,8 +189,10 @@ In each `.md` separate `meta` and `content`.
 
 * `content`: After `/* ... */` is Content, must be simple HTML code here is recommend. which not recommend is use complex html with styles or classes, those content will very difficult to maintain after upload to our system. (better to use html just like markdown could do.) The complex content you have use theme to deal with not rich text contents.
 
-* `shortcode`: 
-  1. `[%uploads%]`: A shortcode for uploads url, you have to quote it while using in `meta`, because that's YAML. ***Must use***. 
+* `shortcode`: shortcode is for generation dynamic value in your contents, it's follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` is `&#37;`
+
+  1. `[%uploads%]`: A shortcode for uploads url, you have to quote it while using in `meta`, because that's YAML. ```[%uploads%]/your_pic.jpg```
+  
 
 
 ```markdown
@@ -202,7 +204,7 @@ Category: haha
 Template: page
 Title: Static Page
 Featured_img:
-  src: '[%uploads%]\cover_img.png'
+  src: '[%uploads%]/cover_img.png'
   title: 'cover image'
 */
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo  ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis   dis parturient montes, nascetur ridiculus mus.</p>
