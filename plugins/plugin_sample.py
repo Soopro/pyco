@@ -37,7 +37,7 @@ def after_404_load_content(file, content):
     return
 
 
-def before_read_page_meta(headers):
+def before_read_page_meta(meta_string):
     print "before read page meta"
     return
 

@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '6', '5')
+__version_info__ = ('1', '6', '6')
 __version__ = '.'.join(__version_info__)
 
 
@@ -178,7 +178,8 @@ class BaseView(MethodView):
 
     def parse_page_meta(self, meta_string):
         headers = dict()
-        self.run_hook("before_read_page_meta", headers=headers)
+        meta_string = {"meta": meta_string}
+        self.run_hook("before_read_page_meta", meta_string=meta_string)
         
         def convert_data(x):
             if isinstance(x, dict):
@@ -198,20 +199,8 @@ class BaseView(MethodView):
                     pass
             return x
         
-        yaml_data = yaml.safe_load(meta_string)
+        yaml_data = yaml.safe_load(meta_string['meta'])
         headers = convert_data(yaml_data)
-#         for line in meta_string.split("\n"):
-#             kv_pair = line.split(":", 1)
-#             if len(kv_pair) == 2:
-#                 _tmp_value = kv_pair[1].strip()
-#                 try:
-#                     _tmp_value = ast.literal_eval(_tmp_value)
-#                     _tmp_value = convert_unicode(_tmp_value)
-#                 except Exception:
-#                     pass
-#
-#                 headers[kv_pair[0].lower()] = _tmp_value
-
         self.run_hook("after_read_page_meta", headers=headers)
         return headers
 

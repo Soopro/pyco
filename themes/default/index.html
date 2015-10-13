@@ -15,8 +15,11 @@
     <span>
       {{meta.description}}
     </span>
+    <div>
+      <img src="{{meta.featured_img.src}}" alt="{{meta.featured_img.title}}"/>
+    </div>
   </header>
-
+  
   <!-- Main Content -->
   <section>
     {% for post in pages | type('post') %}

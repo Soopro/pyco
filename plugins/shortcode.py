@@ -8,16 +8,23 @@ _CONFIG = {}
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
-    # for key in config:
-    #     config[key] = parser_config(config[key])
-    # _CONFIG = config
-
     return
-
+    
+def before_read_page_meta(meta_string):
+    # pre process the content for data convert safety.
+    meta_string['meta'] = replace(meta_string['meta'])
+    return
+    
 def before_render(var, template):
-    # output["content"] = replace(output["content"])
+    # it is possible generated a new shortcode while in the process.
+    # do it before render is for template render safety.
     for key in var:
         var[key] = parser_replace(var[key])
+    return
+
+def after_render(output):
+    # finally make sure everthing processed.
+    output['content'] = replace(output['content'])
     return
 
 # custom functions
