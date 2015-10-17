@@ -45,6 +45,8 @@ def before_render(var, template):
                 tmp_trans = translates[trans]
                 tmp_trans.update({"code": trans})
                 trans_list.append(tmp_trans)
+    else:
+        trans_list = None
 
     set_current_translation(_LOCALE)
     
