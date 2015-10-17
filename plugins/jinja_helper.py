@@ -64,7 +64,7 @@ def filter_url(url, remove_args=False):
         return url
     if remove_args:
         url = url.split("?")[0]
-    if url_validator(url):
+    if not url or url_validator(url):
         return url
     else:
         return os.path.join(g.curr_base_url, url.strip('/'))
