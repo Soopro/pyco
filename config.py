@@ -62,6 +62,7 @@ MARKDOWN_EXTENSIONS = ['gfm']
 # plugins
 PLUGINS = ["draft",
            "languages",
+           "socials",
            "content_types",
            "is",
            "redirect",

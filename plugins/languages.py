@@ -5,7 +5,6 @@ import os
 from flask import current_app
 
 _DEFAULT_LOCALE = 'en'
-_TRANSLATE_REDIRECT = False
 _LOCALE = None
 _TRANSLATES = {}
 _LANGUAGES_FOLDER = 'languages'

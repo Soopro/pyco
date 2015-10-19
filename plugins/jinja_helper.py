@@ -101,12 +101,14 @@ def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
     return sortby(raw_pages, sort_keys, desc)
 
 
-def straw(raw_pages, pid):
-    """return a page by 'id'.
-    next_page = straw(pages, next_id)
+def straw(raw_list, value, key = 'id'):
+    """return a item by key/value form a list.
+    next_page = straw(pages, next_id, 'id')
     """
+    if not isinstance(key, (str, unicode)):
+        key = 'id'
     try:
-        result = [page for page in raw_pages if page["id"] == pid][0]
+        result = [item for item in raw_list if item.get(key) == value][0]
     except:
         result = None
     return result
