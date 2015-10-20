@@ -22,14 +22,12 @@ def before_render(var, template):
        "facebook":{
            "name":"Facebook",
            "url":"http://.....",
-           "code":"...",
-           "seo":"..."
+           "code":"..."
        },
        "twitter":{
            "name":"Twitter",
            "url":"http://.....",
-           "code":"...",
-           "seo":"..."
+           "code":"..."
        }
     }
     """
@@ -40,14 +38,14 @@ def before_render(var, template):
         # directly append if is list
         if isinstance(socials, list):
             for social in socials:
-                if social.get('code'):
+                if social.get('type'):
                     social_list.append(social)
 
         # change to list if is dict
         if isinstance(socials, dict):
             for social in socials:
                 tmp_social = socials[social]
-                tmp_social.update({"code": social})
+                tmp_social.update({"type": social})
                 social_list.append(tmp_social)
     else:
         social_list = None
