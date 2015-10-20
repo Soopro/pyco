@@ -21,12 +21,10 @@ def before_render(var, template):
     {
        "facebook":{
            "name":"Facebook",
-           "url":"http://.....",
            "code":"..."
        },
        "twitter":{
            "name":"Twitter",
-           "url":"http://.....",
            "code":"..."
        }
     }
