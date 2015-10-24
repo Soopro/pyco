@@ -58,7 +58,6 @@ def filter_thumbnail(pic_url):
     return new_pic_url
 
 
-
 def filter_url(url, remove_args=False):
     if not isinstance(url,(str, unicode)):
         return url
@@ -66,8 +65,11 @@ def filter_url(url, remove_args=False):
         url = url.split("?")[0]
     if not url or url_validator(url):
         return url
-    else:
+    elif url.startswith('/'):
         return os.path.join(g.curr_base_url, url.strip('/'))
+    else:
+        url.rstrip('/')
+
 
 def filter_path(url, remove_args = True):
     if not isinstance(url, (str, unicode)):
