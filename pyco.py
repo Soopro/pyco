@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '7', '0')
+__version_info__ = ('1', '7', '1')
 __version__ = '.'.join(__version_info__)
 
 
@@ -440,6 +440,7 @@ class ContentView(BaseView):
         
         self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
         self.view_ctx["request"] = request
+        self.view_ctx["gfw"] = config.get("GFW", False)
         
         redirect_to = {"url": None}
         run_hook("request_url", request=request, redirect_to=redirect_to)
