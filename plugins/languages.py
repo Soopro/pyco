@@ -5,6 +5,7 @@ import os
 from flask import current_app
 
 _DEFAULT_LOCALE = 'en'
+_TRANSLATE_REDIRECT = False
 _LOCALE = None
 _TRANSLATES = {}
 _LANGUAGES_FOLDER = 'languages'
@@ -15,9 +16,7 @@ def config_loaded(config):
     global _LOCALE, _TRANSLATES
     site_meta = config.get("SITE", {}).get("meta", {})
     _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
-    _TRANSLATES = site_meta.get("translates")
-    if _TRANSLATES:
-        del config["SITE"]["meta"]["translates"]
+    _TRANSLATES = site_meta.pop("translates", None)
     return
 
 
@@ -29,29 +28,35 @@ def before_render(var, template):
     }
     """
     trans_list = []
+    locale = _LOCALE
+    lang = locale.split('_')[0]
     translates = _TRANSLATES
     
     if translates:
         # directly append if is list
         if isinstance(translates, list):
             for trans in translates:
-                if trans.get('code'):
+                if trans.get('key'):
                     trans_list.append(trans)
 
         # change to list if is dict
         if isinstance(translates, dict):
             for trans in translates:
                 tmp_trans = translates[trans]
-                tmp_trans.update({"code": trans})
+                tmp_trans.update({"key": trans})
                 trans_list.append(tmp_trans)
-    else:
-        trans_list = None
+    
 
+    for trans in trans_list:
+        trans_key = trans['key'].lower()
+        if trans_key == locale.lower() or trans_key == lang.lower():
+            trans["active"] = True
+    
     set_current_translation(_LOCALE)
     
     var["translates"] = trans_list
-    var["locale"] = _LOCALE
-    var["lang"] = _LOCALE.split('_')[0]
+    var["locale"] = locale
+    var["lang"] = lang
     return
 
 
