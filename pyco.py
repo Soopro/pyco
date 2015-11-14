@@ -576,6 +576,8 @@ class UploadView(MethodView):
 
 # create app
 app = Flask(__name__)
+app.version = __version__
+
 load_config(app)
 
 # make importable for plugin folder
@@ -666,8 +668,9 @@ if __name__ == "__main__":
     port = app.config.get("PORT")
     
     print "-------------------------------------------------------"
-    print "Pyco: {}".format(__version__)
+    print "Pyco: {}".format(app.version)
     print "-------------------------------------------------------"
+    
     if app.debug:
         debug_msg = "\n".join(["Pyco is running in DEBUG mode !!!",
         "Jinja2 template folder is about to reload."])
