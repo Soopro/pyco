@@ -119,8 +119,8 @@ def straw(raw_list, value, key = 'id'):
 def saltshaker(raw_salts, conditions, limit = None, 
                           intersection = True, sort_by = None):
     """return a list of results matched conditions.
-    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'], limit=12,
-                                      intersection=False, sort_by='updated')
+    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
+                              limit=12, intersection=True, sort_by='updated')
     """
     results = []
     try:
@@ -128,9 +128,11 @@ def saltshaker(raw_salts, conditions, limit = None,
     except:
         limit = 0
     
-    if not isinstance(conditions, list) \
-    and not isinstance(raw_salts, (list, dict)):
+    if not isinstance(raw_salts, (list, dict)):
         return ERROR_EXCESSIVE
+
+    if not isinstance(conditions, list):
+        conditions = [conditions]
     
     # process if raw salts is dict
     if isinstance(raw_salts, dict):
@@ -142,29 +144,35 @@ def saltshaker(raw_salts, conditions, limit = None,
         salts = raw_salts
     
     
-    def match_cond(cond_value, target_value, neq=False):
+    def match_cond(cond_value, target_value, opposite=False):
         if cond_value == None:
             return True
+        
+        if isinstance(cond_value, list):
+            for cv in cond_value:
+                matched = match_cond(cv, target_value)
+                if matched:
+                    break
         elif isinstance(cond_value, bool):
-            if neq:
-                return cond_value != bool(target_value)
-            else:
-                return cond_value == bool(target_value)
+            matched = cond_value == bool(target_value)
         else:
-            if neq:
-                return cond_value != target_value
+            if isinstance(target_value, list):
+                matched = cond_value in target_value
             else:
-                return cond_value == target_value
+                matched = cond_value == target_value
+
+        return matched != opposite
+        
+        
 
     for cond in conditions:
-        cond_neq = False
+        opposite = False
         if isinstance(cond, (str, unicode)):
             cond_key = cond.lower()
             cond_value = None
         elif isinstance(cond, dict):
-            if cond.get('neq'):
-                cond_neq = True
-                del cond['neq']
+            opposite = bool(cond.pop('not', False))
+            
             if cond:
                 cond_key = cond.keys()[0]
                 cond_value = cond[cond_key]
@@ -173,11 +181,11 @@ def saltshaker(raw_salts, conditions, limit = None,
             
         if intersection and results:
             results = [i for i in results if cond_key in i
-                       and match_cond(cond_value, i.get(cond_key), cond_neq)]
+                       and match_cond(cond_value, i.get(cond_key), opposite)]
         else:
             for i in salts:
                 if cond_key in i and i not in results \
-                and match_cond(cond_value, i.get(cond_key, cond_neq)):
+                and match_cond(cond_value, i.get(cond_key), opposite):
                     results.append(i)
 
     # sort by
