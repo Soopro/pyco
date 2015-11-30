@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '7', '3')
+__version_info__ = ('1', '7', '4')
 __version__ = '.'.join(__version_info__)
 
 
@@ -570,8 +570,19 @@ class ContentView(BaseView):
 
 class UploadView(MethodView):
     def get(self, filename):
-        return send_from_directory(current_app.config.get("UPLOADS_DIR"),
-                                   filename)
+        headers = dict()
+        base_set = ["origin", "accept", "content-type", "authorization"]
+        headers["Access-Control-Allow-Headers"] = ", ".join(base_set)
+        headers_options = "OPTIONS, HEAD, POST, PUT, DELETE"
+        headers["Access-Control-Allow-Methods"] = headers_options
+        headers["Access-Control-Allow-Origin"] = '*'
+        headers["Access-Control-Max-Age"] = 60 * 60 * 24
+
+        send_file = send_from_directory(current_app.config.get("UPLOADS_DIR"),
+                                        filename)
+        response = make_response(send_file)
+        response.headers = headers
+        return response
 
 
 # create app
