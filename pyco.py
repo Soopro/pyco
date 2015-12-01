@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, yaml
 
-__version_info__ = ('1', '7', '4')
+__version_info__ = ('1', '8', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -388,19 +388,18 @@ class BaseView(MethodView):
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
         self.view_ctx["sa"] = {
-            'status':{
+            'app':{
                 'pv': 500,
                 'vs': 500,
                 'uv': 500,
-                'ip': 500,
-                'page': {
-                    'pv': 100,
-                    'vs': 100,
-                    'uv': 100,
-                    'ip': 100,
-                }
+                'ip': 500
             },
-            'code': ''
+            'page': {
+                'pv': 100,
+                'vs': 100,
+                'uv': 100,
+                'ip': 100
+            }
         }
         return
     
@@ -570,7 +569,26 @@ class ContentView(BaseView):
 
 class UploadView(MethodView):
     def get(self, filename):
+        filepath = request.path[1:].strip('/')
+        filename, ext = os.path.splitext(filepath)
+        
+        if ext == ".css":
+            mime_type = "text/css"
+        if ext == ".js":
+            mime_type = "text/javascript"
+        if ext in [".jpg", ".jpeg", ".png", ".gif", ".svg", "mp4", "mp3"]:
+            if ext == '.svg':
+                mime_type = "image/svg+xml"
+            elif ext == '.jpg':
+                mime_type = "image/jpeg"
+            else:
+                mime_type = "image/{}".format(ext[1:])
+        
+        
+        
         headers = dict()
+        headers["Content-Type"] = mime_type
+        
         base_set = ["origin", "accept", "content-type", "authorization"]
         headers["Access-Control-Allow-Headers"] = ", ".join(base_set)
         headers_options = "OPTIONS, HEAD, POST, PUT, DELETE"
