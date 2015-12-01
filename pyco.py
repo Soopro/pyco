@@ -16,7 +16,7 @@ from werkzeug.datastructures import ImmutableDict
 from types import ModuleType
 from datetime import datetime
 from gettext import gettext, ngettext
-import sys, os, re, traceback, markdown, json, argparse, yaml
+import sys, os, re, traceback, markdown, json, argparse, mimetypes, yaml
 
 __version_info__ = ('1', '8', '0')
 __version__ = '.'.join(__version_info__)
@@ -568,36 +568,27 @@ class ContentView(BaseView):
 
 
 class UploadView(MethodView):
-    def get(self, filename):
-        filepath = request.path[1:].strip('/')
-        filename, ext = os.path.splitext(filepath)
+    def get(self, filepath):
         
-        if ext == ".css":
-            mime_type = "text/css"
-        if ext == ".js":
-            mime_type = "text/javascript"
-        if ext in [".jpg", ".jpeg", ".png", ".gif", ".svg", "mp4", "mp3"]:
-            if ext == '.svg':
-                mime_type = "image/svg+xml"
-            elif ext == '.jpg':
-                mime_type = "image/jpeg"
-            else:
-                mime_type = "image/{}".format(ext[1:])
-        
-        
-        
+        filename = os.path.basename(filepath)
+
+        try:
+            mime_type = mimetypes.guess_type(filename)[0]
+        except:
+            mime_type = 'text'
+
         headers = dict()
         headers["Content-Type"] = mime_type
-        
+
         base_set = ["origin", "accept", "content-type", "authorization"]
         headers["Access-Control-Allow-Headers"] = ", ".join(base_set)
         headers_options = "OPTIONS, HEAD, POST, PUT, DELETE"
         headers["Access-Control-Allow-Methods"] = headers_options
         headers["Access-Control-Allow-Origin"] = '*'
         headers["Access-Control-Max-Age"] = 60 * 60 * 24
-
-        send_file = send_from_directory(current_app.config.get("UPLOADS_DIR"),
-                                        filename)
+        
+        uploads_dir = current_app.config.get("UPLOADS_DIR")
+        send_file = send_from_directory(uploads_dir, filepath)
         response = make_response(send_file)
         response.headers = headers
         return response
@@ -641,7 +632,7 @@ app.add_url_rule("/", defaults={"_": ""},
 app.add_url_rule("/<path:_>", 
     view_func=ContentView.as_view("content"))
     
-app.add_url_rule("/{}/<path:filename>".format(app.config.get("UPLOADS_DIR")),
+app.add_url_rule("/{}/<path:filepath>".format(app.config.get("UPLOADS_DIR")),
     view_func=UploadView.as_view("uploads"))
 
 
@@ -705,4 +696,4 @@ if __name__ == "__main__":
         "Jinja2 template folder is about to reload."])
         print(debug_msg)
 
-    app.run(host=host, port=port, debug=True)
+    app.run(host=host, port=port, debug=True, threaded=True)
