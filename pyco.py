@@ -8,7 +8,7 @@ from flask.views import MethodView
 from jinja2 import FileSystemLoader
 
 from helpers import (load_config, make_content_response, url_validator,
-                     helper_make_dotted_dict, helper_process_url, sortby)
+                     helper_make_dotted_dict, helper_process_url, sortedby)
 
 from collections import defaultdict
 from hashlib import sha1
@@ -18,7 +18,7 @@ from datetime import datetime
 from gettext import gettext, ngettext
 import sys, os, re, traceback, markdown, json, argparse, mimetypes, yaml
 
-__version_info__ = ('1', '8', '0')
+__version_info__ = ('1', '9', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -322,7 +322,7 @@ class BaseView(MethodView):
             self.run_hook("get_page_data", data=data, page_meta=meta.copy())
             page_data_list.append(data)
 
-        # sortby
+        # sortedby
         theme_meta_options = self.view_ctx["theme_meta"].get("options")
         sort_desc = True
         sort_keys = ['-priority']
@@ -334,7 +334,7 @@ class BaseView(MethodView):
             sort_keys = sort_keys + [key for key in sort_by 
                                      if isinstance(key, (str, unicode))]
         
-        return sortby(page_data_list, sort_keys, reverse=sort_desc)
+        return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
     #theme
     @property

@@ -5,7 +5,7 @@ from flask import request, current_app, g
 from itertools import groupby
 import math, os, datetime, re
 
-from helpers import sortby, url_validator
+from helpers import sortedby, url_validator, get_url_params, add_url_params
 
 ERROR_EXCESSIVE = "Excessive"
 _CONFIG = {}
@@ -100,7 +100,7 @@ def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
         sort_keys = sort_keys + [key for key in sort_by 
                                  if isinstance(key, (str, unicode))]
     
-    return sortby(raw_pages, sort_keys, desc)
+    return sortedby(raw_pages, sort_keys, desc)
 
 
 def straw(raw_list, value, key = 'id'):
@@ -201,28 +201,11 @@ def saltshaker(raw_salts, conditions, limit = None,
 
 def glue(args = None, url = None):
     """return a url with added args.
-    relative_path_args = glue(args)
+    relative_path_args = glue(\{"key": "value"\})
     """
-    argments = {k:v for k,v in request.args.items()}
     if not url:
-        try:
-            _path = g.request_path or request.path
-        except:
-            _path = request.path
-        
-        url = os.path.join(g.curr_base_url, _path.lstrip('/'))
-    if isinstance(args, dict):
-        argments.update(args)
-
-    conn_symbol = "?"
-    if conn_symbol in url:
-        conn_symbol = "&"
-    
-    new_args = "&".join(['%s=%s' % (key, value) 
-                    for (key, value) in argments.items()])
-
-    url="{}{}{}".format(url, conn_symbol, new_args)
-    return url
+        url = request.url
+    return add_url_params(url, args)
 
 
 def stapler(raw_pages, paged = 1, perpage = 12):
@@ -274,7 +257,7 @@ def barcode(raw_pages, field = "category", sort = True, desc = True):
         bars.append({"key":k, "count": v})
     
     if sort:
-        bars = sortby(bars, "count", desc)
+        bars = sortedby(bars, "count", desc)
     
     return bars
 

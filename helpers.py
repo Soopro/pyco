@@ -1,6 +1,6 @@
 #coding=utf-8
 from __future__ import absolute_import
-import os, re, gettext, json
+import os, re, gettext, json, urllib, urlparse, time
 from flask import make_response
 
 
@@ -70,7 +70,7 @@ def helper_process_url(url, base_url):
 
 
 from functools import cmp_to_key
-def sortby(source, sort_keys, reverse = False):
+def sortedby(source, sort_keys, reverse = False):
     keys = {}
     
     def process_key(key):
@@ -82,11 +82,11 @@ def sortby(source, sort_keys, reverse = False):
             revs = 1
         keys.update({key: revs})
          
-    if isinstance(sort_keys, (str, unicode)):
+    if isinstance(sort_keys, basestring):
         process_key(sort_keys)
     elif isinstance(sort_keys, list):
         for key in sort_keys:
-            if not isinstance(key, (str, unicode)):
+            if not isinstance(key, basestring):
                 continue
             process_key(key)
 
@@ -99,6 +99,13 @@ def sortby(source, sort_keys, reverse = False):
         return 0
 
     return sorted(source, key = cmp_to_key(compare), reverse = reverse)
+    
+
+def parse_int(num):
+    try:
+        return int(float(num))
+    except:
+        return 0
     
 
 from werkzeug.datastructures import ImmutableDict
@@ -126,13 +133,45 @@ def helper_make_dotted_dict(obj):
         
 
 def url_validator(val):
-    if not val:
+    if not isinstance(val, basestring):
         return False
     try:
-        if re.match("^[\w]+:", val):
+        # if re.match("^(?:http|ftp)s?://", val):
+        if re.match(r"^\w+:", val):
             return True
         else:
             return False
     except:
         return False
-        
+
+
+def now(int_output=True):
+    if int_output:
+        return int(time.time())
+    else:
+        return time.time()
+
+
+def get_url_params(url, unique = True):
+    url_parts = list(urlparse.urlparse(url))
+    params = urlparse.parse_qsl(url_parts[4])
+    if unique:
+        params = dict(params)
+    return params
+
+
+def add_url_params(url, new_params, concat = True, unique = True):
+    if isinstance(new_params, dict):
+        new_params =[(k,v) for k,v in new_params.iteritems()]
+
+    url_parts = list(urlparse.urlparse(url))
+    params = urlparse.parse_qsl(url_parts[4])
+    
+    params = new_params if not concat else params + new_params
+
+    if unique:
+        params = dict(params)
+
+    url_parts[4] = urllib.urlencode(params)
+
+    return urlparse.urlunparse(url_parts)
