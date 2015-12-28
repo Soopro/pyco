@@ -34,17 +34,19 @@ def before_render(var, template):
     return
 
 
-#custom filters
+# filters
 def filter_contenttype(raw_pages, ctype = None, limit = None, sort_by = None):
     if not isinstance(raw_pages, (list, dict)):
         return raw_pages
-    return saltshaker(raw_pages, [{"type": ctype}], 
+    result = saltshaker(raw_pages, [{"type": ctype}], 
                                  limit = limit, sort_by = sort_by)
-                      
+    return result
+
+
 def filter_thumbnail(pic_url):
-    if not isinstance(pic_url, (str, unicode)):
+    if not isinstance(pic_url, basestring):
         return pic_url
-    
+
     if g.static_host not in pic_url:
         return pic_url
     
@@ -58,8 +60,8 @@ def filter_thumbnail(pic_url):
     return new_pic_url
 
 
-def filter_url(url, remove_args=False):
-    if not isinstance(url,(str, unicode)):
+def filter_url(url, remove_args = False):
+    if not isinstance(url, basestring):
         return url
     if remove_args:
         url = url.split("?")[0]
@@ -68,11 +70,11 @@ def filter_url(url, remove_args=False):
     elif url.startswith('/'):
         return os.path.join(g.curr_base_url, url.strip('/'))
     else:
-        url.rstrip('/')
+        return url.rstrip('/')
 
 
 def filter_path(url, remove_args = True):
-    if not isinstance(url, (str, unicode)):
+    if not isinstance(url, basestring):
         return url
     if remove_args:
         url = url.split("?")[0]
@@ -83,8 +85,7 @@ def filter_path(url, remove_args = True):
     return path.strip('/')
 
 
-
-#custom functions
+# helpers
 def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", desc=True, priority=True)
@@ -94,11 +95,11 @@ def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
     if priority:
         sort_keys = ['-priority'] if desc else ['priority']
         
-    if isinstance(sort_by, (str, unicode)):
+    if isinstance(sort_by, basestring):
         sort_keys.append(sort_by)
     elif isinstance(sort_by, list):
         sort_keys = sort_keys + [key for key in sort_by 
-                                 if isinstance(key, (str, unicode))]
+                                 if isinstance(key, basestring)]
     
     return sortedby(raw_pages, sort_keys, desc)
 
@@ -107,7 +108,7 @@ def straw(raw_list, value, key = 'id'):
     """return a item by key/value form a list.
     next_page = straw(pages, next_id, 'id')
     """
-    if not isinstance(key, (str, unicode)):
+    if not isinstance(key, basestring):
         key = 'id'
     try:
         result = [item for item in raw_list if item.get(key) == value][0]
@@ -144,13 +145,23 @@ def saltshaker(raw_salts, conditions, limit = None,
         salts = raw_salts
     
     
-    def match_cond(cond_value, target_value, opposite=False):
-        if cond_value == None:
-            return True
+    def _match_cond(cond_value, cond_key, target, 
+                                opposite = False, force = False):
+        if cond_value == '' and not force:
+            return cond_key in target != opposite
+        elif cond_value is None and not force:
+            # if cond_value is None will reverse the opposite,
+            # then for the macthed opposite must reverse again. so...
+            # alaso supported if the target value really is None.
+            return cond_key in target == opposite
+        elif cond_key not in target:
+            return False
         
+        matched = False
+        target_value = target.get(cond_key)
         if isinstance(cond_value, list):
             for cv in cond_value:
-                matched = match_cond(cv, target_value)
+                matched = _match_cond(cv, target_value, force = True)
                 if matched:
                     break
         elif isinstance(cond_value, bool):
@@ -162,35 +173,39 @@ def saltshaker(raw_salts, conditions, limit = None,
                 matched = cond_value == target_value
 
         return matched != opposite
-        
-        
+
 
     for cond in conditions:
         opposite = False
+        force = False
+        cond_key = None
+        cond_value = ''
         if isinstance(cond, (str, unicode)):
             cond_key = cond.lower()
-            cond_value = None
         elif isinstance(cond, dict):
             opposite = bool(cond.pop('not', False))
-            
+            force = bool(cond.pop('force', False))
             if cond:
                 cond_key = cond.keys()[0]
                 cond_value = cond[cond_key]
             else:
                 continue
-            
+
+        if cond_key is None:
+            continue
+
         if intersection and results:
-            results = [i for i in results if cond_key in i
-                       and match_cond(cond_value, i.get(cond_key), opposite)]
+            results = [i for i in results 
+                      if _match_cond(cond_value, cond_key, i, opposite, force)]
         else:
             for i in salts:
-                if cond_key in i and i not in results \
-                and match_cond(cond_value, i.get(cond_key), opposite):
+                if i not in results \
+                and _match_cond(cond_value, cond_key, i, opposite, force):
                     results.append(i)
 
     # sort by
     if sort_by and hasattr(rope, '__call__'):
-        results = rope(results, sort_by, True)
+        results = rope(results, sort_by)
     
     # limit
     if limit > 0:
@@ -221,7 +236,7 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     start = (paged-1)*perpage
     end = paged*perpage
     result_pages = matched_pages[start:end]
-
+    
     return {
         "pages": result_pages,
         "max": max_pages,
@@ -246,7 +261,7 @@ def barcode(raw_pages, field = "category", sort = True, desc = True):
         if isinstance(term, (list, dict)):
             obj = term if isinstance(term, dict) else xrange(len(term))
             for i in obj:
-                if not isinstance(term[i], (str, unicode)):
+                if not isinstance(term[i], basestring):
                     continue
                 count(term[i])
         else:
@@ -278,7 +293,7 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
     }
     
     def parse_datetime(date):
-        if isinstance(date, (str, unicode)):
+        if isinstance(date, basestring):
             date = datetime.datetime.strptime(date, time_format)
         elif isinstance(date, int):
             date = datetime.datetime.fromtimestamp(date)
@@ -308,50 +323,7 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
         ret.append((date, [x for x in group]))
 
     return ret
-    
 
-# def gutter(raw_pages, structures):
-#     """return a list of grouped pages by structures.
-#     bookpages = gutter(pages, menu.gutter.nodes)
-#     tip: the second param is list contain structure, must be a 2 level menu.
-#     etc., 'chapter' host 'pages', use 'page.id' to relate with source pages.
-#     """
-#
-#     if not isinstance(structures, list) or not isinstance(raw_pages, list):
-#         return ERROR_EXCESSIVE
-#
-#     def _find_source(ref, source):
-#         try:
-#             for f in source:
-#                 if f.get('id') and f.get('id') == ref.get('id'):
-#                     return f
-#             return None
-#         except:
-#             return None
-#
-#     results = []
-#     for struct in structures:
-#         group = {
-#             'alias': struct.get('alias'),
-#             'title': struct.get('title'),
-#             'meta': struct.get('meta'),
-#             'pages': struct.get('nodes'),
-#         }
-#         pages = group['pages']
-#         badlist = []
-#         for i, p in enumerate(pages):
-#             page = _find_source(p, raw_pages)
-#             if not p or not page:
-#                 badlist.append(i)
-#                 continue
-#             p.update(page)
-#
-#         for idx in reversed(badlist):
-#             pages.pop(idx)
-#
-#         results.append(group)
-#
-#     return results
 
 def gutter(pid, structures):
     """return a dict of next/prev page by structures.
