@@ -11,7 +11,8 @@ from types import ModuleType
 from datetime import datetime
 
 from helpers import (url_validator,
-                     sortedby)
+                     sortedby,
+                     parse_args)
 
 
 
@@ -24,9 +25,7 @@ class BaseView(MethodView):
         self.type = None
         self.max_mode = True
         self.view_ctx = dict()
-        # os.chdir(BASE_DIR)
-        # live reload will fail if chdir.
-        return
+
     
     def load_metas(self):
         config = self.config
@@ -369,23 +368,21 @@ class BaseView(MethodView):
         
         if not escape_content:
             data["content"] = content
-        data["creation"] = os.path.getmtime(file_path)
-        data["updated"] = os.path.getctime(file_path)
-        print data["updated"]
+        data["creation"] = int(os.path.getmtime(file_path))
+        data["updated"] = int(os.path.getctime(file_path))
         return data
-    
+
+
     # context
-    def init_context(self):
+    def init_context(self, include_request = True):
         # env context
         config = self.config
-        self.view_ctx["app_id"] = "APP_ID_PLACE_HOLDER"
+        self.view_ctx["app_id"] = "pyco_app"
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
-        self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
-        self.view_ctx["request"] = request
         self.view_ctx["gfw"] = config.get("GFW", False)
         self.view_ctx["sa"] = {
             'app':{
@@ -401,6 +398,10 @@ class BaseView(MethodView):
                 'ip': 100
             }
         }
+        if include_request:
+            self.view_ctx["args"] = parse_args()
+            self.view_ctx["request"] = request
+
         return
     
     #hook

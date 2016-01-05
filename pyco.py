@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 from flask import Flask, current_app, request, abort, g, make_response
+from flask.json import JSONEncoder
 
 from jinja2 import FileSystemLoader
 
@@ -26,7 +27,7 @@ __version__ = '.'.join(__version_info__)
 parser = argparse.ArgumentParser(
                 description='Options of starting Pyco server.')
 
-parser.add_argument('--rest', 
+parser.add_argument('--webapp', 
                     dest='restful_mode',
                     action='store_const',
                     const=True,
@@ -43,7 +44,6 @@ load_config(app)
 # make importable for plugin folder
 sys.path.insert(0, os.path.join(app.config.get("BASE_DIR"),
                                 app.config.get("PLUGIN_DIR")))
-
 
 # init app
 app.debug = app.config.get("DEBUG", True)
@@ -65,29 +65,41 @@ app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
 
 # routes
-app.add_url_rule(app.static_url_path + '/<path:filename>',
-    view_func=app.send_static_file, endpoint='static')
-
 app.add_url_rule("/", defaults={"_": ""},
     view_func=ContentView.as_view("index"))
 
 app.add_url_rule("/<path:_>", 
     view_func=ContentView.as_view("content"))
-    
+
+
+app.add_url_rule(app.static_url_path + '/<path:filename>',
+    view_func=app.send_static_file, endpoint='static')
+
 app.add_url_rule("/{}/<path:filepath>".format(app.config.get("UPLOADS_DIR")),
     view_func=UploadsView.as_view("uploads"))
 
-app.add_url_rule("/rest/context", view_func=RestMetaView.as_view("context"))
-app.add_url_rule("/rest/query", view_func=RestContentView.as_view("query"))
+
+if app.RESTful:
+    app.json_encoder = JSONEncoder
+
+    app.add_url_rule("/restapi/context",
+        view_func=RestMetaView.as_view("context"))
+
+    app.add_url_rule("/restapi/query",
+        view_func=RestContentView.as_view("query"))
 
 
 
 @app.before_request
 def before_request():
+    if request.method == "OPTIONS":
+        resp = current_app.make_default_options_response()
+        return resp
+        
     load_config(current_app)
     if request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
         abort(404)
-    
+
     base_url = current_app.config.get("BASE_URL")
     base_path = current_app.config.get("BASE_PATH")
     uploads_dir = current_app.config.get("UPLOADS_DIR")

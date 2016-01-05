@@ -1,16 +1,17 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request, abort, render_template, redirect, g
+from flask import current_app, request, abort, render_template, redirect
 import os
 
 from helpers import (get_param,
                      make_json_response,
-                     helper_make_dotted_dict,
-                     helper_process_url)
+                     make_content_response,
+                     sortedby)
 
 from .base import BaseView
 
+      
 
 class RestMetaView(BaseView):
     def get(self):
@@ -20,17 +21,13 @@ class RestMetaView(BaseView):
         is_not_found = False
         run_hook = self.run_hook
         
-        #for pass intor hook
-        file = {"path": None}
-        file_content = {"content": None}
-        
         # load
         self.load_metas()
         self.load_plugins(config.get("PLUGINS"))
         run_hook("plugins_loaded")
 
         current_app.debug = config.get("DEBUG")
-        self.init_context()
+        self.init_context(False)
 
         output = self.view_ctx
 
@@ -38,7 +35,7 @@ class RestMetaView(BaseView):
 
 
 class RestContentView(BaseView):
-    def _match_cond(cond_value, cond_key, target, 
+    def _match_cond(self, cond_value, cond_key, target, 
                                 opposite = False, force = False):
         if cond_value == '' and not force:
             return cond_key in target != opposite
@@ -68,6 +65,8 @@ class RestContentView(BaseView):
         return matched != opposite
 
     def _query(self, results, conditions):
+        SHORT_ATTR_KEY = self.config.get('SHORT_ATTR_KEY')
+
         for cond in conditions[:10]: # max fields key is 10
             opposite = False
             force = False
@@ -88,21 +87,25 @@ class RestContentView(BaseView):
             if cond_key is None:
                 continue
 
-            cond_key = self.SHORT_FIELD_KEY.get(cond_key, cond_key)
+            cond_key = SHORT_ATTR_KEY.get(cond_key, cond_key)
             
-            results = [i for i in results 
-                      if _match_cond(cond_value, cond_key, i, opposite, force)]
-                      
+            results = [i for i in results if self._match_cond(cond_value,
+                                                              cond_key,
+                                                              i,
+                                                              opposite,
+                                                              force)]
         return results
             
     
     def post(self):
         param_fields = get_param('fields', False, [])
         param_attrs = get_param('metas', False, [])
-        param_length = get_param('length' False)
+        param_length = get_param('length', False)
         param_sortby = get_param('sortby', False)
         param_desc = get_param('desc', False, True)
         param_priority = get_param('priority', False, True)
+        
+        conditions = param_fields + param_attrs
         
         # init
         config = self.config
@@ -135,38 +138,34 @@ class RestContentView(BaseView):
             param_length = theme_meta_options.get('perpage', 12)
         
         
-        # content
-        pages = self.get_pages()
-        self.view_ctx["pages"] = pages
+        # contents
+        self.view_ctx["pages"] = self.get_pages()
 
         run_hook("get_pages",
                  pages=self.view_ctx["pages"],
                  current_page={})
-        
-        results = self.view_ctx["pages"]
-        
-        # select pages
-        
+
+        results = self._query(self.view_ctx["pages"], conditions)
         
         # sortedby
         sort_keys = []
         if param_priority:
-            sort_keys = ['-priority'] if desc else ['priority']
+            sort_keys = ['-priority'] if param_desc else ['priority']
         
         if isinstance(param_sortby, basestring):
             sort_keys.append(param_sortby)
         elif isinstance(param_sortby, list):
             sort_keys = sort_keys + [SHORT_ATTR_KEY.get(key, key)
-                                     for key in sort_by 
+                                     for key in param_sortby
                                      if isinstance(key, basestring)]
     
-        return sortedby(results, sort_keys, param_desc)
+        results = sortedby(results, sort_keys, param_desc)
         
         
         # length
-        if param_legnth > 0:
-            results = results[0:param_legnth]
+        if param_length > 0:
+            results = results[0:param_length]
         
-        output = pages
-        
+        output = results
+
         return make_json_response(output, status_code)

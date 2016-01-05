@@ -29,7 +29,7 @@ class ContentView(BaseView):
         run_hook("plugins_loaded")
         
         current_app.debug = config.get("DEBUG")
-        self.init_context()   
+        self.init_context()
         
         run_hook("config_loaded", config=self.config)
         
@@ -112,14 +112,15 @@ class ContentView(BaseView):
         self.view_ctx["content"] = page_content['content']
         
         # menu
-        self.view_ctx["menu"] = self.get_menus()
+        menu = self.get_menus() if not current_app.RESTful else {}
+        self.view_ctx["menu"] = menu
         
         # taxonomy
-        self.view_ctx["taxonomy"] = self.get_taxonomies()
-        self.view_ctx["tax"] = self.view_ctx["taxonomy"]
+        taoxnomy = self.get_taxonomies() if not current_app.RESTful else {}
+        self.view_ctx["tax"] = self.view_ctx["taxonomy"] = taxonomy
         
         # content
-        pages = self.get_pages()
+        pages = self.get_pages() if not current_app.RESTful else []
         self.view_ctx["pages"] = pages
         
         run_hook("get_pages",
