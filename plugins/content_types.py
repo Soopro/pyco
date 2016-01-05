@@ -14,6 +14,9 @@ _current_content_type = ''
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
+    config['SHORT_ATTR_KEY'].update({
+        'type': 'content_type'
+    })
     return
 
             

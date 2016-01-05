@@ -48,6 +48,7 @@ DEFAULT_404_ALIAS = "error_404"
 
 INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
 
+SHORT_ATTR_KEY = {}
                         
 IGNORE_FILES = []
 
@@ -59,6 +60,8 @@ USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = ['gfm']
 
 GFW = True
+
+
 
 # plugins
 PLUGINS = ["draft",

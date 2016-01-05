@@ -16,6 +16,7 @@ from helpers import (url_validator,
 
 
 class BaseView(MethodView):
+    
     def __init__(self):
         super(BaseView, self).__init__()
         self.plugins = []
@@ -290,7 +291,7 @@ class BaseView(MethodView):
         content_ext = config.get('CONTENT_FILE_EXT')
         charset = config.get('CHARSET')
         files = self.get_files(content_dir, content_ext)
-        invisible_page_list = self.config.get('INVISIBLE_PAGE_LIST')
+        invisible_page_list = config.get('INVISIBLE_PAGE_LIST')
         
         page_data_list = []
         for f in files:
@@ -368,6 +369,9 @@ class BaseView(MethodView):
         
         if not escape_content:
             data["content"] = content
+        data["creation"] = os.path.getmtime(file_path)
+        data["updated"] = os.path.getctime(file_path)
+        print data["updated"]
         return data
     
     # context

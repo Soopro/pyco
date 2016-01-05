@@ -38,6 +38,64 @@ class RestMetaView(BaseView):
 
 
 class RestContentView(BaseView):
+    def _match_cond(cond_value, cond_key, target, 
+                                opposite = False, force = False):
+        if cond_value == '' and not force:
+            return cond_key in target != opposite
+        elif cond_value is None and not force:
+            # if cond_value is None will reverse the opposite,
+            # then for the macthed opposite must reverse again. so...
+            # alaso supported if the target value really is None.
+            return cond_key in target == opposite
+        elif cond_key not in target:
+            return False
+
+        matched = False
+        target_value = target.get(cond_key)
+        if isinstance(cond_value, list):
+            for cv in cond_value:
+                matched = _match_cond(cv, target_value, force = True)
+                if matched:
+                    break
+        elif isinstance(cond_value, bool):
+            matched = cond_value == bool(target_value)
+        else:
+            if isinstance(target_value, list):
+                matched = cond_value in target_value
+            else:
+                matched = cond_value == target_value
+
+        return matched != opposite
+
+    def _query(self, results, conditions):
+        for cond in conditions[:10]: # max fields key is 10
+            opposite = False
+            force = False
+            cond_key = None
+            cond_value = ''
+
+            if isinstance(cond, basestring):
+                cond_key = cond.lower()
+            elif isinstance(cond, dict):
+                opposite = bool(cond.pop('not', False))
+                force = bool(cond.pop('force', False))
+                if cond:
+                    cond_key = cond.keys()[0]
+                    cond_value = cond[cond_key]
+                else:
+                    continue
+            
+            if cond_key is None:
+                continue
+
+            cond_key = self.SHORT_FIELD_KEY.get(cond_key, cond_key)
+            
+            results = [i for i in results 
+                      if _match_cond(cond_value, cond_key, i, opposite, force)]
+                      
+        return results
+            
+    
     def post(self):
         param_fields = get_param('fields', False, [])
         param_attrs = get_param('metas', False, [])
@@ -61,6 +119,8 @@ class RestContentView(BaseView):
         self.init_context()
 
         run_hook("config_loaded", config=self.config)
+        
+        SHORT_ATTR_KEY = config.get('SHORT_ATTR_KEY')
 
         theme_meta_options = self.view_ctx["theme_meta"].get('options', {})
 
@@ -85,6 +145,8 @@ class RestContentView(BaseView):
         
         results = self.view_ctx["pages"]
         
+        # select pages
+        
         
         # sortedby
         sort_keys = []
@@ -94,7 +156,8 @@ class RestContentView(BaseView):
         if isinstance(param_sortby, basestring):
             sort_keys.append(param_sortby)
         elif isinstance(param_sortby, list):
-            sort_keys = sort_keys + [key for key in sort_by 
+            sort_keys = sort_keys + [SHORT_ATTR_KEY.get(key, key)
+                                     for key in sort_by 
                                      if isinstance(key, basestring)]
     
         return sortedby(results, sort_keys, param_desc)
