@@ -1,0 +1,14 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{site_meta.description | striptags}}">
+  <meta name="author" content="{{site_meta.author | striptags}}">
+  <meta name="robots" content="{{meta.robots or 'index, follow'}}">
+  <title>
+    {{ site_meta.title | striptags }}
+    {% if meta.title %} | {% endif %}
+    {{ meta.title | striptags}}
+  </title>
+  {{sa.code}}
+</head>

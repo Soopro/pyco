@@ -1,7 +1,7 @@
 #coding=utf-8
 from __future__ import absolute_import
 import os, re, gettext, json, urllib, urlparse, time
-from flask import make_response
+from flask import make_response, request
 
 
 def load_config(app, config_name="config.py"):
@@ -47,6 +47,11 @@ def load_config(app, config_name="config.py"):
     
     return
 
+def make_json_response(output, status_code):
+    headers = dict()
+    headers["Content-Type"] = "application/json"
+    resp = make_response(json.dumps(output), status_code, headers)
+    return resp
 
 def make_content_response(output, status_code, etag=None):
     response = make_response(output, status_code)
@@ -56,6 +61,30 @@ def make_content_response(output, status_code, etag=None):
         response.set_etag(etag)
     return response
     
+
+def get_param(key, required = False, default = None):
+    source = request.json
+    value = source.get(key)
+
+    if default is not None:
+        value = default
+    elif required:
+        raise Exception('Param key error.')
+
+    return value
+
+def parse_args():
+    new = dict()
+    args = request.args
+    for arg in args:
+        if arg in new:
+            if not isinstance(new[arg], list):
+                new[arg] = [new[arg]]
+            new[arg].append(args.get(arg))
+        else:    
+            new[arg] = args.get(arg)
+    return new
+
 
 def helper_process_url(url, base_url):
     if not url or not isinstance(url,(str,unicode)):

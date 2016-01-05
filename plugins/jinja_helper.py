@@ -144,7 +144,7 @@ def saltshaker(raw_salts, conditions, limit = None,
     else:
         salts = raw_salts
     
-    
+
     def _match_cond(cond_value, cond_key, target, 
                                 opposite = False, force = False):
         if cond_value == '' and not force:
