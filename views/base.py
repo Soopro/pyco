@@ -1,16 +1,17 @@
 #coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app
+from flask import current_app, request
 from flask.views import MethodView
 
-import os, re, markdown, json,yaml
+import os, re, markdown, json, yaml
 
 from hashlib import sha1
 from types import ModuleType
 from datetime import datetime
 
-from helpers import url_validator, sortedby
+from helpers import (url_validator,
+                     sortedby)
 
 
 
@@ -379,6 +380,9 @@ class BaseView(MethodView):
         self.view_ctx["libs_url"] = self.gen_libs_url()
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
+        self.view_ctx["args"] = {k: v for k, v in request.args.iteritems()}
+        self.view_ctx["request"] = request
+        self.view_ctx["gfw"] = config.get("GFW", False)
         self.view_ctx["sa"] = {
             'app':{
                 'pv': 500,

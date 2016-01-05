@@ -29,6 +29,8 @@ def get_page_data(data, page_meta):
 
 
 def get_pages(pages, current_page):
+    if not current_page:
+        return
     for page in pages:
         if page["alias"] == current_page["alias"] \
         and page["content_type"] == current_page["content_type"]:

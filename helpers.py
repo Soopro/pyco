@@ -47,6 +47,11 @@ def load_config(app, config_name="config.py"):
     
     return
 
+def make_json_response(output, status_code):
+    headers = dict()
+    headers["Content-Type"] = "application/json"
+    resp = make_response(json.dumps(output), status_code, headers)
+    return resp
 
 def make_content_response(output, status_code, etag=None):
     response = make_response(output, status_code)
@@ -56,6 +61,18 @@ def make_content_response(output, status_code, etag=None):
         response.set_etag(etag)
     return response
     
+
+def get_param(key, required = False, default = None):
+    source = request.json
+    value = source.get(key)
+
+    if default is not None:
+        value = default
+    elif required:
+        raise Exception('Param key error.')
+
+    return value
+
 
 def helper_process_url(url, base_url):
     if not url or not isinstance(url,(str,unicode)):
