@@ -10,11 +10,11 @@ def config_loaded(config):
     return
 
 def single_page_meta(page_meta, redirect_to):
-    page_meta['status'] = int(page_meta.get("status",1))
+    page_meta['status'] = int(page_meta.get("status", 1))
     return
 
 def get_page_data(data, page_meta):
-    data["status"] = int(page_meta.get("status",1))
+    data["status"] = int(page_meta.get("status", 1))
     return
 
 

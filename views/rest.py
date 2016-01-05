@@ -41,7 +41,7 @@ class RestContentView(BaseView):
     def post(self):
         param_fields = get_param('fields', False, [])
         param_attrs = get_param('metas', False, [])
-        param_length = get_param('length' False, 0)
+        param_length = get_param('length' False)
         param_sortby = get_param('sortby', False)
         param_desc = get_param('desc', False, True)
         param_priority = get_param('priority', False, True)
@@ -61,9 +61,19 @@ class RestContentView(BaseView):
         self.init_context()
 
         run_hook("config_loaded", config=self.config)
+
+        theme_meta_options = self.view_ctx["theme_meta"].get('options', {})
+
+        # set default params
+        if not param_sortby:
+            param_sortby = theme_meta_options.get('sortby', 'updated')
+            if isinstance(param_sortby, basestring):
+                param_sortby = [param_sortby]
+            elif not isinstance(param_sortby, list):
+                param_sortby = None
+        if not param_length:
+            param_length = theme_meta_options.get('perpage', 12)
         
-        base_url = config.get("BASE_URL")
-        charset = config.get('CHARSET')
         
         # content
         pages = self.get_pages()
@@ -75,15 +85,15 @@ class RestContentView(BaseView):
         
         results = self.view_ctx["pages"]
         
+        
         # sortedby
         sort_keys = []
-
         if param_priority:
             sort_keys = ['-priority'] if desc else ['priority']
         
-        if isinstance(sort_by, basestring):
-            sort_keys.append(sort_by)
-        elif isinstance(sort_by, list):
+        if isinstance(param_sortby, basestring):
+            sort_keys.append(param_sortby)
+        elif isinstance(param_sortby, list):
             sort_keys = sort_keys + [key for key in sort_by 
                                      if isinstance(key, basestring)]
     
