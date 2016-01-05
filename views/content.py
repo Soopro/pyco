@@ -116,7 +116,7 @@ class ContentView(BaseView):
         self.view_ctx["menu"] = menu
         
         # taxonomy
-        taoxnomy = self.get_taxonomies() if not current_app.RESTful else {}
+        taxonomy = self.get_taxonomies() if not current_app.RESTful else {}
         self.view_ctx["tax"] = self.view_ctx["taxonomy"] = taxonomy
         
         # content
