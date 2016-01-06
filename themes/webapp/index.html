@@ -27,12 +27,12 @@
 <!-- Footer -->
 <script src="{{theme_url}}/scripts/ajax.js"></script>
 <script>
-  var dummyHanlder = function(){    
-    var context = {
+  var dummyHanlder = function(){
+    var metas = {
       type: 'GET',
-      url: 'http://0.0.0.0:5500/restapi/context'
+      url: 'http://0.0.0.0:5500/restapi/metas'
     }
-    ajax(context).then(function(meta){
+    ajax(metas).then(function(meta){
       console.log(meta);
       metaElement = document.querySelector('#metas');
       for (var k in meta){
@@ -50,11 +50,11 @@
       console.error(rejected);
     });
     
-    var query = {
+    var contents = {
       type: 'POST',
-      url: 'http://0.0.0.0:5500/restapi/query'
+      url: 'http://0.0.0.0:5500/restapi/contents'
     }
-    ajax(query).then(function(result){
+    ajax(contents).then(function(result){
       console.log(result);
       contentElement = document.querySelector('#contents');
       for (var i=0; i<result.length; i++){

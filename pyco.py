@@ -82,11 +82,11 @@ app.add_url_rule("/{}/<path:filepath>".format(app.config.get("UPLOADS_DIR")),
 if app.RESTful:
     app.json_encoder = JSONEncoder
 
-    app.add_url_rule("/restapi/context",
-        view_func=RestMetaView.as_view("context"))
+    app.add_url_rule("/restapi/metas",
+        view_func=RestMetaView.as_view("metas"))
 
-    app.add_url_rule("/restapi/query",
-        view_func=RestContentView.as_view("query"))
+    app.add_url_rule("/restapi/contents",
+        view_func=RestContentView.as_view("contents"))
 
 
 
