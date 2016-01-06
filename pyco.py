@@ -20,7 +20,7 @@ from helpers import (load_config,
                      make_content_response)
 
 
-__version_info__ = ('1', '10', '0')
+__version_info__ = ('1', '10', '1')
 __version__ = '.'.join(__version_info__)
 
 # parse args

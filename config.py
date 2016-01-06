@@ -8,7 +8,7 @@ HOST = '0.0.0.0'
 PORT = 5500
 EDITOR_PORT = 5550
 
-THEME_NAME = 'webapp'
+THEME_NAME = 'default'
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 

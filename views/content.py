@@ -42,8 +42,11 @@ class ContentView(BaseView):
                                                config.get("BASE_URL"))
         if site_redirect_url and request.url != site_redirect_url:
             return redirect(site_redirect_url, code=301)
-
-
+        
+        # redirect to index if it is restful app
+        if current_app.RESTful and request.path.rstrip('/') != '':
+            return redirect(base_url, code=301)
+        
         file["path"] = self.get_file_path(request.path)
         # hook before load content
         run_hook("before_load_content", file=file)
