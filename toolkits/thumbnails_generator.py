@@ -2,9 +2,9 @@ import os
 from PIL import Image
 
 UPLOADS_DIR = 'uploads'
-THUMBNAILS_DIR = 'thumbnails'
-THUMBNAILS_H = 360
-THUMBNAILS_W = 360
+THUMBNAIL_DIR = 'thumbnail'
+THUMBNAIL_H = 480
+THUMBNAIL_W = 480
 
 
 def generate_thumbnail(filename):
@@ -24,12 +24,12 @@ def generate_thumbnail(filename):
             im = Image.open(filename)
             w, h = im.size
             if w < h:
-                im.thumbnail((w*THUMBNAILS_H/h, THUMBNAILS_H), Image.ANTIALIAS)
+                im.thumbnail((w*THUMBNAIL_H/h, THUMBNAIL_H), Image.ANTIALIAS)
             else:
-                im.thumbnail((THUMBNAILS_W, h*THUMBNAILS_W/w), Image.ANTIALIAS)
-            if not os.path.exists(THUMBNAILS_DIR):
-                os.makedirs(THUMBNAILS_DIR)
-            im.save(os.path.join(THUMBNAILS_DIR, filename))
+                im.thumbnail((THUMBNAIL_W, h*THUMBNAIL_W/w), Image.ANTIALIAS)
+            if not os.path.exists(THUMBNAIL_DIR):
+                os.makedirs(THUMBNAIL_DIR)
+            im.save(os.path.join(THUMBNAIL_DIR, filename))
         except IOError as e:
             raise e
     else:
@@ -42,6 +42,7 @@ def walkfiles(source):
         if os.path.isfile(f):
             generate_thumbnail(f)
     print "== done =="
+
 if __name__ == '__main__':
     os.chdir(os.path.join('..', UPLOADS_DIR))
     walkfiles('.')

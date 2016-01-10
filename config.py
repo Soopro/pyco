@@ -38,7 +38,6 @@ DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 STATIC_BASE_URL = "/static"
 
 UPLOADS_DIR = "uploads"
-THUMBNAILS_DIR = "thumbnails"
 
 CONTENT_DIR = "content"
 CONTENT_FILE_EXT = ".md"

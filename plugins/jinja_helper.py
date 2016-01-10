@@ -43,7 +43,7 @@ def filter_contenttype(raw_pages, ctype = None, limit = None, sort_by = None):
     return result
 
 
-def filter_thumbnail(pic_url):
+def filter_thumbnail(pic_url, suffix = 'thumbnail'):
     if not isinstance(pic_url, basestring):
         return pic_url
 
@@ -51,7 +51,7 @@ def filter_thumbnail(pic_url):
         return pic_url
     
     uploads_dir = "uploads"
-    thumb_dir = os.path.join(uploads_dir, "thumbnails")
+    thumb_dir = os.path.join(uploads_dir, suffix)
     
     pattern = "/{}/".format(uploads_dir)
     replacement = "/{}/".format(thumb_dir)
