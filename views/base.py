@@ -260,7 +260,7 @@ class BaseView(MethodView):
         return menus
     
     def get_taxonomies(self):
-        taxs = self.config['SITE'].get("taxonomy",{})
+        taxs = self.config['SITE'].get("taxonomies",{})
         tax_dict = {}
         for k,v in taxs.iteritems():
             tax_dict[k] = {
