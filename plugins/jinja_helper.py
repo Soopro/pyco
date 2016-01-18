@@ -56,7 +56,8 @@ def filter_thumbnail(pic_url, suffix = 'thumbnail'):
     pattern = "/{}/".format(uploads_dir)
     replacement = "/{}/".format(thumb_dir)
     new_pic_url = pic_url.replace(pattern, replacement, 1)
-    
+    if not os.path.isfile(new_pic_url):
+        return pic_url
     return new_pic_url
 
 
