@@ -4,6 +4,9 @@ import gettext
 import os
 from flask import current_app
 
+from plugins.i18n import Translator
+
+
 _DEFAULT_LOCALE = 'en'
 _TRANSLATE_REDIRECT = False
 _LOCALE = None
@@ -52,21 +55,15 @@ def before_render(var, template):
         if trans_key == locale.lower() or trans_key == lang.lower():
             trans["active"] = True
     
-    set_current_translation(_LOCALE)
-    
     var["translates"] = trans_list
     var["locale"] = locale
     var["lang"] = lang
+    
+    # set current translates
+    lang_path = os.path.join(current_app.template_folder, _LANGUAGES_FOLDER)
+
+    translator = Translator(locale, lang_path)
+    var['_'] = translator.gettext
+    var['_t'] = translator.t_gettext
+    
     return
-
-
-# custome functions
-def set_current_translation(locale):
-    if locale and isinstance(locale,(str,unicode)):
-        lang_path = os.path.join(current_app.template_folder,
-                                 _LANGUAGES_FOLDER)
-
-        tr = gettext.translation(_TRANS_FILE, lang_path, 
-                                 languages=[locale], fallback=True)
-        
-        current_app.jinja_env.install_gettext_translations(tr, newstyle=True)

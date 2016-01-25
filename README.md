@@ -28,6 +28,14 @@ First you have to enter the pyco folder obviously, then you can run pyco in mult
 
 * `python pyco.py`: Run as develop.
 
+
+If you want develop some Webapp, you need open `RESTful` mode, there is two ways start as RESTful model.
+
+1. Change RESTfull option to `True` in `config.py`.
+
+2. `python pyco.py --webapp`: Run RESTful mode as develop, this will override of config option. 
+
+
 ## Usage
 
 ### Config

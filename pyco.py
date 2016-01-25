@@ -6,7 +6,6 @@ from flask.json import JSONEncoder
 
 from jinja2 import FileSystemLoader
 
-from gettext import gettext, ngettext
 import sys, os, traceback, argparse
 
 from views import (BaseView,
@@ -20,7 +19,7 @@ from helpers import (load_config,
                      make_content_response)
 
 
-__version_info__ = ('1', '10', '5')
+__version_info__ = ('1', '11', '0')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -58,10 +57,10 @@ app.RESTful = args.restful_mode or app.config.get('RESTful')
 # extend jinja
 app.jinja_env.autoescape = False
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
-app.jinja_env.add_extension('jinja2.ext.i18n')
+# app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
-app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
+# app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
 
 # routes

@@ -6,7 +6,7 @@ DEBUG = True
 
 HOST = '0.0.0.0'
 PORT = 5500
-EDITOR_PORT = 5550
+RESTful = False
 
 THEME_NAME = 'default'
 
