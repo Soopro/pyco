@@ -146,7 +146,6 @@ def saltshaker(raw_salts, conditions, limit = None,
     else:
         salts = raw_salts
     
-    
     def _match_cond(cond_value, cond_key, target, 
                                 opposite = False, force = False):
         if cond_value == '' and not force:
@@ -156,6 +155,8 @@ def saltshaker(raw_salts, conditions, limit = None,
             # then for the macthed opposite must reverse again. so...
             # alaso supported if the target value really is None.
             return _deep_in(cond_key, target) == opposite
+        elif isinstance(cond_value, bool) and not force:
+            return _deep_in(cond_key, target) != opposite
         elif not _deep_in(cond_key, target):
             return False
         
@@ -166,14 +167,12 @@ def saltshaker(raw_salts, conditions, limit = None,
                 matched = _match_cond(cv, target_value, force = True)
                 if matched:
                     break
-        elif isinstance(cond_value, bool) and not force:
-            matched = cond_value == bool(target_value)
+        elif isinstance(cond_value, bool):
+            target_bool = isinstance(target_value, bool)
+            matched = cond_value == target_value and target_bool
         else:
             if isinstance(target_value, list):
                 matched = cond_value in target_value
-            elif isinstance(cond_value, bool):
-                target_bool = isinstance(target_value, bool)
-                matched = cond_value == target_value and target_bool
             else:
                 matched = cond_value == target_value
 
