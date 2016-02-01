@@ -166,11 +166,14 @@ def saltshaker(raw_salts, conditions, limit = None,
                 matched = _match_cond(cv, target_value, force = True)
                 if matched:
                     break
-        elif isinstance(cond_value, bool):
+        elif isinstance(cond_value, bool) and not force:
             matched = cond_value == bool(target_value)
         else:
             if isinstance(target_value, list):
                 matched = cond_value in target_value
+            elif isinstance(cond_value, bool):
+                target_bool = isinstance(target_value, bool)
+                matched = cond_value == target_value and target_bool
             else:
                 matched = cond_value == target_value
 
