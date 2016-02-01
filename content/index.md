@@ -3,7 +3,8 @@ Priority: 99
 Status: 1
 Template: index
 Title: A shortcut of online marketing
-Category: inneral
+Taxonomy:
+  category: ['inneral']
 Featured_img:
   src: [%uploads%]/preview.jpg
 Tags:

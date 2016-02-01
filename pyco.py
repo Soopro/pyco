@@ -19,7 +19,7 @@ from helpers import (load_config,
                      make_content_response)
 
 
-__version_info__ = ('1', '11', '0')
+__version_info__ = ('1', '11', '1')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -145,6 +145,7 @@ if __name__ == "__main__":
     
     print "-------------------------------------------------------"
     print "Pyco: {}".format(app.version)
+    print "RESTful:", bool(app.RESTful)
     print "-------------------------------------------------------"
     
     if app.debug:

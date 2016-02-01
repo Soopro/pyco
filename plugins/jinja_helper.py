@@ -112,7 +112,8 @@ def straw(raw_list, value, key = 'id'):
     if not isinstance(key, basestring):
         key = 'id'
     try:
-        result = [item for item in raw_list if item.get(key) == value][0]
+        result = [item for item in raw_list 
+                       if _deep_get(key, item) == value][0]
     except:
         result = None
     return result
@@ -145,21 +146,21 @@ def saltshaker(raw_salts, conditions, limit = None,
     else:
         salts = raw_salts
     
-
+    
     def _match_cond(cond_value, cond_key, target, 
                                 opposite = False, force = False):
         if cond_value == '' and not force:
-            return cond_key in target != opposite
+            return _deep_in(cond_key, target) != opposite
         elif cond_value is None and not force:
             # if cond_value is None will reverse the opposite,
             # then for the macthed opposite must reverse again. so...
             # alaso supported if the target value really is None.
-            return cond_key in target == opposite
-        elif cond_key not in target:
+            return _deep_in(cond_key, target) == opposite
+        elif not _deep_in(cond_key, target):
             return False
         
         matched = False
-        target_value = target.get(cond_key)
+        target_value = _deep_get(cond_key, target)
         if isinstance(cond_value, list):
             for cv in cond_value:
                 matched = _match_cond(cv, target_value, force = True)
@@ -245,7 +246,7 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     }
 
 
-def barcode(raw_pages, field = "category", sort = True, desc = True):
+def barcode(raw_pages, field = "taxonomy.category", sort = True, desc = True):
     """return dict count entries has same value of specified field.
     count = barcode(pages, field="category", sort=True, desc=True)
     """
@@ -258,7 +259,7 @@ def barcode(raw_pages, field = "category", sort = True, desc = True):
                 ret[term] += 1
 
     for page in raw_pages:
-        term = page.get(field)
+        term = _deep_get(field, page)
         if isinstance(term, (list, dict)):
             obj = term if isinstance(term, dict) else xrange(len(term))
             for i in obj:
@@ -362,3 +363,27 @@ def gutter(pid, structures):
         'prev_page': prev_page,
         'next_page': next_page
     }
+
+
+# other helpers
+def _deep_get(key, obj):
+    if not isinstance(obj, dict):
+        return None
+    if '.' not in key:
+        return obj.get(key)
+    else:
+        _key_pairs = key.split('.', 1)
+        _obj = obj.get(_key_pairs[0])
+        _value = _deep_get(_key_pairs[1], _obj)
+        return _value
+        
+def _deep_in(key, obj):
+    if not isinstance(obj, dict):
+        return False
+    if '.' not in key:
+        return key in obj
+    else:
+        _key_pairs = key.split('.', 1)
+        _obj = obj.get(_key_pairs[0])
+        _in = _deep_in(_key_pairs[1], _obj)
+        return _in
