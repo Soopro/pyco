@@ -50,14 +50,18 @@ def filter_thumbnail(pic_url, suffix = 'thumbnail'):
     if g.static_host not in pic_url:
         return pic_url
     
+    filename = pic_url.rsplit('/', 1)[-1]
+    
     uploads_dir = "uploads"
     thumb_dir = os.path.join(uploads_dir, suffix)
+    file_path = os.path.join(thumb_dir, filename)
+    if not os.path.isfile(file_path):
+        return pic_url
     
     pattern = "/{}/".format(uploads_dir)
     replacement = "/{}/".format(thumb_dir)
     new_pic_url = pic_url.replace(pattern, replacement, 1)
-    if not os.path.isfile(new_pic_url):
-        return pic_url
+
     return new_pic_url
 
 
