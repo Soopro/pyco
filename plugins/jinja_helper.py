@@ -65,11 +65,13 @@ def filter_thumbnail(pic_url, suffix = 'thumbnail'):
     return new_pic_url
 
 
-def filter_url(url, remove_args = False):
+def filter_url(url, remove_args=False, remove_hash=False):
     if not isinstance(url, basestring):
         return url
     if remove_args:
         url = url.split("?")[0]
+    if remove_hash:
+        url = url.split("#")[0]
     if not url or url_validator(url):
         return url
     elif url.startswith('/'):
@@ -78,11 +80,13 @@ def filter_url(url, remove_args = False):
         return url.rstrip('/')
 
 
-def filter_path(url, remove_args = True):
+def filter_path(url, remove_args=True, remove_hash=True):
     if not isinstance(url, basestring):
         return url
     if remove_args:
         url = url.split("?")[0]
+    if remove_hash:
+        url = url.split("#")[0]
     try:
         path = url.split(g.curr_base_url)[-1]
     except:
