@@ -123,18 +123,17 @@ class BaseView(MethodView):
         alias = relative_path.split('/')[-1]
         return alias
 
-    def gen_excerpt(self, content, theme_meta):
+    def gen_excerpt(self, content, opts):
         default_excerpt_length = self.config.get('DEFAULT_EXCERPT_LENGTH')
-        excerpt_length = theme_meta.get('excerpt_length',
-                                        default_excerpt_length)
-                                        
+        excerpt_length = opts.get('excerpt_length',
+                                  default_excerpt_length)      
         default_excerpt_ellipsis = self.config.get('DEFAULT_EXCERPT_ELLIPSIS')
-        excerpt_ellipsis = theme_meta.get('excerpt_ellipsis',
-                                          default_excerpt_ellipsis)
+        excerpt_ellipsis = opts.get('excerpt_ellipsis',
+                                    default_excerpt_ellipsis)
                                           
         excerpt = re.sub(r'<[^>]*?>', '', content)
         if excerpt:
-            excerpt = " ".join(excerpt.split())
+            excerpt = u" ".join(excerpt.split())
             excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
         return excerpt
 
@@ -361,8 +360,8 @@ class BaseView(MethodView):
         data["date"] = meta.get("date", u"")
         data["date_formatted"] = self.format_date(meta.get("date", u""))
         content = self.parse_content(content_string)
-        data["excerpt"] = self.gen_excerpt(content,
-                                           self.view_ctx["theme_meta"])
+        opts = self.view_ctx["theme_meta"].get('options', {})
+        data["excerpt"] = self.gen_excerpt(content, opts)
         des = meta.get("description")
         data["description"] = data["excerpt"] if not des else des
         
