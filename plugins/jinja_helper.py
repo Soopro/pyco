@@ -31,6 +31,7 @@ def before_render(var, template):
     var["barcode"] = barcode
     var["timemachine"] = timemachine
     var["gutter"] = gutter
+    var["magnet"] = magnet
     return
 
 
@@ -112,6 +113,25 @@ def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
     
     return sortedby(raw_pages, sort_keys, desc)
 
+
+def magnet(raw_pages, current, limit=1):
+    before_pages = []
+    after_pages = []
+    curr_idx = None
+    for idx, p in enumerate(raw_pages):
+        p_id = p.get('id')
+        if p_id and p_id == current.get('id'):
+            curr_idx = idx
+            break
+    
+    if curr_idx is not None:
+        before_pages = raw_pages[:curr_idx][-limit:]
+        after_pages = raw_pages[curr_idx:][1:][:limit]
+
+    return {
+        "before": before_pages or [None],
+        "after": after_pages or [None]
+    }
 
 def straw(raw_list, value, key = 'id'):
     """return a item by key/value form a list.
