@@ -92,7 +92,8 @@ def filter_path(url, remove_args=True, remove_hash=True):
         path = url.split(g.curr_base_url)[-1]
     except:
         path = url
-    return path.strip('/')
+
+    return "/{}".format(path.strip('/'))
 
 
 # helpers
