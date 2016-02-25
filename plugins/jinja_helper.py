@@ -20,6 +20,7 @@ def plugins_loaded():
     current_app.jinja_env.filters["type"] = filter_contenttype
     current_app.jinja_env.filters["url"] = filter_url
     current_app.jinja_env.filters["path"] = filter_path
+    current_app.jinja_env.filters["s"] = filter_string
     return
 
 def before_render(var, template):
@@ -94,6 +95,20 @@ def filter_path(url, remove_args=True, remove_hash=True):
         path = url
 
     return "/{}".format(path.strip('/'))
+
+
+def filter_string(obj):
+    if isinstance(obj, basestring):
+        return obj
+    elif hasattr(obj, '__call__'):
+        return ''
+    elif obj is None:
+        return ''
+    else:
+        try:
+            return str(obj)
+        except:
+            return ''
 
 
 # helpers
