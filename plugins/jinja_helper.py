@@ -41,30 +41,22 @@ def filter_contenttype(raw_pages, ctype = None, limit = None, sort_by = None):
     if not isinstance(raw_pages, (list, dict)):
         return raw_pages
     result = saltshaker(raw_pages, [{"type": ctype}], 
-                                 limit = limit, sort_by = sort_by)
+                                   limit = limit, sort_by = sort_by)
     return result
 
 
-def filter_thumbnail(pic_url, suffix = 'thumbnail'):
-    if not isinstance(pic_url, basestring):
-        return pic_url
+def filter_thumbnail(pic_url, suffix='thumbnail'):
+    allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
+    try:
+        _ext = os.path.splitext(pic_url)[1][1:].lower()
+    except:
+        _ext = None
+    
+    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
+        pair = '&' if '?' in pic_url else '?'
+        pic_url = "{}{}{}".format(pic_url, pair, suffix)
 
-    if g.static_host not in pic_url:
-        return pic_url
-    
-    filename = pic_url.rsplit('/', 1)[-1]
-    
-    uploads_dir = "uploads"
-    thumb_dir = os.path.join(uploads_dir, suffix)
-    file_path = os.path.join(thumb_dir, filename)
-    if not os.path.isfile(file_path):
-        return pic_url
-    
-    pattern = "/{}/".format(uploads_dir)
-    replacement = "/{}/".format(thumb_dir)
-    new_pic_url = pic_url.replace(pattern, replacement, 1)
-
-    return new_pic_url
+    return pic_url
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -267,7 +259,7 @@ def glue(args = None, url = None):
     relative_path_args = glue(\{"key": "value"\})
     """
     if not url:
-        url = request.url
+        url = g.request_url or request.url
     return add_url_params(url, args)
 
 

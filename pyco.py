@@ -19,7 +19,7 @@ from helpers import (load_config,
                      make_content_response)
 
 
-__version_info__ = ('1', '11', '4')
+__version_info__ = ('1', '11', '5')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -105,9 +105,10 @@ def before_request():
     
     g.curr_base_url = base_url
     g.curr_base_path = base_path
-    g.request_path = request.path.replace(base_path, '', 1)
-    g.static_host = os.path.join(base_url, uploads_dir)
-    g.is_rest = False
+    g.request_path = request.path.replace(base_path, '', 1) or '/'
+    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
+    
+    g.uploads_url = os.path.join(base_url, uploads_dir)
 
     if current_app.debug:
         # change template folder
