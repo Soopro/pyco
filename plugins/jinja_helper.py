@@ -1,19 +1,23 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 from flask import request, current_app, g
 from itertools import groupby
-import math, os, datetime, re
+import math
+import os
+import datetime
 
-from helpers import sortedby, url_validator, get_url_params, add_url_params
+from helpers import sortedby, url_validator, add_url_params
 
 ERROR_EXCESSIVE = "Excessive"
 _CONFIG = {}
+
 
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
     return
+
 
 def plugins_loaded():
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
@@ -22,6 +26,7 @@ def plugins_loaded():
     current_app.jinja_env.filters["path"] = filter_path
     current_app.jinja_env.filters["tostring"] = filter_tostring
     return
+
 
 def before_render(var, template):
     var["saltshaker"] = saltshaker
@@ -37,11 +42,11 @@ def before_render(var, template):
 
 
 # filters
-def filter_contenttype(raw_pages, ctype = None, limit = None, sort_by = None):
+def filter_contenttype(raw_pages, ctype=None, limit=None, sort_by=None):
     if not isinstance(raw_pages, (list, dict)):
         return raw_pages
-    result = saltshaker(raw_pages, [{"type": ctype}], 
-                                   limit = limit, sort_by = sort_by)
+    result = saltshaker(raw_pages, [{"type": ctype}],
+                        limit=limit, sort_by=sort_by)
     return result
 
 
@@ -51,7 +56,7 @@ def filter_thumbnail(pic_url, suffix='thumbnail'):
         _ext = os.path.splitext(pic_url)[1][1:].lower()
     except:
         _ext = None
-    
+
     if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
         pair = '&' if '?' in pic_url else '?'
         pic_url = "{}{}{}".format(pic_url, pair, suffix)
@@ -104,7 +109,7 @@ def filter_tostring(obj):
 
 
 # helpers
-def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
+def rope(raw_pages, sort_by="updated", desc=True, priority=True):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", desc=True, priority=True)
     """
@@ -112,13 +117,13 @@ def rope(raw_pages, sort_by = "updated", desc = True, priority = True):
 
     if priority:
         sort_keys = ['-priority'] if desc else ['priority']
-        
+
     if isinstance(sort_by, basestring):
         sort_keys.append(sort_by)
     elif isinstance(sort_by, list):
-        sort_keys = sort_keys + [key for key in sort_by 
+        sort_keys = sort_keys + [key for key in sort_by
                                  if isinstance(key, basestring)]
-    
+
     return sortedby(raw_pages, sort_keys, desc)
 
 
@@ -131,7 +136,7 @@ def magnet(raw_pages, current, limit=1):
         if p_id and p_id == current.get('id'):
             curr_idx = idx
             break
-    
+
     if curr_idx is not None:
         before_pages = raw_pages[:curr_idx][-limit:]
         after_pages = raw_pages[curr_idx:][1:][:limit]
@@ -141,22 +146,23 @@ def magnet(raw_pages, current, limit=1):
         "after": after_pages or [None]
     }
 
-def straw(raw_list, value, key = 'id'):
+
+def straw(raw_list, value, key='id'):
     """return a item by key/value form a list.
     next_page = straw(pages, next_id, 'id')
     """
     if not isinstance(key, basestring):
         key = 'id'
     try:
-        result = [item for item in raw_list 
-                       if _deep_get(key, item) == value][0]
+        result = [item for item in raw_list
+                  if _deep_get(key, item) == value][0]
     except:
         result = None
     return result
 
 
-def saltshaker(raw_salts, conditions, limit = None, 
-                          intersection = True, sort_by = None):
+def saltshaker(raw_salts, conditions, limit=None,
+               intersection=True, sort_by=None):
     """return a list of results matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
                               limit=12, intersection=True, sort_by='updated')
@@ -166,24 +172,24 @@ def saltshaker(raw_salts, conditions, limit = None,
         limit = int(limit)
     except:
         limit = 0
-    
+
     if not isinstance(raw_salts, (list, dict)):
         return ERROR_EXCESSIVE
 
     if not isinstance(conditions, list):
         conditions = [conditions]
-    
+
     # process if raw salts is dict
     if isinstance(raw_salts, dict):
         salts = []
-        for k,v in raw_salts.iteritems():
+        for k, v in raw_salts.iteritems():
             v['_saltkey'] = k
             salts.append(v)
     else:
         salts = raw_salts
-    
-    def _match_cond(cond_value, cond_key, target, 
-                                opposite = False, force = False):
+
+    def _match_cond(cond_value, cond_key, target,
+                    opposite=False, force=False):
         if cond_value == '' and not force:
             return _deep_in(cond_key, target) != opposite
         elif cond_value is None and not force:
@@ -195,12 +201,12 @@ def saltshaker(raw_salts, conditions, limit = None,
             return _deep_in(cond_key, target) != opposite
         elif not _deep_in(cond_key, target):
             return False
-        
+
         matched = False
         target_value = _deep_get(cond_key, target)
         if isinstance(cond_value, list):
             for cv in cond_value:
-                matched = _match_cond(cv, target_value, force = True)
+                matched = _match_cond(cv, target_value, force=True)
                 if matched:
                     break
         elif isinstance(cond_value, bool):
@@ -213,7 +219,6 @@ def saltshaker(raw_salts, conditions, limit = None,
                 matched = cond_value == target_value
 
         return matched != opposite
-
 
     for cond in conditions:
         opposite = False
@@ -235,18 +240,20 @@ def saltshaker(raw_salts, conditions, limit = None,
             continue
 
         if intersection and results:
-            results = [i for i in results 
-                      if _match_cond(cond_value, cond_key, i, opposite, force)]
+            results = [
+                i for i in results
+                if _match_cond(cond_value, cond_key, i, opposite, force)
+            ]
         else:
             for i in salts:
-                if i not in results \
-                and _match_cond(cond_value, cond_key, i, opposite, force):
+                if i not in results and \
+                        _match_cond(cond_value, cond_key, i, opposite, force):
                     results.append(i)
 
     # sort by
     if sort_by and hasattr(rope, '__call__'):
         results = rope(results, sort_by)
-    
+
     # limit
     if limit > 0:
         results = results[0:limit]
@@ -254,7 +261,7 @@ def saltshaker(raw_salts, conditions, limit = None,
     return results
 
 
-def glue(args = None, url = None):
+def glue(args=None, url=None):
     """return a url with added args.
     relative_path_args = glue(\{"key": "value"\})
     """
@@ -263,20 +270,20 @@ def glue(args = None, url = None):
     return add_url_params(url, args)
 
 
-def stapler(raw_pages, paged = 1, perpage = 12):
+def stapler(raw_pages, paged=1, perpage=12):
     """return dict for paginator.
     booklet = stapler(pages, paged=1, perpage=12)
     """
     matched_pages = raw_pages
-    max_pages = int(math.ceil(len(matched_pages)/float(perpage)))
+    max_pages = int(math.ceil(len(matched_pages) / float(perpage)))
 
     max_pages = max(max_pages, 1)
     paged = min(max_pages, paged)
 
-    start = (paged-1)*perpage
-    end = paged*perpage
+    start = (paged - 1) * perpage
+    end = paged * perpage
     result_pages = matched_pages[start:end]
-    
+
     return {
         "pages": result_pages,
         "max": max_pages,
@@ -284,11 +291,12 @@ def stapler(raw_pages, paged = 1, perpage = 12):
     }
 
 
-def barcode(raw_pages, field = "taxonomy.category", sort = True, desc = True):
+def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
     """return dict count entries has same value of specified field.
     count = barcode(pages, field="category", sort=True, desc=True)
     """
     ret = dict()
+
     def count(term):
         if term:
             if term not in ret:
@@ -306,19 +314,19 @@ def barcode(raw_pages, field = "taxonomy.category", sort = True, desc = True):
                 count(term[i])
         else:
             count(term)
-    
+
     bars = []
-    for k,v in ret.iteritems():
-        bars.append({"key":k, "count": v})
-    
+    for k, v in ret.iteritems():
+        bars.append({"key": k, "count": v})
+
     if sort:
         bars = sortedby(bars, "count", desc)
-    
+
     return bars
 
 
-def timemachine(raw_pages, filed = 'date', precision = 'month',
-                time_format = '%Y-%m-%d', reverse = True):
+def timemachine(raw_pages, filed='date', precision='month',
+                time_format='%Y-%m-%d', reverse=True):
     """return list of pages grouped by datetime.
     sorted_pages = timemachine(pages, filed='date', precision='month',
                                time_format='%Y-%m-%d',reverse=True)
@@ -331,7 +339,7 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
         'minute': lambda x: (x.month, x.day, x.hour, x.minute),
         'second': lambda x: (x.month, x.day, x.hour, x.minute, x.second)
     }
-    
+
     def parse_datetime(date):
         if isinstance(date, basestring):
             date = datetime.datetime.strptime(date, time_format)
@@ -348,10 +356,9 @@ def timemachine(raw_pages, filed = 'date', precision = 'month',
         except Exception:
             raise ValueError("invalid precision, precision must be str.")
 
-
     pages = sorted(filter(lambda x: x.get(filed), raw_pages),
-                   key = lambda x: x[filed], 
-                   reverse = reverse)
+                   key=lambda x: x[filed],
+                   reverse=reverse)
 
     # iterator version
     # return groupby(pages, key=lambda x: parse_datetime(x.get('date')))
@@ -414,7 +421,8 @@ def _deep_get(key, obj):
         _obj = obj.get(_key_pairs[0])
         _value = _deep_get(_key_pairs[1], _obj)
         return _value
-        
+
+
 def _deep_in(key, obj):
     if not isinstance(obj, dict):
         return False

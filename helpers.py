@@ -1,6 +1,12 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
-import os, re, gettext, json, urllib, urlparse, time
+import os
+import re
+import gettext
+import json
+import urllib
+import urlparse
+import time
 from flask import make_response, request
 
 
@@ -12,44 +18,46 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("LIBS_URL", "http://libs.soopro.com")
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("IGNORE_FILES", [])
-    app.config.setdefault("INVISIBLE_PAGE_LIST",[])
+    app.config.setdefault("INVISIBLE_PAGE_LIST", [])
     app.config.setdefault("THEME_NAME", "default")
     app.config.setdefault("HOST", "0.0.0.0")
     app.config.setdefault("PORT", 5500)
-    app.config.setdefault("SITE",{})
-    app.config.setdefault("THEME_META",{})
-    app.config.setdefault("CHARSET","utf8")
-    app.config.setdefault("SYS_ICON_LIST",[])
-    
-    app.config.setdefault("MAX_MODE_TYPES",["ws"])
-    app.config.setdefault("PLUGIN_DIR","plugins")
-    app.config.setdefault("THEMES_DIR","themes")
-    app.config.setdefault("TEMPLATE_FILE_EXT",".html")
-    app.config.setdefault("TPL_FILE_EXT",".tpl")
+    app.config.setdefault("SITE", {})
+    app.config.setdefault("THEME_META", {})
+    app.config.setdefault("CHARSET", "utf8")
+    app.config.setdefault("SYS_ICON_LIST", [])
 
-    app.config.setdefault("DEFAULT_SITE_META_FILE","site.json")
-    app.config.setdefault("DEFAULT_THEME_META_FILE","config.json")
-    
-    app.config.setdefault("DEFAULT_TEMPLATE","index")
-    
-    app.config.setdefault("DEFAULT_DATE_FORMAT","%Y-%m-%d")
-    app.config.setdefault("DEFAULT_EXCERPT_LENGTH",50)
-    app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS","&hellip;")
-    
-    app.config.setdefault("STATIC_BASE_URL","/static")
-    app.config.setdefault("UPLOADS_DIR","uploads")
-    app.config.setdefault("CONTENT_DIR","content")
-    app.config.setdefault("CONTENT_FILE_EXT",".md")
-    app.config.setdefault("DEFAULT_INDEX_ALIAS","index")
-    app.config.setdefault("DEFAULT_404_ALIAS","error_404")
-    
+    app.config.setdefault("MAX_MODE_TYPES", ["ws"])
+    app.config.setdefault("PLUGIN_DIR", "plugins")
+    app.config.setdefault("THEMES_DIR", "themes")
+    app.config.setdefault("TEMPLATE_FILE_EXT", ".html")
+    app.config.setdefault("TPL_FILE_EXT", ".tpl")
+
+    app.config.setdefault("DEFAULT_SITE_META_FILE", "site.json")
+    app.config.setdefault("DEFAULT_THEME_META_FILE", "config.json")
+
+    app.config.setdefault("DEFAULT_TEMPLATE", "index")
+
+    app.config.setdefault("DEFAULT_DATE_FORMAT", "%Y-%m-%d")
+    app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 50)
+    app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
+
+    app.config.setdefault("STATIC_BASE_URL", "/static")
+    app.config.setdefault("UPLOADS_DIR", "uploads")
+    app.config.setdefault("CONTENT_DIR", "content")
+    app.config.setdefault("CONTENT_FILE_EXT", ".md")
+    app.config.setdefault("DEFAULT_INDEX_ALIAS", "index")
+    app.config.setdefault("DEFAULT_404_ALIAS", "error_404")
+
     return
+
 
 def make_json_response(output, status_code):
     headers = dict()
     headers["Content-Type"] = "application/json"
     resp = make_response(json.dumps(output), status_code, headers)
     return resp
+
 
 def make_content_response(output, status_code, etag=None):
     response = make_response(output, status_code)
@@ -58,9 +66,9 @@ def make_content_response(output, status_code, etag=None):
     if etag is not None:
         response.set_etag(etag)
     return response
-    
 
-def get_param(key, required = False, default = None):
+
+def get_param(key, required=False, default=None):
     source = request.json
     value = source.get(key)
 
@@ -71,6 +79,7 @@ def get_param(key, required = False, default = None):
 
     return value
 
+
 def parse_args():
     new = dict()
     args = request.args
@@ -79,13 +88,13 @@ def parse_args():
             if not isinstance(new[arg], list):
                 new[arg] = [new[arg]]
             new[arg].append(args.get(arg))
-        else:    
+        else:
             new[arg] = args.get(arg)
     return new
 
 
 def helper_process_url(url, base_url):
-    if not url or not isinstance(url,(str,unicode)):
+    if not url or not isinstance(url, (str, unicode)):
         return None
 
     if re.match("^(?:http|ftp)s?://", url):
@@ -97,9 +106,11 @@ def helper_process_url(url, base_url):
 
 
 from functools import cmp_to_key
-def sortedby(source, sort_keys, reverse = False):
+
+
+def sortedby(source, sort_keys, reverse=False):
     keys = {}
-    
+
     def process_key(key):
         if key.startswith('-'):
             key = key.lstrip('-')
@@ -108,7 +119,7 @@ def sortedby(source, sort_keys, reverse = False):
             key = key.lstrip('+')
             revs = 1
         keys.update({key: revs})
-         
+
     if isinstance(sort_keys, basestring):
         process_key(sort_keys)
     elif isinstance(sort_keys, list):
@@ -125,17 +136,19 @@ def sortedby(source, sort_keys, reverse = False):
                 return 1 * value
         return 0
 
-    return sorted(source, key = cmp_to_key(compare), reverse = reverse)
-    
+    return sorted(source, key=cmp_to_key(compare), reverse=reverse)
+
 
 def parse_int(num):
     try:
         return int(float(num))
     except:
         return 0
-    
+
 
 from werkzeug.datastructures import ImmutableDict
+
+
 class DottedImmutableDict(ImmutableDict):
     def __getattr__(self, item):
         try:
@@ -147,6 +160,7 @@ class DottedImmutableDict(ImmutableDict):
             v = DottedImmutableDict(v)
         return v
 
+
 def helper_make_dotted_dict(obj):
     if isinstance(obj, dict):
         return DottedImmutableDict(obj)
@@ -155,9 +169,9 @@ def helper_make_dotted_dict(obj):
         for i in obj:
             new_obj.append(DottedImmutableDict(i))
         return new_obj
-    else: 
+    else:
         return obj
-        
+
 
 def url_validator(val):
     if not isinstance(val, basestring):
@@ -179,7 +193,7 @@ def now(int_output=True):
         return time.time()
 
 
-def get_url_params(url, unique = True):
+def get_url_params(url, unique=True):
     url_parts = list(urlparse.urlparse(url))
     params = urlparse.parse_qsl(url_parts[4])
     if unique:
@@ -187,13 +201,17 @@ def get_url_params(url, unique = True):
     return params
 
 
-def add_url_params(url, new_params, concat = True, unique = True):
+def add_url_params(url, new_params, concat=True, unique=True):
     if isinstance(new_params, dict):
-        new_params =[(k,v) for k,v in new_params.iteritems()]
+        new_params = [(k, v) for k, v in new_params.iteritems()]
+    elif isinstance(new_params, basestring):
+        new_params = [(new_params, new_params)]
+    elif not isinstance(new_params, list):
+        return None
 
     url_parts = list(urlparse.urlparse(url))
     params = urlparse.parse_qsl(url_parts[4])
-    
+
     params = new_params if not concat else params + new_params
 
     if unique:
