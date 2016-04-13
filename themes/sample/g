@@ -1,0 +1,7 @@
+{% set default_favicon = theme_url+"/img/default_favicon.png" %}
+
+{% set opts = theme_meta.options %}
+<!-- paged -->
+{% set paged = args.paged|int if args.paged and args.paged|int > 0 else 1 %}
+<!-- perpage -->
+{% set perpage = opts.perpage|int if opts.perpage else 12 %}

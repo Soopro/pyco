@@ -1,0 +1,10 @@
+{% if g and page %}
+
+<h1>{{page.title or _('Title')}}</h1>
+<div>
+  {{page.content or _('$_CONTENT')}}
+</div>
+    
+{% else %}
+  <script>window.location.replace('{{base_url}}/#/{{meta.alias}}');</script>
+{% endif %}

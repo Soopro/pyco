@@ -1,0 +1,12 @@
+{% import "g" as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+
+<h1>{{meta.title or _('Title')}}</h1>
+<h2>{{meta.description or _('Description text here')}}</h2>
+
+{% include '_footer.html' %}
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+    "version": "1.0.2",
+    "alias": "sample",
+    "author": "cheney",
+    "license": "MIT",
+    "title": {
+        "en":"Sample",
+        "zh":"范例"
+    },
+    "capability": ["ws"],
+    "thumbnail": "thumbnail.png",
+    "previews": ["preview.png"],
+    "description": {
+        "en":"A sample website. You can learn how to make soopro theme.",
+        "zh":"一个网站范例，您可以在这个主题上学会怎么制作适用于soopro的主题。"
+    },
+    "mode": 1,
+
+    "templates": {
+        "index": {
+            "en":"Index",
+            "zh":"首页"
+        },
+          "about": {
+                "en":"About",
+                "zh":"关于我们"
+          },
+          "contact": {
+                "en":"Contact",
+                "zh":"联系我们"
+          },
+          "taxonomy": {
+                "en":"Taxonomy",
+                "zh":"分类"
+          },
+         "portfolio": {
+            "en":"Portfolio",
+            "zh":"作品集"  
+        },
+        "blog": {
+            "en":"Blog",
+            "zh":"博客"
+        },
+        "product": {
+            "en":"Product",
+            "zh":"产品"
+        },
+        "error_404":"404"
+    },
+    "content_types":{
+        "work": {"title": "works","status": 1},
+        "product": {"title": "products","status": 1},
+        "post": {"title": "posts","status": 1}
+    },
+    "options":{
+        "sortby": "date",
+        "excerpt_length": 162,
+        "excerpt_ellipsis": "&hellip;",
+        "date_format": "%B %d, %Y",
+        "perpage": 2
+    }
+}

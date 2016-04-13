@@ -1,0 +1,30 @@
+{% import "g" as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+{% include '_header.html' %}
+
+<h1>{{meta.title or _('Title')}}</h1>
+
+<img src="{{meta.featured_img.src}}" alt="featured_img">
+
+<p>{{meta.description or _('Description text here')}}</p>
+
+{% for item in meta.gallery %}
+<div>
+    <a href="{{item.link}}" target="{{item.target}}" class="{{item.class}}">
+        <img src="{{item.src}}" alt="gallery_img">
+        <h2>{{item.title}}</h2>
+        <p>{{item.caption}}</p>
+    </a>
+</div>
+{% endfor %}
+
+<div>
+    {{content or _('$_CONTENT')}}
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

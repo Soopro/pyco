@@ -1,0 +1,1 @@
+<p>{{site_meta.copyright}} {{site_meta.license}}</p>

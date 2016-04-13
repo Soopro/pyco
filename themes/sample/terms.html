@@ -1,0 +1,22 @@
+{% import 'g' as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+
+<div class="container">
+    {% for work in pages | type('work') %}
+    {% set _cat = work.taxonomy.category or [] %}
+    {% set arg_term = request.args.term %}
+    {% if arg_term in _cat %}
+    <div class="col-md-3">
+        <img src="{{work.featured_img.src}}" alt="img">
+        <h1>{{work.title}}</h1>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% include '_footer.html' %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% import "g" as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+{% include '_header.html' %}
+
+<h1>{{meta.title or _('Title')}}</h1>
+
+{% set booklet = stapler(pages|type('work'), g.paged, g.perpage) %}
+{% set works = booklet.pages %}
+
+{% for work in works if work.featured_img %}
+<div class="col-md-3">
+    <a href="{{work.url}}">
+        <img src="{{work.featured_img.src}}">
+        <h1>{{work.title}}</h1>
+    </a>
+</div>
+{% endfor %}
+
+{% if booklet.max and booklet.paged %}
+{% set has_prev_page = booklet.paged > 1 %}
+{% set has_next_page = booklet.paged < booklet.max %}
+<div>
+<a href="{{glue({'paged':booklet.paged-1})}}" class="btn btn-default btn-md {{'disabled' if not has_prev_page}}">{{_('Prev')}}</a>
+<a href="{{glue({'paged':booklet.paged+1})}}" class="btn btn-default btn-md {{'disabled' if not has_next_page}}">{{_('Next')}}</a>
+</div>
+{% endif %}
+
+{% include '_footer.html' %}
+</body>
+</html>

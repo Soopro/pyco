@@ -1,0 +1,29 @@
+{% import 'g' as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+{% include '_header.html' %}
+
+<div class="bg {{meta.background.class}}" style="{{meta.background.style or site_meta.bg.style}}">
+  <h1>{{meta.title or _('Title')}}</h1>
+  <p>{{meta.description or _('Description text here')}}</p>
+  <p>
+    <a class="{{meta.button.class}}"
+     href="{{meta.button.link}}" 
+     role="button" 
+     target="{{meta.button.target}}">
+      {{meta.button.name or _('Button')}}
+    </a>
+  </p>
+</div>
+
+<ul>
+  {% for term in taxonomy.category.terms %}
+  <li><a href="/terms?tax={{term.taxonomy}}&term={{term.alias}}">{{term.title}}</a></li>
+  {% endfor %}
+</ul>
+
+{% include '_footer.html' %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% import 'g' as g with context %}
+<!DOCTYPE html>
+<html>
+{% include '_head_.html' %}
+<body>
+{% include '_header.html' %}
+
+<h1>{{meta.title or _('Title')}}</h1>
+
+{% for p in pages | type('product') %}
+<div>
+    <h2>{{p.title}}</h2>
+
+    {% for c in p.collect %}
+    <div>{{c.name}} : {{c.value}}</div>
+    {% endfor %}
+
+    <a href="{{p.button.link}}" class="{{p.button.class}}" target="{{p.button.target}}">{{p.button.name or _('Button')}}</a>
+</div>
+{% endfor %}
+
+{% include '_footer.html' %}
+</body>
+</html>
