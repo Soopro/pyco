@@ -48,10 +48,10 @@ DEFAULT_404_ALIAS = "error_404"
 INVISIBLE_PAGE_LIST = [DEFAULT_404_ALIAS]
 
 SHORT_ATTR_KEY = {}
-                        
+
 IGNORE_FILES = []
 
-SYS_ICON_LIST = ['favicon.ico', 
+SYS_ICON_LIST = ['favicon.ico',
                  'apple-touch-icon-precomposed.png',
                  'apple-touch-icon.png']
 
@@ -66,6 +66,7 @@ GFW = True
 PLUGINS = ["draft",
            "languages",
            "socials",
+           "slots",
            "content_types",
            "is",
            "redirect",

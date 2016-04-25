@@ -78,6 +78,8 @@ There is global content data for whole site call **Site Meta**, to having this d
 
 Global content data for whole site.
 
+* `app_id`: **[ str ]** the app id, sometime you want work with an real `app_id`, you can put it here. If you don't know where to find an real `app_id`, leave it alone. default is `pyco_app`. 
+
 * `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `alias`, given a Text title for content type here.
 
 * `menus`: **[ dict ]** define multiple menus. Follow `menu` structure exactly.

@@ -3,6 +3,9 @@
     "post": "Posts",
     "page": "Pages"
   },
+  "slots": {
+    "comment": "<mark>Test Comment Plugin Inject: {{app_id}} - {{meta.id}}</mark>"
+  },
   "menus": {
     "primary": [
       {
@@ -25,12 +28,12 @@
         "alias": "chapter-1",
         "meta": {},
         "nodes": [
-          { 
+          {
             "id":"index.md",
             "alias": "xxx",
             "title": "xxx"
           },
-          { 
+          {
             "id":"page.md",
             "alias": "xxx",
             "title": "xxx"

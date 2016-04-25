@@ -19,7 +19,7 @@
       <img src="{{meta.featured_img.src}}" alt="{{meta.featured_img.title}}"/>
     </div>
   </header>
-  
+
   <!-- Main Content -->
   <section>
     {% for post in pages | type('post') %}
@@ -33,7 +33,8 @@
       </artcile>
       <hr>
     {% endfor %}
-  </section>  
+  </section>
+  {{slots.comment}}
 <!-- Footer -->
 {% include '_footer.html'%}
 </body>

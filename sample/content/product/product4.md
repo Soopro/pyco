@@ -1,0 +1,16 @@
+/*
+Priority: 1
+Status: 1
+Template: product
+Title: product4
+Collect:
+- name: price
+  value: $39
+- name: title
+  value: value
+Button:
+  title: buy
+  link: /
+  target: '_blank'
+  class:
+*/

@@ -17,7 +17,7 @@ from helpers import (url_validator,
 
 
 class BaseView(MethodView):
-    
+
     def __init__(self):
         super(BaseView, self).__init__()
         self.plugins = []
@@ -26,7 +26,7 @@ class BaseView(MethodView):
         self.max_mode = True
         self.view_ctx = dict()
 
-    
+
     def load_metas(self):
         config = self.config
         theme_meta_file = os.path.join(config.get('THEMES_DIR'),
@@ -39,7 +39,7 @@ class BaseView(MethodView):
             err_msg = "Load Theme Meta faild: {}".format(str(e))
             raise Exception(err_msg)
         theme_meta.close()
-        
+
         site_meta_file = os.path.join(config.get('CONTENT_DIR'),
                                       config.get('DEFAULT_SITE_META_FILE'))
 
@@ -50,8 +50,8 @@ class BaseView(MethodView):
             err_msg = "Load Site Meta faild: {}".format(str(e))
             raise Exception(err_msg)
         site_meta.close()
-        
-    
+
+
     def load_plugins(self, plugins):
         loaded_plugins = []
         for module_or_module_name in plugins:
@@ -71,7 +71,7 @@ class BaseView(MethodView):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
         default_index_alias = self.config.get("DEFAULT_INDEX_ALIAS")
-        
+
         base_path = os.path.join(content_dir, url[1:]).rstrip("/")
         file_name = "{}{}".format(base_path, content_ext)
         if self.check_file_exists(file_name):
@@ -82,27 +82,27 @@ class BaseView(MethodView):
         if self.check_file_exists(file_name):
             return file_name
         return None
-    
+
     def gen_base_url(self):
         return os.path.join(self.config.get("BASE_URL"))
 
     def gen_theme_url(self):
         return os.path.join(self.config.get('STATIC_BASE_URL'),
                             self.config.get('THEME_NAME'))
-    
+
     def gen_libs_url(self):
         return self.config.get("LIBS_URL")
-    
+
     def gen_id(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         page_id = relative_path.replace(content_dir+"/", '', 1).lstrip('/')
         return page_id
-    
+
     def gen_page_url(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
         default_index_alias = self.config.get("DEFAULT_INDEX_ALIAS")
-        
+
         if relative_path.endswith(content_ext):
             relative_path = os.path.splitext(relative_path)[0]
         front_page_content_path = "{}/{}".format(content_dir,
@@ -110,12 +110,12 @@ class BaseView(MethodView):
         if relative_path.endswith(front_page_content_path):
             len_index_str = len(default_index_alias)
             relative_path = relative_path[:-len_index_str]
- 
+
         relative_url = relative_path.replace(content_dir, '', 1)
         url = os.path.join(self.config.get("BASE_URL"),
                            relative_url.lstrip('/'))
         return url
-    
+
     def gen_page_alias(self, relative_path):
         content_ext = self.config.get('CONTENT_FILE_EXT')
         if relative_path.endswith(content_ext):
@@ -126,11 +126,11 @@ class BaseView(MethodView):
     def gen_excerpt(self, content, opts):
         default_excerpt_length = self.config.get('DEFAULT_EXCERPT_LENGTH')
         excerpt_length = opts.get('excerpt_length',
-                                  default_excerpt_length)      
+                                  default_excerpt_length)
         default_excerpt_ellipsis = self.config.get('DEFAULT_EXCERPT_ELLIPSIS')
         excerpt_ellipsis = opts.get('excerpt_ellipsis',
                                     default_excerpt_ellipsis)
-                                          
+
         excerpt = re.sub(r'<[^>]*?>', '', content)
         if excerpt:
             excerpt = u" ".join(excerpt.split())
@@ -172,10 +172,10 @@ class BaseView(MethodView):
         headers = dict()
         meta_string = {"meta": meta_string}
         self.run_hook("before_read_page_meta", meta_string=meta_string)
-        
+
         def convert_data(x):
             if isinstance(x, dict):
-                return dict((k.lower(), convert_data(v)) 
+                return dict((k.lower(), convert_data(v))
                              for k, v in x.iteritems())
             elif isinstance(x, list):
                 return list([convert_data(i) for i in x])
@@ -190,7 +190,7 @@ class BaseView(MethodView):
                     print e
                     pass
             return x
-        
+
         yaml_data = yaml.safe_load(meta_string['meta'])
         headers = convert_data(yaml_data)
         self.run_hook("after_read_page_meta", headers=headers)
@@ -214,7 +214,7 @@ class BaseView(MethodView):
                     size=file_stat.st_size,
                     fpath=content_file_full_path
                 )
-                    
+
         return sha1(base).hexdigest()
 
     # pages
@@ -223,7 +223,7 @@ class BaseView(MethodView):
         all_files = []
         for root, directory, files in os.walk(base_dir):
             file_full_paths = [
-                os.path.join(root, f) 
+                os.path.join(root, f)
                 for f in filter(lambda x: x.endswith(ext), files)
             ]
             all_files.extend(file_full_paths)
@@ -241,7 +241,7 @@ class BaseView(MethodView):
         except Exception as e:
             date_formatted = date
         return date_formatted
-    
+
     def get_menus(self):
         menus = self.config['SITE'].get("menus",{})
         base_url = self.config.get("BASE_URL")
@@ -257,7 +257,7 @@ class BaseView(MethodView):
         for menu in menus:
             menus[menu] = process_menu_url(menus[menu])
         return menus
-    
+
     def get_taxonomies(self):
         taxs = self.config['SITE'].get("taxonomies",{})
         tax_dict = {}
@@ -279,10 +279,10 @@ class BaseView(MethodView):
                 ]
             }
             # del terms[tax["alias"]]
-        
+
         return tax_dict
-        
-        
+
+
     def get_pages(self):
         config = self.config
         content_dir = config.get('CONTENT_DIR')
@@ -290,7 +290,7 @@ class BaseView(MethodView):
         charset = config.get('CHARSET')
         files = self.get_files(content_dir, content_ext)
         invisible_page_list = config.get('INVISIBLE_PAGE_LIST')
-        
+
         page_data_list = []
         for f in files:
             if f in invisible_page_list:
@@ -301,7 +301,7 @@ class BaseView(MethodView):
                 or relative_path.startswith("#") \
                 or relative_path in self.content_ignore_files:
                 continue
-            
+
             with open(f, "r") as fh:
                 file_content = fh.read().decode(charset)
             meta_string, content_string = self.content_splitter(file_content)
@@ -319,13 +319,13 @@ class BaseView(MethodView):
         sort_desc = True
         sort_keys = ['-priority']
         sort_by = theme_meta_options.get("sortby", "updated")
-        
+
         if isinstance(sort_by, (str, unicode)):
             sort_keys.append(sort_by)
         elif isinstance(sort_by, list):
-            sort_keys = sort_keys + [key for key in sort_by 
+            sort_keys = sort_keys + [key for key in sort_by
                                      if isinstance(key, (str, unicode))]
-        
+
         return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
     #theme
@@ -335,12 +335,12 @@ class BaseView(MethodView):
 
     def theme_path_for(self, tmpl_name):
         return "{}{}".format(tmpl_name, self.config.get('TEMPLATE_FILE_EXT'))
-    
+
     def theme_absolute_path_for(self, tmpl_path):
         return os.path.join(current_app.root_path,
                             current_app.template_folder,
                             tmpl_path)
-    
+
     # attrs
     def parse_file_attrs(self, meta, file_path, content_string,
                          escape_content=True):
@@ -364,7 +364,7 @@ class BaseView(MethodView):
         data["excerpt"] = self.gen_excerpt(content, opts)
         des = meta.get("description")
         data["description"] = data["excerpt"] if not des else des
-        
+
         if not escape_content:
             data["content"] = content
         data["creation"] = int(os.path.getmtime(file_path))
@@ -376,7 +376,8 @@ class BaseView(MethodView):
     def init_context(self, include_request = True):
         # env context
         config = self.config
-        self.view_ctx["app_id"] = "pyco_app"
+        app_id = self.config['SITE'].get("app_id", "pyco_app")
+        self.view_ctx["app_id"] = app_id
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
@@ -402,7 +403,7 @@ class BaseView(MethodView):
             self.view_ctx["request"] = request
 
         return
-    
+
     #hook
     def run_hook(self, hook_name, **references):
         for plugin_module in self.plugins:
