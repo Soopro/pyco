@@ -18,12 +18,12 @@
   </header>
   <!-- Metas -->
   <section id="metas">
-    
+
   </section>
   <!-- Main Content -->
   <section id="contents">
-    
-  </section>  
+
+  </section>
 <!-- Footer -->
 <script src="{{theme_url}}/scripts/ajax.js"></script>
 <script>
@@ -49,7 +49,7 @@
     }).catch(function(rejected){
       console.error(rejected);
     });
-    
+
     var contents = {
       type: 'POST',
       url: 'http://0.0.0.0:5500/restapi/contents'
@@ -63,7 +63,7 @@
         child.innerHTML = [
           '<p>',
           'id: '+content.id+'<br>',
-          'Alias: '+content.alias+'<br>',
+          'Slug: '+content.slug+'<br>',
           'Title: '+content.title+'<br>',
           'Description: '+content.description+'<br>',
           'Priority: '+content.priority+'<br>',
@@ -80,7 +80,7 @@
   }
   document.addEventListener('DOMContentLoaded', dummyHanlder)
 </script>
-  
+
 {% include '_footer.html'%}
 </body>
 </html>

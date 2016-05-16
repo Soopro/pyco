@@ -385,7 +385,7 @@ def gutter(pid, structures):
                 next_page = {
                     'id': p.get('id'),
                     'title': p.get('title'),
-                    'alias': p.get('alias'),
+                    'slug': p.get('slug'),
                     'url': p.get('url'),
                 }
                 break
@@ -395,7 +395,7 @@ def gutter(pid, structures):
                 prev_page = {
                     'id': p.get('id'),
                     'title': p.get('title'),
-                    'alias': p.get('alias'),
+                    'slug': p.get('slug'),
                     'url': p.get('url'),
                 }
         if next_page is not None:

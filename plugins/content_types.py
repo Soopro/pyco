@@ -19,7 +19,7 @@ def config_loaded(config):
     })
     return
 
-            
+
 def request_url(request, redirect_to):
     return
 
@@ -43,9 +43,9 @@ def before_render(var, template):
     # content types
     content_types = _CONFIG["SITE"].get("content_types")
     current_content_type = var["meta"].get("type","")
-    
+
     var["content_type"] = {
-        'alias':current_content_type,
+        'slug':current_content_type,
         'title':content_types.get(current_content_type)
     }
     return

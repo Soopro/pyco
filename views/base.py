@@ -70,14 +70,14 @@ class BaseView(MethodView):
     def get_file_path(self, url):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
-        default_index_alias = self.config.get("DEFAULT_INDEX_ALIAS")
+        default_index_slug = self.config.get("DEFAULT_INDEX_SLUG")
 
         base_path = os.path.join(content_dir, url[1:]).rstrip("/")
         file_name = "{}{}".format(base_path, content_ext)
         if self.check_file_exists(file_name):
             return file_name
 
-        tmp_fname = "{}{}".format(default_index_alias, content_ext)
+        tmp_fname = "{}{}".format(default_index_slug, content_ext)
         file_name = os.path.join(base_path, tmp_fname)
         if self.check_file_exists(file_name):
             return file_name
@@ -101,14 +101,14 @@ class BaseView(MethodView):
     def gen_page_url(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         content_ext = self.config.get('CONTENT_FILE_EXT')
-        default_index_alias = self.config.get("DEFAULT_INDEX_ALIAS")
+        default_index_slug = self.config.get("DEFAULT_INDEX_SLUG")
 
         if relative_path.endswith(content_ext):
             relative_path = os.path.splitext(relative_path)[0]
         front_page_content_path = "{}/{}".format(content_dir,
-                                                 default_index_alias)
+                                                 default_index_slug)
         if relative_path.endswith(front_page_content_path):
-            len_index_str = len(default_index_alias)
+            len_index_str = len(default_index_slug)
             relative_path = relative_path[:-len_index_str]
 
         relative_url = relative_path.replace(content_dir, '', 1)
@@ -116,12 +116,12 @@ class BaseView(MethodView):
                            relative_url.lstrip('/'))
         return url
 
-    def gen_page_alias(self, relative_path):
+    def gen_page_slug(self, relative_path):
         content_ext = self.config.get('CONTENT_FILE_EXT')
         if relative_path.endswith(content_ext):
             relative_path = os.path.splitext(relative_path)[0]
-        alias = relative_path.split('/')[-1]
-        return alias
+        slug = relative_path.split('/')[-1]
+        return slug
 
     def gen_excerpt(self, content, opts):
         default_excerpt_length = self.config.get('DEFAULT_EXCERPT_LENGTH')
@@ -145,8 +145,8 @@ class BaseView(MethodView):
     @property
     def content_not_found_relative_path(self):
         content_ext = self.config.get('CONTENT_FILE_EXT')
-        default_404_alias = self.config.get('DEFAULT_404_ALIAS')
-        return "{}{}".format(default_404_alias, content_ext)
+        default_404_slug = self.config.get('DEFAULT_404_SLUG')
+        return "{}{}".format(default_404_slug, content_ext)
 
     @property
     def content_not_found_full_path(self):
@@ -264,11 +264,11 @@ class BaseView(MethodView):
         for k,v in taxs.iteritems():
             tax_dict[k] = {
                 "title": v.get("title"),
-                "alias": k,
+                "slug": k,
                 "content_types": v.get("content_types"),
                 "terms": [
                     {
-                        "alias": x.get("alias"),
+                        "slug": x.get("slug"),
                         "title": x.get("title"),
                         "priority": x.get("priority"),
                         "meta": x.get("meta",{}),
@@ -278,7 +278,7 @@ class BaseView(MethodView):
                     for x in v.get("terms", [])
                 ]
             }
-            # del terms[tax["alias"]]
+            # del terms[tax["slug"]]
 
         return tax_dict
 
@@ -349,7 +349,7 @@ class BaseView(MethodView):
         for m in meta:
             data[m] = meta[m]
         data["id"] = self.gen_id(file_path)
-        data["alias"] = self.gen_page_alias(file_path)
+        data["slug"] = self.gen_page_slug(file_path)
         data["url"] = self.gen_page_url(file_path)
         data["title"] = meta.get("title", u"")
         data["priority"] = meta.get("priority", 0)

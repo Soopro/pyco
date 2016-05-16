@@ -20,7 +20,7 @@
 
 <ul>
   {% for term in taxonomy.category.terms %}
-  <li><a href="/terms?tax={{term.taxonomy}}&term={{term.alias}}">{{term.title}}</a></li>
+  <li><a href="/terms?tax={{term.taxonomy}}&term={{term.slug}}">{{term.title}}</a></li>
   {% endfor %}
 </ul>
 

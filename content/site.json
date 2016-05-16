@@ -9,14 +9,14 @@
   "menus": {
     "primary": [
       {
-        "alias": "home",
+        "key": "home",
         "meta": {},
         "nodes": [],
         "title": "Home",
         "link": "/"
       },
       {
-        "alias": "page",
+        "key": "page",
         "meta": {},
         "nodes": [],
         "title": "Static Page",
@@ -25,17 +25,17 @@
     ],
     "gutter": [
       {
-        "alias": "chapter-1",
+        "key": "chapter-1",
         "meta": {},
         "nodes": [
           {
             "id":"index.md",
-            "alias": "xxx",
+            "key": "xxx",
             "title": "xxx"
           },
           {
             "id":"page.md",
-            "alias": "xxx",
+            "key": "xxx",
             "title": "xxx"
           }
         ],
@@ -45,7 +45,7 @@
     ]
   },
   "meta": {
-    "alias":"pyco",
+    "slug":"pyco",
     "type":"ws",
     "logo":null,
     "author": "redy",
@@ -60,8 +60,8 @@
         "title":"Category",
         "content_types": ["post"],
         "terms": [
-          {"alias":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
-          {"alias":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
+          {"slug":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
+          {"slug":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
         ]
       }
     }

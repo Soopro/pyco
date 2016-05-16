@@ -18,7 +18,7 @@
 
 <ul ng-if="tax.category && tax.category.terms.length > 0">
   <li ng-repeat="term in tax.category.terms">
-    <a href="/terms?tax={{term.taxonomy}}&term={{term.alias}}">{{term.title}}</a>
+    <a href="/terms?tax={{term.taxonomy}}&term={{term.slug}}">{{term.title}}</a>
   </li>
 </ul>
 

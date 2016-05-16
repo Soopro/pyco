@@ -93,9 +93,9 @@ class ContentView(BaseView):
         
         c_type = str(page_meta.get('type'))
         if c_type.startswith('_') and not redirect_to["url"]:
-            default_404_alias = self.config.get("DEFAULT_404_ALIAS")
+            default_404_slug = self.config.get("DEFAULT_404_SLUG")
             redirect_to["url"] = os.path.join(base_url,
-                                              default_404_alias)
+                                              default_404_slug)
 
         content_redirect_to = helper_process_url(redirect_to.get("url"),
                                                  base_url)

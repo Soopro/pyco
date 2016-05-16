@@ -46,8 +46,8 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("UPLOADS_DIR", "uploads")
     app.config.setdefault("CONTENT_DIR", "content")
     app.config.setdefault("CONTENT_FILE_EXT", ".md")
-    app.config.setdefault("DEFAULT_INDEX_ALIAS", "index")
-    app.config.setdefault("DEFAULT_404_ALIAS", "error_404")
+    app.config.setdefault("DEFAULT_INDEX_SLUG", "index")
+    app.config.setdefault("DEFAULT_404_SLUG", "error_404")
 
     return
 

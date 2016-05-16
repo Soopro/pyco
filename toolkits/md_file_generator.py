@@ -8,7 +8,7 @@ Author: DevinPan
 Location: Shanghai
 Template: works
 Type: works
-Alias:%s
+Slug:%s
 Thumbnail: /uploads/%s
 Description: Turnix Multimedia Studio
 Order:1

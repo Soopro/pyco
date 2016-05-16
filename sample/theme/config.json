@@ -1,6 +1,6 @@
 {
     "version": "1.0.2",
-    "alias": "sample",
+    "slug": "sample",
     "author": "cheney",
     "license": "MIT",
     "title": {
@@ -35,7 +35,7 @@
           },
          "portfolio": {
             "en":"Portfolio",
-            "zh":"作品集"  
+            "zh":"作品集"
         },
         "blog": {
             "en":"Blog",
