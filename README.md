@@ -58,7 +58,7 @@ Pyco supported plugins. We already provider several plugins, such as:
   * `is`: add `is_front`, `is_404`, `is_current` support.
   * `contect_types`: automatically processing content_types for content which don't have `type` attribute.
   * `redirect`: process redirect for content.
-  * `template`: given a default `template` alias base on `type` for content which don't have template attribute.
+  * `template`: given a default `template` base on `type` for content which don't have template attribute.
   * `marker`: parse content with short code marks.
   * `jinja_helper`: add multiple helpers and filters, learn more from the ***jinja2 template*** document of our system. Check [this repo](http://github.com/soopro/rafiki)
 
@@ -69,7 +69,7 @@ Pyco supported plugins. We already provider several plugins, such as:
 
 Pyco is flat file CMS, there is no database. All content host as `.md` markdown file in `content` folder.
 
-The type of contents is base on folder name. The files in the root of `content` folder is static page call 'page'. Add other content types just create a folder then put `.md` inside, the folder name will be `alias` of this content type.
+The type of contents is base on folder name. The files in the root of `content` folder is static page call 'page'. Add other content types just create a folder then put `.md` inside, the folder name will be `slug` of this content type.
 
 There is global content data for whole site call **Site Meta**, to having this data, you have to put a `site.json` file in the root of `content` folder.
 
@@ -80,18 +80,18 @@ Global content data for whole site.
 
 * `app_id`: **[ str ]** the app id, sometime you want work with an real `app_id`, you can put it here. If you don't know where to find an real `app_id`, leave it alone. default is `pyco_app`. 
 
-* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `alias`, given a Text title for content type here.
+* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here.
 
 * `menus`: **[ dict ]** define multiple menus. Follow `menu` structure exactly.
-  1. `< menu_alias >`: **[ list ]** a menu.
-    * `alias`: **[ str ]** menu item alias
+  1. `< menu_slug >`: **[ list ]** a menu.
+    * `slug`: **[ str ]** menu item slug
     * `title`: **[ str ]** menu item title
     * `link`: **[ str ]** menu link, system will generate `url` by `link`.
     * `meta`: **[ dict ]** menu item meta, put custom data in side as you wish.
     * `nodes`: **[ list ]** children menu items
 
 * `meta`: Site meta
-  * `alias`: **[ str ]** site alias. aka app alias
+  * `slug`: **[ str ]** site slug. aka app slug
   * `title`: **[ str ]** site title. aka app title
   * `type`: **[ str ]** site type. aka app type
   * `logo`: **[dict]** media of logo
@@ -116,17 +116,17 @@ Global content data for whole site.
     ```
 
 * `taxonomy`: **[ dict ]** All taxonomy host here. (also could be tax for short)
-  * `< taxonomy_alias >`: Terms of this category, you only have to define
-    1. `alias`: **[ str ]** term alias
-    2. `title`: **[ str ]** term title
-    3. `priority`: **[ int ]** term priority
-    4. `taxonomy`: **[ str ]** alias of the taxonomy own this term
-    5. `updated`: **[ int ]** updated timestamp. make a fake one if you want using pyco.
-    6. `meta`: **[ dict ]** term data in meta.
-    leave it empty if you don really need it.
-      * `pic`: **[ str ]** pic for term display.
-      * `parent`: **[ str ]** get parent terms alias.
-      * ... *Custom fields*
+  * `< taxonomy_slug >`: 
+    1. `title`: **[ str ]** Taxonomy title.
+    2. `content_types`: **[ list ]** list of supported content types.
+    3. `terms`: **[ list ]** terms of this taxonomy.
+      1. `slug`: **[ str ]** term slug
+      2. `title`: **[ str ]** term title
+      3. `priority`: **[ int ]** term priority
+      6. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
+        * `pic`: **[ str ]** pic for term display.
+        * `parent`: **[ str ]** get parent terms slug.
+        * ... *Custom fields*
 
 
 ***Example***
@@ -139,14 +139,14 @@ Global content data for whole site.
   "menus": {
     "primary": [
       {
-        "alias": "home",
+        "key": "home",
         "meta": {},
         "nodes": [],
         "title": "Home",
         "link": "/"
       },
       {
-        "alias": "page",
+        "key": "page",
         "meta": {},
         "nodes": [],
         "title": "Static Page",
@@ -155,7 +155,7 @@ Global content data for whole site.
     ]
   },
   "meta": {
-    "alias":"pyco",
+    "slug":"pyco",
     "type":"ws",
     "logo": {
       "src": "http://myuploads.com/logo.png",
@@ -176,8 +176,8 @@ Global content data for whole site.
       "title":"Category",
       "content_types": ["post"],
       "terms": [
-        {"alias":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
-        {"alias":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
+        {"slug":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
+        {"slug":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
       ]
     }
   }
@@ -219,7 +219,7 @@ Featured_img:
 */
 <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo  ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis   dis parturient montes, nascetur ridiculus mus.</p>
 
-<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores consequatur aut perferendis doloribus asperiores repellat.</p>
 
 ```
 
