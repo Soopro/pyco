@@ -5,7 +5,7 @@
 <body>
 {% include '_header.html' %}
 
-<div class="bg {{meta.background.class}}" style="{{meta.background.style or site_meta.bg.style}}">
+<div class="{{meta.background.class}}" style="{{meta.background.style or site_meta.bg.style}}">
   <h1>{{meta.title or _('Title')}}</h1>
   <p>{{meta.description or _('Description text here')}}</p>
   <p>

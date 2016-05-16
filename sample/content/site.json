@@ -8,35 +8,35 @@
   "menus": {
     "primary": [
       {
-        "key": "index",
+        "alias": "index",
         "meta": {},
         "nodes": [],
         "title": "Home",
         "link": "/"
       },
       {
-        "key": "taxonomy",
+        "alias": "taxonomy",
         "meta": {},
         "nodes": [],
         "title": "Taxonomy",
         "link": "/taxonomy"
       },
       {
-        "key": "portfolio",
+        "alias": "portfolio",
         "meta": {},
         "nodes": [],
         "title": "Portfolio",
-        "link": "/portfolio"
+        "link": "/portfolio"  
       },
       {
-        "key": "blog",
+        "alias": "blog",
         "meta": {},
         "nodes": [],
         "title": "Blog",
         "link": "/blog"
       },
       {
-        "key": "price",
+        "alias": "price",
         "meta": {},
         "nodes": [],
         "title": "Product",
@@ -49,8 +49,8 @@
       "title":"Categories",
       "content_types":["work"],
       "terms": [
-        {"slug":"term1","title":"Term1"},
-        {"slug":"term2","title":"Term2"}
+        {"alias":"term1","title":"Term1"},
+        {"alias":"term2","title":"Term2"}
       ]
     }
   },
@@ -65,7 +65,7 @@
     }
   },
   "meta": {
-    "slug":"pyco",
+    "alias":"pyco",
     "type":"sample",
     "favicon": "[%uploads%]/favicon.png",
     "logo": "[%uploads%]/logo.png",

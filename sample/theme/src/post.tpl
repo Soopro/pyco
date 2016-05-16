@@ -9,10 +9,12 @@
     <span sup-editor-meta ng-model="meta.author" default="{{_('Author')}}"></span>
 </div>
 <time datetime="2016-04-06">{{meta.date_formatted}}</time>
-<div sup-editor-meta ng-model="meta.featured_img">
+<div sup-editor-media ng-model="meta.featured_img">
     <img ng-src="{{meta.featured_img.src}}" alt="featured_img">
 </div>
-<p>{{meta.description or _('Description text here')}}</p>
+<p>
+    <span sup-editor-meta ng-model="meta.description" default="{{_('Description text here')}}"></span>
+</p>
 
 <div sup-angular-wysiwyg ng-model="content" default="{{_('$_CONTENT')}}">
 </div>

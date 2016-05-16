@@ -1,5 +1,5 @@
 {
-    "version": "1.0.2",
+    "version": "1.1.0",
     "slug": "sample",
     "author": "cheney",
     "license": "MIT",
@@ -9,6 +9,7 @@
     },
     "capability": ["ws"],
     "thumbnail": "thumbnail.png",
+    "poster": "poster.jpg",
     "previews": ["preview.png"],
     "description": {
         "en":"A sample website. You can learn how to make soopro theme.",

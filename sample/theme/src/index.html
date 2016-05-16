@@ -33,7 +33,7 @@
 
 {% set tem = ["about","contact"] %}
 {% for page in pages | type('page') if page.template != meta.template and page.template in tem %}
-  {% include page.template+'.html' %}
+  {% include page.template+'.html' ignore missing %}
 {% endfor %}
 
 {% include '_footer.html' %}
