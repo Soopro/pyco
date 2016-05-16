@@ -55,7 +55,7 @@
     "locale": "en_US",
     "title": "Pyco"
   },
-  "taxonomy":{
+  "taxonomies":{
       "category": {
         "title":"Category",
         "content_types": ["post"],

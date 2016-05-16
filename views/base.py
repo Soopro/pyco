@@ -278,7 +278,6 @@ class BaseView(MethodView):
                     for x in v.get("terms", [])
                 ]
             }
-            # del terms[tax["slug"]]
 
         return tax_dict
 

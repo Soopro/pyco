@@ -18,17 +18,16 @@
 
   "mode": 0,
 
-  "content_types":[
-    {"slug":"post", "title":"Posts"}
-  ],
+  "content_types":{
+    "post": {"title":"Posts", "status": 1}
+  },
 
-  "taxonomies":[
-    {
-      "slug":"category",
+  "taxonomies":{
+    "category": {
       "title":"Categories",
       "content_types":["post"]
     }
-  ],
+  },
 
 	"options":{
 		"sortby": "date",
