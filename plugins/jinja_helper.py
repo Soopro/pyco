@@ -162,6 +162,12 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
                               limit=12, intersection=True, sort_by='updated')
     """
+
+    try:
+        limit = int(limit)
+    except:
+        limit = 0
+
     if not isinstance(raw_salts, (list, dict)):
         return []
 
@@ -179,7 +185,7 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
 
     results = []
 
-    for cond in conditions:
+    for cond in conditions[:10]:
         opposite = False
         force = False
         cond_key = None
@@ -199,8 +205,10 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
             continue
 
         if intersection and results:
+            c_k = cond_key
+            c_v = cond_value
             results = [i for i in results
-                if _match_cond(i, cond_key, cond_value, opposite, force)]
+                       if _match_cond(i, c_k, c_v, opposite, force)]
         else:
             for i in salts:
                 _mch = _match_cond(i, cond_key, cond_value, opposite, force)
@@ -213,7 +221,6 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
         results = sortedby(results, sort_keys)
 
     # limit
-    limit = parse_int(limit)
     if limit > 0:
         results = results[0:limit]
         # do not limit in loop, because results is not settled down.
@@ -307,9 +314,7 @@ def timemachine(raw_pages, filed='date', precision='month',
         elif isinstance(date, datetime.datetime):
             date = date
         else:
-            raise ValueError("invalid date format. \
-                              It should be str, unicode, \
-                              timestamp(int) or datetime object")
+            raise ValueError("invalid date format.")
         try:
             return get_group_key.get(precision, 'month')(date)
         except Exception:
@@ -432,7 +437,7 @@ def _deep_get(key, obj):
         return obj.get(key)
     else:
         key_pairs = key.split('.', 1)
-        obj = obj.get(_key_pairs[0])
+        obj = obj.get(key_pairs[0])
         return _deep_get(key_pairs[1], obj)
 
 
