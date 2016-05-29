@@ -243,17 +243,21 @@ class BaseView(MethodView):
         return date_formatted
 
     def get_menus(self):
-        menus = self.config['SITE'].get("menus",{})
+        menus = self.config['SITE'].get("menus", {})
         base_url = self.config.get("BASE_URL")
+
         def process_menu_url(menu):
             for item in menu:
-                link = item.get("link")
-                if link and not url_validator(link):
+                link = item.get("link", "")
+                if not link or url_validator(link):
+                    item["url"] = link
+                elif link.startswith('/'):
                     item["url"] = os.path.join(base_url, link.strip('/'))
                 else:
-                    item["url"] = link
-                item["nodes"] = process_menu_url(item.get("nodes",[]))
+                    item["url"] = link.rstrip('/')
+                item["nodes"] = process_menu_url(item.get("nodes", []))
             return menu
+
         for menu in menus:
             menus[menu] = process_menu_url(menus[menu])
         return menus
