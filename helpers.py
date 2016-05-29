@@ -68,14 +68,34 @@ def make_content_response(output, status_code, etag=None):
     return response
 
 
+def _empty_value(value):
+    return value is not False and value != 0 and not bool(value)
+
 def get_param(key, required=False, default=None):
     source = request.json
     value = source.get(key)
 
-    if default is not None:
-        value = default
-    elif required:
-        raise Exception('Param key error.')
+    if _empty_value(value):
+        if default is not None:
+            value = default
+        elif required:
+            raise Exception('Param key error.')
+
+    return value
+
+
+def get_args(key, required=False, default=None, multiple=False):
+    source = request.args
+    if multiple:
+        value = source.getlist(key)
+    else:
+        value = source.get(key)
+
+    if _empty_value(value):
+        if default is not None:
+            value = default
+        elif required:
+            raise Exception('Args key error.')
 
     return value
 

@@ -20,14 +20,14 @@ from helpers import (load_config,
                      make_json_response)
 
 
-__version_info__ = ('1', '14', '0')
+__version_info__ = ('1', '15', '0')
 __version__ = '.'.join(__version_info__)
 
 # parse args
 parser = argparse.ArgumentParser(
     description='Options of starting Pyco server.')
 
-parser.add_argument('--webapp',
+parser.add_argument('--restful',
                     dest='restful_mode',
                     action='store_const',
                     const=True,
@@ -52,8 +52,8 @@ app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
 
 app.static_folder = app.config.get("THEMES_DIR")
 app.static_url_path = app.config.get("STATIC_BASE_URL")
+app.restful = args.restful_mode or app.config.get('RESTFUL')
 
-app.RESTful = args.restful_mode or app.config.get('RESTful')
 
 # extend jinja
 app.jinja_env.autoescape = False
@@ -89,11 +89,11 @@ app.add_url_rule(
 )
 
 
-if app.RESTful:
+if app.restful:
     app.json_encoder = JSONEncoder
 
     app.add_url_rule(
-        "/restapi/metas",
+        "/restapi/context",
         view_func=RestMetaView.as_view("metas")
     )
 
@@ -148,7 +148,7 @@ def errorhandler(err):
                                                      curr_file,
                                                      traceback.format_exc())
     current_app.logger.error(err_msg)
-    if current_app.RESTful:
+    if current_app.restful:
         return make_json_response(err_html_msg, 500)
     else:
         return make_response(err_html_msg, 500)
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     print "-------------------------------------------------------"
     print "Pyco: {}".format(app.version)
-    print "RESTful:", bool(app.RESTful)
+    print "RESTFUL:", bool(app.restful)
     print "-------------------------------------------------------"
 
     if app.debug:

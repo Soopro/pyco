@@ -6,9 +6,10 @@ DEBUG = True
 
 HOST = '0.0.0.0'
 PORT = 5500
-RESTful = False
+RESTFUL = False
+EDITOR = False
 
-THEME_NAME = 'default'
+THEME_NAME = 'dev'
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -57,9 +58,6 @@ SYS_ICON_LIST = ['favicon.ico',
 
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = ['gfm']
-
-GFW = True
-
 
 
 # plugins

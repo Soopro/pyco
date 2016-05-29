@@ -19,11 +19,10 @@ def before_render(var, template):
        "slot_key":"...scripts...",
     }
     """
-
+    app_id = var.get("app_id")
     slots = {}
     for k, v in _SLOTS.iteritems():
-        v = _render_ext_slots(v, app_id=var["app_id"],
-                                 meta=var["meta"])
+        v = _render_ext_slots(v, app_id=app_id)
         slots[k] = v
 
     var["slots"] = slots
@@ -31,10 +30,10 @@ def before_render(var, template):
 
 
 # helpers
-def _render_ext_slots(scripts, **context):
+def _render_ext_slots(scripts, app_id):
     try:
         template = Template(scripts)
-        scripts = template.render(**context)
+        scripts = template.render(app_id=app_id)
     except Exception as e:
         scripts = str(e)
     return scripts

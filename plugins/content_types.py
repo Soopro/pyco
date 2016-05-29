@@ -8,7 +8,6 @@ import os
 _CONFIG = {}
 _DEFAULT_CONTENT_TYPE = 'page'
 _REQUEST_PATH = ''
-_current_content_type = ''
 
 
 def config_loaded(config):
@@ -25,6 +24,8 @@ def request_url(request, redirect_to):
 
 
 def get_page_data(data, page_meta):
+    if not data or not page_meta:
+        return
     data["type"] = page_meta.get("type")
     filter_auto_type(data, data.get("url", '').replace(g.curr_base_url, ''))
     data["content_type"] = data["type"]
@@ -32,21 +33,23 @@ def get_page_data(data, page_meta):
 
 
 def single_page_meta(page_meta, redirect_to):
-    global _current_content_type
+    if not page_meta:
+        return
     filter_auto_type(page_meta, g.request_path)
     page_meta["content_type"] = page_meta["type"]
-    _current_content_type = page_meta['type']
     return
 
 
 def before_render(var, template):
+    if not template:
+        return
     # content types
     content_types = _CONFIG["SITE"].get("content_types")
     current_content_type = var["meta"].get("type","")
 
     var["content_type"] = {
-        'slug':current_content_type,
-        'title':content_types.get(current_content_type)
+        'slug': current_content_type,
+        'title': content_types.get(current_content_type)
     }
     return
 

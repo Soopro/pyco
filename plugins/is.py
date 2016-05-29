@@ -13,6 +13,8 @@ def config_loaded(config):
     return
 
 def single_page_meta(page_meta, redirect_to):
+    if not page_meta:
+        return
     if page_meta["slug"] == _DEFAULT_INDEX_SLUG:
         page_meta["is_front"] = True
     if page_meta["slug"] == _DEFAULT_404_SLUG:
@@ -21,6 +23,8 @@ def single_page_meta(page_meta, redirect_to):
     return
 
 def get_page_data(data, page_meta):
+    if not data or not page_meta:
+        return
     if data["slug"] == _DEFAULT_INDEX_SLUG:
         data["is_front"] = True
     if data["slug"] == _DEFAULT_404_SLUG:

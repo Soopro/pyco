@@ -10,6 +10,8 @@ def config_loaded(config):
     return
 
 def before_render(var, template):
+    if not template:
+        return
     if not var["meta"].get("template"):
         template["file"] = var["meta"].get("type")
     return

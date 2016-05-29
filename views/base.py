@@ -319,11 +319,11 @@ class BaseView(MethodView):
         sort_keys = ['-priority']
         sort_by = theme_meta_options.get("sortby", "updated")
 
-        if isinstance(sort_by, (str, unicode)):
+        if isinstance(sort_by, basestring):
             sort_keys.append(sort_by)
         elif isinstance(sort_by, list):
             sort_keys = sort_keys + [key for key in sort_by
-                                     if isinstance(key, (str, unicode))]
+                                     if isinstance(key, basestring)]
 
         return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
@@ -376,30 +376,25 @@ class BaseView(MethodView):
         # env context
         config = self.config
         app_id = self.config['SITE'].get("app_id", "pyco_app")
+        extension = self.config['SITE'].get("extension", {})
         self.view_ctx["app_id"] = app_id
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
         self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
-        self.view_ctx["gfw"] = config.get("GFW", False)
-        self.view_ctx["sa"] = {
-            'app':{
-                'pv': 500,
-                'vs': 500,
-                'uv': 500,
-                'ip': 500
-            },
-            'page': {
-                'pv': 100,
-                'vs': 100,
-                'uv': 100,
-                'ip': 100
-            }
-        }
+
         if include_request:
             self.view_ctx["args"] = parse_args()
             self.view_ctx["request"] = request
+
+        # menu
+        menu = self.get_menus()
+        self.view_ctx["menu"] = menu
+
+        # taxonomy
+        taxonomy = self.get_taxonomies()
+        self.view_ctx["tax"] = self.view_ctx["taxonomy"] = taxonomy
 
         return
 

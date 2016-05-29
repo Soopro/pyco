@@ -7,9 +7,9 @@ import math
 import os
 import datetime
 
-from helpers import sortedby, url_validator, add_url_params
+from helpers import parse_int, sortedby, url_validator, add_url_params
 
-ERROR_EXCESSIVE = "Excessive"
+
 _CONFIG = {}
 
 
@@ -29,6 +29,8 @@ def plugins_loaded():
 
 
 def before_render(var, template):
+    if not template:
+        return
     var["saltshaker"] = saltshaker
     var["stapler"] = stapler
     var["straw"] = straw
@@ -45,8 +47,11 @@ def before_render(var, template):
 def filter_contenttype(raw_pages, ctype=None, limit=None, sort_by=None):
     if not isinstance(raw_pages, (list, dict)):
         return raw_pages
-    result = saltshaker(raw_pages, [{"type": ctype}],
-                        limit=limit, sort_by=sort_by)
+    if hasattr(saltshaker, '__call__'):
+        result = saltshaker(raw_pages, [{"type": ctype}],
+                            limit=limit, sort_by=sort_by)
+    else:
+        result = []
     return result
 
 
@@ -108,23 +113,13 @@ def filter_tostring(obj):
             return ''
 
 
-# helpers
-def rope(raw_pages, sort_by="updated", desc=True, priority=True):
+# jinja helpers
+def rope(raw_pages, sort_by="updated", priority=True, reverse=True):
     """return a list of sorted results.
-    result_pages = rope(pages, sort_by="updated", desc=True, priority=True)
+    result_pages = rope(pages, sort_by="updated", priority=True, reverse=True)
     """
-    sort_keys = []
-
-    if priority:
-        sort_keys = ['-priority'] if desc else ['priority']
-
-    if isinstance(sort_by, basestring):
-        sort_keys.append(sort_by)
-    elif isinstance(sort_by, list):
-        sort_keys = sort_keys + [key for key in sort_by
-                                 if isinstance(key, basestring)]
-
-    return sortedby(raw_pages, sort_keys, desc)
+    sort_keys = _make_sort_keys(sort_by, priority, reverse)
+    return sortedby(raw_pages, sort_keys, reverse)
 
 
 def magnet(raw_pages, current, limit=1):
@@ -161,20 +156,14 @@ def straw(raw_list, value, key='id'):
     return result
 
 
-def saltshaker(raw_salts, conditions, limit=None,
-               intersection=True, sort_by=None):
+def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
+               intersection=True):
     """return a list of results matched conditions.
     result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
                               limit=12, intersection=True, sort_by='updated')
     """
-    results = []
-    try:
-        limit = int(limit)
-    except:
-        limit = 0
-
     if not isinstance(raw_salts, (list, dict)):
-        return ERROR_EXCESSIVE
+        return []
 
     if not isinstance(conditions, list):
         conditions = [conditions]
@@ -188,37 +177,7 @@ def saltshaker(raw_salts, conditions, limit=None,
     else:
         salts = raw_salts
 
-    def _match_cond(cond_value, cond_key, target,
-                    opposite=False, force=False):
-        if cond_value == '' and not force:
-            return _deep_in(cond_key, target) != opposite
-        elif cond_value is None and not force:
-            # if cond_value is None will reverse the opposite,
-            # then for the macthed opposite must reverse again. so...
-            # alaso supported if the target value really is None.
-            return _deep_in(cond_key, target) == opposite
-        elif isinstance(cond_value, bool) and not force:
-            return _deep_in(cond_key, target) != opposite
-        elif not _deep_in(cond_key, target):
-            return False
-
-        matched = False
-        target_value = _deep_get(cond_key, target)
-        if isinstance(cond_value, list):
-            for cv in cond_value:
-                matched = _match_cond(cv, target_value, force=True)
-                if matched:
-                    break
-        elif isinstance(cond_value, bool):
-            target_bool = isinstance(target_value, bool)
-            matched = cond_value == target_value and target_bool
-        else:
-            if isinstance(target_value, list):
-                matched = cond_value in target_value
-            else:
-                matched = cond_value == target_value
-
-        return matched != opposite
+    results = []
 
     for cond in conditions:
         opposite = False
@@ -240,21 +199,21 @@ def saltshaker(raw_salts, conditions, limit=None,
             continue
 
         if intersection and results:
-            results = [
-                i for i in results
-                if _match_cond(cond_value, cond_key, i, opposite, force)
-            ]
+            results = [i for i in results
+                if _match_cond(i, cond_key, cond_value, opposite, force)]
         else:
             for i in salts:
-                if i not in results and \
-                        _match_cond(cond_value, cond_key, i, opposite, force):
+                _mch = _match_cond(i, cond_key, cond_value, opposite, force)
+                if i not in results and _mch:
                     results.append(i)
 
     # sort by
-    if sort_by and hasattr(rope, '__call__'):
-        results = rope(results, sort_by)
+    if sort_by:
+        sort_keys = _make_sort_keys(sort_by)
+        results = sortedby(results, sort_keys)
 
     # limit
+    limit = parse_int(limit)
     if limit > 0:
         results = results[0:limit]
         # do not limit in loop, because results is not settled down.
@@ -372,7 +331,7 @@ def timemachine(raw_pages, filed='date', precision='month',
     return ret
 
 
-def gutter(pid, structures):
+def gutter(page_id, structures):
     """return a dict of next/prev page by structures.
     page_gutter = gutter(meta.id, menu.gutter.nodes)
     """
@@ -389,7 +348,7 @@ def gutter(pid, structures):
                     'url': p.get('url'),
                 }
                 break
-            elif p.get('id') and p.get('id') == pid:
+            elif p.get('id') and p.get('id') == page_id:
                 curr_page = p
             else:
                 prev_page = {
@@ -411,25 +370,78 @@ def gutter(pid, structures):
 
 
 # other helpers
+def _match_cond(target, cond_key, cond_value, opposite=False, force=False):
+    """
+    params:
+    - target: the source data want to check.
+    - cond_key: the attr key of condition.
+    - cond_value: the value of condition.
+      if the cond_value is a list, any item matched will make output matched.
+    - opposite: reverse check result.
+    - force: must have the value or not.
+    """
+    if cond_value == '' and not force:
+        return _deep_in(cond_key, target) != opposite
+    elif cond_value is None and not force:
+        # if cond_value is None will reverse the opposite,
+        # then for the macthed opposite must reverse again. so...
+        # also supported if the target value really is None.
+        return _deep_in(cond_key, target) == opposite
+    elif isinstance(cond_value, bool) and not force:
+        return _deep_in(cond_key, target) != opposite
+    elif not _deep_in(cond_key, target):
+        return False
+
+    matched = False
+    target_value = _deep_get(cond_key, target)
+    if isinstance(cond_value, list):
+        for c_val in cond_value:
+            matched = _match_cond(target, cond_key, c_val, force=True)
+            if matched:
+                break
+    elif isinstance(cond_value, bool):
+        target_bool = isinstance(target_value, bool)
+        matched = cond_value == target_value and target_bool
+    else:
+        if isinstance(target_value, list):
+            matched = cond_value in target_value
+        else:
+            matched = cond_value == target_value
+
+    return matched != opposite
+
+
+def _make_sort_keys(sort_by, priority=False, reverse=False):
+    sort_keys = []
+
+    if priority:
+        sort_keys = ['-priority'] if reverse else ['priority']
+
+    if isinstance(sort_by, basestring):
+        sort_keys.append(sort_by)
+    elif isinstance(sort_by, list):
+        sort_keys = sort_keys + [key for key in sort_by
+                                 if isinstance(key, basestring)]
+    return sort_keys
+
+
 def _deep_get(key, obj):
     if not isinstance(obj, dict):
         return None
-    if '.' not in key:
+    elif '.' not in key:
         return obj.get(key)
     else:
-        _key_pairs = key.split('.', 1)
-        _obj = obj.get(_key_pairs[0])
-        _value = _deep_get(_key_pairs[1], _obj)
-        return _value
+        key_pairs = key.split('.', 1)
+        obj = obj.get(_key_pairs[0])
+        return _deep_get(key_pairs[1], obj)
 
 
 def _deep_in(key, obj):
     if not isinstance(obj, dict):
         return False
-    if '.' not in key:
+    elif '.' not in key:
         return key in obj
     else:
-        _key_pairs = key.split('.', 1)
-        _obj = obj.get(_key_pairs[0])
-        _in = _deep_in(_key_pairs[1], _obj)
-        return _in
+        key_pairs = key.split('.', 1)
+        obj = obj.get(key_pairs[0])
+        return _deep_in(key_pairs[1], obj)

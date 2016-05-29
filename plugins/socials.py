@@ -29,7 +29,7 @@ def before_render(var, template):
     """
     social_list = []
     socials = _SOCIALS
-    
+
     if socials:
         # directly append if is list
         if isinstance(socials, list):
