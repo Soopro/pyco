@@ -193,8 +193,7 @@ class RestContentView(BaseView):
         return content_file
 
 
-    def get(self):
-        type_slug = get_args('type_slug')
+    def get(self, type_slug=None):
         limit = get_args('limit', default=0)
         offset = get_args('offset', default=0)
 

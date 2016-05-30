@@ -101,6 +101,10 @@ if app.restful:
         "/restapi/contents",
         view_func=RestContentView.as_view("contents")
     )
+    app.add_url_rule(
+        "/restapi/contents/<type_slug>",
+        view_func=RestContentView.as_view("contents")
+    )
 
 
 @app.before_request
