@@ -9,7 +9,7 @@ PORT = 5500
 RESTFUL = False
 EDITOR = False
 
-THEME_NAME = 'dev'
+THEME_NAME = 'default'
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,7 +33,7 @@ DEFAULT_THEME_META_FILE = "config.json"
 DEFAULT_TEMPLATE = "index"
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
-DEFAULT_EXCERPT_LENGTH = 50
+DEFAULT_EXCERPT_LENGTH = 162
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 
 STATIC_BASE_URL = "/static"

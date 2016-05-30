@@ -39,7 +39,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_TEMPLATE", "index")
 
     app.config.setdefault("DEFAULT_DATE_FORMAT", "%Y-%m-%d")
-    app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 50)
+    app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 162)
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
 
     app.config.setdefault("STATIC_BASE_URL", "/static")
