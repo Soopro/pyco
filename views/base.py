@@ -292,11 +292,11 @@ class BaseView(MethodView):
         content_ext = config.get('CONTENT_FILE_EXT')
         charset = config.get('CHARSET')
         files = self.get_files(content_dir, content_ext)
-        invisible_page_list = config.get('INVISIBLE_PAGE_LIST')
+        invisible_slugs = config.get('INVISIBLE_SLUGS')
 
         page_data_list = []
         for f in files:
-            if f in invisible_page_list:
+            if f in invisible_slugs:
                 continue
 
             relative_path = f.split(content_dir+"/", 1)[1]
