@@ -1,17 +1,13 @@
 /*
-Priority: 99
+Priority: 1
 Status: 1
 Template: index
-Title: A shortcut of online marketing
-Taxonomy:
-  category: ['inneral']
-Featured_img:
-  src: [%uploads%]/preview.jpg
-Tags:
-  - inneral
-  - fuck
-  - yes
+Title: Sample Theme
+Carousels:
+- src: '[%uploads%]/carousel1.gif'
+  title:
+  caption:
+  link: /
+  target: 
+  class: 
 */
-<p>A multi-functional online marketing toolkit which combines Website,   WeChat, Alipay, Broadcasting of member activities &amp; advertisment, etc.</p><p>  It help you to quickly build up your online marketing network.   Once you finalize the contents, you're good to go!</p>
-
-<p> Test short code: [%uploads%] </p>

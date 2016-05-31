@@ -3,20 +3,20 @@
   "license": "MIT",
   "author": "Redy",
 	"title": "Default Theme",
-
-	"thumbnail": "thumbnail.png",
+  "description": "This is a simple default theme for pyco.",
   "capability": "ws",
-	"previews": ["preview.jpg"],
-	"description": "This is a simple default theme for pyco.",
+  "thumbnail": "thumbnail.png",
+	"previews": ["preview.png"],
+	"poster": "poster.png",
+
+  "form_mode": true,
 
   "templates":{
-    "index": "Homepage",
-    "page": "Static Page",
-    "post": "Posts",
-    "error_404": "404"
+      "index": "Homepage",
+      "page": "Static Page",
+      "post": "Posts",
+      "error_404": "404"
   },
-
-  "mode": 0,
 
   "content_types":{
     "post": {"title":"Posts", "status": 1}

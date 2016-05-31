@@ -6,8 +6,11 @@
 
 	"thumbnail": "thumbnail.png",
   "capability": "wa",
-	"previews": ["preview.jpg"],
+	"previews": ["preview.png"],
+  "poster": "poster",
 	"description": "This is a simple default theme for pyco.",
+
+  "form_mode": true,
 
   "templates":{
     "index": "Homepage",
@@ -15,8 +18,6 @@
     "post": "Posts",
     "error_404": "404"
   },
-
-  "mode": 0,
 
   "content_types":{
     "post": {"title":"Posts", "status": 1}

@@ -1,68 +1,85 @@
 {
   "content_types": {
     "post": "Posts",
-    "page": "Pages"
-  },
-  "slots": {
-    "comment": "<mark>Test Comment Plugin Inject: {{app_id}} - {{meta.id}}</mark>"
+    "page": "Pages",
+    "work": "Works",
+    "product": "Products"
   },
   "menus": {
     "primary": [
       {
-        "key": "home",
+        "key": "index",
         "meta": {},
         "nodes": [],
         "title": "Home",
         "link": "/"
       },
       {
-        "key": "page",
+        "key": "taxonomy",
         "meta": {},
         "nodes": [],
-        "title": "Static Page",
-        "link": "/page"
-      }
-    ],
-    "gutter": [
+        "title": "Taxonomy",
+        "link": "/taxonomy"
+      },
       {
-        "key": "chapter-1",
+        "key": "portfolio",
         "meta": {},
-        "nodes": [
-          {
-            "id":"index.md",
-            "key": "xxx",
-            "title": "xxx"
-          },
-          {
-            "id":"page.md",
-            "key": "xxx",
-            "title": "xxx"
-          }
-        ],
-        "title": "Home",
-        "link": "/"
+        "nodes": [],
+        "title": "Portfolio",
+        "link": "/portfolio"
+      },
+      {
+        "key": "blog",
+        "meta": {},
+        "nodes": [],
+        "title": "Blog",
+        "link": "/blog"
+      },
+      {
+        "key": "price",
+        "meta": {},
+        "nodes": [],
+        "title": "Product",
+        "link": "/price"
       }
     ]
   },
+  "taxonomies":{
+    "category": {
+      "title":"Categories",
+      "content_types":["work"],
+      "terms": [
+        {"slug":"term1","title":"Term1"},
+        {"slug":"term2","title":"Term2"}
+      ]
+    }
+  },
+  "translates":{
+    "en_US":{
+      "name": "English",
+      "url": "#"
+    },
+    "zh_CN":{
+      "name": "中文",
+      "url": "#"
+    }
+  },
   "meta": {
     "slug":"pyco",
-    "type":"ws",
-    "logo":null,
+    "type":"sample",
+    "favicon": "[%uploads%]/favicon.png",
+    "logo": "[%uploads%]/logo.png",
+    "bg": "",
     "author": "redy",
     "copyright": "2015 Made by Pyco.",
-    "description": "A simple example of Pyco side ...",
+    "description": "Udah dari dulu tahu kalo bocor kenapa nggak ditambal tong ...",
     "license": "MIT",
     "locale": "en_US",
-    "title": "Pyco"
-  },
-  "taxonomies":{
-      "category": {
-        "title":"Category",
-        "content_types": ["post"],
-        "terms": [
-          {"slug":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
-          {"slug":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
-        ]
-      }
+    "title": "Sample",
+    "socials":{
+      "facebook":{"name":"Facebook","url":"#","code":"facebook"},
+      "twitter":{"name":"Twitter","url":"#","code":"twitter"}
     }
+  }
+
 }

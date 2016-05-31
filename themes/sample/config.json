@@ -7,15 +7,16 @@
         "en":"Sample",
         "zh":"范例"
     },
-    "capability": ["ws"],
+    "capability": "ws",
     "thumbnail": "thumbnail.png",
-    "poster": "poster.jpg",
+    "poster": "poster.png",
     "previews": ["preview.png"],
     "description": {
         "en":"A sample website. You can learn how to make soopro theme.",
-        "zh":"一个网站范例，您可以在这个主题上学会怎么制作适用于soopro的主题。"
+        "zh":"一个网站范例，您可以在这个主题上学会怎么制作速铺主题。"
     },
-    "mode": 1,
+
+    "form_mode": true,
 
     "templates": {
         "index": {
