@@ -131,7 +131,7 @@ class BaseView(MethodView):
         excerpt_ellipsis = opts.get('excerpt_ellipsis',
                                     default_excerpt_ellipsis)
 
-        excerpt = re.sub(r'<[^>]*?>', '', content)
+        excerpt = re.sub(r'<[^>]*?>', '', content).strip()
         if excerpt:
             excerpt = u" ".join(excerpt.split())
             excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
