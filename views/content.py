@@ -139,7 +139,6 @@ class ContentView(BaseView):
             else:
                 template_file_path = self.theme_path_for(default_template)
 
-
         # make dotted able
         for k,v in self.view_ctx.iteritems():
             self.view_ctx[k] = helper_make_dotted_dict(v)

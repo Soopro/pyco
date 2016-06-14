@@ -187,7 +187,7 @@ def helper_make_dotted_dict(obj):
     elif isinstance(obj, list):
         new_obj = []
         for i in obj:
-            new_obj.append(DottedImmutableDict(i))
+            new_obj.append(helper_make_dotted_dict(i))
         return new_obj
     else:
         return obj

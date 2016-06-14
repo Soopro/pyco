@@ -34,36 +34,33 @@ def before_render(var, template):
     locale = _LOCALE
     lang = locale.split('_')[0]
     translates = _TRANSLATES
-    
-    if translates:
-        # directly append if is list
-        if isinstance(translates, list):
-            for trans in translates:
-                if trans.get('key'):
-                    trans_list.append(trans)
 
-        # change to list if is dict
-        if isinstance(translates, dict):
-            for trans in translates:
-                tmp_trans = translates[trans]
-                tmp_trans.update({"key": trans})
-                trans_list.append(tmp_trans)
-    
+    if translates:
+        if isinstance(translates, list):
+            # directly append if is list
+            trans_list = [trans for trans in translates if trans.get('key')]
+
+        elif isinstance(translates, dict):
+            # change to list if is dict
+            def _make_key(k, v):
+                v.update({"key": k})
+                return v
+            trans_list = [_make_key(k, v) for k, v in translates.iteritems()]
 
     for trans in trans_list:
         trans_key = trans['key'].lower()
         if trans_key == locale.lower() or trans_key == lang.lower():
             trans["active"] = True
-    
+
     var["translates"] = trans_list
     var["locale"] = locale
     var["lang"] = lang
-    
+
     # set current translates
     lang_path = os.path.join(current_app.template_folder, _LANGUAGES_FOLDER)
 
     translator = Translator(locale, lang_path)
     var['_'] = translator.gettext
     var['_t'] = translator.t_gettext
-    
+
     return
