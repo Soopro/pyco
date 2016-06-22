@@ -265,19 +265,18 @@ class BaseView(MethodView):
     def get_taxonomies(self):
         taxs = self.config['SITE'].get("taxonomies",{})
         tax_dict = {}
-        for k,v in taxs.iteritems():
+        for k, v in taxs.iteritems():
             tax_dict[k] = {
                 "title": v.get("title"),
                 "slug": k,
                 "content_types": v.get("content_types"),
                 "terms": [
                     {
-                        "slug": x.get("slug"),
-                        "title": x.get("title"),
-                        "priority": x.get("priority"),
-                        "meta": x.get("meta",{}),
-                        "taxonomy": k,
-                        "updated": x.get("updated")
+                        "key": x.get("key", u''),
+                        "title": x.get("title", u''),
+                        "class": x.get("class", u''),
+                        "meta": x.get("meta", {}),
+                        "nodes": x.get("nodes", []),
                     }
                     for x in v.get("terms", [])
                 ]
