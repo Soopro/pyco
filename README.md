@@ -115,7 +115,7 @@ Global content data for whole site.
     }
     ```
 
-* `taxonomy`: **[ dict ]** All taxonomy host here. (also could be tax for short)
+* `taxonomies`: **[ dict ]** All taxonomy host here. (also could be tax for short)
   * `< taxonomy_slug >`: 
     1. `title`: **[ str ]** Taxonomy title.
     2. `content_types`: **[ list ]** list of supported content types.
@@ -171,7 +171,7 @@ Global content data for whole site.
     "locale": "en_US",
     "title": "Pyco"
   },
-  "taxonomy":{
+  "taxonomies":{
     "category": {
       "title":"Category",
       "content_types": ["post"],
