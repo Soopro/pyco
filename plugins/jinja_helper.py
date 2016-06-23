@@ -163,25 +163,18 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
                               limit=12, intersection=True, sort_by='updated')
     """
 
-    try:
-        limit = int(limit)
-    except:
-        limit = 0
-
     if not isinstance(raw_salts, (list, dict)):
         return []
-
-    if not isinstance(conditions, list):
-        conditions = [conditions]
-
-    # process if raw salts is dict
-    if isinstance(raw_salts, dict):
+    elif isinstance(raw_salts, dict):
         salts = []
         for k, v in raw_salts.iteritems():
             v['_saltkey'] = k
             salts.append(v)
     else:
         salts = raw_salts
+
+    if not isinstance(conditions, list):
+        conditions = [conditions]
 
     results = []
 
