@@ -12,7 +12,8 @@ from datetime import datetime
 
 from helpers import (url_validator,
                      sortedby,
-                     parse_args)
+                     parse_args,
+                     now)
 
 
 
@@ -384,12 +385,19 @@ class BaseView(MethodView):
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
-        self.view_ctx["site_meta"] = config.get("SITE",{}).get("meta")
+        self.view_ctx["site_meta"] = config.get("SITE", {}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
+
+        self.view_ctx["now"] = now(13)
 
         if include_request:
             self.view_ctx["args"] = parse_args()
-            self.view_ctx["request"] = request
+            self.view_ctx["request"] = {
+                "remote_addr": request.remote_addr,
+                "path": request.path,
+                "url": request.url,
+                "args": parse_args(),
+            }
 
         # menu
         menu = self.get_menus()

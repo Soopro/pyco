@@ -7,7 +7,11 @@ import math
 import os
 import datetime
 
-from helpers import parse_int, sortedby, url_validator, add_url_params
+from helpers import (parse_int,
+                     sortedby,
+                     url_validator,
+                     get_url_params,
+                     add_url_params)
 
 
 _CONFIG = {}
@@ -24,7 +28,7 @@ def plugins_loaded():
     current_app.jinja_env.filters["type"] = filter_contenttype
     current_app.jinja_env.filters["url"] = filter_url
     current_app.jinja_env.filters["path"] = filter_path
-    current_app.jinja_env.filters["tostring"] = filter_tostring
+    current_app.jinja_env.filters["args"] = filter_args
     return
 
 
@@ -40,6 +44,7 @@ def before_render(var, template):
     var["timemachine"] = timemachine
     var["gutter"] = gutter
     var["magnet"] = magnet
+    var["probe"] = probe
     return
 
 
@@ -99,18 +104,10 @@ def filter_path(url, remove_args=True, remove_hash=True):
     return "/{}".format(path.strip('/'))
 
 
-def filter_tostring(obj):
-    if isinstance(obj, basestring):
-        return obj
-    elif hasattr(obj, '__call__'):
-        return ''
-    elif obj is None:
-        return ''
-    else:
-        try:
-            return str(obj)
-        except:
-            return ''
+def filter_args(url, unique=True):
+    if not isinstance(url, basestring):
+        return {}
+    return get_url_params(url, unique)
 
 
 # jinja helpers
@@ -207,7 +204,6 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
                 _mch = _match_cond(i, cond_key, cond_value, opposite, force)
                 if i not in results and _mch:
                     results.append(i)
-
     # sort by
     if sort_by:
         sort_keys = _make_sort_keys(sort_by)

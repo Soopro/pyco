@@ -206,9 +206,21 @@ def url_validator(val):
         return False
 
 
-def now(int_output=True):
-    if int_output:
+def now(dig=10):
+    if dig == 10:
         return int(time.time())
+    elif dig == 11:
+        return int(time.time() * 10)
+    elif dig == 12:
+        return int(time.time() * 100)
+    elif dig == 13:
+        return int(time.time() * 1000)
+    elif dig == 14:
+        return int(time.time() * 10000)
+    elif dig == 15:
+        return int(time.time() * 100000)
+    elif dig == 16:
+        return int(time.time() * 1000000)
     else:
         return time.time()
 
