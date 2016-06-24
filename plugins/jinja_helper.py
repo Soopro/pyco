@@ -105,7 +105,7 @@ def filter_path(url, remove_args=True, remove_hash=True):
 
 def filter_args(url, unique=True):
     if not isinstance(url, basestring):
-        return {}
+        return {} if unique else []
     return get_url_params(url, unique)
 
 
