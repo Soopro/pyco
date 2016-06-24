@@ -11,7 +11,8 @@ from helpers import (parse_int,
                      sortedby,
                      url_validator,
                      get_url_params,
-                     add_url_params)
+                     add_url_params,
+                     DottedImmutableDict)
 
 
 _CONFIG = {}
@@ -105,8 +106,10 @@ def filter_path(url, remove_args=True, remove_hash=True):
 
 def filter_args(url, unique=True):
     if not isinstance(url, basestring):
-        return {}
-    return get_url_params(url, unique)
+        args = {}
+    else:
+        args = get_url_params(url, unique)
+    return DottedImmutableDict(args)
 
 
 # jinja helpers
