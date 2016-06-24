@@ -217,7 +217,7 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
 
 def glue(args=None, url=None):
     """return a url with added args.
-    relative_path_args = glue(\{"key": "value"\})
+    relative_path_args = glue({"key": "value"})
     """
     if not url:
         url = g.request_url or request.url
