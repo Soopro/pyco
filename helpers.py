@@ -229,7 +229,7 @@ def get_url_params(url, unique=True):
     url_parts = list(urlparse.urlparse(url))
     url_params = urlparse.parse_qsl(url_parts[4])
     if unique:
-       params = dict(url_params)
+        params = dict(url_params)
     else:
         params = {}
         for param in url_params:
