@@ -44,7 +44,6 @@ def before_render(var, template):
     var["timemachine"] = timemachine
     var["gutter"] = gutter
     var["magnet"] = magnet
-    var["probe"] = probe
     return
 
 
