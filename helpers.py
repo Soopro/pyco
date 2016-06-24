@@ -227,9 +227,20 @@ def now(dig=10):
 
 def get_url_params(url, unique=True):
     url_parts = list(urlparse.urlparse(url))
-    params = urlparse.parse_qsl(url_parts[4])
+    url_params = urlparse.parse_qsl(url_parts[4])
     if unique:
-        params = dict(params)
+       params = dict(url_params)
+    else:
+        params = {}
+        for param in url_params:
+            k = param[0]
+            v = param[1]
+            if k in params:
+                if not isinstance(params[k], list):
+                    params[k] = [params[k]]
+                params[k].append(v)
+            else:
+                params[k] = v
     return params
 
 
