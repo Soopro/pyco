@@ -16,7 +16,7 @@ def config_loaded(config):
 def before_render(var, template):
     """ slots json sample
     {
-       "slot_key":"...scripts...",
+       "<slot_key>":"...scripts...",
     }
     """
     app_id = var.get("app_id")
@@ -25,7 +25,7 @@ def before_render(var, template):
         v = _render_ext_slots(v, app_id=app_id)
         slots[k] = v
 
-    var["slots"] = slots
+    var["slot"] = slots
     return
 
 
