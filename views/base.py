@@ -388,7 +388,7 @@ class BaseView(MethodView):
         self.view_ctx["site_meta"] = config.get("SITE", {}).get("meta")
         self.view_ctx["theme_meta"] = config.get("THEME_META")
 
-        self.view_ctx["now"] = now(13)
+        self.view_ctx["now"] = now()
 
         if include_request:
             self.view_ctx["args"] = parse_args()
