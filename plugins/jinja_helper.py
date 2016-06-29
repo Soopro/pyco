@@ -218,13 +218,13 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
     return results
 
 
-def glue(args=None, url=None):
+def glue(args=None, url=None, unique=True):
     """return a url with added args.
-    relative_path_args = glue({"key": "value"})
+    relative_path_args = glue(\{"key": "value"\})
     """
     if not url:
         url = g.request_url or request.url
-    return add_url_params(url, args)
+    return add_url_params(url, args, unique=unique)
 
 
 def stapler(raw_pages, paged=1, perpage=12):
