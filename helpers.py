@@ -245,8 +245,18 @@ def get_url_params(url, unique=True):
 
 
 def add_url_params(url, new_params, concat=True, unique=True):
+    def _dict2params(param_dict):
+        out_params = []
+        for k, v in param_dict.iteritems():
+            if isinstance(v, list):
+                for i in v:
+                    out_params.append((k, i))
+            else:
+                out_params.append((k, v))
+        return out_params
+
     if isinstance(new_params, dict):
-        new_params = [(k, v) for k, v in new_params.iteritems()]
+        new_params = _dict2params(new_params)
     elif isinstance(new_params, basestring):
         new_params = [(new_params, new_params)]
     elif not isinstance(new_params, list):
@@ -254,7 +264,6 @@ def add_url_params(url, new_params, concat=True, unique=True):
 
     url_parts = list(urlparse.urlparse(url))
     params = urlparse.parse_qsl(url_parts[4])
-
     params = new_params if not concat else params + new_params
 
     if unique:
