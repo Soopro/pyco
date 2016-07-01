@@ -1,7 +1,7 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request, abort, render_template, redirect
+from flask import current_app, request, abort, render_template,
 import os
 
 from helpers import (get_param,
@@ -71,7 +71,7 @@ class RestContentView(BaseView):
                priority=None, desc=None):
         SHORT_ATTR_KEY = self.config.get('SHORT_ATTR_KEY')
 
-        for cond in conditions[:10]: # max fields key is 10
+        for cond in conditions[:10]:  # max fields key is 10
             opposite = False
             force = False
             cond_key = None
@@ -185,13 +185,12 @@ class RestContentView(BaseView):
 
     def _add_pagination(content_file, index, total_count):
         content_file['pagination'] = {
-            'num': index+1,
+            'num': index + 1,
             'index': index,
             'total_count': total_count,
-            'has_more': total_count-1 > index,
+            'has_more': total_count - 1 > index,
         }
         return content_file
-
 
     def get(self, type_slug=None):
         limit = get_args('limit', default=0)

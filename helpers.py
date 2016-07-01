@@ -2,12 +2,13 @@
 from __future__ import absolute_import
 import os
 import re
-import gettext
 import json
 import urllib
 import urlparse
 import time
 from flask import make_response, request
+from werkzeug.datastructures import ImmutableDict
+from functools import cmp_to_key
 
 
 def load_config(app, config_name="config.py"):
@@ -71,6 +72,7 @@ def make_content_response(output, status_code, etag=None):
 def _empty_value(value):
     return value is not False and value != 0 and not bool(value)
 
+
 def get_param(key, required=False, default=None):
     source = request.json
     value = source.get(key)
@@ -125,9 +127,6 @@ def helper_process_url(url, base_url):
         return url
 
 
-from functools import cmp_to_key
-
-
 def sortedby(source, sort_keys, reverse=False):
     keys = {}
 
@@ -164,9 +163,6 @@ def parse_int(num):
         return int(float(num))
     except:
         return 0
-
-
-from werkzeug.datastructures import ImmutableDict
 
 
 class DottedImmutableDict(ImmutableDict):

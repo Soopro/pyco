@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 
@@ -60,6 +60,7 @@ def before_parse_content(content):
 def after_parse_content(content):
     print "after parse content"
     return
+
 
 def get_page_data(data, page_meta):
     print "get page data"

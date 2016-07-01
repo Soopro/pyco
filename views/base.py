@@ -1,10 +1,14 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 from flask import current_app, request
 from flask.views import MethodView
 
-import os, re, markdown, json, yaml
+import os
+import re
+import markdown
+import json
+import yaml
 
 from hashlib import sha1
 from types import ModuleType
@@ -16,7 +20,6 @@ from helpers import (url_validator,
                      now)
 
 
-
 class BaseView(MethodView):
 
     def __init__(self):
@@ -26,7 +29,6 @@ class BaseView(MethodView):
         self.type = None
         self.max_mode = True
         self.view_ctx = dict()
-
 
     def load_metas(self):
         config = self.config
@@ -52,7 +54,6 @@ class BaseView(MethodView):
             raise Exception(err_msg)
         site_meta.close()
 
-
     def load_plugins(self, plugins):
         loaded_plugins = []
         for module_or_module_name in plugins:
@@ -62,7 +63,7 @@ class BaseView(MethodView):
                 try:
                     module = __import__(module_or_module_name)
                 except ImportError as err:
-                    raise
+                    raise err
                 loaded_plugins.append(module)
         self.plugins = loaded_plugins
         return
@@ -96,7 +97,7 @@ class BaseView(MethodView):
 
     def gen_id(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
-        page_id = relative_path.replace(content_dir+"/", '', 1).lstrip('/')
+        page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
         return page_id
 
     def gen_page_url(self, relative_path):
@@ -135,7 +136,7 @@ class BaseView(MethodView):
         excerpt = re.sub(r'<[^>]*?>', '', content).strip()
         if excerpt:
             excerpt = u" ".join(excerpt.split())
-            excerpt = excerpt[0:excerpt_length]+excerpt_ellipsis
+            excerpt = excerpt[0:excerpt_length] + excerpt_ellipsis
         return excerpt
 
     @staticmethod
@@ -177,7 +178,7 @@ class BaseView(MethodView):
         def convert_data(x):
             if isinstance(x, dict):
                 return dict((k.lower(), convert_data(v))
-                             for k, v in x.iteritems())
+                            for k, v in x.iteritems())
             elif isinstance(x, list):
                 return list([convert_data(i) for i in x])
             elif isinstance(x, str):
@@ -211,10 +212,10 @@ class BaseView(MethodView):
     def generate_etag(content_file_full_path):
         file_stat = os.stat(content_file_full_path)
         base = "{mtime:0.0f}_{size:d}_{fpath}".format(
-                    mtime=file_stat.st_mtime,
-                    size=file_stat.st_size,
-                    fpath=content_file_full_path
-                )
+            mtime=file_stat.st_mtime,
+            size=file_stat.st_size,
+            fpath=content_file_full_path
+        )
 
         return sha1(base).hexdigest()
 
@@ -239,7 +240,7 @@ class BaseView(MethodView):
             date_object = datetime.strptime(date, date_format)
             _fmted = date_object.strftime(to_format.encode('utf-8'))
             date_formatted = _fmted.decode('utf-8')
-        except Exception as e:
+        except Exception:
             date_formatted = date
         return date_formatted
 
@@ -264,7 +265,7 @@ class BaseView(MethodView):
         return menus
 
     def get_taxonomies(self):
-        taxs = self.config['SITE'].get("taxonomies",{})
+        taxs = self.config['SITE'].get("taxonomies", {})
         tax_dict = {}
         for k, v in taxs.iteritems():
             tax_dict[k] = {
@@ -285,7 +286,6 @@ class BaseView(MethodView):
 
         return tax_dict
 
-
     def get_pages(self):
         config = self.config
         content_dir = config.get('CONTENT_DIR')
@@ -299,10 +299,10 @@ class BaseView(MethodView):
             if f in invisible_slugs:
                 continue
 
-            relative_path = f.split(content_dir+"/", 1)[1]
+            relative_path = f.split(content_dir + "/", 1)[1]
             if relative_path.startswith("~") \
-                or relative_path.startswith("#") \
-                or relative_path in self.content_ignore_files:
+                    or relative_path.startswith("#") \
+                    or relative_path in self.content_ignore_files:
                 continue
 
             with open(f, "r") as fh:
@@ -331,7 +331,7 @@ class BaseView(MethodView):
 
         return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
-    #theme
+    # theme
     @property
     def theme_name(self):
         return self.config.get("THEME_NAME")
@@ -374,13 +374,11 @@ class BaseView(MethodView):
         data["updated"] = int(os.path.getctime(file_path))
         return data
 
-
     # context
-    def init_context(self, include_request = True):
+    def init_context(self, include_request=True):
         # env context
         config = self.config
         app_id = self.config['SITE'].get("app_id", "pyco_app")
-        extension = self.config['SITE'].get("extension", {})
         self.view_ctx["app_id"] = app_id
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
@@ -409,7 +407,7 @@ class BaseView(MethodView):
 
         return
 
-    #hook
+    # hook
     def run_hook(self, hook_name, **references):
         for plugin_module in self.plugins:
             func = plugin_module.__dict__.get(hook_name)

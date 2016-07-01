@@ -1,6 +1,6 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
-import gettext
+
 import os
 from flask import current_app
 

@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 _CONFIG = {}
@@ -9,11 +9,13 @@ def config_loaded(config):
     _CONFIG = config
     return
 
+
 def single_page_meta(page_meta, redirect_to):
     if not page_meta:
         return
     page_meta['status'] = int(page_meta.get("status", 1))
     return
+
 
 def get_page_data(data, page_meta):
     if not data or not page_meta:

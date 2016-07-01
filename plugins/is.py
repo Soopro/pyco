@@ -1,9 +1,10 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 _CONFIG = {}
 _DEFAULT_INDEX_SLUG = 'index'
 _DEFAULT_404_SLUG = 'error_404'
+
 
 def config_loaded(config):
     global _CONFIG, _DEFAULT_INDEX_SLUG, _DEFAULT_404_SLUG
@@ -11,6 +12,7 @@ def config_loaded(config):
     _DEFAULT_INDEX_SLUG = config.get("DEFAULT_INDEX_SLUG")
     _DEFAULT_404_SLUG = config.get("DEFAULT_404_SLUG")
     return
+
 
 def single_page_meta(page_meta, redirect_to):
     if not page_meta:
@@ -21,6 +23,7 @@ def single_page_meta(page_meta, redirect_to):
         page_meta["is_404"] = True
 
     return
+
 
 def get_page_data(data, page_meta):
     if not data or not page_meta:
@@ -37,6 +40,6 @@ def get_pages(pages, current_page):
         return
     for page in pages:
         if page["slug"] == current_page["slug"] \
-        and page["content_type"] == current_page["content_type"]:
+                and page["content_type"] == current_page["content_type"]:
             page["is_current"] = True
     return

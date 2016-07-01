@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 from flask import g
@@ -45,7 +45,7 @@ def before_render(var, template):
         return
     # content types
     content_types = _CONFIG["SITE"].get("content_types")
-    current_content_type = var["meta"].get("type","")
+    current_content_type = var["meta"].get("type", "")
 
     var["content_type"] = {
         'slug': current_content_type,

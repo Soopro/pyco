@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
 from flask import current_app, request, abort, render_template, redirect
@@ -19,7 +19,7 @@ class ContentView(BaseView):
         is_not_found = False
         run_hook = self.run_hook
 
-        #for pass intor hook
+        # for pass intor hook
         file = {"path": None}
         file_content = {"content": None}
 
@@ -129,7 +129,7 @@ class ContentView(BaseView):
 
         template_file_path = self.theme_path_for(template['file'])
         template_file_absolute_path = self.theme_absolute_path_for(
-                                                        template_file_path)
+            template_file_path)
 
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
@@ -140,7 +140,7 @@ class ContentView(BaseView):
                 template_file_path = self.theme_path_for(default_template)
 
         # make dotted able
-        for k,v in self.view_ctx.iteritems():
+        for k, v in self.view_ctx.iteritems():
             self.view_ctx[k] = helper_make_dotted_dict(v)
 
         output = {}

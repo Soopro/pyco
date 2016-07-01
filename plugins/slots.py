@@ -1,7 +1,6 @@
-#coding=utf-8
+# coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app
 from jinja2 import Template
 
 _SLOTS = {}
