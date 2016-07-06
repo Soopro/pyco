@@ -1,8 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request, abort, render_template,
-import os
+from flask import current_app
 
 from helpers import (get_param,
                      get_args,
