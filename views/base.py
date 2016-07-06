@@ -296,13 +296,13 @@ class BaseView(MethodView):
 
         page_data_list = []
         for f in files:
-            if f in invisible_slugs:
+            if self.gen_page_slug(f) in invisible_slugs:
                 continue
 
             relative_path = f.split(content_dir + "/", 1)[1]
-            if relative_path.startswith("~") \
-                    or relative_path.startswith("#") \
-                    or relative_path in self.content_ignore_files:
+            if relative_path.startswith("~") or \
+               relative_path.startswith("#") or \
+               relative_path in self.content_ignore_files:
                 continue
 
             with open(f, "r") as fh:
