@@ -250,11 +250,11 @@ def stapler(raw_pages, paged=1, perpage=12):
 
 def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
     """return dict count entries has same value of specified field.
-    count = barcode(pages, field="category", sort=True, desc=True)
+    terms_counted = barcode(pages, field="category", sort=True, desc=True)
     """
     ret = dict()
 
-    def count(term):
+    def count_terms(term):
         if term:
             if term not in ret:
                 ret[term] = 1
@@ -268,9 +268,9 @@ def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
             for i in obj:
                 if not isinstance(term[i], basestring):
                     continue
-                count(term[i])
+                count_terms(term[i])
         else:
-            count(term)
+            count_terms(term)
 
     bars = []
     for k, v in ret.iteritems():
