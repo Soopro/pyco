@@ -236,7 +236,7 @@ def stapler(raw_pages, paged=1, perpage=None):
         perpage = g.curr_theme_options.get('perpage')
 
     perpage = parse_int(perpage, 12, True)
-    paged = parse_int(perpage, 1, True)
+    paged = parse_int(paged, 1, True)
 
     matched_pages = raw_pages
     max_pages = int(math.ceil(len(matched_pages) / float(perpage)))
