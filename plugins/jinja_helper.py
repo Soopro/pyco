@@ -21,6 +21,7 @@ _CONFIG = {}
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
+    g.curr_theme_options = config['THEME_META'].get('options')
     return
 
 
@@ -227,10 +228,16 @@ def glue(args=None, url=None, unique=True):
     return add_url_params(url, args, unique=unique)
 
 
-def stapler(raw_pages, paged=1, perpage=12):
+def stapler(raw_pages, paged=1, perpage=None):
     """return dict for paginator.
     booklet = stapler(pages, paged=1, perpage=12)
     """
+    if not perpage:
+        perpage = g.curr_theme_options.get('perpage')
+
+    perpage = parse_int(perpage, 12, True)
+    paged = parse_int(perpage, 1, True)
+
     matched_pages = raw_pages
     max_pages = int(math.ceil(len(matched_pages) / float(perpage)))
 
@@ -250,11 +257,11 @@ def stapler(raw_pages, paged=1, perpage=12):
 
 def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
     """return dict count entries has same value of specified field.
-    terms_counted = barcode(pages, field="category", sort=True, desc=True)
+    count = barcode(pages, field="category", sort=True, desc=True)
     """
     ret = dict()
 
-    def count_terms(term):
+    def count(term):
         if term:
             if term not in ret:
                 ret[term] = 1
@@ -268,9 +275,9 @@ def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
             for i in obj:
                 if not isinstance(term[i], basestring):
                     continue
-                count_terms(term[i])
+                count(term[i])
         else:
-            count_terms(term)
+            count(term)
 
     bars = []
     for k, v in ret.iteritems():

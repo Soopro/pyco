@@ -158,11 +158,16 @@ def sortedby(source, sort_keys, reverse=False):
     return sorted(source, key=cmp_to_key(compare), reverse=reverse)
 
 
-def parse_int(num):
+def parse_int(num, default=0, natural=False):
     try:
-        return int(float(num))
+        num = int(float(num))
     except:
-        return 0
+        num = default
+    if natural == 0:
+        num = max(0, num)
+    elif natural:
+        num = max(1, num)
+    return num
 
 
 class DottedImmutableDict(ImmutableDict):
