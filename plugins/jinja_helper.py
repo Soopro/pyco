@@ -21,7 +21,6 @@ _CONFIG = {}
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
-    g.curr_theme_options = config['THEME_META'].get('options')
     return
 
 
@@ -228,13 +227,10 @@ def glue(args=None, url=None, unique=True):
     return add_url_params(url, args, unique=unique)
 
 
-def stapler(raw_pages, paged=1, perpage=None):
+def stapler(raw_pages, paged=1, perpage=12):
     """return dict for paginator.
     booklet = stapler(pages, paged=1, perpage=12)
     """
-    if not perpage:
-        perpage = g.curr_theme_options.get('perpage')
-
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
 
