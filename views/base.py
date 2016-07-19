@@ -95,6 +95,9 @@ class BaseView(MethodView):
     def gen_libs_url(self):
         return self.config.get("LIBS_URL")
 
+    def gen_api_baseurl(self):
+        return self.config.get("API_URL")
+
     def gen_id(self, relative_path):
         content_dir = self.config.get('CONTENT_DIR')
         page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
@@ -383,6 +386,7 @@ class BaseView(MethodView):
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
+        self.view_ctx["api_baseurl"] = self.gen_api_baseurl()
         self.view_ctx["site_meta"] = site_meta
         self.view_ctx["theme_meta"] = config.get("THEME_META")
 

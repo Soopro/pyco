@@ -56,7 +56,7 @@ class ContentView(BaseView):
             status_code = 404
             file["path"] = self.content_not_found_full_path
             if not self.check_file_exists(file["path"]):
-                # without not found file
+                # without not found 404 file
                 abort(404)
 
         # read file content
@@ -67,7 +67,9 @@ class ContentView(BaseView):
             file_content['content'] = f.read().decode(charset)
 
         if is_not_found:
-            run_hook("after_404_load_content", file=file, content=file_content)
+            run_hook("after_404_load_content",
+                     file=file,
+                     content=file_content)
         run_hook("after_load_content", file=file, content=file_content)
 
         # parse file content
@@ -134,10 +136,7 @@ class ContentView(BaseView):
         if not os.path.isfile(template_file_absolute_path):
             template['file'] = None
             default_template = config.get('DEFAULT_TEMPLATE')
-            if is_not_found:
-                abort(404)
-            else:
-                template_file_path = self.theme_path_for(default_template)
+            template_file_path = self.theme_path_for(default_template)
 
         # make dotted able
         for k, v in self.view_ctx.iteritems():

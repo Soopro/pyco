@@ -16,6 +16,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 BASE_URL = "http://localhost:5500"
 BASE_PATH = ""
 
+API_URL = "http://api.soopro.io"
 LIBS_URL = "http://libs.soopro.com"
 
 CHARSET = "utf8"
