@@ -378,12 +378,12 @@ class BaseView(MethodView):
     def init_context(self, include_request=True):
         # env context
         config = self.config
-        app_id = self.config['SITE'].get("app_id", "pyco_app")
-        self.view_ctx["app_id"] = app_id
+        site_meta = config.get("SITE", {}).get("meta", {})
+        self.view_ctx["app_id"] = site_meta.get('id', 'pyco_app')
         self.view_ctx["base_url"] = self.gen_base_url()
         self.view_ctx["theme_url"] = self.gen_theme_url()
         self.view_ctx["libs_url"] = self.gen_libs_url()
-        self.view_ctx["site_meta"] = config.get("SITE", {}).get("meta")
+        self.view_ctx["site_meta"] = site_meta
         self.view_ctx["theme_meta"] = config.get("THEME_META")
 
         self.view_ctx["now"] = now()
