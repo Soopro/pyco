@@ -17,7 +17,7 @@ BASE_URL = "http://localhost:5500"
 BASE_PATH = ""
 
 API_URL = "http://api.soopro.io"
-LIBS_URL = "http://libs.soopro.com"
+LIBS_URL = "http://libs.soopro.io"
 
 CHARSET = "utf8"
 
