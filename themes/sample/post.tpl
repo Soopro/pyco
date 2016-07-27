@@ -8,7 +8,7 @@
 <div>
     <span sup-editor-meta ng-model="meta.author" default="{{_('Author')}}"></span>
 </div>
-<time datetime="2016-04-06">{{meta.date_formatted}}</time>
+<time datetime="2016-04-06">{{meta.date|date_formatted}}</time>
 <div sup-editor-media ng-model="meta.featured_img">
     <img ng-src="{{meta.featured_img.src}}" alt="featured_img">
 </div>

@@ -26,7 +26,7 @@
       <article>
         <header>
           <h4>{{post.title}}</h4>
-          <h5>Posted by {{post.author}} on {{post.date_formatted}}</h5>
+          <h5>Posted by {{post.author}} on {{post.date|date_formatted}}</h5>
         </header>
         <p>{{post.description}}</p>
         <a href="{{post.url}}">Enter</a>

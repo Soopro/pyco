@@ -10,6 +10,7 @@ import datetime
 from helpers import (parse_int,
                      sortedby,
                      url_validator,
+                     format_date,
                      get_url_params,
                      add_url_params,
                      DottedImmutableDict)
@@ -30,6 +31,7 @@ def plugins_loaded():
     current_app.jinja_env.filters["url"] = filter_url
     current_app.jinja_env.filters["path"] = filter_path
     current_app.jinja_env.filters["args"] = filter_args
+    current_app.jinja_env.filters["date_formatted"] = filter_date_formatted
     return
 
 
@@ -110,6 +112,28 @@ def filter_args(url, unique=True):
     else:
         args = get_url_params(url, unique)
     return DottedImmutableDict(args)
+
+
+def filter_date_formatted(date, to_format=None):
+    if not date:
+        return ''
+    if not isinstance(to_format, basestring):
+        to_format = None
+
+    formats = {
+        "en": u'%B %d, %Y',
+        "zh": u'%Y年 %m月 %d日',
+    }
+
+    try:
+        locale = g.curr_app["locale"]
+        lang = locale.split('_')[0]
+    except:
+        locale = None
+        lang = None
+
+    to_format = to_format or formats.get(locale) or formats.get(lang)
+    return format_date(date, to_format)
 
 
 # jinja helpers

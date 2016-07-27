@@ -20,7 +20,7 @@ from helpers import (load_config,
                      make_json_response)
 
 
-__version_info__ = ('1', '16', '0')
+__version_info__ = ('1', '16', '1')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -125,7 +125,6 @@ def before_request():
     g.curr_base_path = base_path
     g.request_path = request.path.replace(base_path, '', 1) or '/'
     g.request_url = "{}{}".format(g.curr_base_url, g.request_path)
-
     g.uploads_url = os.path.join(base_url, uploads_dir)
 
     if current_app.debug:
@@ -137,7 +136,6 @@ def before_request():
         current_app.jinja_env.cache = None
         tpl_folder = current_app.template_folder
         current_app.jinja_loader = FileSystemLoader(tpl_folder)
-        # current_app._get_current_object().jinja_loader = FileSystemLoader(current_app.template_folder)
 
 
 @app.errorhandler(Exception)

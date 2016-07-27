@@ -7,7 +7,7 @@
 
 <h1>{{meta.title or _('Title')}}</h1>
 <div>{{meta.author or _('Author')}}</div>
-<time datetime="2016-04-06">{{meta.date_formatted}}</time>
+<time datetime="2016-04-06">{{meta.date|date_formatted}}</time>
 <div><img src="{{meta.featured_img.src}}" alt="featured_img"></div>
 <p>{{meta.description or _('Description text here')}}</p>
 

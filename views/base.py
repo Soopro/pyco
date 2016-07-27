@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request
+from flask import current_app, request, g
 from flask.views import MethodView
 
 import os
@@ -43,16 +43,20 @@ class BaseView(MethodView):
             raise Exception(err_msg)
         theme_meta.close()
 
-        site_meta_file = os.path.join(config.get('CONTENT_DIR'),
-                                      config.get('DEFAULT_SITE_META_FILE'))
+        site_file = os.path.join(config.get('CONTENT_DIR'),
+                                 config.get('DEFAULT_SITE_META_FILE'))
 
-        site_meta = open(site_meta_file)
+        site_data = open(site_file)
         try:
-            self.config['SITE'] = json.load(site_meta)
+            self.config['SITE'] = json.load(site_data)
+            site_meta = self.config['SITE'].get("meta", {})
+            g.curr_app = {
+                "locale": site_meta.get("locale", u'en_US')
+            }
         except Exception as e:
             err_msg = "Load Site Meta faild: {}".format(str(e))
             raise Exception(err_msg)
-        site_meta.close()
+        site_data.close()
 
     def load_plugins(self, plugins):
         loaded_plugins = []
@@ -234,19 +238,6 @@ class BaseView(MethodView):
             all_files.extend(file_full_paths)
         return all_files
 
-    def format_date(self, date):
-        config = self.config
-        date_format = config.get('DEFAULT_DATE_FORMAT')
-        theme_meta_options = self.view_ctx["theme_meta"].get("options")
-        to_format = theme_meta_options.get('date_format')
-        try:
-            date_object = datetime.strptime(date, date_format)
-            _fmted = date_object.strftime(to_format.encode('utf-8'))
-            date_formatted = _fmted.decode('utf-8')
-        except Exception:
-            date_formatted = date
-        return date_formatted
-
     def get_menus(self):
         menus = self.config['SITE'].get("menus", {})
         base_url = self.config.get("BASE_URL")
@@ -364,7 +355,7 @@ class BaseView(MethodView):
         # data['type'] = meta.get('type') # define by plugin
         data["updated"] = meta.get("updated", 0)
         data["date"] = meta.get("date", u"")
-        data["date_formatted"] = self.format_date(meta.get("date", u""))
+
         content = self.parse_content(content_string)
         opts = self.view_ctx["theme_meta"].get('options', {})
         data["excerpt"] = self.gen_excerpt(content, opts)

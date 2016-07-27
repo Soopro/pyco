@@ -66,6 +66,7 @@
   },
   "meta": {
     "slug":"pyco",
+    "locale": "en_US",
     "type":"sample",
     "favicon": "[%uploads%]/favicon.png",
     "logo": "[%uploads%]/logo.png",
@@ -74,7 +75,6 @@
     "copyright": "2015 Made by Pyco.",
     "description": "Udah dari dulu tahu kalo bocor kenapa nggak ditambal tong ...",
     "license": "MIT",
-    "locale": "en_US",
     "title": "Sample",
     "socials":{
       "facebook":{"name":"Facebook","url":"#","code":"facebook"},

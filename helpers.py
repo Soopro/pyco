@@ -1,13 +1,14 @@
 # coding=utf-8
 from __future__ import absolute_import
+from flask import make_response, request
+from werkzeug.datastructures import ImmutableDict
 import os
 import re
 import json
 import urllib
 import urlparse
 import time
-from flask import make_response, request
-from werkzeug.datastructures import ImmutableDict
+from datetime import datetime
 from functools import cmp_to_key
 
 
@@ -273,3 +274,30 @@ def add_url_params(url, new_params, concat=True, unique=True):
     url_parts[4] = urllib.urlencode(params)
 
     return urlparse.urlunparse(url_parts)
+
+
+def format_date(date, to_format, input_datefmt="%Y-%m-%d"):
+    if not to_format:
+        return date
+    if isinstance(date, basestring):
+        try:
+            date_object = datetime.strptime(date, input_datefmt)
+        except Exception:
+            return date
+
+    elif isinstance(date, int):
+        if len(str(date)) == 13:
+            date = int(date / 1000)
+        try:
+            date_object = datetime.fromtimestamp(date)
+        except Exception:
+            return date
+    else:
+        return date
+
+    try:
+        _formatted = date_object.strftime(to_format.encode('utf-8'))
+        date_formatted = _formatted.decode('utf-8')
+    except Exception:
+        date_formatted = date
+    return date_formatted

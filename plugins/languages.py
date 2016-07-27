@@ -2,23 +2,20 @@
 from __future__ import absolute_import
 
 import os
-from flask import current_app
+from flask import current_app, g
 
 from plugins.i18n import Translator
 
 
-_DEFAULT_LOCALE = 'en'
 _TRANSLATE_REDIRECT = False
-_LOCALE = None
 _TRANSLATES = {}
 _LANGUAGES_FOLDER = 'languages'
 _TRANS_FILE = 'translate'
 
 
 def config_loaded(config):
-    global _LOCALE, _TRANSLATES
+    global _TRANSLATES
     site_meta = config.get("SITE", {}).get("meta", {})
-    _LOCALE = site_meta.get("locale", _DEFAULT_LOCALE)
     _TRANSLATES = site_meta.pop("translates", None)
     return
 
@@ -31,7 +28,7 @@ def before_render(var, template):
     }
     """
     trans_list = []
-    locale = _LOCALE
+    locale = g.curr_app["locale"]
     lang = locale.split('_')[0]
     translates = _TRANSLATES
 
