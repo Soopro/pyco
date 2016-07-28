@@ -37,7 +37,7 @@ DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 DEFAULT_EXCERPT_LENGTH = 162
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 
-STATIC_BASE_URL = "/static"
+STATIC_PATH = "static"
 
 UPLOADS_DIR = "uploads"
 

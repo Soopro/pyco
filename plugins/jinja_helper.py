@@ -86,7 +86,7 @@ def filter_url(url, remove_args=False, remove_hash=False):
     if not url or url_validator(url):
         return url
     elif url.startswith('/'):
-        return os.path.join(g.curr_base_url, url.strip('/'))
+        return "{}/{}".format(g.curr_base_url, url.strip('/'))
     else:
         return url.rstrip('/')
 

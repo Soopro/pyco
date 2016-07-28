@@ -1,10 +1,11 @@
 # coding=utf-8
 from __future__ import absolute_import
-import os
 import re
 
-uploads_pattern = r"\[\%uploads\%\]"
-theme_pattern = r"\[\%theme\%\]"
+
+RE_UPLOADS_DIR = re.compile(r"\[\%uploads\%\]", re.IGNORECASE)
+RE_THEME_URL = re.compile(r"\[\%theme\%\]", re.IGNORECASE)
+
 _CONFIG = {}
 
 
@@ -37,16 +38,15 @@ def after_render(output):
 # custom functions
 def replace(content):
     # uploads
-    uploads_dir = os.path.join(_CONFIG["BASE_URL"],
-                               _CONFIG["UPLOADS_DIR"])
-    re_uploads_dir = re.compile(uploads_pattern, re.IGNORECASE)
-    content = re.sub(re_uploads_dir, unicode(uploads_dir), content)
+    uploads_dir = "{}/{}".format(_CONFIG["BASE_URL"],
+                                 _CONFIG["UPLOADS_DIR"])
+    content = re.sub(RE_UPLOADS_DIR, unicode(uploads_dir), content)
 
     # theme
-    theme_dir = os.path.join(_CONFIG["STATIC_BASE_URL"],
-                             _CONFIG["THEME_NAME"])
-    re_theme_dir = re.compile(theme_pattern, re.IGNORECASE)
-    content = re.sub(re_theme_dir, unicode(theme_dir), content)
+    theme_url = "{}/{}/{}".format(_CONFIG["BASE_URL"],
+                                  _CONFIG["STATIC_PATH"],
+                                  _CONFIG["THEME_NAME"])
+    content = re.sub(RE_THEME_URL, unicode(theme_url), content)
 
     return content
 

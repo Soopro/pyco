@@ -20,7 +20,7 @@ from helpers import (load_config,
                      make_json_response)
 
 
-__version_info__ = ('1', '16', '2')
+__version_info__ = ('1', '16', '3')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -51,7 +51,7 @@ app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
                                    app.config.get("THEME_NAME"))
 
 app.static_folder = app.config.get("THEMES_DIR")
-app.static_url_path = app.config.get("STATIC_BASE_URL")
+app.static_url_path = "/{}".format(app.config.get("STATIC_PATH"))
 app.restful = args.restful_mode or app.config.get('RESTFUL')
 
 
@@ -124,8 +124,8 @@ def before_request():
     g.curr_base_url = base_url
     g.curr_base_path = base_path
     g.request_path = request.path.replace(base_path, '', 1) or '/'
-    g.request_url = "{}{}".format(g.curr_base_url, g.request_path)
-    g.uploads_url = os.path.join(base_url, uploads_dir)
+    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
+    g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
     if current_app.debug:
         # change template folder

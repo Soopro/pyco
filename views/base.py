@@ -12,7 +12,6 @@ import yaml
 
 from hashlib import sha1
 from types import ModuleType
-from datetime import datetime
 
 from helpers import (url_validator,
                      sortedby,
@@ -90,11 +89,12 @@ class BaseView(MethodView):
         return None
 
     def gen_base_url(self):
-        return os.path.join(self.config.get("BASE_URL"))
+        return self.config.get("BASE_URL")
 
     def gen_theme_url(self):
-        return os.path.join(self.config.get('STATIC_BASE_URL'),
-                            self.config.get('THEME_NAME'))
+        return "{}/{}/{}".format(self.config.get("BASE_URL"),
+                                 self.config.get('STATIC_PATH'),
+                                 self.config.get('THEME_NAME'))
 
     def gen_libs_url(self):
         return self.config.get("LIBS_URL")
@@ -121,8 +121,8 @@ class BaseView(MethodView):
             relative_path = relative_path[:-len_index_str]
 
         relative_url = relative_path.replace(content_dir, '', 1)
-        url = os.path.join(self.config.get("BASE_URL"),
-                           relative_url.lstrip('/'))
+        url = "{}/{}".format(self.config.get("BASE_URL"),
+                             relative_url.lstrip('/'))
         return url
 
     def gen_page_slug(self, relative_path):

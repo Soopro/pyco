@@ -2,7 +2,6 @@
 from __future__ import absolute_import
 from flask import make_response, request
 from werkzeug.datastructures import ImmutableDict
-import os
 import re
 import json
 import urllib
@@ -44,7 +43,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 162)
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
 
-    app.config.setdefault("STATIC_BASE_URL", "/static")
+    app.config.setdefault("STATIC_PATH", "static")
     app.config.setdefault("UPLOADS_DIR", "uploads")
     app.config.setdefault("CONTENT_DIR", "content")
     app.config.setdefault("CONTENT_FILE_EXT", ".md")
@@ -123,9 +122,7 @@ def helper_process_url(url, base_url):
     if re.match("^(?:http|ftp)s?://", url):
         return url
     else:
-        base_url = os.path.join(base_url, '')
-        url = os.path.join(base_url, url.strip('/'))
-        return url
+        return "{}/{}".format(base_url, url.strip('/'))
 
 
 def sortedby(source, sort_keys, reverse=False):
