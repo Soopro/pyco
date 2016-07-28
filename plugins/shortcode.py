@@ -4,6 +4,7 @@ import os
 import re
 
 uploads_pattern = r"\[\%uploads\%\]"
+theme_pattern = r"\[\%theme\%\]"
 _CONFIG = {}
 
 
@@ -32,13 +33,22 @@ def after_render(output):
     output['content'] = replace(output['content'])
     return
 
+
 # custom functions
-
-
 def replace(content):
-    uploads_dir = os.path.join(_CONFIG["BASE_URL"], _CONFIG["UPLOADS_DIR"])
+    # uploads
+    uploads_dir = os.path.join(_CONFIG["BASE_URL"],
+                               _CONFIG["UPLOADS_DIR"])
     re_uploads_dir = re.compile(uploads_pattern, re.IGNORECASE)
-    return re.sub(re_uploads_dir, unicode(uploads_dir), content)
+    content = re.sub(re_uploads_dir, unicode(uploads_dir), content)
+
+    # theme
+    theme_dir = os.path.join(_CONFIG["STATIC_BASE_URL"],
+                             _CONFIG["THEME_NAME"])
+    re_theme_dir = re.compile(theme_pattern, re.IGNORECASE)
+    content = re.sub(re_theme_dir, unicode(theme_dir), content)
+
+    return content
 
 
 def parser_replace(item):
