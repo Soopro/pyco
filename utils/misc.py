@@ -260,8 +260,7 @@ class DottedImmutableDict(ImmutableDict):
         try:
             v = self.__getitem__(item)
         except KeyError:
-            # ImmutableDict will take care rest errors.
-            return ''
+            return None
         if isinstance(v, dict):
             v = DottedImmutableDict(v)
         return v

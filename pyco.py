@@ -50,8 +50,9 @@ app.static_url_path = "/{}".format(app.config.get("STATIC_PATH"))
 app.restful = args.restful_mode or app.config.get('RESTFUL')
 
 
-# extend jinja
+# jinja env
 app.jinja_env.autoescape = False
+app.jinja_env.finalize = lambda x: '' if x is None else x
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 # app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
