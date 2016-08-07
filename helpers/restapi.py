@@ -93,8 +93,8 @@ def get_rest_meta():
     current_app.debug = config.get("DEBUG")
     view_ctx = init_context(request, config, False)
 
-    run_hook("config_loaded", config=config)
-    run_hook("before_render", var=view_ctx, template=None)
+    run_hook(plugins, "config_loaded", config=config)
+    run_hook(plugins, "before_render", var=view_ctx, template=None)
 
     output = view_ctx
 

@@ -5,7 +5,6 @@ from flask import request, abort, render_template, redirect
 
 from helpers.common import *
 from utils.content import content_not_found_full_path, content_splitter
-from utils.file import get_file_path
 from utils.misc import (make_content_response,
                         helper_make_dotted_dict,
                         helper_process_url)
@@ -13,8 +12,7 @@ from utils.theme import theme_path_for, theme_absolute_path_for
 from utils.file import check_file_exists
 
 
-def get_content(_):
-    # init
+def get_content(file_slug='index', content_type_slug='page'):
     config = current_app.config
     status_code = 200
     is_not_found = False
@@ -43,11 +41,7 @@ def get_content(_):
     if site_redirect_url and request.url != site_redirect_url:
         return redirect(site_redirect_url, code=301)
 
-    # redirect to index if it is restful app
-    if current_app.restful and request.path.rstrip('/') != '':
-        return redirect(base_url, code=301)
-
-    file["path"] = get_file_path(config, request.path)
+    file["path"] = get_file_path(config, file_slug, content_type_slug)
     # hook before load content
     run_hook(plugins, "before_load_content", file=file)
     # if not found
@@ -61,13 +55,13 @@ def get_content(_):
 
     # read file content
     if is_not_found:
-        run_hook("before_404_load_content", file=file)
+        run_hook(plugins, "before_404_load_content", file=file)
 
     with open(file['path'], "r") as f:
         file_content['content'] = f.read().decode(charset)
 
     if is_not_found:
-        run_hook("after_404_load_content",
+        run_hook(plugins, "after_404_load_content",
                  file=file,
                  content=file_content)
     run_hook(plugins, "after_load_content", file=file, content=file_content)
@@ -148,3 +142,18 @@ def get_content(_):
                                         **view_ctx)
     run_hook(plugins, "after_render", output=output)
     return make_content_response(output['content'], status_code)
+
+
+# helpers
+def get_file_path(config, file_slug, content_type_slug):
+    content_dir = config.get('CONTENT_DIR')
+    content_ext = config.get('CONTENT_FILE_EXT')
+
+    if content_type_slug == 'page':
+        scope = os.path.join(content_dir, file_slug)
+    else:
+        scope = os.path.join(content_dir, content_type_slug, file_slug)
+    file_path = "{}{}".format(scope, content_ext)
+    if check_file_exists(file_path):
+        return file_path
+    return None

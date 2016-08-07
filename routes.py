@@ -7,8 +7,10 @@ from views.content import get_content
 from config import UPLOADS_DIR
 
 urlpatterns = [
-    ('/', get_content, "GET", {'defaults': {"_": ""}}),
-    ('/<path:_>', get_content, "GET"),
+    ('/', get_content, "GET"),
+    ('/<file_slug>/', get_content, "GET"),
+    ('/<content_type_slug>/<file_slug>/', get_content, "GET"),
+    # rest api
     ('/restapi/context', get_content, "GET"),
     ('/restapi/contents',new_content_api, "GET"),
     ('/restapi/contents/<type_slug>', get_content_api, "GET"),

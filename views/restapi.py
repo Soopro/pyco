@@ -50,7 +50,7 @@ def new_content_api():
     # contents
     view_ctx["pages"] = get_pages(config, view_ctx, plugins)
 
-    run_hook("get_pages",
+    run_hook(plugins, "get_pages",
              pages=view_ctx["pages"],
              current_page={})
 
@@ -107,7 +107,7 @@ def get_content_api(type_slug=None):
     # contents
     view_ctx["pages"] = get_pages(config, view_ctx, plugins)
 
-    run_hook("get_pages",
+    run_hook(plugins, "get_pages",
              pages=view_ctx["pages"],
              current_page={})
 
