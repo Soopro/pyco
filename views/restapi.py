@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
-
+from flask import request
 from config import MAXIMUM_QUERY
 from helpers.init import *
 from helpers.restapi import _query, _add_pagination
@@ -25,10 +25,10 @@ def new_content_api():
     # load
     load_metas(config)
     plugins = load_plugins(config.get("PLUGINS"))
-    run_hook("plugins_loaded")
+    run_hook(plugins, "plugins_loaded")
 
     current_app.debug = config.get("DEBUG")
-    view_ctx = init_context()
+    view_ctx = init_context(request, config)
 
     run_hook(plugins, "config_loaded", config=config)
 
@@ -54,7 +54,7 @@ def new_content_api():
              pages=view_ctx["pages"],
              current_page={})
 
-    run_hook("before_render", var=view_ctx, template=None)
+    run_hook(plugins, "before_render", var=view_ctx, template=None)
 
     # make conditions
     conditions = param_fields + param_metas
@@ -96,7 +96,7 @@ def get_content_api(type_slug=None):
     run_hook(plugins, "plugins_loaded")
 
     current_app.debug = config.get("DEBUG")
-    view_ctx = init_context()
+    view_ctx = init_context(request, config)
 
     run_hook(plugins, "config_loaded", config=config)
 
@@ -111,7 +111,7 @@ def get_content_api(type_slug=None):
              pages=view_ctx["pages"],
              current_page={})
 
-    run_hook("before_render", var=view_ctx, template=None)
+    run_hook(plugins, "before_render", var=view_ctx, template=None)
 
     # make conditions
     if type_slug:
