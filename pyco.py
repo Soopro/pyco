@@ -113,10 +113,7 @@ def errorhandler(err):
                                                      curr_file,
                                                      traceback.format_exc())
     current_app.logger.error(err_msg)
-    if current_app.restful:
-        return make_json_response(err_html_msg, 500)
-    else:
-        return make_response(err_html_msg, 500)
+    return make_json_response(err_html_msg, 500)
 
 
 if __name__ == "__main__":
