@@ -1,23 +1,18 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+import argparse
+import os
+import sys
+import traceback
+
 from flask import Flask, current_app, request, abort, g, make_response
 from flask.json import JSONEncoder
-
 from jinja2 import FileSystemLoader
-
-import sys
-import os
-import traceback
-import argparse
-
-from views import (ContentView,
-                   RestMetaView,
-                   RestContentView,
-                   UploadsView)
-
-from helpers import (load_config,
-                     make_json_response)
+from routes import urlpatterns
+from helpers.init import load_config
+from utils.misc import route_inject
+from utils.misc import (make_json_response)
 
 
 __version_info__ = ('1', '16', '3')
@@ -63,48 +58,16 @@ app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
 # app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
+app.json_encoder = JSONEncoder
 
 # routes
-app.add_url_rule(
-    "/",
-    defaults={"_": ""},
-    view_func=ContentView.as_view("index")
-)
-
-app.add_url_rule(
-    "/<path:_>",
-    view_func=ContentView.as_view("content")
-)
-
+route_inject(app, urlpatterns)
 
 app.add_url_rule(
     app.static_url_path + '/<path:filename>',
     view_func=app.send_static_file,
     endpoint='static'
 )
-
-app.add_url_rule(
-    "/{}/<path:filepath>".format(app.config.get("UPLOADS_DIR")),
-    view_func=UploadsView.as_view("uploads")
-)
-
-
-if app.restful:
-    app.json_encoder = JSONEncoder
-
-    app.add_url_rule(
-        "/restapi/context",
-        view_func=RestMetaView.as_view("metas")
-    )
-
-    app.add_url_rule(
-        "/restapi/contents",
-        view_func=RestContentView.as_view("contents")
-    )
-    app.add_url_rule(
-        "/restapi/contents/<type_slug>",
-        view_func=RestContentView.as_view("contents")
-    )
 
 
 @app.before_request

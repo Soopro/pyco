@@ -68,6 +68,7 @@ SYS_ICON_LIST = ['favicon.ico',
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = ['gfm']
 
+MAXIMUM_QUERY = 60
 
 # plugins
 PLUGINS = ["draft",
