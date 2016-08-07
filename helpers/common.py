@@ -1,18 +1,20 @@
 # coding=utf8
+import json
 import os
-import json
-from types import ModuleType
-from flask import g, current_app
-from utils.file import check_file_exists
-import re
-import markdown
-import json
-import yaml
 from hashlib import sha1
+from types import ModuleType
+
+import markdown
+import yaml
+from flask import g, current_app
+
+from utils.content import content_ignore_files, content_splitter
 from utils.misc import (url_validator,
                          sortedby,
                          parse_args,
                          now)
+from utils.url import gen_base_url, gen_theme_url, gen_libs_url, gen_api_baseurl, gen_id, gen_page_url, gen_page_slug, \
+    gen_excerpt
 
 
 def load_config(app, config_name="config.py"):
@@ -97,116 +99,6 @@ def load_plugins(plugins):
                 raise err
             loaded_plugins.append(module)
     return loaded_plugins
-
-
-# common funcs
-def get_file_path(config, url):
-    content_dir = config.get('CONTENT_DIR')
-    content_ext = config.get('CONTENT_FILE_EXT')
-    default_index_slug = config.get("DEFAULT_INDEX_SLUG")
-
-    base_path = os.path.join(content_dir, url[1:]).rstrip("/")
-    file_name = "{}{}".format(base_path, content_ext)
-    if check_file_exists(file_name):
-        return file_name
-
-    tmp_fname = "{}{}".format(default_index_slug, content_ext)
-    file_name = os.path.join(base_path, tmp_fname)
-    if check_file_exists(file_name):
-        return file_name
-    return None
-
-
-def gen_base_url(config):
-    return config.get("BASE_URL")
-
-
-def gen_theme_url(config):
-    return "{}/{}/{}".format(config.get("BASE_URL"),
-                             config.get('STATIC_PATH'),
-                             config.get('THEME_NAME'))
-
-
-def gen_libs_url(config):
-    return config.get("LIBS_URL")
-
-
-def gen_api_baseurl(config):
-    return config.get("API_URL")
-
-
-def gen_id(config, relative_path):
-    content_dir = config.get('CONTENT_DIR')
-    page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
-    return page_id
-
-
-def gen_page_url(config, relative_path):
-    content_dir = config.get('CONTENT_DIR')
-    content_ext = config.get('CONTENT_FILE_EXT')
-    default_index_slug = config.get("DEFAULT_INDEX_SLUG")
-
-    if relative_path.endswith(content_ext):
-        relative_path = os.path.splitext(relative_path)[0]
-    front_page_content_path = "{}/{}".format(content_dir,
-                                             default_index_slug)
-    if relative_path.endswith(front_page_content_path):
-        len_index_str = len(default_index_slug)
-        relative_path = relative_path[:-len_index_str]
-
-    relative_url = relative_path.replace(content_dir, '', 1)
-    url = "{}/{}".format(config.get("BASE_URL"),
-                         relative_url.lstrip('/'))
-    return url
-
-
-def gen_page_slug(config, relative_path):
-    content_ext = config.get('CONTENT_FILE_EXT')
-    if relative_path.endswith(content_ext):
-        relative_path = os.path.splitext(relative_path)[0]
-    slug = relative_path.split('/')[-1]
-    return slug
-
-
-def gen_excerpt(config, content, opts):
-    default_excerpt_length = config.get('DEFAULT_EXCERPT_LENGTH')
-    excerpt_length = opts.get('excerpt_length',
-                              default_excerpt_length)
-    default_excerpt_ellipsis = config.get('DEFAULT_EXCERPT_ELLIPSIS')
-    excerpt_ellipsis = opts.get('excerpt_ellipsis',
-                                default_excerpt_ellipsis)
-
-    excerpt = re.sub(r'<[^>]*?>', '', content).strip()
-    if excerpt:
-        excerpt = u" ".join(excerpt.split())
-        excerpt = excerpt[0:excerpt_length] + excerpt_ellipsis
-    return excerpt
-
-
-def content_not_found_relative_path(config):
-    content_ext = config.get('CONTENT_FILE_EXT')
-    default_404_slug = config.get('DEFAULT_404_SLUG')
-    return ["{}{}".format(default_404_slug, content_ext)]
-
-
-def content_not_found_full_path(config):
-    content_dir = config.get('CONTENT_DIR')
-    return os.path.join(content_dir, content_not_found_relative_path)
-
-
-def content_ignore_files(config):
-    base_files = content_not_found_relative_path(config)
-    base_files.extend(config.get("IGNORE_FILES"))
-    return base_files
-
-
-def content_splitter(file_content):
-    pattern = r"(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)"
-    re_pattern = re.compile(pattern)
-    m = re_pattern.match(file_content)
-    if m is None:
-        return "", ""
-    return m.group("meta"), m.group("content")
 
 
 def parse_page_meta(plugins, meta_string):
@@ -355,20 +247,6 @@ def get_pages(config, view_ctx, plugins):
                                  if isinstance(key, basestring)]
 
     return sortedby(page_data_list, sort_keys, reverse=sort_desc)
-
-
-def theme_name(config):
-    return config.get("THEME_NAME")
-
-
-def theme_path_for(config, tmpl_name):
-    return "{}{}".format(tmpl_name, config.get('TEMPLATE_FILE_EXT'))
-
-
-def theme_absolute_path_for(tmpl_path):
-    return os.path.join(current_app.root_path,
-                        current_app.template_folder,
-                        tmpl_path)
 
 
 def parse_file_attrs(meta, file_path, content_string, config,  view_ctx,

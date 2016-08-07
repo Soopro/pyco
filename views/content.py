@@ -1,12 +1,16 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-import os
-from flask import current_app, request, abort, render_template, redirect
-from helpers.init import *
+from flask import request, abort, render_template, redirect
+
+from helpers.common import *
+from utils.content import content_not_found_full_path, content_splitter
+from utils.file import get_file_path
 from utils.misc import (make_content_response,
                         helper_make_dotted_dict,
                         helper_process_url)
+from utils.theme import theme_path_for, theme_absolute_path_for
+from utils.file import check_file_exists
 
 
 def get_content(_):

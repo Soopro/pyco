@@ -10,7 +10,7 @@ from flask import Flask, current_app, request, abort, g, make_response
 from flask.json import JSONEncoder
 from jinja2 import FileSystemLoader
 from routes import urlpatterns
-from helpers.init import load_config
+from helpers.common import load_config
 from utils.misc import route_inject
 from utils.misc import (make_json_response)
 

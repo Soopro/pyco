@@ -1,7 +1,7 @@
 # coding=utf8
 from flask import current_app, request
 
-from helpers.init import load_metas, load_plugins, run_hook, init_context
+from helpers.common import load_metas, load_plugins, run_hook, init_context
 from utils.misc import sortedby, make_json_response
 
 

@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 from flask import request
 from config import MAXIMUM_QUERY
-from helpers.init import *
+from helpers.common import *
 from helpers.restapi import _query, _add_pagination
 from utils.misc import (get_param,
                         get_args,
