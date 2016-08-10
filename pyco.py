@@ -15,7 +15,7 @@ from utils.misc import route_inject
 from utils.misc import (make_json_response)
 
 
-__version_info__ = ('1', '16', '3')
+__version_info__ = ('1', '16', '4')
 __version__ = '.'.join(__version_info__)
 
 # parse args
@@ -52,7 +52,7 @@ app.restful = args.restful_mode or app.config.get('RESTFUL')
 
 # jinja env
 app.jinja_env.autoescape = False
-app.jinja_env.finalize = lambda x: '' if x is None else x
+app.jinja_env.finalize = lambda x: '' if hasattr(x, '__call__') else x
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 # app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
