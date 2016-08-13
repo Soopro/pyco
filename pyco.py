@@ -10,7 +10,7 @@ from flask import Flask, current_app, request, abort, g, make_response
 from flask.json import JSONEncoder
 from jinja2 import FileSystemLoader
 from routes import urlpatterns
-from helpers.common import load_config
+from helpers.common import load_config, load_metas, load_plugins, run_hook, init_context
 from utils.misc import route_inject
 from utils.misc import (make_json_response)
 
@@ -90,6 +90,19 @@ def before_request():
     g.request_path = request.path.replace(base_path, '', 1) or '/'
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
+
+    # load
+    config = current_app.config
+    load_metas(config)
+    plugins = load_plugins(config.get("PLUGINS"))
+    run_hook(plugins, "plugins_loaded")
+
+    current_app.debug = config.get("DEBUG")
+    view_ctx = init_context(request, config)
+
+    run_hook(plugins, "config_loaded", config=config)
+    g.plugins = plugins
+    g.view_ctx = view_ctx
 
     if current_app.debug:
         # change template folder

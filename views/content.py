@@ -14,22 +14,14 @@ from utils.file import check_file_exists
 
 def get_content(file_slug='index', content_type_slug='page'):
     config = current_app.config
+    plugins = g.plugins
+    view_ctx = g.view_ctx
     status_code = 200
     is_not_found = False
 
     # for pass intor hook
     file = {"path": None}
     file_content = {"content": None}
-
-    # load
-    load_metas(config)
-    plugins = load_plugins(config.get("PLUGINS"))
-    run_hook(plugins, "plugins_loaded")
-
-    current_app.debug = config.get("DEBUG")
-    view_ctx = init_context(request, config)
-
-    run_hook(plugins, "config_loaded", config=config)
 
     base_url = config.get("BASE_URL")
     charset = config.get('CHARSET')
