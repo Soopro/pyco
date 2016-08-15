@@ -6,7 +6,7 @@ import os
 import sys
 import traceback
 
-from flask import Flask, current_app, request, abort, g, make_response
+from flask import Flask, current_app, request, abort, g
 from flask.json import JSONEncoder
 from jinja2 import FileSystemLoader
 from routes import urlpatterns
@@ -15,7 +15,7 @@ from utils.misc import route_inject
 from utils.misc import (make_json_response)
 
 
-__version_info__ = ('1', '16', '4')
+__version_info__ = ('1', '16', '5')
 __version__ = '.'.join(__version_info__)
 
 # parse args

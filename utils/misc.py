@@ -291,8 +291,9 @@ def process_slug(value):
         slug = unicode(slugify(value))
     except Exception:
         slug = None
-    default_slug = unicode(repr(time.time())).replace('.', '-')
-    return slug or default_slug
+    if slug is None:
+        slug = unicode(repr(time.time())).replace('.', '-')
+    return slug
 
 
 def safe_cast(val, to_type, default=None):
