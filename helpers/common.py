@@ -10,11 +10,17 @@ from flask import g, current_app
 
 from utils.content import content_ignore_files, content_splitter
 from utils.misc import (url_validator,
-                         sortedby,
-                         parse_args,
-                         now)
-from utils.url import gen_base_url, gen_theme_url, gen_libs_url, gen_api_baseurl, gen_id, gen_page_url, gen_page_slug, \
-    gen_excerpt
+                        sortedby,
+                        parse_args,
+                        now)
+from utils.url import (gen_base_url,
+                       gen_theme_url,
+                       gen_libs_url,
+                       gen_api_baseurl,
+                       gen_id,
+                       gen_page_url,
+                       gen_page_slug,
+                       gen_excerpt)
 
 
 def load_config(app, config_name="config.py"):
@@ -230,7 +236,8 @@ def get_pages(config, view_ctx, plugins):
         except Exception as e:
             e.current_file = f
             raise e
-        data = parse_file_attrs(meta, f, content_string, config, view_ctx, False)
+        data = parse_file_attrs(meta, f, content_string,
+                                config, view_ctx, False)
         run_hook(plugins, "get_page_data", data=data, page_meta=meta.copy())
         page_data_list.append(data)
 
@@ -249,7 +256,7 @@ def get_pages(config, view_ctx, plugins):
     return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
 
-def parse_file_attrs(meta, file_path, content_string, config,  view_ctx,
+def parse_file_attrs(meta, file_path, content_string, config, view_ctx,
                      escape_content=True):
 
     data = dict()

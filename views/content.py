@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import request, abort, render_template, redirect
+from flask import request, abort, render_template, redirect, g
 
 from helpers.common import *
 from utils.content import content_not_found_full_path, content_splitter
