@@ -20,17 +20,9 @@ def new_content_api():
 
     # init
     config = current_app.config
+    plugins = g.plugins
+    view_ctx = g.view_ctx
     status_code = 200
-
-    # load
-    load_metas(config)
-    plugins = load_plugins(config.get("PLUGINS"))
-    run_hook(plugins, "plugins_loaded")
-
-    current_app.debug = config.get("DEBUG")
-    view_ctx = init_context(request, config)
-
-    run_hook(plugins, "config_loaded", config=config)
 
     SHORT_ATTR_KEY = config.get('SHORT_ATTR_KEY')
 
@@ -88,17 +80,9 @@ def get_content_api(type_slug=None):
 
     # init
     config = current_app.config
+    plugins = g.plugins
+    view_ctx = g.view_ctx
     status_code = 200
-
-    # load
-    load_metas(config)
-    plugins = load_plugins(config.get("PLUGINS"))
-    run_hook(plugins, "plugins_loaded")
-
-    current_app.debug = config.get("DEBUG")
-    view_ctx = init_context(request, config)
-
-    run_hook(plugins, "config_loaded", config=config)
 
     SHORT_ATTR_KEY = config.get('SHORT_ATTR_KEY')
 
