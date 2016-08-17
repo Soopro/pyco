@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request, abort, render_template, redirect, g
+from flask import current_app, request, abort, render_template, redirect
 import os
 
 from utils.response import make_content_response
@@ -21,7 +21,7 @@ from helpers.content import (content_not_found_full_path,
 from helpers.theme import get_theme_path, get_theme_abs_path
 
 
-def get_content(file_slug='index', content_type_slug='page'):
+def get_content(content_type_slug='page', file_slug='index'):
     # load
     get_app_metas()
     run_hook("config_loaded", config=current_app.config)

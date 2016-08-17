@@ -1,7 +1,11 @@
 # coding=utf8
 from __future__ import absolute_import
 
+from flask import current_app, make_response, send_from_directory
+from utils.response import make_cors_headers
 from types import ModuleType
+import os
+import mimetypes
 
 
 def load_config(app, config_name="config.py"):
@@ -55,3 +59,17 @@ def load_plugins(app):
                 raise err
             loaded_plugins.append(module)
     app.plugins = loaded_plugins
+
+
+def load_uploads(filepath):
+    filename = os.path.basename(filepath)
+    try:
+        mime_type = mimetypes.guess_type(filename)[0]
+    except:
+        mime_type = 'text'
+
+    uploads_dir = current_app.config.get("UPLOADS_DIR")
+    send_file = send_from_directory(uploads_dir, filepath)
+    response = make_response(send_file)
+    response.headers = make_cors_headers(mime_type)
+    return response

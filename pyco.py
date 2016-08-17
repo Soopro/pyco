@@ -14,7 +14,7 @@ from utils.misc import route_inject
 from utils.response import make_json_response
 
 from routes import urlpatterns
-from loaders import load_config, load_plugins
+from loaders import load_config, load_plugins, load_uploads
 
 
 __version_info__ = ('2', '0', '0')
@@ -55,19 +55,20 @@ app.jinja_env.add_extension('jinja2.ext.with_')
 
 app.json_encoder = JSONEncoder
 
-# routes
-route_inject(app, urlpatterns)
-
-app.add_url_rule(
-    app.static_url_path + '/<path:filename>',
-    view_func=app.send_static_file,
-    endpoint='static'
-)
-
 # config
 load_config(app)
 # plugins
 load_plugins(app)
+
+# routes
+route_inject(app, urlpatterns)
+
+# uplaods
+app.add_url_rule(
+    "/{}/<path:filepath>".format(app.config.get('UPLOADS_DIR')),
+    view_func=load_uploads,
+    methods='GET'
+)
 
 
 @app.before_request
