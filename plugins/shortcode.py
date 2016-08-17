@@ -38,14 +38,11 @@ def after_render(output):
 # custom functions
 def replace(content):
     # uploads
-    uploads_dir = "{}/{}".format(_CONFIG["BASE_URL"],
-                                 _CONFIG["UPLOADS_DIR"])
+    uploads_dir = "{}/{}".format(_CONFIG["BASE_URL"], _CONFIG["UPLOADS_DIR"])
     content = re.sub(RE_UPLOADS_DIR, unicode(uploads_dir), content)
 
     # theme
-    theme_url = "{}/{}/{}".format(_CONFIG["BASE_URL"],
-                                  _CONFIG["STATIC_PATH"],
-                                  _CONFIG["THEME_NAME"])
+    theme_url = _CONFIG["THEME_URL"]
     content = re.sub(RE_THEME_URL, unicode(theme_url), content)
 
     return content

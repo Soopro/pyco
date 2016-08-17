@@ -1,6 +1,5 @@
 # coding=utf-8
 from __future__ import absolute_import
-import os
 
 DEBUG = True
 
@@ -8,20 +7,17 @@ HOST = '0.0.0.0'
 PORT = 5500
 
 THEME_NAME = 'default'
-
-BASE_PATH = ""  # define a base path if the app is running in a subfolder.
 STATIC_PATH = "static"
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOADS_DIR = "uploads"
-CONTENT_DIR = "content"
-PLUGIN_DIR = "plugins"
-THEMES_DIR = "themes"
 
 BASE_URL = "http://localhost:5500"
 API_URL = "http://api.soopro.io"
 LIBS_URL = "http://libs.soopro.io"
 THEME_URL = "{}/{}/{}".format(BASE_URL, STATIC_PATH, THEME_NAME)
+
+UPLOADS_DIR = "uploads"
+CONTENT_DIR = "content"
+PLUGIN_DIR = "plugins"
+THEMES_DIR = "themes"
 
 CHARSET = "utf8"
 CONTENT_FILE_EXT = ".md"

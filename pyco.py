@@ -33,8 +33,8 @@ app.version = __version__
 load_config(app)
 
 # make importable for plugin folder
-sys.path.insert(0, os.path.join(app.config.get("BASE_DIR"),
-                                app.config.get("PLUGIN_DIR")))
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(BASE_DIR, app.config.get("PLUGIN_DIR")))
 
 # init app
 app.debug = app.config.get("DEBUG", True)
@@ -63,11 +63,17 @@ load_plugins(app)
 # routes
 route_inject(app, urlpatterns)
 
+# static
+app.add_url_rule(
+    app.static_url_path + '/<path:filename>',
+    view_func=app.send_static_file,
+    endpoint='static'
+)
 # uplaods
 app.add_url_rule(
     "/{}/<path:filepath>".format(app.config.get('UPLOADS_DIR')),
     view_func=load_uploads,
-    methods='GET'
+    methods=['GET']
 )
 
 
@@ -79,13 +85,11 @@ def before_request():
     elif request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
         abort(404)
 
-    base_path = current_app.config.get("BASE_PATH")
     base_url = current_app.config.get("BASE_URL")
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
     g.curr_base_url = base_url
-    g.curr_base_path = base_path
-    g.request_path = request.path.replace(base_path, '', 1) or '/'
+    g.request_path = request.path.replace or '/'
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 

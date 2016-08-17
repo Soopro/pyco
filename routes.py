@@ -10,6 +10,5 @@ urlpatterns = [
     # rest api
     ('/restapi/context', get_content, "GET"),
     ('/restapi/contents', new_content_api, "GET"),
-    ('/restapi/contents/<type_slug>', get_content_api, "GET"),
-    ("/{}/<path:filepath>".format(UPLOADS_DIR), upload, "GET")
+    ('/restapi/contents/<type_slug>', get_content_api, "GET")
 ]

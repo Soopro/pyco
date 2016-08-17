@@ -11,9 +11,16 @@ import mimetypes
 def load_config(app, config_name="config.py"):
     app.config.from_pyfile(config_name)
     app.config.setdefault("DEBUG", False)
+    app.config.setdefault("STATIC_PATH", "static")
+    app.config.setdefault("UPLOADS_DIR", "uploads")
+    app.config.setdefault("CONTENT_DIR", "content")
+    app.config.setdefault("CONTENT_FILE_EXT", ".md")
+
     app.config.setdefault("BASE_URL", "/")
-    app.config.setdefault("BASE_PATH", "")
-    app.config.setdefault("LIBS_URL", "http://libs.soopro.com")
+    app.config.setdefault("LIBS_URL", "")
+    app.config.setdefault("THEME_URL", "")
+    app.config.setdefault("API_URL", "")
+
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("INVISIBLE_PAGE_LIST", [])
     app.config.setdefault("THEME_NAME", "default")
@@ -33,17 +40,15 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("THEME_META_FILE", "config.json")
 
     app.config.setdefault("DEFAULT_TEMPLATE", "index")
-
     app.config.setdefault("DEFAULT_DATE_FORMAT", "%Y-%m-%d")
     app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 162)
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
 
-    app.config.setdefault("STATIC_PATH", "static")
-    app.config.setdefault("UPLOADS_DIR", "uploads")
-    app.config.setdefault("CONTENT_DIR", "content")
-    app.config.setdefault("CONTENT_FILE_EXT", ".md")
     app.config.setdefault("DEFAULT_INDEX_SLUG", "index")
     app.config.setdefault("DEFAULT_404_SLUG", "error_404")
+    app.config.setdefault("DEFAULT_SEARCH_SLUG", "search")
+    app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
+    app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
 
 
 def load_plugins(app):
