@@ -21,10 +21,8 @@ def new_content_api():
     # init
     config = current_app.config
     plugins = g.plugins
-    view_ctx = g.view_ctx
+    view_ctx = init_context()
     status_code = 200
-
-    SHORT_ATTR_KEY = config.get('SHORT_ATTR_KEY')
 
     theme_meta_options = view_ctx["theme_meta"].get('options', {})
 
@@ -42,11 +40,11 @@ def new_content_api():
     # contents
     view_ctx["pages"] = get_pages(config, view_ctx, plugins)
 
-    run_hook(plugins, "get_pages",
+    run_hook("get_pages",
              pages=view_ctx["pages"],
              current_page={})
 
-    run_hook(plugins, "before_render", var=view_ctx, template=None)
+    run_hook("before_render", var=view_ctx, template=None)
 
     # make conditions
     conditions = param_fields + param_metas
@@ -81,21 +79,15 @@ def get_content_api(type_slug=None):
     # init
     config = current_app.config
     plugins = g.plugins
-    view_ctx = g.view_ctx
+    view_ctx = view_ctx = init_context()
     status_code = 200
-
-    SHORT_ATTR_KEY = config.get('SHORT_ATTR_KEY')
-
-    theme_meta_options = view_ctx["theme_meta"].get('options', {})
 
     # contents
     view_ctx["pages"] = get_pages(config, view_ctx, plugins)
 
-    run_hook(plugins, "get_pages",
-             pages=view_ctx["pages"],
-             current_page={})
+    run_hook("get_pages", pages=view_ctx["pages"], current_page={})
 
-    run_hook(plugins, "before_render", var=view_ctx, template=None)
+    run_hook("before_render", var=view_ctx, template=None)
 
     # make conditions
     if type_slug:

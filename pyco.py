@@ -10,23 +10,17 @@ from flask import Flask, current_app, request, abort, g
 from flask.json import JSONEncoder
 from jinja2 import FileSystemLoader
 from routes import urlpatterns
-from helpers.common import load_config, load_metas, load_plugins, run_hook, init_context
+from loaders import load_config, load_plugins
 from utils.misc import route_inject
 from utils.misc import (make_json_response)
 
 
-__version_info__ = ('1', '16', '5')
+__version_info__ = ('2', '0', '0')
 __version__ = '.'.join(__version_info__)
 
 # parse args
 parser = argparse.ArgumentParser(
     description='Options of starting Pyco server.')
-
-parser.add_argument('--restful',
-                    dest='restful_mode',
-                    action='store_const',
-                    const=True,
-                    help='Manually start pyco restful mode.')
 
 args, unknown = parser.parse_known_args()
 
@@ -47,8 +41,6 @@ app.template_folder = os.path.join(app.config.get("THEMES_DIR"),
 
 app.static_folder = app.config.get("THEMES_DIR")
 app.static_url_path = "/{}".format(app.config.get("STATIC_PATH"))
-app.restful = args.restful_mode or app.config.get('RESTFUL')
-
 
 # jinja env
 app.jinja_env.autoescape = False
@@ -70,19 +62,22 @@ app.add_url_rule(
     endpoint='static'
 )
 
+# config
+load_config(current_app)
+# plugins
+load_plugins(current_app.config.get("PLUGINS"))
+
 
 @app.before_request
 def before_request():
     if request.method == "OPTIONS":
         resp = current_app.make_default_options_response()
         return resp
-
-    load_config(current_app)
-    if request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
+    elif request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
         abort(404)
 
-    base_url = current_app.config.get("BASE_URL")
     base_path = current_app.config.get("BASE_PATH")
+    base_url = current_app.config.get("BASE_URL")
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
     g.curr_base_url = base_url
@@ -90,19 +85,6 @@ def before_request():
     g.request_path = request.path.replace(base_path, '', 1) or '/'
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
-
-    # load
-    config = current_app.config
-    load_metas(config)
-    plugins = load_plugins(config.get("PLUGINS"))
-    run_hook(plugins, "plugins_loaded")
-
-    current_app.debug = config.get("DEBUG")
-    view_ctx = init_context(request, config)
-
-    run_hook(plugins, "config_loaded", config=config)
-    g.plugins = plugins
-    g.view_ctx = view_ctx
 
     if current_app.debug:
         # change template folder
@@ -136,7 +118,6 @@ if __name__ == "__main__":
 
     print "-------------------------------------------------------"
     print "Pyco: {}".format(app.version)
-    print "RESTFUL:", bool(app.restful)
     print "-------------------------------------------------------"
 
     if app.debug:

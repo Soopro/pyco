@@ -23,10 +23,6 @@ _CONFIG = {}
 def config_loaded(config):
     global _CONFIG
     _CONFIG = config
-    return
-
-
-def plugins_loaded():
     current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
     current_app.jinja_env.filters["type"] = filter_contenttype
     current_app.jinja_env.filters["url"] = filter_url

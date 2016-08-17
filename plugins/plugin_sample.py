@@ -2,11 +2,6 @@
 from __future__ import absolute_import
 
 
-def plugins_loaded():
-    print "plugin loaded"
-    return
-
-
 def config_loaded(config):
     print "config loaded"
     return
@@ -62,7 +57,7 @@ def after_parse_content(content):
     return
 
 
-def get_page_data(data, page_meta):
+def get_page_data(data):
     print "get page data"
     return
 
