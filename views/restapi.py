@@ -1,12 +1,10 @@
 # coding=utf-8
 from __future__ import absolute_import
-from flask import request
-from config import MAXIMUM_QUERY
+
 from helpers.common import *
 from helpers.restapi import _query, _add_pagination
-from utils.misc import (get_param,
-                        get_args,
-                        make_json_response)
+from utils.request import get_param, get_args
+from utils.response import make_json_response
 
 
 def new_content_api():
@@ -20,6 +18,7 @@ def new_content_api():
 
     # init
     config = current_app.config
+    MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
     plugins = g.plugins
     view_ctx = init_context()
     status_code = 200
@@ -78,6 +77,7 @@ def get_content_api(type_slug=None):
 
     # init
     config = current_app.config
+    MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
     plugins = g.plugins
     view_ctx = view_ctx = init_context()
     status_code = 200

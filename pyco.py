@@ -9,10 +9,12 @@ import traceback
 from flask import Flask, current_app, request, abort, g
 from flask.json import JSONEncoder
 from jinja2 import FileSystemLoader
+
+from utils.misc import route_inject
+from utils.response import make_json_response
+
 from routes import urlpatterns
 from loaders import load_config, load_plugins
-from utils.misc import route_inject
-from utils.misc import (make_json_response)
 
 
 __version_info__ = ('2', '0', '0')

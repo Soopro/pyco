@@ -3,7 +3,8 @@ from __future__ import absolute_import
 
 from flask import current_app
 
-from utils.misc import sortedby, make_json_response
+from utils.misc import sortedby
+from utils.response import make_json_response
 from helpers.common import get_app_metas, run_hook
 from helpers.content import init_context
 
