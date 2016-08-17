@@ -89,7 +89,7 @@ def before_request():
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
     g.curr_base_url = base_url
-    g.request_path = request.path.replace or '/'
+    g.request_path = request.path
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
