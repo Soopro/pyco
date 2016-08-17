@@ -17,19 +17,15 @@ def single_page_meta(page_meta, redirect_to):
     return
 
 
-def get_page_data(data, page_meta):
-    if not data or not page_meta:
+def get_page_data(data):
+    if not data:
         return
-    data["status"] = int(page_meta.get("status", 1))
+    data["status"] = int(data.get("status", 1))
     return
 
 
 def get_pages(pages, current_page):
-    new_pages = []
-    for page in pages:
-        if page.get("status") is 1:
-            new_pages.append(page)
-
+    new_pages = [page for page in pages if page.get("status") is 1]
     del pages[:]
     for page in new_pages:
         pages.append(page)

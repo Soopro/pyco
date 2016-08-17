@@ -8,9 +8,9 @@ from itertools import groupby
 
 from flask import request, current_app, g
 
+from utils.validators import url_validator
 from utils.misc import (parse_int,
                         sortedby,
-                        url_validator,
                         format_date,
                         get_url_params,
                         add_url_params,

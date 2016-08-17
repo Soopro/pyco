@@ -7,7 +7,7 @@ def config_loaded(config):
     return
 
 
-def request_url(request, redirect_to):
+def request_url(request):
     print "request url"
     return
 

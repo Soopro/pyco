@@ -65,9 +65,9 @@ app.add_url_rule(
 )
 
 # config
-load_config(current_app)
+load_config(app)
 # plugins
-load_plugins(current_app.config.get("PLUGINS"))
+load_plugins(app)
 
 
 @app.before_request

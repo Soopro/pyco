@@ -27,7 +27,6 @@ def get_content(file_slug='index', content_type_slug='page'):
     run_hook("config_loaded", config=current_app.config)
 
     config = current_app.config
-    plugins = g.plugins
     view_ctx = init_context()
     status_code = 200
     is_not_found = False
@@ -42,7 +41,7 @@ def get_content(file_slug='index', content_type_slug='page'):
     redirect_to = {"url": None}
     run_hook("request_url", request=request)
 
-    file["path"] = get_file_path(config, file_slug, content_type_slug)
+    file["path"] = get_file_path(file_slug, content_type_slug)
     # hook before load content
     run_hook("before_load_content", file=file)
     # if not found
@@ -73,7 +72,7 @@ def get_content(file_slug='index', content_type_slug='page'):
     meta_string = {"meta": meta_string}
     run_hook("before_read_page_meta", meta_string=meta_string)
     try:
-        headers = parse_page_meta(plugins, meta_string['meta'])
+        headers = parse_page_meta(meta_string['meta'])
     except Exception as e:
         raise Exception("{}: {}".format(str(e), file["path"]))
 
@@ -97,6 +96,7 @@ def get_content(file_slug='index', content_type_slug='page'):
 
     view_ctx["meta"] = page_meta
 
+    # content
     page_content = dict()
     page_content['content'] = content_string
     run_hook("before_parse_content", content=page_content)
@@ -104,7 +104,7 @@ def get_content(file_slug='index', content_type_slug='page'):
     run_hook("after_parse_content", content=page_content)
     view_ctx["content"] = page_content['content']
 
-    # content
+    # pages
     pages = get_pages()
     for page in pages:
         run_hook("get_page_data", data=page)

@@ -6,11 +6,9 @@ import os
 import re
 import yaml
 import markdown
-
-from utils.misc import (url_validator,
-                        sortedby,
-                        parse_args,
-                        now)
+from utils.validators import url_validator
+from utils.request import parse_args
+from utils.misc import sortedby, now
 
 
 def get_files(base_dir, ext):

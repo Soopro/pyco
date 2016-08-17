@@ -19,7 +19,6 @@ def new_content_api():
     # init
     config = current_app.config
     MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
-    plugins = g.plugins
     view_ctx = init_context()
     status_code = 200
 
@@ -37,7 +36,7 @@ def new_content_api():
         param_limit = theme_meta_options.get('perpage', 12)
 
     # contents
-    view_ctx["pages"] = get_pages(config, view_ctx, plugins)
+    view_ctx["pages"] = get_pages()
 
     run_hook("get_pages",
              pages=view_ctx["pages"],
@@ -78,12 +77,11 @@ def get_content_api(type_slug=None):
     # init
     config = current_app.config
     MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
-    plugins = g.plugins
     view_ctx = view_ctx = init_context()
     status_code = 200
 
     # contents
-    view_ctx["pages"] = get_pages(config, view_ctx, plugins)
+    view_ctx["pages"] = get_pages()
 
     run_hook("get_pages", pages=view_ctx["pages"], current_page={})
 

@@ -2,8 +2,6 @@
 from __future__ import absolute_import
 
 from flask import g
-from urlparse import urlparse
-import os
 
 _CONFIG = {}
 _DEFAULT_CONTENT_TYPE = 'page'
@@ -19,14 +17,13 @@ def config_loaded(config):
     return
 
 
-def request_url(request, redirect_to):
+def request_url(request):
     return
 
 
-def get_page_data(data, page_meta):
-    if not data or not page_meta:
+def get_page_data(data):
+    if not data:
         return
-    data["type"] = page_meta.get("type")
     filter_auto_type(data, data.get("url", '').replace(g.curr_base_url, ''))
     data["content_type"] = data["type"]
     return

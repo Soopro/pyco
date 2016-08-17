@@ -1,17 +1,17 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import g
+from flask import current_app, g
 import json
 import os
 import re
 from hashlib import sha1
-from types import ModuleType
 
 from utils.misc import DottedImmutableDict
 
 
-def get_app_metas(config):
+def get_app_metas():
+    config = current_app.config
     theme_meta_file = os.path.join(config.get('THEMES_DIR'),
                                    config.get('THEME_NAME'),
                                    config.get('THEME_META_FILE'))
@@ -35,20 +35,6 @@ def get_app_metas(config):
     except Exception as e:
         err_msg = "Load Site Meta faild: {}".format(str(e))
         raise Exception(err_msg)
-
-
-def load_plugins(plugins):
-    loaded_plugins = []
-    for module_or_module_name in plugins:
-        if type(module_or_module_name) is ModuleType:
-            loaded_plugins.append(module_or_module_name)
-        elif isinstance(module_or_module_name, basestring):
-            try:
-                module = __import__(module_or_module_name)
-            except ImportError as err:
-                raise err
-            loaded_plugins.append(module)
-    return loaded_plugins
 
 
 def generate_etag(content_file_full_path):
@@ -81,3 +67,11 @@ def make_redirect_url(url, base_url):
         return url
     else:
         return "{}/{}".format(base_url, url.strip('/'))
+
+
+def run_hook(hook_name, **references):
+    for plugin_module in current_app.plugins:
+        func = plugin_module.__dict__.get(hook_name)
+        if callable(func):
+            func(**references)
+    return

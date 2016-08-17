@@ -42,7 +42,8 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_404_SLUG", "error_404")
 
 
-def load_plugins(app, plugins):
+def load_plugins(app):
+    plugins = app.config.get("PLUGINS")
     loaded_plugins = []
     for module_or_module_name in plugins:
         if type(module_or_module_name) is ModuleType:
