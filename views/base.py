@@ -85,7 +85,8 @@ def get_content(content_type_slug='page', file_slug='index'):
     redirect_to = {"url": None}
     run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
 
-    c_type = str(page_meta.get('type'))
+    # process hidden content types
+    c_type = page_meta.get('type')
     if c_type.startswith('_') and not redirect_to["url"]:
         default_404_slug = config.get("DEFAULT_404_SLUG")
         redirect_to["url"] = "{}/{}".format(base_url, default_404_slug)
