@@ -143,22 +143,28 @@ def rope(raw_pages, sort_by="updated", priority=True, reverse=True):
 
 
 def magnet(raw_pages, current, limit=1):
-    before_pages = []
-    after_pages = []
     curr_idx = None
+
     for idx, p in enumerate(raw_pages):
         p_id = p.get('id')
         if p_id and p_id == current.get('id'):
             curr_idx = idx
             break
 
+    before_pages = []
+    after_pages = []
     if curr_idx is not None:
-        before_pages = raw_pages[:curr_idx][-limit:]
-        after_pages = raw_pages[curr_idx:][1:][:limit]
+        before_pages = raw_pages[:curr_idx - 1][-limit:]
+        after_pages = raw_pages[curr_idx + 1:][:limit]
+
+    before = before_pages[-1] if before_pages else None
+    after = after_pages[0] if after_pages else None
 
     return {
-        "before": before_pages or [None],
-        "after": after_pages or [None]
+        "before": before,
+        "after": after,
+        "before_pages": before_pages,
+        "after_pages": after_pages,
     }
 
 
