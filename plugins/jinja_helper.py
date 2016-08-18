@@ -155,7 +155,7 @@ def magnet(raw_pages, current, limit=1):
     after_pages = []
     if curr_idx is not None:
         before_pages = raw_pages[:curr_idx - 1][-limit:]
-        after_pages = raw_pages[curr_idx + 1:][:limit]
+        after_pages = raw_pages[curr_idx:][:limit]
 
     before = before_pages[-1] if before_pages else None
     after = after_pages[0] if after_pages else None
