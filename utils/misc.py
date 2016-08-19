@@ -44,12 +44,12 @@ _word = re.compile(r'\w')
 _white_space = re.compile(r'\s')
 
 
-def process_slug(value):
+def process_slug(value, ensure=True):
     try:
         slug = unicode(slugify(value))
     except Exception:
-        slug = None
-    if slug is None:
+        slug = u''
+    if not slug and ensure:
         slug = unicode(repr(time.time())).replace('.', '-')
     return slug
 
