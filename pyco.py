@@ -17,7 +17,7 @@ from routes import urlpatterns
 from loaders import load_config, load_plugins, load_uploads
 
 
-__version_info__ = ('2', '0', '1')
+__version_info__ = ('2', '0', '2')
 __version__ = '.'.join(__version_info__)
 
 # parse args

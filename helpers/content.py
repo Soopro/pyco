@@ -252,7 +252,7 @@ def gen_excerpt(content, opts):
     default_ellipsis = current_app.config.get('DEFAULT_EXCERPT_ELLIPSIS')
     excerpt_ellipsis = opts.get('excerpt_ellipsis', default_ellipsis)
 
-    excerpt = re.sub(r'<[^>]*?>', '', content).strip()
+    excerpt = re.sub(r'<[^>]*?>', '', content[:600]).strip()
     if excerpt:
         excerpt = u" ".join(excerpt.split())
         excerpt = excerpt[0:excerpt_length] + excerpt_ellipsis
