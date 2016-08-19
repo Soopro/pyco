@@ -110,7 +110,6 @@ def get_content(content_type_slug='page', file_slug='index'):
     pages = get_pages()
     for p in pages:
         run_hook("get_page_data", data=p)
-        p['is_current'] = p['id'] == page_meta['id']
     run_hook("get_pages", pages=pages, current_page=page_meta)
     view_ctx["pages"] = pages
 

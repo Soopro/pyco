@@ -39,7 +39,6 @@ def get_pages(pages, current_page):
     if not current_page:
         return
     for page in pages:
-        if page["slug"] == current_page["slug"] and \
-           page["content_type"] == current_page["content_type"]:
-            page["is_current"] = True
+        if page['id'] == current_page['id']:
+            page['is_current'] = True
     return
