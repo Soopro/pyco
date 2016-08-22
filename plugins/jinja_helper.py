@@ -134,7 +134,7 @@ def filter_date_formatted(date, to_format=None):
 
 
 # jinja helpers
-def rope(raw_pages, sort_by="updated", priority=True, reverse=True):
+def rope(raw_pages, sort_by="updated", priority=True, reverse=False):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", priority=True, reverse=True)
     """
@@ -438,10 +438,7 @@ def _match_cond(target, cond_key, cond_value, opposite=False, force=False):
 
 
 def _make_sort_keys(sort_by, priority=False, reverse=False):
-    sort_keys = []
-
-    if priority:
-        sort_keys = ['-priority'] if reverse else ['priority']
+    sort_keys = ['+priority'] if priority else []
 
     if isinstance(sort_by, basestring):
         sort_keys.append(sort_by)
