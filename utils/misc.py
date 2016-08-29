@@ -17,6 +17,19 @@ import urlparse
 import mimetypes
 
 
+class SilentlyStr(str):
+    def return_new(*args, **kwargs):
+        return SilentlyStr('')
+
+    def silently(*args, **kwargs):
+        return ''
+
+    __getattr__ = return_new
+    __call__ = return_new
+    __unicode__ = silently
+    __str__ = silently
+
+
 class DottedImmutableDict(ImmutableDict):
     def __getattr__(self, item):
         try:
@@ -24,7 +37,7 @@ class DottedImmutableDict(ImmutableDict):
         except KeyError:
             # do not use None, it could be use by a loop.
             # None is not iterable.
-            return ''
+            return SilentlyStr()
         if isinstance(v, dict):
             v = DottedImmutableDict(v)
         return v
