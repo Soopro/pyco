@@ -43,6 +43,15 @@ class DottedImmutableDict(ImmutableDict):
         return v
 
 
+def make_dotted_dict(obj):
+    if isinstance(obj, dict):
+        return DottedImmutableDict(obj)
+    elif isinstance(obj, list):
+        return [make_dotted_dict(o) for o in obj]
+    else:
+        return obj
+
+
 def route_inject(app_or_blueprint, url_patterns):
     for pattern in url_patterns:
         options = pattern[3] if len(pattern) > 3 else {}
@@ -168,37 +177,43 @@ def safe_regex_str(val):
 
 
 def sortedby(source, sort_keys, reverse=False):
-    keys = {}
+    sorts = []
+    if not isinstance(sort_keys, list):
+        sort_keys = [sort_keys]
 
-    def process_key(key):
-        if key.startswith('-'):
-            key = key.lstrip('-')
-            revs = -1
-        else:
-            key = key.lstrip('+')
-            revs = 1
-        keys.update({key: revs})
+    def parse_sorts(key):
+        if isinstance(key, tuple):
+            sorts.append((key[0], key[1]))
+        elif isinstance(key, basestring):
+            if key.startswith('-'):
+                key = key.lstrip('-')
+                direction = -1
+            else:
+                key = key.lstrip('+')
+                direction = 1
+            sorts.append((key, direction))
 
-    if isinstance(sort_keys, basestring):
-        process_key(sort_keys)
-    elif isinstance(sort_keys, list):
-        for key in sort_keys:
-            if not isinstance(key, basestring):
-                continue
-            process_key(key)
+    for key in sort_keys:
+        parse_sorts(key)
 
     def compare(a, b):
-        for key, value in keys.iteritems():
+        for sort in sorts:
+            key = sort[0]
+            direction = sort[1]
             if a.get(key) < b.get(key):
-                return -1 * value
+                return -1 * direction
             if a.get(key) > b.get(key):
-                return 1 * value
+                return 1 * direction
         return 0
 
     return sorted(source, key=cmp_to_key(compare), reverse=reverse)
 
 
 def parse_int(num, default=0, natural=False):
+    if not isinstance(default, int):
+        default = 0
+    if not isinstance(natural, (int, bool)):
+        natural = False
     try:
         num = int(float(num))
     except:
@@ -224,8 +239,10 @@ def parse_dict_by_structure(obj, structure):
 
 def version_str_to_list(str_version):
     try:
-        version = [int(v) for v in str_version.split('.')]
-        assert len(version) == 3
+        str_ver_list = str_version.split('.')[:4]
+        version = [int(v) for v in str_ver_list[:3]]
+        if len(str_ver_list) > 3:
+            version.append(str_ver_list[3])
     except:
         version = None
     return version
@@ -234,8 +251,7 @@ def version_str_to_list(str_version):
 def version_list_to_str(list_version):
     try:
         list_version += [0, 0, 0]  # ensure has 3 items
-        list_version = list_version[0:3]
-        version = '.'.join(map(str, list_version))
+        version = '.'.join(map(str, list_version[:4]))
     except:
         version = None
     return version
