@@ -111,6 +111,7 @@ def load_app_metas():
         'title': site_meta.pop('title', u'Pyco'),
         'description': site_meta.pop('description', u''),
         'locale': site_meta.pop('locale', 'en_US'),
+        'content_types': site.get('content_types'),
         'socials': site_meta.pop('socials', None),
         'translates': site_meta.pop('translates', None),
         'taxonomies': site_meta.pop('taxonomies', None),

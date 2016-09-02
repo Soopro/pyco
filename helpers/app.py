@@ -5,6 +5,7 @@ from flask import current_app
 import os
 import re
 from hashlib import sha1
+from utils.validators import url_validator
 
 
 def run_hook(hook_name, **references):
@@ -47,6 +48,67 @@ def helper_get_statistic(app_id, page_id=None):
         sa['page'] = 0
 
     return sa
+
+
+# menus
+def helper_wrap_menu(menus, base_url):
+    if not menus:
+        return {}
+
+    def process_menu_url(menu):
+        for item in menu:
+            link = item.get("link", "")
+            if not link or url_validator(link):
+                item["url"] = link
+            elif link.startswith('/'):
+                item["url"] = "{}/{}".format(base_url, link.strip('/'))
+            else:
+                item["url"] = link.rstrip('/')
+            item["nodes"] = process_menu_url(item.get("nodes", []))
+        return menu
+
+    menu_dict = {}
+    for menu in menus:
+        nodes = menu.get("nodes", [])
+        nodes = process_menu_url(nodes)
+        menu_dict[menu.get("slug")] = nodes
+
+    return menu_dict
+
+
+# socials
+def helper_wrap_socials(socials):
+    """ socials json sample
+    {
+       "facebook":{
+           "name":"Facebook",
+           "url":"http://....",
+           "code":"..."
+       },
+       "twitter":{
+           "name":"Twitter",
+           "url":"http://....",
+           "code":"..."
+       }
+    }
+    """
+    if not socials:
+        return []
+
+    social_list = []
+
+    if isinstance(socials, list):
+        # directly append if is list
+        social_list = [social for social in socials if social.get('key')]
+
+    elif isinstance(socials, dict):
+        # change to list if is dict
+        def _make_key(k, v):
+            v.update({"key": k})
+            return v
+        social_list = [_make_key(k, v) for k, v in socials.iteritems()]
+
+    return social_list
 
 
 # translates

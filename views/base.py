@@ -11,6 +11,7 @@ from utils.misc import make_dotted_dict
 from helpers.app import (run_hook,
                          helper_wrap_translates,
                          helper_get_statistic,
+                         helper_wrap_socials,
                          helper_redirect_url)
 from helpers.content import (content_splitter,
                              helper_get_file_path,
@@ -22,19 +23,25 @@ from helpers.theme import get_theme_path, get_theme_abs_path
 
 
 def get_content(content_type_slug='page', file_slug='index'):
-    status_code = 200
     config = current_app.config
     charset = config.get('CHARSET')
+    default_404_slug = config.get("DEFAULT_404_SLUG")
+
     base_url = g.curr_base_url
     curr_app = g.curr_app
-    theme_meta = curr_app['theme_meta']
     site_meta = curr_app['site_meta']
+    theme_meta = curr_app['theme_meta']
+    theme_options = theme_meta.get('options', {})
 
     run_hook("config_loaded", config=config)
 
+    if file_slug == default_404_slug:
+        status_code = 404
+    else:
+        status_code = 200
+
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
-        default_404_slug = config.get("DEFAULT_404_SLUG")
         redirect_url = helper_redirect_url(default_404_slug, base_url)
         return redirect(redirect_url, code=302)
 
@@ -80,11 +87,10 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     run_hook("after_read_page_meta", headers=headers)
 
-    theme_opts = theme_meta.get('options', {})
     page_meta = parse_file_metas(headers,
                                  file["path"],
                                  content_string,
-                                 theme_opts)
+                                 theme_options)
     redirect_to = {"url": None}
     run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
 
@@ -113,22 +119,19 @@ def get_content(content_type_slug='page', file_slug='index'):
     site_meta['slug'] = curr_app['slug']
     site_meta["id"] = curr_app["id"]
     site_meta["type"] = curr_app['type']
-    site_meta["visit"] = helper_get_statistic(curr_app['_id'],
-                                              page_meta['_id'])
+    site_meta["visit"] = helper_get_statistic(curr_app['id'], page_meta['id'])
+
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
     # soical media support
-    view_context["socials"] = helper_wrap_socials(curr_app['socials'])
+    view_ctx["socials"] = helper_wrap_socials(curr_app['socials'])
 
     # menu
-    view_context["menu"] = _find_menu(curr_app, curr_base_url)
+    view_ctx["menu"] = helper_wrap_menu(curr_app['menus'], base_url)
 
     # taxonomy
-    view_context["taxonomy"] = _find_taxonomy(curr_app)
-
-
-
+    view_ctx["taxonomy"] = _find_taxonomy(curr_app)
 
     # pages
     pages = get_pages()
@@ -139,7 +142,7 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     # template
     template = dict()
-    template['file'] = view_ctx["meta"].get("template")
+    template['file'] = page_meta.get("template")
     run_hook("before_render", var=view_ctx, template=template)
 
     template_file_path = get_theme_path(template['file'])
