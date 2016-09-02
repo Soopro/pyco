@@ -54,13 +54,4 @@ MARKDOWN_EXTENSIONS = ['gfm']
 MAXIMUM_QUERY = 60
 
 # plugins
-PLUGINS = ["draft",
-           "languages",
-           "socials",
-           "slots",
-           "content_types",
-           "is",
-           "redirect",
-           "template",
-           "shortcode",
-           "jinja_helper"]
+PLUGINS = []
