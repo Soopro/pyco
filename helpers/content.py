@@ -1,13 +1,13 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app
+from flask import current_app, g
 import os
 import re
 import yaml
 import markdown
 from utils.validators import url_validator
-from utils.misc import sortedby
+from utils.misc import sortedby, parse_int
 
 
 def get_files(base_dir, ext):
@@ -153,29 +153,59 @@ def get_pages():
     return sortedby(page_data_list, sort_keys, reverse=sort_desc)
 
 
-def parse_file_metas(meta, file_path, content_string, options):
+def parse_file_metas(meta, file_path, excerpt, options, current_id=None):
+    config = current_app.config
     data = dict()
     for m in meta:
         data[m] = meta[m]
     data["id"] = gen_id(file_path)
+    data["app_id"] = g.curr_app['_id']
     data["slug"] = gen_page_slug(file_path)
-    data["url"] = gen_page_url(file_path)
-    data["title"] = meta.get("title", u"")
+    data['parent'] = meta.get('parent', u'')
     data["priority"] = meta.get("priority", 0)
-    data["author"] = meta.get("author", u"")
-    # data['status'] = meta.get('status') # define by plugin
-    # data['type'] = meta.get('type') # define by plugin
-    data["updated"] = meta.get("updated", 0)
+    data['type'] = data['content_type'] = meta.get('type', _auto_type())
+    data['status'] = meta.get('status', 1)
+    data["updated"] = meta.get("updated", _auto_file_updated(file_path))
+    data["creation"] = meta.get("creation", _auto_file_creation(file_path))
     data["date"] = meta.get("date", u"")
 
-    content = parse_content(content_string)
-    data["excerpt"] = gen_excerpt(content, options)
-    des = meta.get("description")
-    data["description"] = data["excerpt"] if not des else des
-    data["content"] = content
-    data["creation"] = int(os.path.getmtime(file_path))
-    data["updated"] = int(os.path.getctime(file_path))
+    data["template"] = meta.get("template", config.get('DEFAULT_INDEX_SLUG'))
+    data['taxonomy'] = meta.get('taxonomy', {})
+    data['tags'] = meta.get('tags', [])
+
+    excerpt_len = options.get('excerpt_length')
+    ellipsis = options.get('excerpt_ellipsis')
+    data["excerpt"] = gen_file_excerpt(excerpt, excerpt_len, ellipsis)
+
+    data["description"] = meta.get("description") or data["excerpt"]
+    data["url"] = gen_page_url(file_path)
+
+    # content marks
+    if data["slug"] == config.get("DEFAULT_INDEX_SLUG"):
+        data["is_front"] = True
+    if data["slug"] == config.get("DEFAULT_404_SLUG"):
+        data["is_404"] = True
+    if unicode(data['id']) == unicode(current_id):
+        data['is_current'] = True
+
     return data
+
+
+def _auto_file_updated(file_path):
+    return int(os.path.getmtime(file_path))
+
+
+def _auto_file_creation(file_path):
+    return int(os.path.getctime(file_path))
+
+
+def _auto_type(default_type=u'page'):
+    path_parts = g.request_path.split('/')
+    if len(path_parts) > 2:
+        content_type = path_parts[1].lower()
+    else:
+        content_type = default_type
+    return content_type
 
 
 def gen_id(relative_path):
@@ -211,26 +241,44 @@ def gen_page_slug(relative_path):
     return slug
 
 
-def gen_excerpt(content, opts):
-    default_excerpt_length = current_app.config.get('DEFAULT_EXCERPT_LENGTH')
-    excerpt_length = opts.get('excerpt_length', default_excerpt_length)
-    default_ellipsis = current_app.config.get('DEFAULT_EXCERPT_ELLIPSIS')
-    excerpt_ellipsis = opts.get('excerpt_ellipsis', default_ellipsis)
+def make_file_excerpt(content, length=600):
+    excerpt = re.sub(r'<[^>]*?>', '', content).strip()
+    return excerpt[:length].strip()
 
-    excerpt = re.sub(r'<[^>]*?>', '', content[:600]).strip()
+
+def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
+    excerpt_length = parse_int(excerpt_length, 162, True)
+    if isinstance(ellipsis, basestring):
+        excerpt_ellipsis = ellipsis
+    else:
+        excerpt_ellipsis = u'&hellip;'
+
     if excerpt:
-        excerpt = u" ".join(excerpt.split())
-        excerpt = excerpt[0:excerpt_length] + excerpt_ellipsis
+        excerpt = u" ".join(excerpt.split())  # remove empty strings.
+        excerpt = u"{}{}".format(excerpt[0:excerpt_length], excerpt_ellipsis)
     return excerpt
 
 
 def content_splitter(file_content):
+    file_content = _shortcode(file_content)
     pattern = r"(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)"
     re_pattern = re.compile(pattern)
     m = re_pattern.match(file_content)
     if m is None:
         return "", ""
     return m.group("meta"), m.group("content")
+
+
+def _shortcode(text):
+    config = current_app.config
+    re_uploads_dir = re.compile(r"\[\%uploads\%\]", re.IGNORECASE)
+    re_theme_dir = re.compile(r"\[\%theme\%\]", re.IGNORECASE)
+    # uploads
+    uploads_dir = "{}/{}".format(config["BASE_URL"], config["UPLOADS_DIR"])
+    text = re.sub(re_uploads_dir, unicode(uploads_dir), text)
+    # theme
+    text = re.sub(re_theme_dir, unicode(config["THEME_URL"]), text)
+    return text
 
 
 # menus

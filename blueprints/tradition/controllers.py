@@ -20,6 +20,7 @@ from helpers.content import (content_splitter,
                              helper_wrap_translates,
                              helper_wrap_menu,
                              helper_wrap_taxonomy,
+                             make_file_excerpt,
                              get_pages,
                              parse_file_headers,
                              parse_file_metas,
@@ -86,8 +87,7 @@ def get_content(content_type_slug='page', file_slug='index'):
     run_hook("after_load_content", file=file, content=file_content)
 
     # parse file content
-    tmp_file_content = file_content["content"]
-    meta_string, content_string = content_splitter(tmp_file_content)
+    meta_string, content_string = content_splitter(file_content["content"])
 
     meta_string = {"meta": meta_string}
     run_hook("before_read_page_meta", meta_string=meta_string)
@@ -100,7 +100,7 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     page_meta = parse_file_metas(headers,
                                  file["path"],
-                                 content_string,
+                                 make_file_excerpt(content_string),
                                  theme_options)
     redirect_to = {"url": None}
     run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
