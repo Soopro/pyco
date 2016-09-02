@@ -4,5 +4,10 @@ from .tradition import blueprint as tradition_module
 
 
 def register_blueprints(app):
-    # register blueprints
+    # register tradition
     app.register_blueprint(tradition_module)
+
+    # register uploads
+    uploads_dir = app.config.get('UPLOADS_DIR')
+    app.register_blueprint(tradition_module,
+                           url_prefix="/{}".format(uploads_dir))

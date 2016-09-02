@@ -63,12 +63,6 @@ app.add_url_rule(
     view_func=app.send_static_file,
     endpoint='static'
 )
-# uplaods
-app.add_url_rule(
-    "/{}/<path:filepath>".format(app.config.get('UPLOADS_DIR')),
-    view_func=load_uploads,
-    methods=['GET']
-)
 
 
 @app.before_request

@@ -7,7 +7,7 @@ import os
 from services.i18n import Translator
 from utils.request import parse_args
 from utils.response import make_content_response
-from utils.misc import make_dotted_dict
+from utils.misc import make_dotted_dict, now
 from helpers.app import (run_hook,
                          helper_get_statistic,
                          helper_redirect_url,
@@ -24,6 +24,13 @@ from helpers.content import (content_splitter,
                              parse_file_headers,
                              parse_file_metas,
                              parse_content)
+
+from .helpers.jinja import (saltshaker,
+                            glue,
+                            rope,
+                            straw,
+                            timemachine,
+                            magnet)
 
 
 def get_content(content_type_slug='page', file_slug='index'):
@@ -121,34 +128,10 @@ def get_content(content_type_slug='page', file_slug='index'):
     site_meta['title'] = curr_app["title"]
     site_meta['description'] = curr_app["description"]
     site_meta['slug'] = curr_app['slug']
-    site_meta["id"] = curr_app["id"]
+    site_meta["id"] = curr_app["_id"]
     site_meta["type"] = curr_app['type']
-    site_meta["visit"] = helper_get_statistic(curr_app['id'], page_meta['id'])
-
-    # extension slots
-    ext_slots = curr_app["slots"]
-    for k, v in ext_slots.iteritems():
-        ext_slots[k] = helper_render_ext_slots(v, curr_app)
-    view_ctx["slot"] = ext_slots
-
-    # base view context
-    view_ctx["app_id"] = curr_app["id"]
-    view_ctx["api_baseurl"] = config.get('API_URL', u'')
-    view_ctx["site_meta"] = site_meta
-    view_ctx["theme_meta"] = theme_meta
-    view_ctx["theme_url"] = config.get('THEME_URL', u'')
-    view_ctx["libs_url"] = config.get("LIBS_URL", u'')
-    view_ctx["base_url"] = base_url
-
-    # request
-    view_ctx["request"] = {
-        "remote_addr": g.request_remote_addr,
-        "path": g.request_path,
-        "url": g.request_url,
-        "args": parse_args(),
-    }
-    view_ctx["args"] = view_ctx["request"]["args"]
-
+    site_meta["visit"] = helper_get_statistic(curr_app['_id'],
+                                              page_meta['id'])
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
@@ -161,6 +144,33 @@ def get_content(content_type_slug='page', file_slug='index'):
     # taxonomy
     view_ctx["taxonomy"] = helper_wrap_taxonomy(curr_app)
 
+    # extension slots
+    ext_slots = curr_app["slots"]
+    for k, v in ext_slots.iteritems():
+        ext_slots[k] = helper_render_ext_slots(v, curr_app)
+    view_ctx["slot"] = ext_slots
+
+    # base view context
+    view_ctx["app_id"] = curr_app["_id"]
+    view_ctx["api_baseurl"] = config.get('API_URL', u'')
+    view_ctx["site_meta"] = site_meta
+    view_ctx["theme_meta"] = theme_meta
+    view_ctx["theme_url"] = config.get('THEME_URL', u'')
+    view_ctx["libs_url"] = config.get("LIBS_URL", u'')
+    view_ctx["base_url"] = base_url
+
+    # now for refresh cache
+    view_ctx["now"] = now()
+
+    # request
+    view_ctx["request"] = {
+        "remote_addr": g.request_remote_addr,
+        "path": g.request_path,
+        "url": g.request_url,
+        "args": parse_args(),
+    }
+    view_ctx["args"] = view_ctx["request"]["args"]
+
     # pages
     pages = get_pages()
     for p in pages:
@@ -168,13 +178,16 @@ def get_content(content_type_slug='page', file_slug='index'):
     run_hook("get_pages", pages=pages, current_page=page_meta)
     view_ctx["pages"] = pages
 
+    # get current content type
+    view_ctx["content_type"] = _get_content_type(content_type_slug,
+                                                 curr_app['content_types'])
     # template helpers
-    var["saltshaker"] = saltshaker
-    var["straw"] = straw
-    var["rope"] = rope
-    var["glue"] = glue
-    var["timemachine"] = timemachine
-    var["magnet"] = magnet
+    view_ctx["saltshaker"] = saltshaker
+    view_ctx["straw"] = straw
+    view_ctx["rope"] = rope
+    view_ctx["glue"] = glue
+    view_ctx["timemachine"] = timemachine
+    view_ctx["magnet"] = magnet
 
     # template
     template = dict()
@@ -216,6 +229,17 @@ def _find_404_path():
     if not os.path.isfile(file_404_path):
         file_404_path = None
     return file_404_path
+
+
+def _get_content_type(content_type_slug, content_types):
+    content_type = content_types.get(content_type_slug)
+    if isinstance(content_type, dict):
+        content_type = {'slug': content_type.get('slug'),
+                        'title': content_type.get('title')}
+    else:
+        content_type = {'slug': None, 'title': None}
+
+    return content_type
 
 
 def set_multi_language(view_context, app):

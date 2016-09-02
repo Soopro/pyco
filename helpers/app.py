@@ -63,18 +63,18 @@ def get_app_metas():
     site_meta = site.get('meta', {})
 
     return {
-        'id': site.get('app_id', 'pyco_app'),
+        '_id': site.get('app_id', 'pyco_app'),
         'slug': site.get('slug'),
         'type': site.get('type'),
         'title': site_meta.pop('title', u'Pyco'),
         'description': site_meta.pop('description', u''),
         'locale': site_meta.pop('locale', 'en_US'),
-        'content_types': site.get('content_types'),
+        'content_types': site.get('content_types', {}),
         'socials': site_meta.pop('socials', None),
         'translates': site_meta.pop('translates', None),
         'taxonomies': site_meta.pop('taxonomies', None),
         'menus': site_meta.pop('menus', None),
-        'slots': site.get('slots'),
+        'slots': site.get('slots', {}),
         'meta': site_meta,
         'theme_meta': theme_meta
     }

@@ -5,6 +5,7 @@ from flask import (Blueprint, request, current_app, g, make_response)
 from jinja2 import FileSystemLoader
 import os
 from utils.misc import route_inject
+from utils.requrest import get_remote_addr
 from helpers.app import get_app_metas
 
 from .helpers.jinja import (filter_thumbnail,
@@ -22,7 +23,6 @@ SYS_ICON_LIST = ['favicon.ico',
 bp_name = "tradition"
 
 blueprint = Blueprint(bp_name, __name__)
-
 route_inject(blueprint, urlpatterns)
 
 
@@ -47,7 +47,10 @@ def before_request():
 
     g.curr_app = get_app_metas()
     g.curr_base_url = base_url
+
+    g.request_remote_addr = get_remote_addr()
     g.request_path = request.path
+
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
