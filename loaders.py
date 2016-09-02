@@ -102,10 +102,19 @@ def load_app_metas():
         err_msg = "Load Site Meta faild: {}".format(str(e))
         raise Exception(err_msg)
 
+    site_meta = site.get('meta', {})
+
     return {
         'id': site.get('id', 'pyco_app'),
         'slug': site.get('slug'),
         'type': site.get('type'),
-        'meta': site.get('meta'),
+        'title': site_meta.pop('title', u'Pyco'),
+        'description': site_meta.pop('description', u''),
+        'locale': site_meta.pop('locale', 'en_US'),
+        'socials': site_meta.pop('socials', None),
+        'translates': site_meta.pop('translates', None),
+        'taxonomies': site_meta.pop('taxonomies', None),
+        'menus': site_meta.pop('menus', None),
+        'meta': site_meta,
         'theme_meta': theme_meta
     }

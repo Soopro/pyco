@@ -4,12 +4,15 @@ from __future__ import absolute_import
 from flask import current_app, request, abort, render_template, redirect, g
 import os
 
+from services.i18n import Translator
+
 from utils.response import make_content_response
 from utils.misc import make_dotted_dict
 from helpers.app import (run_hook,
+                         helper_wrap_translates,
+                         helper_get_statistic,
                          helper_redirect_url)
 from helpers.content import (content_splitter,
-                             init_context,
                              helper_get_file_path,
                              get_pages,
                              parse_file_headers,
@@ -25,18 +28,19 @@ def get_content(content_type_slug='page', file_slug='index'):
     base_url = g.curr_base_url
     curr_app = g.curr_app
     theme_meta = curr_app['theme_meta']
+    site_meta = curr_app['site_meta']
 
     run_hook("config_loaded", config=config)
-
-    view_ctx = init_context()
-
-    run_hook("request_url", request=request)
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
         default_404_slug = config.get("DEFAULT_404_SLUG")
         redirect_url = helper_redirect_url(default_404_slug, base_url)
         return redirect(redirect_url, code=302)
+
+    run_hook("request_url", request=request)
+
+    view_ctx = dict()
 
     # find file path
     file = {"path": None}
@@ -102,6 +106,30 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     view_ctx["content"] = page_content['content']
 
+    # site_meta
+    site_meta = curr_app["meta"]
+    site_meta['title'] = curr_app["title"]
+    site_meta['description'] = curr_app["description"]
+    site_meta['slug'] = curr_app['slug']
+    site_meta["id"] = curr_app["id"]
+    site_meta["type"] = curr_app['type']
+    site_meta["visit"] = helper_get_statistic(curr_app['_id'],
+                                              page_meta['_id'])
+    # multi-language support
+    set_multi_language(view_ctx, curr_app)
+
+    # soical media support
+    view_context["socials"] = helper_wrap_socials(curr_app['socials'])
+
+    # menu
+    view_context["menu"] = _find_menu(curr_app, curr_base_url)
+
+    # taxonomy
+    view_context["taxonomy"] = _find_taxonomy(curr_app)
+
+
+
+
     # pages
     pages = get_pages()
     for p in pages:
@@ -149,3 +177,18 @@ def _find_404_path():
     if not os.path.isfile(file_404_path):
         file_404_path = None
     return file_404_path
+
+
+def set_multi_language(view_context, app):
+    locale = app['locale']
+    # make i18n support
+    lang_dir = current_app.config.get('LANGUAGES_DIR', 'languages')
+    lang_path = os.path.join(current_app.template_folder, lang_dir)
+    translator = Translator(locale, lang_path)
+    view_context['_'] = translator.gettext
+    view_context['_t'] = translator.t_gettext
+    view_context["locale"] = locale
+    view_context["lang"] = locale.split('_')[0]
+    # make translates
+    trans_list = helper_wrap_translates(app['translates'], locale)
+    view_context["translates"] = make_dotted_dict(trans_list)

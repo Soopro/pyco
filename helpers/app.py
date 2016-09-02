@@ -33,3 +33,50 @@ def helper_redirect_url(url, base_url):
         return url
     else:
         return "{}/{}".format(base_url, url.strip('/'))
+
+
+# statistic
+def helper_get_statistic(app_id, page_id=None):
+    sa = {
+        'pv': 0,
+        'vs': 0,
+        'uv': 0,
+        'ip': 0,
+    }
+    if page_id:
+        sa['page'] = 0
+
+    return sa
+
+
+# translates
+def helper_wrap_translates(translates, locale):
+    """ translates json sample
+    {
+       "zh_CN":{"name":"汉语","url":"http://....."},
+       "en_US":{"name":"English","url":"http://....."}
+    }
+    """
+    if not translates:
+        return []
+
+    trans_list = []
+    lang = locale.split('_')[0]
+
+    if isinstance(translates, list):
+        # directly append if is list
+        trans_list = [trans for trans in translates if trans.get('key')]
+
+    elif isinstance(translates, dict):
+        # change to list if is dict
+        def _make_key(k, v):
+            v.update({"key": k})
+            return v
+        trans_list = [_make_key(k, v) for k, v in translates.iteritems()]
+
+    for trans in trans_list:
+        trans_key = trans['key'].lower()
+        if trans_key == locale.lower() or trans_key == lang.lower():
+            trans["active"] = True
+
+    return trans_list

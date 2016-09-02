@@ -19,6 +19,8 @@ CONTENT_DIR = "content"
 PLUGIN_DIR = "plugins"
 THEMES_DIR = "themes"
 
+LANGUAGES_DIR = 'languages'
+
 CHARSET = "utf8"
 CONTENT_FILE_EXT = ".md"
 TEMPLATE_FILE_EXT = ".html"
