@@ -33,7 +33,7 @@ If you want develop some Webapp, you need open `RESTful` mode, there is two ways
 
 1. Change RESTfull option to `True` in `config.py`.
 
-2. `python pyco.py --webapp`: Run RESTful mode as develop, this will override of config option. 
+2. `python pyco.py --webapp`: Run RESTful mode as develop, this will override of config option.
 
 
 ## Usage
@@ -78,7 +78,10 @@ There is global content data for whole site call **Site Meta**, to having this d
 
 Global content data for whole site.
 
-* `app_id`: **[ str ]** the app id, sometime you want work with an real `app_id`, you can put it here. If you don't know where to find an real `app_id`, leave it alone. default is `pyco_app`. 
+* `app_id`: **[ str ]** the app id, sometime you want work with an real `app_id`, you can put it here. If you don't know where to find an real `app_id`, leave it alone. default is `pyco_app`.
+
+* `slug`: **[ str ]** site slug. aka app slug
+* `type`: **[ str ]** site type. aka app type
 
 * `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here.
 
@@ -90,8 +93,17 @@ Global content data for whole site.
     * `meta`: **[ dict ]** menu item meta, put custom data in side as you wish.
     * `nodes`: **[ list ]** children menu items
 
+* `taxonomies`: **[ dict ]** All taxonomy host here. (also could be tax for short)
+  * `< taxonomy_slug >`:
+    1. `title`: **[ str ]** Taxonomy title.
+    2. `content_types`: **[ list ]** list of supported content types.
+    3. `terms`: **[ list ]** terms of this taxonomy.
+      1. `key`: **[ str ]** term key
+      2. `title`: **[ str ]** term title
+      6. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
+        * `pic`: **[ str ]** pic for term display.
+
 * `meta`: Site meta
-  * `slug`: **[ str ]** site slug. aka app slug
   * `title`: **[ str ]** site title. aka app title
   * `type`: **[ str ]** site type. aka app type
   * `logo`: **[dict]** media of logo
@@ -101,12 +113,18 @@ Global content data for whole site.
     * `target`: **[ str ]** target for media link. '\_blank' or something else.
     * `class`: **[ str ]** media class.
 
-  * `author`: **[ str ]** author name.
+  * `contact`: **[ str ]** contact info.
   * `copyright`: **[ str ]** copyright.
   * `description`: **[ str ]** description text.
   * `license`: **[ str ]** license.
   * `locale`: **[ str ]** language locale.
-
+  * `socials`: **[ dict/list ]** social medias if you need.
+    ```json
+    {
+      "facebook":{"name":"Facebook","url":"#","code":"facebook"},
+      "twitter":{"name":"Twitter","url":"#","code":"twitter"}
+    }
+    ```
   * `translates`: **[ dict ]** translates if you need.
     ```json
     {
@@ -115,23 +133,13 @@ Global content data for whole site.
     }
     ```
 
-* `taxonomies`: **[ dict ]** All taxonomy host here. (also could be tax for short)
-  * `< taxonomy_slug >`: 
-    1. `title`: **[ str ]** Taxonomy title.
-    2. `content_types`: **[ list ]** list of supported content types.
-    3. `terms`: **[ list ]** terms of this taxonomy.
-      1. `slug`: **[ str ]** term slug
-      2. `title`: **[ str ]** term title
-      3. `priority`: **[ int ]** term priority
-      6. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
-        * `pic`: **[ str ]** pic for term display.
-        * `parent`: **[ str ]** get parent terms slug.
-        * ... *Custom fields*
-
 
 ***Example***
 ```json
 {
+  "app_id": "pyco_app_id",
+  "slug":"pyco",
+  "type":"ws",
   "content_types": {
     "post": "Posts",
     "page": "Pages"
@@ -155,8 +163,6 @@ Global content data for whole site.
     ]
   },
   "meta": {
-    "slug":"pyco",
-    "type":"ws",
     "logo": {
       "src": "http://myuploads.com/logo.png",
       "title": "my logo",
@@ -202,7 +208,7 @@ In each `.md` separate `meta` and `content`.
 * `shortcode`: shortcode is for generation dynamic value in your contents, it's follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` is `&#37;`
 
   1. `[%uploads%]`: A shortcode for uploads url, you have to quote it while using in `meta`, because that's YAML. ```[%uploads%]/your_pic.jpg```
-  
+  2. `[%theme%]`: A shortcode for theme url, same as above.
 
 
 ```markdown
@@ -225,7 +231,7 @@ Featured_img:
 
 ## Template context
 
-Learn more about template context. 
+Learn more about template context.
 
 [Go this repo](https://github.com/Soopro/rafiki/)
 

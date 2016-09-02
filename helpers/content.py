@@ -1,14 +1,13 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request
+from flask import current_app
 import os
 import re
 import yaml
 import markdown
 from utils.validators import url_validator
-from utils.request import parse_args
-from utils.misc import sortedby, now
+from utils.misc import sortedby
 
 
 def get_files(base_dir, ext):

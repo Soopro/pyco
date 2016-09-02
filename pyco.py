@@ -5,15 +5,15 @@ import os
 import sys
 import traceback
 
-from flask import Flask, current_app, request, abort, g
+from flask import Flask, current_app, request
 from flask.json import JSONEncoder
-from jinja2 import FileSystemLoader
 
 from utils.misc import route_inject
-from utils.response import make_json_response
+from utils.response import make_json_response, make_cors_headers
 
 from routes import urlpatterns
-from loaders import load_config, load_plugins, load_uploads, load_app_metas
+from loaders import load_config, load_plugins
+from blueprints import register_blueprints
 
 
 __version_info__ = ('2', '0', '3')
@@ -54,8 +54,8 @@ load_config(app)
 # plugins
 load_plugins(app)
 
-# routes
-route_inject(app, urlpatterns)
+# register blueprints
+register_blueprints(app)
 
 # static
 app.add_url_rule(
@@ -72,32 +72,13 @@ app.add_url_rule(
 
 
 @app.before_request
-def before_request():
+def app_before_request():
+    # cors response
     if request.method == "OPTIONS":
         resp = current_app.make_default_options_response()
+        cors_headers = make_cors_headers()
+        resp.headers.extend(cors_headers)
         return resp
-    elif request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
-        abort(404)
-
-    app_metas = load_app_metas()
-    base_url = current_app.config.get("BASE_URL")
-    uploads_dir = current_app.config.get("UPLOADS_DIR")
-
-    g.curr_app = app_metas
-    g.curr_base_url = base_url
-    g.request_path = request.path
-    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
-    g.uploads_url = "{}/{}".format(base_url, uploads_dir)
-
-    if current_app.debug:
-        # change template folder
-        themes_dir = current_app.config.get("THEMES_DIR")
-        theme_name = current_app.config.get("THEME_NAME")
-        current_app.template_folder = os.path.join(themes_dir, theme_name)
-        # change reload template folder
-        current_app.jinja_env.cache = None
-        tpl_folder = current_app.template_folder
-        current_app.jinja_loader = FileSystemLoader(tpl_folder)
 
 
 @app.errorhandler(Exception)

@@ -2,10 +2,11 @@
 from __future__ import absolute_import
 
 from flask import current_app
+from jinja2 import Template
+from hashlib import sha1
 import os
 import re
-from hashlib import sha1
-from utils.validators import url_validator
+import json
 
 
 def run_hook(hook_name, **references):
@@ -38,6 +39,47 @@ def get_theme_abs_path(tmpl_path):
                         tmpl_path)
 
 
+def get_app_metas():
+    theme_meta_file = os.path.join(current_app.config.get('THEMES_DIR'),
+                                   current_app.config.get('THEME_NAME'),
+                                   current_app.config.get('THEME_META_FILE'))
+    site_file = os.path.join(current_app.config.get('CONTENT_DIR'),
+                             current_app.config.get('SITE_DATA_FILE'))
+
+    try:
+        with open(theme_meta_file) as theme_data:
+            theme_meta = json.load(theme_data)
+    except Exception as e:
+        err_msg = "Load Theme Meta faild: {}".format(str(e))
+        raise Exception(err_msg)
+
+    try:
+        with open(site_file) as site_data:
+            site = json.load(site_data)
+    except Exception as e:
+        err_msg = "Load Site Meta faild: {}".format(str(e))
+        raise Exception(err_msg)
+
+    site_meta = site.get('meta', {})
+
+    return {
+        'id': site.get('app_id', 'pyco_app'),
+        'slug': site.get('slug'),
+        'type': site.get('type'),
+        'title': site_meta.pop('title', u'Pyco'),
+        'description': site_meta.pop('description', u''),
+        'locale': site_meta.pop('locale', 'en_US'),
+        'content_types': site.get('content_types'),
+        'socials': site_meta.pop('socials', None),
+        'translates': site_meta.pop('translates', None),
+        'taxonomies': site_meta.pop('taxonomies', None),
+        'menus': site_meta.pop('menus', None),
+        'slots': site.get('slots'),
+        'meta': site_meta,
+        'theme_meta': theme_meta
+    }
+
+
 def helper_redirect_url(url, base_url):
     if not url or not isinstance(url, (str, unicode)):
         return None
@@ -45,6 +87,15 @@ def helper_redirect_url(url, base_url):
         return url
     else:
         return "{}/{}".format(base_url, url.strip('/'))
+
+
+def helper_render_ext_slots(scripts, app):
+    try:
+        template = Template(scripts)
+        scripts = template.render(app_id=app['_id'])
+    except Exception as e:
+        scripts = str(e)
+    return scripts
 
 
 # statistic

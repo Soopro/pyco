@@ -1,64 +1,20 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-import datetime
-import math
-import os
+from flask import request, g
 from itertools import groupby
-
-from flask import request, current_app, g
+import os
+import datetime
 
 from utils.validators import url_validator
-from utils.misc import (parse_int,
-                        sortedby,
+from utils.misc import (sortedby,
                         format_date,
                         get_url_params,
                         add_url_params,
-                        DottedImmutableDict)
-
-
-_CONFIG = {}
-
-
-def config_loaded(config):
-    global _CONFIG
-    _CONFIG = config
-    current_app.jinja_env.filters["thumbnail"] = filter_thumbnail
-    current_app.jinja_env.filters["type"] = filter_contenttype
-    current_app.jinja_env.filters["url"] = filter_url
-    current_app.jinja_env.filters["path"] = filter_path
-    current_app.jinja_env.filters["args"] = filter_args
-    current_app.jinja_env.filters["date_formatted"] = filter_date_formatted
-    return
-
-
-def before_render(var, template):
-    if not template:
-        return
-    var["saltshaker"] = saltshaker
-    var["stapler"] = stapler
-    var["straw"] = straw
-    var["rope"] = rope
-    var["glue"] = glue
-    var["barcode"] = barcode
-    var["timemachine"] = timemachine
-    var["gutter"] = gutter
-    var["magnet"] = magnet
-    return
+                        make_dotted_dict)
 
 
 # filters
-def filter_contenttype(raw_pages, ctype=None, limit=None, sort_by=None):
-    if not isinstance(raw_pages, (list, dict)):
-        return raw_pages
-    if hasattr(saltshaker, '__call__'):
-        result = saltshaker(raw_pages, [{"type": ctype}],
-                            limit=limit, sort_by=sort_by)
-    else:
-        result = []
-    return result
-
-
 def filter_thumbnail(pic_url, suffix='thumbnail'):
     allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
     try:
@@ -108,7 +64,7 @@ def filter_args(url, unique=True):
         args = {}
     else:
         args = get_url_params(url, unique)
-    return DottedImmutableDict(args)
+    return make_dotted_dict(args)
 
 
 def filter_date_formatted(date, to_format=None):
@@ -134,43 +90,43 @@ def filter_date_formatted(date, to_format=None):
 
 
 # jinja helpers
-def rope(raw_pages, sort_by="updated", priority=True, reverse=False):
+def rope(raw_list, sort_by="updated", priority=True, reverse=False):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", priority=True, reverse=True)
     """
     sort_keys = _make_sort_keys(sort_by, priority, reverse)
-    return sortedby(raw_pages, sort_keys, reverse)
+    return sortedby(raw_list, sort_keys, reverse)
 
 
-def magnet(raw_pages, current, limit=1):
+def magnet(raw_list, current, limit=1):
     curr_idx = None
 
-    for idx, p in enumerate(raw_pages):
+    for idx, p in enumerate(raw_list):
         p_id = p.get('id')
         if p_id and p_id == current.get('id'):
             curr_idx = idx
             break
 
-    before_pages = []
-    after_pages = []
+    before_list = []
+    after_list = []
     if curr_idx is not None:
-        before_pages = raw_pages[:curr_idx - 1][-limit:]
-        after_pages = raw_pages[curr_idx:][:limit]
+        before_list = raw_list[max(curr_idx - limit, 0):curr_idx]
+        after_list = raw_list[curr_idx + 1:curr_idx + 1 + limit]
 
-    before = before_pages[-1] if before_pages else None
-    after = after_pages[0] if after_pages else None
+    before = before_list[-1] if before_list else None
+    after = after_list[0] if after_list else None
 
     return {
         "before": before,
         "after": after,
-        "before_pages": before_pages,
-        "after_pages": after_pages,
+        "entries_before": before_list,
+        "entries_after": after_list,
     }
 
 
 def straw(raw_list, value, key='id'):
     """return a item by key/value form a list.
-    next_page = straw(pages, next_id, 'id')
+    some_page = straw(pages, some_id, 'id')
     """
     if not isinstance(key, basestring):
         key = 'id'
@@ -254,65 +210,7 @@ def glue(args=None, url=None, unique=True):
     return add_url_params(url, args, unique=unique)
 
 
-def stapler(raw_pages, paged=1, perpage=12):
-    """return dict for paginator.
-    booklet = stapler(pages, paged=1, perpage=12)
-    """
-    perpage = parse_int(perpage, 12, True)
-    paged = parse_int(paged, 1, True)
-
-    matched_pages = raw_pages
-    max_pages = int(math.ceil(len(matched_pages) / float(perpage)))
-
-    max_pages = max(max_pages, 1)
-    paged = min(max_pages, paged)
-
-    start = (paged - 1) * perpage
-    end = paged * perpage
-    result_pages = matched_pages[start:end]
-
-    return {
-        "pages": result_pages,
-        "max": max_pages,
-        "paged": paged
-    }
-
-
-def barcode(raw_pages, field="taxonomy.category", sort=True, desc=True):
-    """return dict count entries has same value of specified field.
-    count = barcode(pages, field="category", sort=True, desc=True)
-    """
-    ret = dict()
-
-    def count(term):
-        if term:
-            if term not in ret:
-                ret[term] = 1
-            else:
-                ret[term] += 1
-
-    for page in raw_pages:
-        term = _deep_get(field, page)
-        if isinstance(term, (list, dict)):
-            obj = term if isinstance(term, dict) else xrange(len(term))
-            for i in obj:
-                if not isinstance(term[i], basestring):
-                    continue
-                count(term[i])
-        else:
-            count(term)
-
-    bars = []
-    for k, v in ret.iteritems():
-        bars.append({"key": k, "count": v})
-
-    if sort:
-        bars = sortedby(bars, "count", desc)
-
-    return bars
-
-
-def timemachine(raw_pages, filed='date', precision='month',
+def timemachine(raw_list, filed='date', precision='month',
                 time_format='%Y-%m-%d', reverse=True):
     """return list of pages grouped by datetime.
     sorted_pages = timemachine(pages, filed='date', precision='month',
@@ -341,7 +239,7 @@ def timemachine(raw_pages, filed='date', precision='month',
         except Exception:
             raise ValueError("invalid precision, precision must be str.")
 
-    pages = sorted(filter(lambda x: x.get(filed), raw_pages),
+    pages = sorted(filter(lambda x: x.get(filed), raw_list),
                    key=lambda x: x[filed],
                    reverse=reverse)
 
@@ -355,44 +253,6 @@ def timemachine(raw_pages, filed='date', precision='month',
         ret.append((date, [x for x in group]))
 
     return ret
-
-
-def gutter(page_id, structures):
-    """return a dict of next/prev page by structures.
-    page_gutter = gutter(meta.id, menu.gutter.nodes)
-    """
-    next_page = None
-    prev_page = None
-    curr_page = None
-    for struct in structures:
-        for p in struct.get('nodes', []):
-            if curr_page is not None:
-                next_page = {
-                    'id': p.get('id'),
-                    'title': p.get('title'),
-                    'slug': p.get('slug'),
-                    'url': p.get('url'),
-                }
-                break
-            elif p.get('id') and p.get('id') == page_id:
-                curr_page = p
-            else:
-                prev_page = {
-                    'id': p.get('id'),
-                    'title': p.get('title'),
-                    'slug': p.get('slug'),
-                    'url': p.get('url'),
-                }
-        if next_page is not None:
-            break
-
-    if not curr_page:
-        next_page = prev_page = None
-
-    return {
-        'prev_page': prev_page,
-        'next_page': next_page
-    }
 
 
 # other helpers
@@ -438,7 +298,7 @@ def _match_cond(target, cond_key, cond_value, opposite=False, force=False):
 
 
 def _make_sort_keys(sort_by, priority=False, reverse=False):
-    sort_keys = ['+priority'] if priority else []
+    sort_keys = [('priority', 1)] if priority else []
 
     if isinstance(sort_by, basestring):
         sort_keys.append(sort_by)

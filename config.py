@@ -47,11 +47,6 @@ INVISIBLE_SLUGS = [
     DEFAULT_TAXONOMY_SLUG,
     DEFAULT_TAG_SLUG,
 ]
-SHORT_ATTR_KEY = {}
-
-SYS_ICON_LIST = ['favicon.ico',
-                 'apple-touch-icon-precomposed.png',
-                 'apple-touch-icon.png']
 
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = ['gfm']

@@ -7,10 +7,8 @@ import os
 import mimetypes
 
 
-def upload(filepath):
-
+def get_uploads(filepath):
     filename = os.path.basename(filepath)
-
     try:
         mime_type = mimetypes.guess_type(filename)[0]
     except:
