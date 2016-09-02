@@ -5,7 +5,7 @@ from flask import current_app, request, abort, render_template, redirect, g
 import os
 
 from services.i18n import Translator
-
+from utils.request import parse_args
 from utils.response import make_content_response
 from utils.misc import make_dotted_dict
 from helpers.app import (run_hook,
@@ -17,6 +17,8 @@ from helpers.content import (content_splitter,
                              helper_get_file_path,
                              helper_wrap_socials,
                              helper_wrap_translates,
+                             helper_wrap_menu,
+                             helper_wrap_taxonomy,
                              get_pages,
                              parse_file_headers,
                              parse_file_metas,
@@ -122,6 +124,30 @@ def get_content(content_type_slug='page', file_slug='index'):
     site_meta["type"] = curr_app['type']
     site_meta["visit"] = helper_get_statistic(curr_app['id'], page_meta['id'])
 
+    # extension slots
+    ext_slots = curr_app_extension["slots"] or {}
+    for k, v in ext_slots.iteritems():
+        ext_slots[k] = helper_render_ext_slots(v, curr_app)
+    view_context["slot"] = ext_slots
+
+    # base view context
+    view_ctx["app_id"] = curr_app["id"]
+    view_ctx["api_baseurl"] = current_app.config.get('API_URL', u'')
+    view_ctx["site_meta"] = make_dotted_dict(site_meta)
+    view_ctx["theme_meta"] = make_dotted_dict(theme_meta)
+    view_ctx["theme_url"] = theme_url
+    view_ctx["libs_url"] = current_app.config.get("LIBS_URL", u'')
+    view_ctx["base_url"] = curr_base_url
+
+    # request
+    view_ctx["request"] = {
+        "remote_addr": g.request_remote_addr,
+        "path": g.request_path,
+        "url": g.request_url,
+        "args": parse_args(),
+    }
+    view_ctx["args"] = view_ctx["request"]["args"]
+
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
@@ -132,7 +158,7 @@ def get_content(content_type_slug='page', file_slug='index'):
     view_ctx["menu"] = helper_wrap_menu(curr_app['menus'], base_url)
 
     # taxonomy
-    view_ctx["taxonomy"] = _find_taxonomy(curr_app)
+    view_ctx["taxonomy"] = helper_wrap_taxonomy(curr_app)
 
     # pages
     pages = get_pages()

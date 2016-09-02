@@ -179,40 +179,6 @@ def parse_file_metas(meta, file_path, content_string, options):
     return data
 
 
-def init_context(include_request=True):
-    config = current_app.config
-    # env context
-    site_meta = config.get("SITE", {}).get("meta", {})
-    view_ctx = dict()
-    view_ctx["app_id"] = site_meta.get('id', 'pyco_app')
-    view_ctx["base_url"] = config.get("BASE_URL", '')
-    view_ctx["theme_url"] = config.get("THEME_URL", '')
-    view_ctx["libs_url"] = config.get("LIBS_URL", '')
-    view_ctx["api_baseurl"] = config.get("API_BASEURL", '')
-    view_ctx["site_meta"] = site_meta
-    view_ctx["theme_meta"] = config.get("THEME_META")
-    view_ctx["now"] = now()
-
-    if include_request:
-        view_ctx["args"] = parse_args()
-        view_ctx["request"] = {
-            "remote_addr": request.remote_addr,
-            "path": request.path,
-            "url": request.url,
-            "args": parse_args(),
-        }
-
-    # menu
-    menu = get_menus(config)
-    view_ctx["menu"] = menu
-
-    # taxonomy
-    taxonomy = get_taxonomies(config)
-    view_ctx["tax"] = view_ctx["taxonomy"] = taxonomy
-
-    return view_ctx
-
-
 def gen_id(relative_path):
     content_dir = current_app.config.get('CONTENT_DIR')
     page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
@@ -266,3 +232,128 @@ def content_splitter(file_content):
     if m is None:
         return "", ""
     return m.group("meta"), m.group("content")
+
+
+# menus
+def helper_wrap_menu(menus, base_url):
+    if not menus:
+        return {}
+
+    def process_menu_url(menu):
+        for item in menu:
+            link = item.get("link", "")
+            if not link or url_validator(link):
+                item["url"] = link
+            elif link.startswith('/'):
+                item["url"] = "{}/{}".format(base_url, link.strip('/'))
+            else:
+                item["url"] = link.rstrip('/')
+            item["nodes"] = process_menu_url(item.get("nodes", []))
+        return menu
+
+    menu_dict = {}
+    for menu in menus:
+        nodes = menu.get("nodes", [])
+        nodes = process_menu_url(nodes)
+        menu_dict[menu.get("slug")] = nodes
+
+    return menu_dict
+
+
+# socials
+def helper_wrap_socials(socials):
+    """ socials json sample
+    {
+       "facebook":{
+           "name":"Facebook",
+           "url":"http://....",
+           "code":"..."
+       },
+       "twitter":{
+           "name":"Twitter",
+           "url":"http://....",
+           "code":"..."
+       }
+    }
+    """
+    if not socials:
+        return []
+
+    social_list = []
+
+    if isinstance(socials, list):
+        # directly append if is list
+        social_list = [social for social in socials if social.get('key')]
+
+    elif isinstance(socials, dict):
+        # change to list if is dict
+        def _make_key(k, v):
+            v.update({"key": k})
+            return v
+        social_list = [_make_key(k, v) for k, v in socials.iteritems()]
+
+    return social_list
+
+
+# taxonomy
+def helper_wrap_taxonomy(app, taxonomies):
+    ContentFile = current_app.mongodb.ContentFile
+    tax_dict = {}
+
+    def _parse_term(term, app, content_types):
+        key = term.get('key')
+        attr = 'meta.taxonomy.{}'.format(tax["slug"])
+        term['count'] = _count_terms(app['_id'], content_types, attr, key)
+        return term
+
+    def _count_terms(app_id, content_types, attr, key):
+        if not key:
+            return 0
+        attrs = [
+            {'type': content_types},
+            {attr: key}
+        ]
+        return ContentFile.count_matched(app_id, attrs)
+
+    for tax in taxonomies:
+        content_types = tax.get("content_types", [])
+        tax_dict[tax["slug"]] = {
+            "title": tax.get("title"),
+            "content_types": content_types,
+            "terms": [_parse_term(term, tax, content_types)
+                      for term in tax['terms']]
+        }
+    return tax_dict
+
+
+# translates
+def helper_wrap_translates(translates, locale):
+    """ translates json sample
+    {
+       "zh_CN":{"name":"汉语","url":"http://....."},
+       "en_US":{"name":"English","url":"http://....."}
+    }
+    """
+    if not translates:
+        return []
+
+    trans_list = []
+    lang = locale.split('_')[0]
+
+    if isinstance(translates, list):
+        # directly append if is list
+        trans_list = [trans for trans in translates if trans.get('key')]
+
+    elif isinstance(translates, dict):
+        # change to list if is dict
+        def _make_key(k, v):
+            v.update({"key": k})
+            return v
+        trans_list = [_make_key(k, v) for k, v in translates.iteritems()]
+
+    for trans in trans_list:
+        trans_key = trans['key'].lower()
+        if trans_key == locale.lower() or trans_key == lang.lower():
+            trans["active"] = True
+
+    return trans_list
