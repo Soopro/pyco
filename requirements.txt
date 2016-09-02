@@ -3,3 +3,4 @@ Pygments==1.6
 markdown==2.5.1
 py-gfm==0.1.1
 PyYAML==3.11
+python-slugify==1.2.0

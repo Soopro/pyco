@@ -14,8 +14,7 @@ from helpers.app import (run_hook,
                          helper_render_ext_slots,
                          get_theme_path,
                          get_theme_abs_path)
-from helpers.content import (
-                             helper_get_file_path,
+from helpers.content import (find_content_file,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_menu,
@@ -61,35 +60,32 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     view_ctx = dict()
 
-    # find file path
-    file = {"path": None}
-    file["path"] = helper_get_file_path(file_slug, content_type_slug)
+    # load file content
+    file = {
+        "content_type": content_type_slug,
+        "slug": file_slug
+    }
 
     run_hook("before_load_content", file=file)
+    content_file = find_content_file(file)
 
     # if not found
-    if file["path"] is None:
+    if content_file is None:
         status_code = 404
-        file["path"] = _find_404_path()
+        file = {
+            "slug": current_app.config['DEFAULT_404_SLUG']
+        }
         run_hook("before_404_load_content", file=file)
-        if not file["path"]:
+        content_file = find_content_file(file)
+        if not content_file:
             abort(404)  # without not found 404 file
             return
 
-    # load file content
-    file_content = {"content": None}
-    with open(file['path'], "r") as f:
-        file_content['content'] = f.read().decode(charset)
-
     if status_code == 404:
-        run_hook("after_404_load_content", file=file, content=file_content)
+        run_hook("after_404_load_content", file=file, content=content_file)
 
-    run_hook("after_load_content", file=file, content=file_content)
+    run_hook("after_load_content", file=file, content=content_file)
 
-    # parse file content
-    meta_string, content_string = content_splitter(file_content["content"])
-
-    meta_string = {"meta": meta_string}
     run_hook("before_read_page_meta", meta_string=meta_string)
     try:
         headers = parse_file_headers(meta_string['meta'])
@@ -219,16 +215,6 @@ def _check_theme_hidden_types(theme_meta, curr_type):
     cfg_types = theme_meta.get('content_types', {})
     status_type = cfg_types.get(curr_type, {}).get('status', 1)
     return status_type == 0
-
-
-def _find_404_path():
-    content_dir = current_app.config.get('CONTENT_DIR')
-    file_404 = "{}{}".format(current_app.config.get('DEFAULT_404_SLUG'),
-                             current_app.config.get('CONTENT_FILE_EXT'))
-    file_404_path = os.path.join(content_dir, file_404)
-    if not os.path.isfile(file_404_path):
-        file_404_path = None
-    return file_404_path
 
 
 def _get_content_type(content_type_slug, content_types):

@@ -2,6 +2,8 @@
 from __future__ import absolute_import
 
 from flask import current_app
+from utils import process_slug
+
 from types import ModuleType
 import os
 import yaml
@@ -46,7 +48,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
 
     app.config.setdefault("DEFAULT_INDEX_SLUG", "index")
-    app.config.setdefault("DEFAULT_404_SLUG", "error_404")
+    app.config.setdefault("DEFAULT_404_SLUG", "error-404")
     app.config.setdefault("DEFAULT_SEARCH_SLUG", "search")
     app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
     app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
@@ -189,18 +191,18 @@ def _auto_content_type(file_path, default_type=u'page'):
     return content_type
 
 
-def _auto_id(relative_path):
+def _auto_id(file_path):
     content_dir = current_app.config.get('CONTENT_DIR')
-    page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
+    page_id = file_path.replace(content_dir + "/", '', 1).lstrip('/')
     return page_id
 
 
-def _auto_page_slug(relative_path):
+def _auto_page_slug(file_path):
     content_ext = current_app.config.get('CONTENT_FILE_EXT')
-    if relative_path.endswith(content_ext):
-        relative_path = os.path.splitext(relative_path)[0]
-    slug = relative_path.split('/')[-1]
-    return slug
+    if file_path.endswith(content_ext):
+        file_path = os.path.splitext(file_path)[0]
+    slug = file_path.split('/')[-1]
+    return process_slug(slug)
 
 
 def _file_headers(meta_string):

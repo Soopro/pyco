@@ -4,10 +4,18 @@ from __future__ import absolute_import
 from flask import current_app, g
 import os
 import re
-import yaml
 import markdown
 from utils.validators import url_validator
 from utils.misc import parse_int
+
+
+def find_content_file(file_query, default_type=u'page'):
+    content_type_slug = file_query.get('content_type', default_type)
+    for file in g.files:
+        if file['slug'] == file_query['slug'] \
+           and file['content_type'] == content_type_slug:
+            return file
+    return None
 
 
 def parse_content(content_string):
@@ -61,20 +69,6 @@ def get_taxonomies(config):
         }
 
     return tax_dict
-
-
-def helper_get_file_path(file_slug, content_type_slug):
-    content_dir = current_app.config.get('CONTENT_DIR')
-    content_ext = current_app.config.get('CONTENT_FILE_EXT')
-
-    if content_type_slug == 'page':
-        scope = os.path.join(content_dir, file_slug)
-    else:
-        scope = os.path.join(content_dir, content_type_slug, file_slug)
-    file_path = "{}{}".format(scope, content_ext)
-    if os.path.isfile(file_path):
-        return file_path
-    return None
 
 
 def parse_file_metas(page, file_path, excerpt, options, current_id=None):
