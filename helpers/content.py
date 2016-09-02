@@ -22,7 +22,7 @@ def get_files(base_dir, ext):
     return all_files
 
 
-def parse_page_meta(meta_string):
+def parse_file_headers(meta_string):
     def convert_data(x):
         if isinstance(x, dict):
             return dict((k.lower(), convert_data(v))
@@ -98,7 +98,7 @@ def get_taxonomies(config):
     return tax_dict
 
 
-def get_file_path(file_slug, content_type_slug):
+def helper_get_file_path(file_slug, content_type_slug):
     content_dir = current_app.config.get('CONTENT_DIR')
     content_ext = current_app.config.get('CONTENT_FILE_EXT')
 
@@ -133,7 +133,7 @@ def get_pages():
             file_content = fh.read().decode(config.get('CHARSET', 'utf-8'))
         meta_string, content_string = content_splitter(file_content)
         try:
-            meta = parse_page_meta(meta_string)
+            meta = parse_file_headers(meta_string)
         except Exception as e:
             e.current_file = f
             raise e
@@ -188,7 +188,7 @@ def init_context(include_request=True):
     view_ctx["base_url"] = config.get("BASE_URL", '')
     view_ctx["theme_url"] = config.get("THEME_URL", '')
     view_ctx["libs_url"] = config.get("LIBS_URL", '')
-    view_ctx["api_baseurl"] = config.get("API_URL", '')
+    view_ctx["api_baseurl"] = config.get("API_BASEURL", '')
     view_ctx["site_meta"] = site_meta
     view_ctx["theme_meta"] = config.get("THEME_META")
     view_ctx["now"] = now()
@@ -257,13 +257,6 @@ def gen_excerpt(content, opts):
         excerpt = u" ".join(excerpt.split())
         excerpt = excerpt[0:excerpt_length] + excerpt_ellipsis
     return excerpt
-
-
-def content_not_found_full_path():
-    content_dir = current_app.config.get('CONTENT_DIR')
-    file_404 = "{}{}".format(current_app.config.get('DEFAULT_404_SLUG'),
-                             current_app.config.get('CONTENT_FILE_EXT'))
-    return os.path.join(content_dir, file_404)
 
 
 def content_splitter(file_content):

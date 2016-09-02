@@ -5,6 +5,7 @@ from flask import current_app, make_response, send_from_directory
 from utils.response import make_cors_headers
 from types import ModuleType
 import os
+import json
 import mimetypes
 
 
@@ -19,7 +20,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("BASE_URL", "/")
     app.config.setdefault("LIBS_URL", "")
     app.config.setdefault("THEME_URL", "")
-    app.config.setdefault("API_URL", "")
+    app.config.setdefault("API_BASEURL", "")
 
     app.config.setdefault("PLUGINS", [])
     app.config.setdefault("INVISIBLE_PAGE_LIST", [])
@@ -78,3 +79,33 @@ def load_uploads(filepath):
     response = make_response(send_file)
     response.headers = make_cors_headers(mime_type)
     return response
+
+
+def load_app_metas():
+    theme_meta_file = os.path.join(current_app.config.get('THEMES_DIR'),
+                                   current_app.config.get('THEME_NAME'),
+                                   current_app.config.get('THEME_META_FILE'))
+    site_file = os.path.join(current_app.config.get('CONTENT_DIR'),
+                             current_app.config.get('SITE_DATA_FILE'))
+
+    try:
+        with open(theme_meta_file) as theme_data:
+            theme_meta = json.load(theme_data)
+    except Exception as e:
+        err_msg = "Load Theme Meta faild: {}".format(str(e))
+        raise Exception(err_msg)
+
+    try:
+        with open(site_file) as site_data:
+            site = json.load(site_data)
+    except Exception as e:
+        err_msg = "Load Site Meta faild: {}".format(str(e))
+        raise Exception(err_msg)
+
+    return {
+        'id': site.get('id', 'pyco_app'),
+        'slug': site.get('slug'),
+        'type': site.get('type'),
+        'meta': site.get('meta'),
+        'theme_meta': theme_meta
+    }

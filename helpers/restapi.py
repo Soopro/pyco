@@ -5,7 +5,7 @@ from flask import current_app
 
 from utils.misc import sortedby
 from utils.response import make_json_response
-from helpers.common import get_app_metas, run_hook
+from helpers.common import load_app_metas, run_hook
 from helpers.content import init_context
 
 
@@ -88,7 +88,7 @@ def get_rest_meta():
     status_code = 200
 
     # load
-    get_app_metas()
+    load_app_metas()
     view_ctx = init_context(False)
     run_hook("config_loaded", config=current_app.config)
     run_hook("before_render", var=view_ctx, template=None)

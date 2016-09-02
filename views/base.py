@@ -1,66 +1,64 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request, abort, render_template, redirect
+from flask import current_app, request, abort, render_template, redirect, g
 import os
 
 from utils.response import make_content_response
-
-from helpers.common import (run_hook,
-                            get_app_metas,
-                            make_redirect_url,
-                            make_dotted_dict)
-from helpers.content import (content_not_found_full_path,
-                             content_splitter,
+from utils.misc import make_dotted_dict
+from helpers.app import (run_hook,
+                         helper_redirect_url)
+from helpers.content import (content_splitter,
                              init_context,
-                             get_file_path,
+                             helper_get_file_path,
                              get_pages,
-                             parse_page_meta,
+                             parse_file_headers,
                              parse_file_metas,
                              parse_content)
 from helpers.theme import get_theme_path, get_theme_abs_path
 
 
 def get_content(content_type_slug='page', file_slug='index'):
-    # load
-    get_app_metas()
-    run_hook("config_loaded", config=current_app.config)
-
-    config = current_app.config
-    view_ctx = init_context()
     status_code = 200
-    is_not_found = False
-
-    # for pass intor hook
-    file = {"path": None}
-    file_content = {"content": None}
-
-    base_url = config.get("BASE_URL")
+    config = current_app.config
     charset = config.get('CHARSET')
+    base_url = g.curr_base_url
+    curr_app = g.curr_app
+    theme_meta = curr_app['theme_meta']
 
-    redirect_to = {"url": None}
+    run_hook("config_loaded", config=config)
+
+    view_ctx = init_context()
+
     run_hook("request_url", request=request)
 
-    file["path"] = get_file_path(file_slug, content_type_slug)
-    # hook before load content
+    # hidden content types
+    if _check_theme_hidden_types(theme_meta, content_type_slug):
+        default_404_slug = config.get("DEFAULT_404_SLUG")
+        redirect_url = helper_redirect_url(default_404_slug, base_url)
+        return redirect(redirect_url, code=302)
+
+    # find file path
+    file = {"path": None}
+    file["path"] = helper_get_file_path(file_slug, content_type_slug)
+
     run_hook("before_load_content", file=file)
+
     # if not found
     if file["path"] is None:
-        is_not_found = True
         status_code = 404
-        file["path"] = content_not_found_full_path()
-        if not os.path.isfile(file["path"]):
-            # without not found 404 file
-            abort(404)
-
-    # read file content
-    if is_not_found:
+        file["path"] = _find_404_path()
         run_hook("before_404_load_content", file=file)
+        if not file["path"]:
+            abort(404)  # without not found 404 file
+            return
 
+    # load file content
+    file_content = {"content": None}
     with open(file['path'], "r") as f:
         file_content['content'] = f.read().decode(charset)
 
-    if is_not_found:
+    if status_code == 404:
         run_hook("after_404_load_content", file=file, content=file_content)
 
     run_hook("after_load_content", file=file, content=file_content)
@@ -72,12 +70,13 @@ def get_content(content_type_slug='page', file_slug='index'):
     meta_string = {"meta": meta_string}
     run_hook("before_read_page_meta", meta_string=meta_string)
     try:
-        headers = parse_page_meta(meta_string['meta'])
+        headers = parse_file_headers(meta_string['meta'])
     except Exception as e:
         raise Exception("{}: {}".format(str(e), file["path"]))
 
     run_hook("after_read_page_meta", headers=headers)
-    theme_opts = config['THEME_META'].get('options', {})
+
+    theme_opts = theme_meta.get('options', {})
     page_meta = parse_file_metas(headers,
                                  file["path"],
                                  content_string,
@@ -85,16 +84,11 @@ def get_content(content_type_slug='page', file_slug='index'):
     redirect_to = {"url": None}
     run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
 
-    # hidden content types
-    c_type = page_meta.get('type')
-    if c_type.startswith('_') and not redirect_to["url"]:
-        default_404_slug = config.get("DEFAULT_404_SLUG")
-        redirect_to["url"] = "{}/{}".format(base_url, default_404_slug)
-
     # page redirect
-    content_redirect_to = make_redirect_url(redirect_to.get("url"), base_url)
-    if content_redirect_to and request.url != content_redirect_to:
-        return redirect(redirect_to["url"], code=302)
+    if redirect_to["url"]:
+        redirect_to = helper_redirect_url(redirect_to["url"], base_url)
+        if redirect_to and request.url != redirect_to:
+            return redirect(redirect_to["url"], code=302)
 
     view_ctx["meta"] = page_meta
 
@@ -102,8 +96,10 @@ def get_content(content_type_slug='page', file_slug='index'):
     page_content = dict()
     page_content['content'] = content_string
     run_hook("before_parse_content", content=page_content)
+
     page_content['content'] = parse_content(page_content['content'])
     run_hook("after_parse_content", content=page_content)
+
     view_ctx["content"] = page_content['content']
 
     # pages
@@ -133,4 +129,23 @@ def get_content(content_type_slug='page', file_slug='index'):
     output = {}
     output['content'] = render_template(template_file_path, **view_ctx)
     run_hook("after_render", output=output)
+
     return make_content_response(output['content'], status_code)
+
+
+def _check_theme_hidden_types(theme_meta, curr_type):
+    if curr_type == 'page':
+        return False
+    cfg_types = theme_meta.get('content_types', {})
+    status_type = cfg_types.get(curr_type, {}).get('status', 1)
+    return status_type == 0
+
+
+def _find_404_path():
+    content_dir = current_app.config.get('CONTENT_DIR')
+    file_404 = "{}{}".format(current_app.config.get('DEFAULT_404_SLUG'),
+                             current_app.config.get('CONTENT_FILE_EXT'))
+    file_404_path = os.path.join(content_dir, file_404)
+    if not os.path.isfile(file_404_path):
+        file_404_path = None
+    return file_404_path

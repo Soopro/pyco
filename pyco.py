@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-import argparse
 import os
 import sys
 import traceback
@@ -14,17 +13,12 @@ from utils.misc import route_inject
 from utils.response import make_json_response
 
 from routes import urlpatterns
-from loaders import load_config, load_plugins, load_uploads
+from loaders import load_config, load_plugins, load_uploads, load_app_metas
 
 
 __version_info__ = ('2', '0', '3')
 __version__ = '.'.join(__version_info__)
 
-# parse args
-parser = argparse.ArgumentParser(
-    description='Options of starting Pyco server.')
-
-args, unknown = parser.parse_known_args()
 
 # create app
 app = Flask(__name__)
@@ -85,9 +79,11 @@ def before_request():
     elif request.path.strip("/") in current_app.config.get('SYS_ICON_LIST'):
         abort(404)
 
+    app_metas = load_app_metas()
     base_url = current_app.config.get("BASE_URL")
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
+    g.curr_app = app_metas
     g.curr_base_url = base_url
     g.request_path = request.path
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)

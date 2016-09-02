@@ -10,7 +10,7 @@ THEME_NAME = 'default'
 STATIC_PATH = "static"
 
 BASE_URL = "http://localhost:5500"
-API_URL = "http://api.soopro.io"
+API_BASEURL = "http://localhost:5500/restapi"
 LIBS_URL = "http://libs.soopro.io"
 THEME_URL = "{}/{}/{}".format(BASE_URL, STATIC_PATH, THEME_NAME)
 
@@ -67,5 +67,3 @@ PLUGINS = ["draft",
            "template",
            "shortcode",
            "jinja_helper"]
-
-""" For Plugins """
