@@ -9,17 +9,18 @@ from services.i18n import Translator
 from utils.response import make_content_response
 from utils.misc import make_dotted_dict
 from helpers.app import (run_hook,
-                         helper_wrap_translates,
                          helper_get_statistic,
-                         helper_wrap_socials,
-                         helper_redirect_url)
+                         helper_redirect_url,
+                         get_theme_path,
+                         get_theme_abs_path)
 from helpers.content import (content_splitter,
                              helper_get_file_path,
+                             helper_wrap_socials,
+                             helper_wrap_translates,
                              get_pages,
                              parse_file_headers,
                              parse_file_metas,
                              parse_content)
-from helpers.theme import get_theme_path, get_theme_abs_path
 
 
 def get_content(content_type_slug='page', file_slug='index'):
