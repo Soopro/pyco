@@ -7,6 +7,7 @@ import traceback
 import os
 from utils.misc import route_inject
 from utils.request import get_remote_addr
+from utils.response import make_json_response
 from helpers.app import get_app_metas
 
 from .helpers.jinja import (filter_thumbnail,
@@ -68,7 +69,14 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
-    err_html_msg = "<h1>{}</h1><p>{}</p>".format(repr(err), str(err))
+    curr_file = ''
+    if 'current_file' in dir(err):
+        curr_file = err.current_file
+    err_msg = "{}: {}\n{}".format(repr(err),
+                                  curr_file,
+                                  traceback.format_exc())
+    err_html_msg = "<h1>{}: {}</h1><p>{}</p>".format(repr(err),
+                                                     curr_file,
+                                                     traceback.format_exc())
     current_app.logger.error(err_msg)
-    return make_response(err_html_msg, 579)
+    return make_json_response(err_html_msg, 500)

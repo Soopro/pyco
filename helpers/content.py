@@ -343,8 +343,8 @@ def helper_wrap_socials(socials):
 
 
 # taxonomy
-def helper_wrap_taxonomy(app, taxonomies):
-    ContentFile = current_app.mongodb.ContentFile
+def helper_wrap_taxonomy(app):
+    taxonomies = app['taxonomies']
     tax_dict = {}
 
     def _parse_term(term, app, content_types):

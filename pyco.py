@@ -8,15 +8,13 @@ import traceback
 from flask import Flask, current_app, request
 from flask.json import JSONEncoder
 
-from utils.misc import route_inject
 from utils.response import make_json_response, make_cors_headers
 
-from routes import urlpatterns
 from loaders import load_config, load_plugins
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '0', '3')
+__version_info__ = ('2', '1', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -73,21 +71,6 @@ def app_before_request():
         cors_headers = make_cors_headers()
         resp.headers.extend(cors_headers)
         return resp
-
-
-@app.errorhandler(Exception)
-def errorhandler(err):
-    curr_file = ''
-    if 'current_file' in dir(err):
-        curr_file = err.current_file
-    err_msg = "{}: {}\n{}".format(repr(err),
-                                  curr_file,
-                                  traceback.format_exc())
-    err_html_msg = "<h1>{}: {}</h1><p>{}</p>".format(repr(err),
-                                                     curr_file,
-                                                     traceback.format_exc())
-    current_app.logger.error(err_msg)
-    return make_json_response(err_html_msg, 500)
 
 
 if __name__ == "__main__":

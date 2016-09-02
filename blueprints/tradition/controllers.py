@@ -41,7 +41,7 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     base_url = g.curr_base_url
     curr_app = g.curr_app
-    site_meta = curr_app['site_meta']
+    site_meta = curr_app['meta']
     theme_meta = curr_app['theme_meta']
     theme_options = theme_meta.get('options', {})
 
