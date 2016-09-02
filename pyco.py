@@ -3,14 +3,14 @@ from __future__ import absolute_import
 
 import os
 import sys
-import traceback
 
-from flask import Flask, current_app, request
+from flask import Flask, current_app, request, make_response, g
 from flask.json import JSONEncoder
 
-from utils.response import make_json_response, make_cors_headers
+from utils.request import get_remote_addr
+from utils.response import make_cors_headers
 
-from loaders import load_config, load_plugins
+from loaders import load_config, load_plugins, load_all_files, load_curr_app
 from blueprints import register_blueprints
 
 
@@ -63,6 +63,11 @@ app.add_url_rule(
 )
 
 
+SYS_ICON_LIST = ['favicon.ico',
+                 'apple-touch-icon-precomposed.png',
+                 'apple-touch-icon.png']
+
+
 @app.before_request
 def app_before_request():
     # cors response
@@ -71,6 +76,21 @@ def app_before_request():
         cors_headers = make_cors_headers()
         resp.headers.extend(cors_headers)
         return resp
+    elif request.path.strip("/") in SYS_ICON_LIST:
+        return make_response('', 204)  # for browser default icons
+
+    base_url = current_app.config.get("BASE_URL")
+    uploads_dir = current_app.config.get("UPLOADS_DIR")
+
+    g.curr_app = load_curr_app()
+    g.files = load_all_files(g.curr_app)
+    g.curr_base_url = base_url
+
+    g.request_remote_addr = get_remote_addr()
+    g.request_path = request.path
+
+    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
+    g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
 
 if __name__ == "__main__":

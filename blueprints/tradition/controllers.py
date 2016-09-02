@@ -14,7 +14,7 @@ from helpers.app import (run_hook,
                          helper_render_ext_slots,
                          get_theme_path,
                          get_theme_abs_path)
-from helpers.content import (content_splitter,
+from helpers.content import (
                              helper_get_file_path,
                              helper_wrap_socials,
                              helper_wrap_translates,

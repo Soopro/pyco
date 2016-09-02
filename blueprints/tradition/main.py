@@ -7,7 +7,6 @@ import traceback
 import os
 from utils.misc import route_inject
 from utils.request import get_remote_addr
-from helpers.app import get_app_metas
 
 from .helpers.jinja import (filter_thumbnail,
                             filter_date_formatted,
@@ -15,11 +14,6 @@ from .helpers.jinja import (filter_thumbnail,
                             filter_path,
                             filter_args)
 from .routes import urlpatterns
-
-
-SYS_ICON_LIST = ['favicon.ico',
-                 'apple-touch-icon-precomposed.png',
-                 'apple-touch-icon.png']
 
 bp_name = "tradition"
 
@@ -38,23 +32,6 @@ def before_first_request():
 
 @blueprint.before_request
 def before_request():
-    if request.method == "OPTIONS":
-        return current_app.make_default_options_response()
-    elif request.path.strip("/") in SYS_ICON_LIST:
-        return make_response('', 204)  # for browser default icons
-
-    base_url = current_app.config.get("BASE_URL")
-    uploads_dir = current_app.config.get("UPLOADS_DIR")
-
-    g.curr_app = get_app_metas()
-    g.curr_base_url = base_url
-
-    g.request_remote_addr = get_remote_addr()
-    g.request_path = request.path
-
-    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
-    g.uploads_url = "{}/{}".format(base_url, uploads_dir)
-
     if current_app.debug:
         # change template folder
         themes_dir = current_app.config.get("THEMES_DIR")

@@ -15,7 +15,7 @@ def make_json_response(output, status_code):
 def make_content_response(output, status_code, etag=None):
     response = make_response(output, status_code)
     response.cache_control.public = "public"
-    response.cache_control.max_age = 600
+    response.cache_control.max_age = 60 * 10
     if etag is not None:
         response.set_etag(etag)
     return response

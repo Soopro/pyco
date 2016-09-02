@@ -7,41 +7,7 @@ import re
 import yaml
 import markdown
 from utils.validators import url_validator
-from utils.misc import sortedby, parse_int
-
-
-def get_files(base_dir, ext):
-    all_files = []
-    for root, directory, files in os.walk(base_dir):
-        file_full_paths = [
-            os.path.join(root, f)
-            for f in filter(lambda x: x.endswith(ext), files)
-        ]
-        all_files.extend(file_full_paths)
-    return all_files
-
-
-def parse_file_headers(meta_string):
-    def convert_data(x):
-        if isinstance(x, dict):
-            return dict((k.lower(), convert_data(v))
-                        for k, v in x.iteritems())
-        elif isinstance(x, list):
-            return list([convert_data(i) for i in x])
-        elif isinstance(x, str):
-            return x.decode("utf-8")
-        elif isinstance(x, (unicode, int, float, bool)) or x is None:
-            return x
-        else:
-            try:
-                x = str(x).decode("utf-8")
-            except Exception as e:
-                print e
-                pass
-        return x
-    yaml_data = yaml.safe_load(meta_string)
-    headers = convert_data(yaml_data)
-    return headers
+from utils.misc import parse_int
 
 
 def parse_content(content_string):
@@ -111,56 +77,15 @@ def helper_get_file_path(file_slug, content_type_slug):
     return None
 
 
-def get_pages():
-    config = current_app.config
-    content_dir = config.get('CONTENT_DIR')
-    content_ext = config.get('CONTENT_FILE_EXT')
-    files = get_files(content_dir, content_ext)
-    invisible_slugs = config.get('INVISIBLE_SLUGS')
-    theme_meta_options = config['THEME_META'].get('options', {})
-
-    page_data_list = []
-    for f in files:
-        if gen_page_slug(f) in invisible_slugs:
-            continue
-
-        relative_path = f.split(content_dir + "/", 1)[1]
-        if relative_path.startswith("~") or relative_path.startswith("#"):
-            continue
-
-        with open(f, "r") as fh:
-            file_content = fh.read().decode(config.get('CHARSET', 'utf-8'))
-        meta_string, content_string = content_splitter(file_content)
-        try:
-            meta = parse_file_headers(meta_string)
-        except Exception as e:
-            e.current_file = f
-            raise e
-        data = parse_file_metas(meta, f, content_string, theme_meta_options)
-        page_data_list.append(data)
-
-    # sortedby
-    sort_desc = True
-    sort_keys = ['-priority']
-    sort_by = theme_meta_options.get("sortby", "updated")
-
-    if isinstance(sort_by, basestring):
-        sort_keys.append(sort_by)
-    elif isinstance(sort_by, list):
-        sort_keys = sort_keys + [key for key in sort_by
-                                 if isinstance(key, basestring)]
-
-    return sortedby(page_data_list, sort_keys, reverse=sort_desc)
-
-
-def parse_file_metas(meta, file_path, excerpt, options, current_id=None):
+def parse_file_metas(page, file_path, excerpt, options, current_id=None):
     config = current_app.config
     data = dict()
+    meta = page.get("meta")
     for m in meta:
         data[m] = meta[m]
-    data["id"] = gen_id(file_path)
-    data["app_id"] = g.curr_app['_id']
-    data["slug"] = gen_page_slug(file_path)
+    data["id"] = page['_id']
+    data["app_id"] = page['app_id']
+    data["slug"] = page['slug']
     data['parent'] = meta.get('parent', u'')
     data["priority"] = meta.get("priority", 0)
     data['type'] = data['content_type'] = meta.get('type', _auto_type())
@@ -191,29 +116,6 @@ def parse_file_metas(meta, file_path, excerpt, options, current_id=None):
     return data
 
 
-def _auto_file_updated(file_path):
-    return int(os.path.getmtime(file_path))
-
-
-def _auto_file_creation(file_path):
-    return int(os.path.getctime(file_path))
-
-
-def _auto_type(default_type=u'page'):
-    path_parts = g.request_path.split('/')
-    if len(path_parts) > 2:
-        content_type = path_parts[1].lower()
-    else:
-        content_type = default_type
-    return content_type
-
-
-def gen_id(relative_path):
-    content_dir = current_app.config.get('CONTENT_DIR')
-    page_id = relative_path.replace(content_dir + "/", '', 1).lstrip('/')
-    return page_id
-
-
 def gen_page_url(relative_path):
     content_dir = current_app.config.get('CONTENT_DIR')
     content_ext = current_app.config.get('CONTENT_FILE_EXT')
@@ -233,14 +135,6 @@ def gen_page_url(relative_path):
     return url
 
 
-def gen_page_slug(relative_path):
-    content_ext = current_app.config.get('CONTENT_FILE_EXT')
-    if relative_path.endswith(content_ext):
-        relative_path = os.path.splitext(relative_path)[0]
-    slug = relative_path.split('/')[-1]
-    return slug
-
-
 def make_file_excerpt(content, length=600):
     excerpt = re.sub(r'<[^>]*?>', '', content).strip()
     return excerpt[:length].strip()
@@ -257,28 +151,6 @@ def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
         excerpt = u" ".join(excerpt.split())  # remove empty strings.
         excerpt = u"{}{}".format(excerpt[0:excerpt_length], excerpt_ellipsis)
     return excerpt
-
-
-def content_splitter(file_content):
-    file_content = _shortcode(file_content)
-    pattern = r"(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)"
-    re_pattern = re.compile(pattern)
-    m = re_pattern.match(file_content)
-    if m is None:
-        return "", ""
-    return m.group("meta"), m.group("content")
-
-
-def _shortcode(text):
-    config = current_app.config
-    re_uploads_dir = re.compile(r"\[\%uploads\%\]", re.IGNORECASE)
-    re_theme_dir = re.compile(r"\[\%theme\%\]", re.IGNORECASE)
-    # uploads
-    uploads_dir = "{}/{}".format(config["BASE_URL"], config["UPLOADS_DIR"])
-    text = re.sub(re_uploads_dir, unicode(uploads_dir), text)
-    # theme
-    text = re.sub(re_theme_dir, unicode(config["THEME_URL"]), text)
-    return text
 
 
 # menus
@@ -342,25 +214,22 @@ def helper_wrap_socials(socials):
     return social_list
 
 
+# query contents
+def count_matched(attrs):
+    pass
+
+
 # taxonomy
-def helper_wrap_taxonomy(app):
-    taxonomies = app['taxonomies']
+def helper_wrap_taxonomy(taxonomies):
     tax_dict = {}
 
-    def _parse_term(term, app, content_types):
-        key = term.get('key')
-        attr = 'meta.taxonomy.{}'.format(tax["slug"])
-        term['count'] = _count_terms(app['_id'], content_types, attr, key)
-        return term
-
-    def _count_terms(app_id, content_types, attr, key):
-        if not key:
-            return 0
+    def _parse_term(term, tax, content_types):
         attrs = [
             {'type': content_types},
-            {attr: key}
+            {'taxonomy.{}'.format(tax["slug"]): term.get('key')}
         ]
-        return ContentFile.count_matched(app_id, attrs)
+        term['count'] = count_matched(attrs)
+        return term
 
     for tax in taxonomies:
         content_types = tax.get("content_types", [])
