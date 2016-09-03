@@ -9,13 +9,21 @@ from utils.validators import url_validator
 from utils.misc import parse_int
 
 
-def find_content_file(file_query, default_type=u'page'):
-    content_type_slug = file_query.get('content_type', default_type)
+def find_content_file(path, default_type=u'page'):
+    content_type_slug = path.get('content_type', default_type)
     for file in g.files:
-        if file['slug'] == file_query['slug'] \
+        if file['slug'] == path['slug'] \
            and file['content_type'] == content_type_slug:
             return file
     return None
+
+
+def query_content_files(attrs, sortby, limit, offset, priority):
+
+
+
+def count_content_files(attrs):
+    pass
 
 
 def parse_content(content_string):
@@ -71,8 +79,10 @@ def get_taxonomies(config):
     return tax_dict
 
 
-def read_page_metas(page, excerpt, options, current_id=None):
+def read_page_metas(page, content, options, current_id=None):
     config = current_app.config
+    excerpt = make_file_excerpt(excerpt)
+
     data = dict()
     meta = page.get("meta")
     for m in meta:
@@ -112,10 +122,7 @@ def read_page_metas(page, excerpt, options, current_id=None):
 
 
 def gen_page_url(content_type_slug, file_slug):
-    url = "{}/{}/{}".format(current_app.config.get("BASE_URL"),
-                            content_type_slug,
-                            file_slug)
-    return url
+    return "{}/{}/{}".format(g.curr_base_url, content_type_slug, file_slug)
 
 
 def make_file_excerpt(content, length=600):

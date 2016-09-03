@@ -15,12 +15,13 @@ from helpers.app import (run_hook,
                          get_theme_path,
                          get_theme_abs_path)
 from helpers.content import (find_content_file,
+                             count_content_files,
+                             query_content_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_menu,
                              helper_wrap_taxonomy,
                              make_file_excerpt,
-                             parse_file_headers,
                              read_page_metas,
                              parse_content)
 
@@ -59,14 +60,14 @@ def get_content(content_type_slug='page', file_slug='index'):
     # load file content
     path = {"content_type": content_type_slug, "slug": file_slug}
     run_hook("before_load_content", path=path)
-    content_file = find_content_file(file)
+    content_file = find_content_file(path)
 
     # if not found
     if content_file is None:
         status_code = 404
         path = {"slug": config.get("DEFAULT_404_SLUG")}
         run_hook("before_404_load_content", path=path)
-        content_file = find_content_file(file)
+        content_file = find_content_file(path)
         if not content_file:
             abort(404)  # without not found 404 file
             return
@@ -86,7 +87,7 @@ def get_content(content_type_slug='page', file_slug='index'):
 
     run_hook("before_read_page_meta", headers=content_file)
     page_meta = read_page_metas(content_file,
-                                make_file_excerpt(page_content['content']),
+                                page_content['content'],
                                 theme_options)
     redirect_to = {"url": None}
     run_hook("after_read_page_meta", meta=page_meta, redirect=redirect_to)
@@ -149,12 +150,8 @@ def get_content(content_type_slug='page', file_slug='index'):
     view_ctx["args"] = view_ctx["request"]["args"]
 
     # query
-    pages = get_pages()
-    for p in pages:
-        run_hook("get_page_data", data=p)
-    run_hook("get_pages", pages=pages, current_page=page_meta)
     view_ctx["query"] = query_contents
-    view_ctx["query_sides"] = query_sides
+    # view_ctx["query_sides"] = query_sides
 
     # get current content type
     view_ctx["content_type"] = _get_content_type(content_type_slug,
@@ -234,11 +231,8 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     else:
         g.query_count += 1
 
-    curr_app = g.curr_app
-
-    base_url = g.curr_base_url
     curr_id = g.curr_page_id
-    theme_meta = curr_app['theme_meta']
+    theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
 
     # set default params
@@ -263,7 +257,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         perpage = max(perpage, 24)
 
     # position
-    total_count = count_content_files(app, attrs)
+    total_count = count_content_files(attrs)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     paged = min(max_pages, paged)
 
@@ -271,18 +265,18 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_content_files(app, attrs, sortby, limit, offset, priority)
-    results = [read_page_metas(content_file, base_url, theme_opts, curr_id)
-               for content_file in results]
+    results = query_content_files(attrs, sortby, limit, offset, priority)
+    pages = []
+    for p in results:
+        p_content = parse_content(p.pop('content', u''))
+        p = read_page_metas(p, p_content, theme_opts, curr_id)
+        if with_content:
+            p['content'] = p_content
+        run_hook("get_page_data", data=p)
+        pages.append(p)
 
-    if with_content:
-        load_content_bodies(results)
-
+    run_hook("get_pages", pages=pages, current_page_id=curr_id)
     results = make_dotted_dict(results)
-
-    if current_app.debug:
-        print 'total:', total_count, 'results:', len(results)
-        print 'memory query:', total_sizeof(results)
 
     return {
         "contents": results,

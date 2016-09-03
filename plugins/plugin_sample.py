@@ -57,7 +57,7 @@ def get_page_data(data):
     return
 
 
-def get_pages(pages, current_page):
+def get_pages(pages, current_page_id):
     print "get pages"
     return
 
