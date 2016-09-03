@@ -11,7 +11,8 @@ from utils.misc import (sortedby,
                         format_date,
                         get_url_params,
                         add_url_params,
-                        make_dotted_dict)
+                        make_dotted_dict,
+                        match_cond)
 
 
 # filters
@@ -131,8 +132,7 @@ def straw(raw_list, value, key='id'):
     if not isinstance(key, basestring):
         key = 'id'
     try:
-        result = [item for item in raw_list
-                  if _deep_get(key, item) == value][0]
+        result = [item for item in raw_list if item.get(key) == value][0]
     except:
         result = None
     return result
@@ -183,10 +183,10 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
             c_k = cond_key
             c_v = cond_value
             results = [i for i in results
-                       if _match_cond(i, c_k, c_v, opposite, force)]
+                       if match_cond(i, c_k, c_v, force, opposite)]
         else:
             for i in salts:
-                _mch = _match_cond(i, cond_key, cond_value, opposite, force)
+                _mch = match_cond(i, cond_key, cond_value, force, opposite)
                 if i not in results and _mch:
                     results.append(i)
     # sort by
@@ -256,47 +256,6 @@ def timemachine(raw_list, filed='date', precision='month',
 
 
 # other helpers
-def _match_cond(target, cond_key, cond_value, opposite=False, force=False):
-    """
-    params:
-    - target: the source data want to check.
-    - cond_key: the attr key of condition.
-    - cond_value: the value of condition.
-      if the cond_value is a list, any item matched will make output matched.
-    - opposite: reverse check result.
-    - force: must have the value or not.
-    """
-    if cond_value == '' and not force:
-        return _deep_in(cond_key, target) != opposite
-    elif cond_value is None and not force:
-        # if cond_value is None will reverse the opposite,
-        # then for the macthed opposite must reverse again. so...
-        # also supported if the target value really is None.
-        return _deep_in(cond_key, target) == opposite
-    elif isinstance(cond_value, bool) and not force:
-        return _deep_in(cond_key, target) != opposite
-    elif not _deep_in(cond_key, target):
-        return False
-
-    matched = False
-    target_value = _deep_get(cond_key, target)
-    if isinstance(cond_value, list):
-        for c_val in cond_value:
-            matched = _match_cond(target, cond_key, c_val, force=True)
-            if matched:
-                break
-    elif isinstance(cond_value, bool):
-        target_bool = isinstance(target_value, bool)
-        matched = cond_value == target_value and target_bool
-    else:
-        if isinstance(target_value, list):
-            matched = cond_value in target_value
-        else:
-            matched = cond_value == target_value
-
-    return matched != opposite
-
-
 def _make_sort_keys(sort_by, priority=False, reverse=False):
     sort_keys = [('priority', 1)] if priority else []
 
@@ -306,25 +265,3 @@ def _make_sort_keys(sort_by, priority=False, reverse=False):
         sort_keys = sort_keys + [key for key in sort_by
                                  if isinstance(key, basestring)]
     return sort_keys
-
-
-def _deep_get(key, obj):
-    if not isinstance(obj, dict):
-        return None
-    elif '.' not in key:
-        return obj.get(key)
-    else:
-        key_pairs = key.split('.', 1)
-        obj = obj.get(key_pairs[0])
-        return _deep_get(key_pairs[1], obj)
-
-
-def _deep_in(key, obj):
-    if not isinstance(obj, dict):
-        return False
-    elif '.' not in key:
-        return key in obj
-    else:
-        key_pairs = key.split('.', 1)
-        obj = obj.get(key_pairs[0])
-        return _deep_in(key_pairs[1], obj)

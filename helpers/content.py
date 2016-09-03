@@ -6,7 +6,65 @@ import os
 import re
 import markdown
 from utils.validators import url_validator
-from utils.misc import parse_int
+from utils.misc import parse_int, match_cond, sortedby
+
+
+SHORT_FIELD_KEYS = {'type': 'content_type'}
+QUERYABLE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
+                        'date', 'creation', 'updated',
+                        'template', 'tags']
+
+
+def _query(files, attrs):
+    for attr in attrs[:5]:  # max fields key is 5
+        opposite = False
+        force = False
+        attr_key = None
+        attr_value = ''
+
+        if isinstance(attr, basestring):
+            attr_key = attr.lower()
+        elif isinstance(cond, dict):
+            opposite = bool(cond.pop('not', False))
+            force = bool(cond.pop('force', False))
+            if cond:
+                cond_key = cond.keys()[0]
+                cond_value = cond[cond_key]
+            else:
+                continue
+
+        if cond_key is None:
+            continue
+
+        cond_key = SHORT_FIELD_KEYS.get(cond_key, cond_key)
+        if cond_key not in QUERYABLE_FIELD_KEYS \
+           and '.' not in attr_key:
+            attr_key = "meta.{}".format(attr_key)
+        files = [f for f in files
+                 if match_cond(f, cond_key, cond_value, force, opposite)]
+
+
+def query_content_files(attrs, sortby=[], limit=1, offset=0, priority=True):
+    files = _query(g.files, attrs)
+    # sortedby
+    sort_keys = [('priority', 1)] if priority else []
+    if isinstance(sortby, basestring):
+        sort_keys.append(sortby)
+    elif isinstance(sortby, list):
+        sort_keys = sort_keys + [SHORT_FIELD_KEYS.get(key, key)
+                                 for key in sortby
+                                 if isinstance(key, basestring)]
+    if sort_keys:
+        files = sortedby(files, sort_keys)
+
+    limit = parse_int(limit, 1)
+    offset = parse_int(offset, 0)
+
+    return files[offset:limit]
+
+
+def count_content_files(attrs):
+    pass
 
 
 def find_content_file(path, default_type=u'page'):
@@ -16,14 +74,6 @@ def find_content_file(path, default_type=u'page'):
            and file['content_type'] == content_type_slug:
             return file
     return None
-
-
-def query_content_files(attrs, sortby, limit, offset, priority):
-
-
-
-def count_content_files(attrs):
-    pass
 
 
 def parse_content(content_string):
@@ -80,7 +130,7 @@ def get_taxonomies(config):
 
 
 def read_page_metas(page, content, options, current_id=None):
-    excerpt = make_file_excerpt(excerpt)
+    excerpt = make_file_excerpt(content)
 
     data = dict()
     meta = page.get("meta")

@@ -51,8 +51,8 @@
       "title":"Categories",
       "content_types":["work"],
       "terms": [
-        {"slug":"term1","title":"Term1"},
-        {"slug":"term2","title":"Term2"}
+        {"key":"term1", "title":"Term1"},
+        {"key":"term2", "title":"Term2"}
       ]
     }
   },
