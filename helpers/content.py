@@ -71,7 +71,7 @@ def get_taxonomies(config):
     return tax_dict
 
 
-def parse_file_metas(page, file_path, excerpt, options, current_id=None):
+def read_page_metas(page, excerpt, options, current_id=None):
     config = current_app.config
     data = dict()
     meta = page.get("meta")
@@ -80,12 +80,13 @@ def parse_file_metas(page, file_path, excerpt, options, current_id=None):
     data["id"] = page['_id']
     data["app_id"] = page['app_id']
     data["slug"] = page['slug']
+    data['type'] = data['content_type'] = page['content_type']
+    data["updated"] = page["updated"]
+    data["creation"] = page["creation"]
+
     data['parent'] = meta.get('parent', u'')
     data["priority"] = meta.get("priority", 0)
-    data['type'] = data['content_type'] = meta.get('type', _auto_type())
     data['status'] = meta.get('status', 1)
-    data["updated"] = meta.get("updated", _auto_file_updated(file_path))
-    data["creation"] = meta.get("creation", _auto_file_creation(file_path))
     data["date"] = meta.get("date", u"")
 
     data["template"] = meta.get("template", config.get('DEFAULT_INDEX_SLUG'))
@@ -97,7 +98,7 @@ def parse_file_metas(page, file_path, excerpt, options, current_id=None):
     data["excerpt"] = gen_file_excerpt(excerpt, excerpt_len, ellipsis)
 
     data["description"] = meta.get("description") or data["excerpt"]
-    data["url"] = gen_page_url(file_path)
+    data["url"] = gen_page_url(page['content_type'], page['slug'])
 
     # content marks
     if data["slug"] == config.get("DEFAULT_INDEX_SLUG"):
@@ -110,22 +111,10 @@ def parse_file_metas(page, file_path, excerpt, options, current_id=None):
     return data
 
 
-def gen_page_url(relative_path):
-    content_dir = current_app.config.get('CONTENT_DIR')
-    content_ext = current_app.config.get('CONTENT_FILE_EXT')
-    default_index_slug = current_app.config.get("DEFAULT_INDEX_SLUG")
-
-    if relative_path.endswith(content_ext):
-        relative_path = os.path.splitext(relative_path)[0]
-    front_page_content_path = "{}/{}".format(content_dir,
-                                             default_index_slug)
-    if relative_path.endswith(front_page_content_path):
-        len_index_str = len(default_index_slug)
-        relative_path = relative_path[:-len_index_str]
-
-    relative_url = relative_path.replace(content_dir, '', 1)
-    url = "{}/{}".format(current_app.config.get("BASE_URL"),
-                         relative_url.lstrip('/'))
+def gen_page_url(content_type_slug, file_slug):
+    url = "{}/{}/{}".format(current_app.config.get("BASE_URL"),
+                            content_type_slug,
+                            file_slug)
     return url
 
 
@@ -215,6 +204,9 @@ def count_matched(attrs):
 
 # taxonomy
 def helper_wrap_taxonomy(taxonomies):
+    if not taxonomies:
+        return {}
+
     tax_dict = {}
 
     def _parse_term(term, tax, content_types):

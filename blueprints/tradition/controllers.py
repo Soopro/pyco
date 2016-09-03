@@ -3,11 +3,11 @@ from __future__ import absolute_import
 
 from flask import current_app, request, abort, render_template, redirect, g
 import os
-
+import math
 from services.i18n import Translator
 from utils.request import parse_args
 from utils.response import make_content_response
-from utils.misc import make_dotted_dict, now
+from utils.misc import make_dotted_dict, parse_int, now
 from helpers.app import (run_hook,
                          helper_get_statistic,
                          helper_redirect_url,
@@ -20,9 +20,8 @@ from helpers.content import (find_content_file,
                              helper_wrap_menu,
                              helper_wrap_taxonomy,
                              make_file_excerpt,
-                             get_pages,
                              parse_file_headers,
-                             parse_file_metas,
+                             read_page_metas,
                              parse_content)
 
 from .helpers.jinja import (saltshaker,
@@ -35,8 +34,6 @@ from .helpers.jinja import (saltshaker,
 
 def get_content(content_type_slug='page', file_slug='index'):
     config = current_app.config
-    charset = config.get('CHARSET')
-    default_404_slug = config.get("DEFAULT_404_SLUG")
 
     base_url = g.curr_base_url
     curr_app = g.curr_app
@@ -44,16 +41,15 @@ def get_content(content_type_slug='page', file_slug='index'):
     theme_meta = curr_app['theme_meta']
     theme_options = theme_meta.get('options', {})
 
-    run_hook("config_loaded", config=config)
+    config['site_meta'] = site_meta
+    config['theme_meta'] = theme_meta
 
-    if file_slug == default_404_slug:
-        status_code = 404
-    else:
-        status_code = 200
+    run_hook("config_loaded", config=config)
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
-        redirect_url = helper_redirect_url(default_404_slug, base_url)
+        redirect_url = helper_redirect_url(config.get("DEFAULT_404_SLUG"),
+                                           base_url)
         return redirect(redirect_url, code=302)
 
     run_hook("request_url", request=request)
@@ -61,45 +57,39 @@ def get_content(content_type_slug='page', file_slug='index'):
     view_ctx = dict()
 
     # load file content
-    file = {
-        "content_type": content_type_slug,
-        "slug": file_slug
-    }
-
-    run_hook("before_load_content", file=file)
+    path = {"content_type": content_type_slug, "slug": file_slug}
+    run_hook("before_load_content", path=path)
     content_file = find_content_file(file)
 
     # if not found
     if content_file is None:
         status_code = 404
-        file = {
-            "slug": current_app.config['DEFAULT_404_SLUG']
-        }
-        run_hook("before_404_load_content", file=file)
+        path = {"slug": config.get("DEFAULT_404_SLUG")}
+        run_hook("before_404_load_content", path=path)
         content_file = find_content_file(file)
         if not content_file:
             abort(404)  # without not found 404 file
             return
 
     if status_code == 404:
-        run_hook("after_404_load_content", file=file, content=content_file)
+        run_hook("after_404_load_content", path=path, file=content_file)
 
-    run_hook("after_load_content", file=file, content=content_file)
+    run_hook("after_load_content", path=path, file=content_file)
 
-    run_hook("before_read_page_meta", meta_string=meta_string)
-    try:
-        headers = parse_file_headers(meta_string['meta'])
-    except Exception as e:
-        raise Exception("{}: {}".format(str(e), file["path"]))
+    # content
+    page_content = {'content': content_file.pop('content', u'')}
+    run_hook("before_parse_content", content=page_content)
+    page_content['content'] = parse_content(page_content['content'])
+    run_hook("after_parse_content", content=page_content)
 
-    run_hook("after_read_page_meta", headers=headers)
+    view_ctx["content"] = page_content['content']
 
-    page_meta = parse_file_metas(headers,
-                                 file["path"],
-                                 make_file_excerpt(content_string),
-                                 theme_options)
+    run_hook("before_read_page_meta", headers=content_file)
+    page_meta = read_page_metas(content_file,
+                                make_file_excerpt(page_content['content']),
+                                theme_options)
     redirect_to = {"url": None}
-    run_hook("single_page_meta", page_meta=page_meta, redirect_to=redirect_to)
+    run_hook("after_read_page_meta", meta=page_meta, redirect=redirect_to)
 
     # page redirect
     if redirect_to["url"]:
@@ -108,16 +98,7 @@ def get_content(content_type_slug='page', file_slug='index'):
             return redirect(redirect_to["url"], code=302)
 
     view_ctx["meta"] = page_meta
-
-    # content
-    page_content = dict()
-    page_content['content'] = content_string
-    run_hook("before_parse_content", content=page_content)
-
-    page_content['content'] = parse_content(page_content['content'])
-    run_hook("after_parse_content", content=page_content)
-
-    view_ctx["content"] = page_content['content']
+    g.curr_page_id = page_meta['id']
 
     # site_meta
     site_meta = curr_app["meta"]
@@ -138,7 +119,7 @@ def get_content(content_type_slug='page', file_slug='index'):
     view_ctx["menu"] = helper_wrap_menu(curr_app['menus'], base_url)
 
     # taxonomy
-    view_ctx["taxonomy"] = helper_wrap_taxonomy(curr_app)
+    view_ctx["taxonomy"] = helper_wrap_taxonomy(curr_app['taxonomies'])
 
     # extension slots
     ext_slots = curr_app["slots"]
@@ -167,12 +148,13 @@ def get_content(content_type_slug='page', file_slug='index'):
     }
     view_ctx["args"] = view_ctx["request"]["args"]
 
-    # pages
+    # query
     pages = get_pages()
     for p in pages:
         run_hook("get_page_data", data=p)
     run_hook("get_pages", pages=pages, current_page=page_meta)
-    view_ctx["pages"] = pages
+    view_ctx["query"] = query_contents
+    view_ctx["query_sides"] = query_sides
 
     # get current content type
     view_ctx["content_type"] = _get_content_type(content_type_slug,
@@ -241,3 +223,72 @@ def set_multi_language(view_context, app):
     # make translates
     trans_list = helper_wrap_translates(app['translates'], locale)
     view_context["translates"] = make_dotted_dict(trans_list)
+
+
+# query
+def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
+                   priority=True, with_content=False):
+    query_limit = 3
+    if g.query_count >= query_limit:
+        raise Exception('Query Overrun')
+    else:
+        g.query_count += 1
+
+    curr_app = g.curr_app
+
+    base_url = g.curr_base_url
+    curr_id = g.curr_page_id
+    theme_meta = curr_app['theme_meta']
+    theme_opts = theme_meta.get('options', {})
+
+    # set default params
+    if isinstance(attrs, basestring):
+        attrs = [{'type': unicode(attrs)}]
+
+    if not sortby:
+        sortby = theme_opts.get('sortby', 'updated')
+        if isinstance(sortby, basestring):
+            sortby = [sortby]
+        elif not isinstance(sortby, list):
+            sortby = []
+
+    if not perpage:
+        perpage = theme_opts.get('perpage')
+
+    perpage = parse_int(perpage, 12, True)
+    paged = parse_int(paged, 1, True)
+
+    if with_content:
+        # max 24 is returned while use with_content
+        perpage = max(perpage, 24)
+
+    # position
+    total_count = count_content_files(app, attrs)
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    paged = min(max_pages, paged)
+
+    limit = perpage
+    offset = max(perpage * (paged - 1), 0)
+
+    # query content files
+    results = query_content_files(app, attrs, sortby, limit, offset, priority)
+    results = [read_page_metas(content_file, base_url, theme_opts, curr_id)
+               for content_file in results]
+
+    if with_content:
+        load_content_bodies(results)
+
+    results = make_dotted_dict(results)
+
+    if current_app.debug:
+        print 'total:', total_count, 'results:', len(results)
+        print 'memory query:', total_sizeof(results)
+
+    return {
+        "contents": results,
+        "paged": paged,
+        "count": len(results),
+        "total_count": total_count,
+        "total_pages": max_pages,
+        "_remain_queries": query_limit - g.query_count,
+    }

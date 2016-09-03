@@ -160,7 +160,7 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
 
     results = []
 
-    for cond in conditions[:10]:
+    for cond in conditions[:5]:
         opposite = False
         force = False
         cond_key = None

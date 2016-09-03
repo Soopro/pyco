@@ -53,6 +53,10 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
     app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
 
+    app.config.setdefault("ALLOW_QUERY", True)
+    app.config.setdefault("ALLOW_MENU", True)
+    app.config.setdefault("ALLOW_TAXONOMY", True)
+
 
 def load_plugins(app):
     plugins = app.config.get("PLUGINS")
@@ -69,10 +73,9 @@ def load_plugins(app):
     app.plugins = loaded_plugins
 
 
-def load_all_files(curr_app):
-    config = current_app.config
-    content_dir = config.get('CONTENT_DIR')
-    content_ext = config.get('CONTENT_FILE_EXT')
+def load_all_files(app, curr_app):
+    content_dir = app.config.get('CONTENT_DIR')
+    content_ext = app.config.get('CONTENT_FILE_EXT')
     all_files = []
     for root, directory, files in os.walk(content_dir):
         file_full_paths = [
@@ -88,7 +91,7 @@ def load_all_files(curr_app):
             continue
 
         with open(f, "r") as fh:
-            readed = fh.read().decode(config.get('CHARSET'))
+            readed = fh.read().decode(app.config.get('CHARSET'))
         meta_string, content_string = _content_splitter(readed)
         try:
             meta = _file_headers(meta_string)
@@ -110,12 +113,12 @@ def load_all_files(curr_app):
     return data_list
 
 
-def load_curr_app():
-    theme_meta_file = os.path.join(current_app.config.get('THEMES_DIR'),
-                                   current_app.config.get('THEME_NAME'),
-                                   current_app.config.get('THEME_META_FILE'))
-    site_file = os.path.join(current_app.config.get('CONTENT_DIR'),
-                             current_app.config.get('SITE_DATA_FILE'))
+def load_curr_app(app):
+    theme_meta_file = os.path.join(app.config.get('THEMES_DIR'),
+                                   app.config.get('THEME_NAME'),
+                                   app.config.get('THEME_META_FILE'))
+    site_file = os.path.join(app.config.get('CONTENT_DIR'),
+                             app.config.get('SITE_DATA_FILE'))
 
     try:
         with open(theme_meta_file) as theme_data:

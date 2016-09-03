@@ -12,38 +12,23 @@ def request_url(request):
     return
 
 
-def before_load_content(file):
+def before_load_content(path):
     print "before load content"
     return
 
 
-def after_load_content(file, content):
+def after_load_content(path, file):
     print "after load content"
     return
 
 
-def before_404_load_content(file):
+def before_404_load_content(path):
     print "before 404 load content"
     return
 
 
-def after_404_load_content(file, content):
+def after_404_load_content(path, file):
     print "after 404 load content"
-    return
-
-
-def before_read_page_meta(meta_string):
-    print "before read page meta"
-    return
-
-
-def after_read_page_meta(headers):
-    print "after read page meta"
-    return
-
-
-def single_page_meta(page_meta, redirect_to):
-    print "page meta"
     return
 
 
@@ -57,6 +42,16 @@ def after_parse_content(content):
     return
 
 
+def before_read_page_meta(headers):
+    print "before read page meta"
+    return
+
+
+def after_read_page_meta(page_meta, redirect_to):
+    print "after read page meta"
+    return
+
+
 def get_page_data(data):
     print "get page data"
     return
@@ -65,11 +60,6 @@ def get_page_data(data):
 def get_pages(pages, current_page):
     print "get pages"
     return
-
-
-# def before_template_register():
-#     print "before template register"
-#     return
 
 
 def before_render(var, template):

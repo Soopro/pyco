@@ -82,8 +82,8 @@ def app_before_request():
     base_url = current_app.config.get("BASE_URL")
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
-    g.curr_app = load_curr_app()
-    g.files = load_all_files(g.curr_app)
+    g.curr_app = load_curr_app(current_app)
+    g.files = load_all_files(current_app, g.curr_app)
     g.curr_base_url = base_url
 
     g.request_remote_addr = get_remote_addr()
@@ -91,6 +91,8 @@ def app_before_request():
 
     g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
+
+    g.query_count = 0
 
 
 if __name__ == "__main__":
