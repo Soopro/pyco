@@ -76,6 +76,7 @@ def load_plugins(app):
 def load_all_files(app, curr_app):
     content_dir = app.config.get('CONTENT_DIR')
     content_ext = app.config.get('CONTENT_FILE_EXT')
+
     all_files = []
     for root, directory, files in os.walk(content_dir):
         file_full_paths = [
@@ -98,11 +99,20 @@ def load_all_files(app, curr_app):
         except Exception as e:
             e.current_file = f
             raise e
+
         file_data = {
             'id': _auto_id(f),
             'app_id': curr_app['_id'],
             'slug': _auto_page_slug(f),
             'content_type': _auto_content_type(f),
+            'priority': meta.pop('priority', 0),
+            'parent': meta.pop('parent', u''),
+            'date': meta.pop('date', u''),
+            'taxonomy': meta.pop('taxonomy', {}),
+            'tags': meta.pop('tags', []),
+            'redirect': meta.pop('redirect', u''),
+            'template': meta.pop('template', u''),
+            'status': meta.pop('status', 1),
             'meta': meta,
             'content': content_string,
             'updated': _auto_file_updated(f),

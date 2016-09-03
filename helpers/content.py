@@ -80,41 +80,41 @@ def get_taxonomies(config):
 
 
 def read_page_metas(page, content, options, current_id=None):
-    config = current_app.config
     excerpt = make_file_excerpt(excerpt)
 
     data = dict()
     meta = page.get("meta")
     for m in meta:
         data[m] = meta[m]
-    data["id"] = page['_id']
-    data["app_id"] = page['app_id']
-    data["slug"] = page['slug']
+    data['id'] = page['_id']
+    data['app_id'] = page['app_id']
+    data['slug'] = page['slug']
     data['type'] = data['content_type'] = page['content_type']
-    data["updated"] = page["updated"]
-    data["creation"] = page["creation"]
+    data['updated'] = page['updated']
+    data['creation'] = page['creation']
 
-    data['parent'] = meta.get('parent', u'')
-    data["priority"] = meta.get("priority", 0)
-    data['status'] = meta.get('status', 1)
-    data["date"] = meta.get("date", u"")
+    data['parent'] = page['parent']
+    data['priority'] = page['priority']
+    data['status'] = page['status']
+    data['date'] = page['date']
 
-    data["template"] = meta.get("template", config.get('DEFAULT_INDEX_SLUG'))
-    data['taxonomy'] = meta.get('taxonomy', {})
-    data['tags'] = meta.get('tags', [])
+    data['template'] = page['template']
+    data['taxonomy'] = page['taxonomy']
+    data['tags'] = page['tags']
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')
-    data["excerpt"] = gen_file_excerpt(excerpt, excerpt_len, ellipsis)
+    data['excerpt'] = gen_file_excerpt(excerpt, excerpt_len, ellipsis)
 
-    data["description"] = meta.get("description") or data["excerpt"]
-    data["url"] = gen_page_url(page['content_type'], page['slug'])
+    data['description'] = meta.get('description') or data['excerpt']
+    data['url'] = gen_page_url(page['content_type'], page['slug'])
 
     # content marks
-    if data["slug"] == config.get("DEFAULT_INDEX_SLUG"):
-        data["is_front"] = True
-    if data["slug"] == config.get("DEFAULT_404_SLUG"):
-        data["is_404"] = True
+    config = current_app.config
+    if data['slug'] == config.get('DEFAULT_INDEX_SLUG'):
+        data['is_front'] = True
+    if data['slug'] == config.get('DEFAULT_404_SLUG'):
+        data['is_404'] = True
     if unicode(data['id']) == unicode(current_id):
         data['is_current'] = True
 
