@@ -53,5 +53,10 @@ MARKDOWN_EXTENSIONS = ['gfm']
 
 MAXIMUM_QUERY = 60
 
+SHORT_FIELD_KEYS = {'type': 'content_type'}
+SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']
+QUERYABLE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
+                        'date', 'creation', 'updated',
+                        'template', 'tags']
 # plugins
 PLUGINS = []

@@ -9,13 +9,10 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby
 
 
-SHORT_FIELD_KEYS = {'type': 'content_type'}
-QUERYABLE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
-                        'date', 'creation', 'updated',
-                        'template', 'tags']
-
-
 def _query(files, attrs):
+    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
+    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
+
     for attr in attrs[:5]:  # max fields key is 5
         opposite = False
         force = False
@@ -24,55 +21,104 @@ def _query(files, attrs):
 
         if isinstance(attr, basestring):
             attr_key = attr.lower()
-        elif isinstance(cond, dict):
-            opposite = bool(cond.pop('not', False))
-            force = bool(cond.pop('force', False))
-            if cond:
-                cond_key = cond.keys()[0]
-                cond_value = cond[cond_key]
+        elif isinstance(attr, dict):
+            opposite = bool(attr.pop('not', False))
+            force = bool(attr.pop('force', False))
+            if attr:
+                attr_key = attr.keys()[0]
+                attr_value = attr[attr_key]
             else:
                 continue
 
-        if cond_key is None:
+        if attr_key is None:
             continue
 
-        cond_key = SHORT_FIELD_KEYS.get(cond_key, cond_key)
-        if cond_key not in QUERYABLE_FIELD_KEYS \
+        attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
+        if attr_key not in QUERYABLE_FIELD_KEYS \
            and '.' not in attr_key:
             attr_key = "meta.{}".format(attr_key)
         files = [f for f in files
-                 if match_cond(f, cond_key, cond_value, force, opposite)]
+                 if match_cond(f, attr_key, attr_value, force, opposite)]
+
+    return files
 
 
-def query_content_files(attrs, sortby=[], limit=1, offset=0, priority=True):
+def _sorting(files, sort_keys):
+    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
+    SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
+    if not sort_keys:
+        sorts_list = [("updated", -1)]
+    else:
+        sorts_list = []
+        for sort in sort_keys[:5]:  # max sort keys is 5
+            if isinstance(sort, basestring):
+                if sort.startswith('+'):
+                    key = sort.lstrip('+')
+                    direction = 1
+                else:
+                    key = sort.lstrip('-')
+                    direction = -1
+            elif isinstance(sort, tuple):
+                key = sort[0]
+                direction = sort[1]
+            else:
+                continue
+
+            # format to match the structure
+            if key in SHORT_FIELD_KEYS:
+                key = SHORT_FIELD_KEYS.get(key)
+
+            # remove duplicate key, and append end of the sorts list.
+            # DO NOT use set, because the only check key.
+            for idx, sort in enumerate(sorts_list):
+                if sort and key == sort[0]:
+                    sorts_list[idx] = None
+            sorts_list.append((key, direction))
+
+        sorts_list = [sort for sort in sorts_list if sort]
+
+    sorting = []
+    for f in files:
+        new_entry = {"_id": f["_id"]}
+        for sort in sorts_list:
+            key = sort[0]
+            if key in SORTABLE_FIELD_KEYS:
+                new_entry[key] = f[key]
+            else:
+                new_entry[key] = f['meta'].get(key)
+        sorting.append(new_entry)
+
+    return sortedby(sorting, sorts_list)
+
+
+def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
+    # query
     files = _query(g.files, attrs)
-    # sortedby
-    sort_keys = [('priority', 1)] if priority else []
-    if isinstance(sortby, basestring):
-        sort_keys.append(sortby)
-    elif isinstance(sortby, list):
-        sort_keys = sort_keys + [SHORT_FIELD_KEYS.get(key, key)
-                                 for key in sortby
-                                 if isinstance(key, basestring)]
-    if sort_keys:
-        files = sortedby(files, sort_keys)
+    # sorting
+    sorting = _sorting(files, sortby)
 
     limit = parse_int(limit, 1)
     offset = parse_int(offset, 0)
 
-    return files[offset:limit]
+    if sorting:
+        ids = [item['_id'] for item in sorting[offset:offset + limit]]
+        order_dict = {_id: index for index, _id in enumerate(ids)}
+        files = [f for f in files if f['_id'] in ids]
+        files.sort(key=lambda x: order_dict[x["_id"]])
+    else:
+        files = files[offset:limit]
+    return files
 
 
-def count_content_files(attrs):
+def count_by_files(attrs):
     pass
 
 
 def find_content_file(path, default_type=u'page'):
-    content_type_slug = path.get('content_type', default_type)
-    for file in g.files:
-        if file['slug'] == path['slug'] \
-           and file['content_type'] == content_type_slug:
-            return file
+    type_slug = path.get('content_type', default_type)
+    for f in g.files:
+        if f['slug'] == path['slug'] and f['content_type'] == type_slug:
+            return f
     return None
 
 

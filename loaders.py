@@ -53,9 +53,9 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
     app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
 
-    app.config.setdefault("ALLOW_QUERY", True)
-    app.config.setdefault("ALLOW_MENU", True)
-    app.config.setdefault("ALLOW_TAXONOMY", True)
+    app.config.setdefault("SORTABLE_FIELD_KEYS", [])
+    app.config.setdefault("QUERYABLE_FIELD_KEYS", [])
+    app.config.setdefault("SHORT_FIELD_KEYS", {})
 
 
 def load_plugins(app):
@@ -164,7 +164,7 @@ def load_curr_app(app):
     }
 
 
-# internal helpers
+# helpers
 def _content_splitter(file_content):
     file_content = _shortcode(file_content)
     pattern = r"(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)"

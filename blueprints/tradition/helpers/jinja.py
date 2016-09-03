@@ -95,7 +95,7 @@ def rope(raw_list, sort_by="updated", priority=True, reverse=False):
     """return a list of sorted results.
     result_pages = rope(pages, sort_by="updated", priority=True, reverse=True)
     """
-    sort_keys = _make_sort_keys(sort_by, priority, reverse)
+    sort_keys = _make_sort_keys(sort_by, priority)
     return sortedby(raw_list, sort_keys, reverse)
 
 
@@ -256,7 +256,7 @@ def timemachine(raw_list, filed='date', precision='month',
 
 
 # other helpers
-def _make_sort_keys(sort_by, priority=False, reverse=False):
+def _make_sort_keys(sort_by, priority=False):
     sort_keys = [('priority', 1)] if priority else []
 
     if isinstance(sort_by, basestring):
