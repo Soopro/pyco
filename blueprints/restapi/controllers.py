@@ -62,3 +62,28 @@ def get_view_metas(app_id):
         "slot": ext_slots
     }
     return context
+
+
+@output_json
+def search_view_contents(app_id):
+    pass
+
+
+@output_json
+def query_view_contents(app_id):
+    pass
+
+
+@output_json
+def query_view_sides(app_id):
+    pass
+
+
+@output_json
+def get_view_content_list(app_id):
+    pass
+
+
+@output_json
+def get_view_content(app_id):
+    pass
