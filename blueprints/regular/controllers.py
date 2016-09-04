@@ -283,3 +283,57 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         "total_pages": max_pages,
         "_remain_queries": query_limit - g.query_count,
     }
+
+
+def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
+    if not pid:
+        return make_dotted_dict({})
+
+    query_limit = 3
+    if g.query_count >= query_limit:
+        raise Exception('Query Overrun')
+    else:
+        g.query_count += 1
+
+    app = g.curr_app
+    trunk = g.curr_app_trunk
+    base_url = g.curr_base_url
+    theme_opts = trunk['theme']['config'].get('options', {})
+
+    # set default params
+    if isinstance(attrs, basestring):
+        attrs = [{'type': unicode(attrs)}]
+
+    if not sortby:
+        sortby = theme_opts.get('sortby', 'updated')
+        if isinstance(sortby, basestring):
+            sortby = [sortby]
+        elif not isinstance(sortby, list):
+            sortby = []
+
+    limit = parse_int(limit, 1, True)
+
+    # query side mongo
+    before_pages, after_pages = query_sides_by_file(app, pid, attrs,
+                                                    sortby, limit, priority)
+    before_pages = [read_page_metas(content_file, base_url, theme_opts)
+                    for content_file in before_pages]
+    after_pages = [read_page_metas(content_file, base_url, theme_opts)
+                   for content_file in after_pages]
+
+    make_dotted_dict(before_pages)
+    make_dotted_dict(after_pages)
+
+    before = before_pages[-1] if before_pages else None
+    after = after_pages[0] if after_pages else None
+
+    if current_app.debug:
+        print 'sides:', limit, len(before_pages), len(after_pages)
+
+    return {
+        "before": before,
+        "after": after,
+        "entires_before": before_pages,
+        "entires_after": after_pages,
+        "_remain_queries": query_limit - g.query_count,
+    }

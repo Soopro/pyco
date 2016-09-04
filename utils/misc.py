@@ -176,6 +176,17 @@ def safe_regex_str(val):
     return val
 
 
+def make_sorts_rule(sort_by, priority=False):
+    sort_rules = [('priority', 1)] if priority else []
+
+    if isinstance(sort_by, (basestring, tuple)):
+        sort_rules.append(sort_by)
+    elif isinstance(sort_by, list):
+        sort_rules = sort_rules + [key for key in sort_by
+                                   if isinstance(key, (basestring, tuple))]
+    return sort_rules
+
+
 def sortedby(source, sort_keys, reverse=False):
     sorts = []
     if not isinstance(sort_keys, list):

@@ -3,17 +3,17 @@ from __future__ import absolute_import
 
 from flask import current_app, g
 import os
-import re
 import markdown
 from utils.validators import url_validator
-from utils.misc import parse_int, match_cond, sortedby
+from utils.misc import parse_int, match_cond, sortedby, make_sorts_rule
 
 
 def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
     # query
     files = _query(g.files, attrs)
     # sorting
-    sorting = _sorting(files, sortby)
+    sort_keys = make_sorts_rule(sortby, priority)
+    sorting = _sorting(files, sort_keys)
 
     limit = parse_int(limit, 1)
     offset = parse_int(offset, 0)
@@ -30,6 +30,43 @@ def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
 
 def count_by_files(attrs):
     return len(_query(g.files, attrs))
+
+
+def query_sides_by_file(pid, attrs, sortby=[], limit=1, priority=True):
+    # query
+    files = _query(g.files, attrs)
+    # sorting
+    sort_keys = make_sorts_rule(sortby, priority)
+    sorting = _sorting(files, sort_keys)
+
+    limit = parse_int(limit, 1)
+
+    if sorting:
+        ids = [item['_id'] for item in sorting]
+    else:
+        ids = [f['_id'] for f in files]
+
+    curr_idx = None
+    for idx, entry in enumerate(sorting):
+        if str(entry['_id']) == pid:
+            curr_idx = idx
+            break
+
+    if curr_idx is not None:
+        before_ids = ids[max(curr_idx - limit, 0):curr_idx]
+        befores = [f for f in files if f['_id'] in before_ids]
+        before_order = {_id: idx for idx, _id in enumerate(before_ids)}
+        befores.sort(key=lambda x: before_order[x["_id"]])
+
+        after_ids = ids[curr_idx + 1:curr_idx + 1 + limit]
+        afters = [f for f in files if f['_id'] in after_ids]
+        after_order = {_id: idx for idx, _id in enumerate(after_ids)}
+        afters.sort(key=lambda x: after_order[x["_id"]])
+    else:
+        befores = []
+        afters = []
+
+    return befores, afters
 
 
 def find_content_file(type_slug, file_slug):
@@ -314,6 +351,7 @@ def _query(files, attrs):
 def _sorting(files, sort_keys):
     SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
     SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
+
     if not sort_keys:
         sorts_list = [("updated", -1)]
     else:
