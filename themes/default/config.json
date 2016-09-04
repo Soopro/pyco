@@ -31,9 +31,6 @@
 
 	"options":{
 		"sortby": "date",
-		"excerpt_length": 162,
-		"excerpt_ellipsis": "&hellip;",
-		"date_format": "%Y-%m-%d",
 		"perpage": 6
 	}
 }

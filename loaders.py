@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from flask import current_app
-from utils import process_slug
+from utils.misc import process_slug
 
 from types import ModuleType
 import os
@@ -101,7 +101,7 @@ def load_all_files(app, curr_app):
             raise e
 
         file_data = {
-            'id': _auto_id(f),
+            '_id': _auto_id(f),
             'app_id': curr_app['_id'],
             'slug': _auto_page_slug(f),
             'content_type': _auto_content_type(f),

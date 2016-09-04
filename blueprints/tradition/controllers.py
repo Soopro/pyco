@@ -15,13 +15,12 @@ from helpers.app import (run_hook,
                          get_theme_path,
                          get_theme_abs_path)
 from helpers.content import (find_content_file,
-                             count_content_files,
-                             query_content_files,
+                             query_by_files,
+                             count_by_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_menu,
                              helper_wrap_taxonomy,
-                             make_file_excerpt,
                              read_page_metas,
                              parse_content)
 
@@ -33,8 +32,9 @@ from .helpers.jinja import (saltshaker,
                             magnet)
 
 
-def get_content(content_type_slug='page', file_slug='index'):
+def rendering(content_type_slug='page', file_slug='index'):
     config = current_app.config
+    status_code = 200
 
     base_url = g.curr_base_url
     curr_app = g.curr_app
@@ -109,7 +109,7 @@ def get_content(content_type_slug='page', file_slug='index'):
     site_meta["id"] = curr_app["_id"]
     site_meta["type"] = curr_app['type']
     site_meta["visit"] = helper_get_statistic(curr_app['_id'],
-                                              page_meta['id'])
+                                              content_file['_id'])
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
@@ -257,7 +257,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         perpage = max(perpage, 24)
 
     # position
-    total_count = count_content_files(attrs)
+    total_count = count_by_files(attrs)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     paged = min(max_pages, paged)
 
@@ -265,7 +265,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_content_files(attrs, sortby, limit, offset, priority)
+    results = query_by_files(attrs, sortby, limit, offset, priority)
     pages = []
     for p in results:
         p_content = parse_content(p.pop('content', u''))
@@ -274,14 +274,13 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
             p['content'] = p_content
         run_hook("get_page_data", data=p)
         pages.append(p)
-
     run_hook("get_pages", pages=pages, current_page_id=curr_id)
     results = make_dotted_dict(results)
 
     return {
-        "contents": results,
+        "contents": pages,
         "paged": paged,
-        "count": len(results),
+        "count": len(pages),
         "total_count": total_count,
         "total_pages": max_pages,
         "_remain_queries": query_limit - g.query_count,

@@ -47,7 +47,7 @@ def before_read_page_meta(headers):
     return
 
 
-def after_read_page_meta(page_meta, redirect_to):
+def after_read_page_meta(page_meta, redirect):
     print "after read page meta"
     return
 

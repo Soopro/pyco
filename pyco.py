@@ -40,13 +40,11 @@ app.static_url_path = "/{}".format(app.config.get("STATIC_PATH"))
 app.jinja_env.autoescape = False
 app.jinja_env.finalize = lambda x: '' if hasattr(x, '__call__') else x
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
-# app.jinja_env.add_extension('jinja2.ext.i18n')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
-# app.jinja_env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
+# encoder
 app.json_encoder = JSONEncoder
-
 # config
 load_config(app)
 # plugins

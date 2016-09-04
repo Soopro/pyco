@@ -9,88 +9,6 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby
 
 
-def _query(files, attrs):
-    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
-    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
-
-    for attr in attrs[:5]:  # max fields key is 5
-        opposite = False
-        force = False
-        attr_key = None
-        attr_value = ''
-
-        if isinstance(attr, basestring):
-            attr_key = attr.lower()
-        elif isinstance(attr, dict):
-            opposite = bool(attr.pop('not', False))
-            force = bool(attr.pop('force', False))
-            if attr:
-                attr_key = attr.keys()[0]
-                attr_value = attr[attr_key]
-            else:
-                continue
-
-        if attr_key is None:
-            continue
-
-        attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
-        if attr_key not in QUERYABLE_FIELD_KEYS \
-           and '.' not in attr_key:
-            attr_key = "meta.{}".format(attr_key)
-        files = [f for f in files
-                 if match_cond(f, attr_key, attr_value, force, opposite)]
-
-    return files
-
-
-def _sorting(files, sort_keys):
-    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
-    SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
-    if not sort_keys:
-        sorts_list = [("updated", -1)]
-    else:
-        sorts_list = []
-        for sort in sort_keys[:5]:  # max sort keys is 5
-            if isinstance(sort, basestring):
-                if sort.startswith('+'):
-                    key = sort.lstrip('+')
-                    direction = 1
-                else:
-                    key = sort.lstrip('-')
-                    direction = -1
-            elif isinstance(sort, tuple):
-                key = sort[0]
-                direction = sort[1]
-            else:
-                continue
-
-            # format to match the structure
-            if key in SHORT_FIELD_KEYS:
-                key = SHORT_FIELD_KEYS.get(key)
-
-            # remove duplicate key, and append end of the sorts list.
-            # DO NOT use set, because the only check key.
-            for idx, sort in enumerate(sorts_list):
-                if sort and key == sort[0]:
-                    sorts_list[idx] = None
-            sorts_list.append((key, direction))
-
-        sorts_list = [sort for sort in sorts_list if sort]
-
-    sorting = []
-    for f in files:
-        new_entry = {"_id": f["_id"]}
-        for sort in sorts_list:
-            key = sort[0]
-            if key in SORTABLE_FIELD_KEYS:
-                new_entry[key] = f[key]
-            else:
-                new_entry[key] = f['meta'].get(key)
-        sorting.append(new_entry)
-
-    return sortedby(sorting, sorts_list)
-
-
 def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
     # query
     files = _query(g.files, attrs)
@@ -106,12 +24,12 @@ def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
         files = [f for f in files if f['_id'] in ids]
         files.sort(key=lambda x: order_dict[x["_id"]])
     else:
-        files = files[offset:limit]
+        files = files[offset:offset + limit]
     return files
 
 
 def count_by_files(attrs):
-    pass
+    return len(_query(g.files, attrs))
 
 
 def find_content_file(path, default_type=u'page'):
@@ -182,8 +100,8 @@ def read_page_metas(page, content, options, current_id=None):
     meta = page.get("meta")
     for m in meta:
         data[m] = meta[m]
-    data['id'] = page['_id']
-    data['app_id'] = page['app_id']
+    data['id'] = unicode(page['_id'])
+    data['app_id'] = unicode(page['app_id'])
     data['slug'] = page['slug']
     data['type'] = data['content_type'] = page['content_type']
     data['updated'] = page['updated']
@@ -362,3 +280,86 @@ def helper_wrap_translates(translates, locale):
             trans["active"] = True
 
     return trans_list
+
+
+# helpers
+def _query(files, attrs):
+    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
+    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
+
+    for attr in attrs[:5]:  # max fields key is 5
+        opposite = False
+        force = False
+        attr_key = None
+        attr_value = ''
+
+        if isinstance(attr, basestring):
+            attr_key = attr.lower()
+        elif isinstance(attr, dict):
+            opposite = bool(attr.pop('not', False))
+            force = bool(attr.pop('force', False))
+            if attr:
+                attr_key = attr.keys()[0]
+                attr_value = attr[attr_key]
+            else:
+                continue
+
+        if attr_key is None:
+            continue
+
+        attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
+        if attr_key not in QUERYABLE_FIELD_KEYS \
+           and '.' not in attr_key:
+            attr_key = "meta.{}".format(attr_key)
+        files = [f for f in files
+                 if match_cond(f, attr_key, attr_value, force, opposite)]
+
+    return files
+
+
+def _sorting(files, sort_keys):
+    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
+    SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
+    if not sort_keys:
+        sorts_list = [("updated", -1)]
+    else:
+        sorts_list = []
+        for sort in sort_keys[:5]:  # max sort keys is 5
+            if isinstance(sort, basestring):
+                if sort.startswith('+'):
+                    key = sort.lstrip('+')
+                    direction = 1
+                else:
+                    key = sort.lstrip('-')
+                    direction = -1
+            elif isinstance(sort, tuple):
+                key = sort[0]
+                direction = sort[1]
+            else:
+                continue
+
+            # format to match the structure
+            if key in SHORT_FIELD_KEYS:
+                key = SHORT_FIELD_KEYS.get(key)
+
+            # remove duplicate key, and append end of the sorts list.
+            # DO NOT use set, because the only check key.
+            for idx, sort in enumerate(sorts_list):
+                if sort and key == sort[0]:
+                    sorts_list[idx] = None
+            sorts_list.append((key, direction))
+
+        sorts_list = [sort for sort in sorts_list if sort]
+
+    sorting = []
+    for f in files:
+        new_entry = {"_id": f["_id"]}
+        for sort in sorts_list:
+            key = sort[0]
+            if key in SORTABLE_FIELD_KEYS:
+                new_entry[key] = f[key]
+            else:
+                new_entry[key] = f['meta'].get(key)
+        sorting.append(new_entry)
+
+    return sortedby(sorting, sorts_list)
