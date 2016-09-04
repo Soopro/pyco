@@ -60,14 +60,14 @@ def rendering(content_type_slug='page', file_slug='index'):
     # load file content
     path = {"content_type": content_type_slug, "slug": file_slug}
     run_hook("before_load_content", path=path)
-    content_file = find_content_file(path)
+    content_file = find_content_file(path['content_type'], path['slug'])
 
     # if not found
     if content_file is None:
         status_code = 404
         path = {"slug": config.get("DEFAULT_404_SLUG")}
         run_hook("before_404_load_content", path=path)
-        content_file = find_content_file(path)
+        content_file = find_content_file(None, path['slug'])
         if not content_file:
             abort(404)  # without not found 404 file
             return
@@ -86,9 +86,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx["content"] = page_content['content']
 
     run_hook("before_read_page_meta", headers=content_file)
-    page_meta = read_page_metas(content_file,
-                                page_content['content'],
-                                theme_options)
+    page_meta = read_page_metas(content_file, theme_options)
     redirect_to = {"url": None}
     run_hook("after_read_page_meta", meta=page_meta, redirect=redirect_to)
 
@@ -268,14 +266,14 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     results = query_by_files(attrs, sortby, limit, offset, priority)
     pages = []
     for p in results:
-        p_content = parse_content(p.pop('content', u''))
-        p = read_page_metas(p, p_content, theme_opts, curr_id)
+        p_content = p.pop('content', u'')
+        p = read_page_metas(p, theme_opts, curr_id)
         if with_content:
-            p['content'] = p_content
+            p['content'] = parse_content(p_content)
         run_hook("get_page_data", data=p)
         pages.append(p)
     run_hook("get_pages", pages=pages, current_page_id=curr_id)
-    results = make_dotted_dict(results)
+    pages = make_dotted_dict(pages)
 
     return {
         "contents": pages,

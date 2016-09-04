@@ -32,10 +32,11 @@ def count_by_files(attrs):
     return len(_query(g.files, attrs))
 
 
-def find_content_file(path, default_type=u'page'):
-    type_slug = path.get('content_type', default_type)
+def find_content_file(type_slug, file_slug):
+    if not type_slug:
+        type_slug = 'page'
     for f in g.files:
-        if f['slug'] == path['slug'] and f['content_type'] == type_slug:
+        if f['slug'] == file_slug and f['content_type'] == type_slug:
             return f
     return None
 
@@ -93,9 +94,7 @@ def get_taxonomies(config):
     return tax_dict
 
 
-def read_page_metas(page, content, options, current_id=None):
-    excerpt = make_file_excerpt(content)
-
+def read_page_metas(page, options, current_id=None):
     data = dict()
     meta = page.get("meta")
     for m in meta:
@@ -118,7 +117,7 @@ def read_page_metas(page, content, options, current_id=None):
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')
-    data['excerpt'] = gen_file_excerpt(excerpt, excerpt_len, ellipsis)
+    data['excerpt'] = gen_file_excerpt(page['excerpt'], excerpt_len, ellipsis)
 
     data['description'] = meta.get('description') or data['excerpt']
     data['url'] = gen_page_url(page['content_type'], page['slug'])
@@ -137,11 +136,6 @@ def read_page_metas(page, content, options, current_id=None):
 
 def gen_page_url(content_type_slug, file_slug):
     return "{}/{}/{}".format(g.curr_base_url, content_type_slug, file_slug)
-
-
-def make_file_excerpt(content, length=600):
-    excerpt = re.sub(r'<[^>]*?>', '', content).strip()
-    return excerpt[:length].strip()
 
 
 def gen_file_excerpt(excerpt, excerpt_length, ellipsis):

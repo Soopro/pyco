@@ -9,6 +9,7 @@ import os
 import yaml
 import re
 import json
+import markdown
 
 
 def load_config(app, config_name="config.py"):
@@ -114,6 +115,7 @@ def load_all_files(app, curr_app):
             'template': meta.pop('template', u''),
             'status': meta.pop('status', 1),
             'meta': meta,
+            'excerpt': _make_excerpt(content_string),
             'content': content_string,
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
@@ -239,3 +241,14 @@ def _file_headers(meta_string):
     yaml_data = yaml.safe_load(meta_string)
     headers = convert_data(yaml_data)
     return headers
+
+
+def _make_excerpt(content_string, length=600):
+    use_markdown = current_app.config.get("USE_MARKDOWN")
+    if use_markdown:
+        markdown_exts = current_app.config.get("MARKDOWN_EXTENSIONS", [])
+        content = markdown.markdown(content_string, markdown_exts)
+    else:
+        content = content_string
+    excerpt = re.sub(r'<[^>]*?>', '', content)
+    return excerpt[:length].strip()
