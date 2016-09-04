@@ -1,13 +1,9 @@
 # coding=utf8
 from __future__ import absolute_import
 
-from views.base import get_content
+from .controllers import *
 
 urlpatterns = [
-    ('/', get_content, "GET"),
-    ('/<file_slug>/', get_content, "GET"),
-    ('/<content_type_slug>/<file_slug>/', get_content, "GET"),
-
     # restapi
     ('/api/app/<app_id>/visit', app_visit_status, "GET"),
     ('/api/app/<app_id>/visit/<file_id>', app_visit_status, "GET"),

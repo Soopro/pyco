@@ -3,12 +3,12 @@ from __future__ import absolute_import
 
 
 def register_blueprints(app):
-    # register tradition
-    from .tradition import blueprint as tradition_module
-    app.register_blueprint(tradition_module)
+    # register regular
+    from .regular import blueprint as regular_module
+    app.register_blueprint(regular_module)
 
     # register uploads
     from .uploads import blueprint as uploads_module
     uploads_dir = app.config.get('UPLOADS_DIR')
-    app.register_blueprint(uploads_module,
-                           url_prefix="/{}".format(uploads_dir))
+    uploads_prefix = "/{}".format(uploads_dir)
+    app.register_blueprint(uploads_module, url_prefix=uploads_prefix)

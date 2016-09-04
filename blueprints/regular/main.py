@@ -1,12 +1,11 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import (Blueprint, request, current_app, g, make_response)
+from flask import Blueprint, current_app, make_response
 from jinja2 import FileSystemLoader
 import traceback
 import os
 from utils.misc import route_inject
-from utils.request import get_remote_addr
 
 from .helpers.jinja import (filter_thumbnail,
                             filter_date_formatted,
@@ -15,7 +14,7 @@ from .helpers.jinja import (filter_thumbnail,
                             filter_args)
 from .routes import urlpatterns
 
-bp_name = "tradition"
+bp_name = "regular"
 
 blueprint = Blueprint(bp_name, __name__)
 route_inject(blueprint, urlpatterns)
