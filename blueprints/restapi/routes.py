@@ -4,9 +4,13 @@ from __future__ import absolute_import
 from .controllers import *
 
 urlpatterns = [
-    # restapi
+    # analytics
+    ('/api/app/<app_id>/visit', app_visit, "PUT"),
+    ('/api/app/<app_id>/visit/<file_id>', app_visit, "PUT"),
     ('/api/app/<app_id>/visit', app_visit_status, "GET"),
     ('/api/app/<app_id>/visit/<file_id>', app_visit_status, "GET"),
+
+    # contents
     ('/api/app/<app_id>/view/metas', get_view_metas, "GET"),
     ('/api/app/<app_id>/view/search', search_view_contents, "POST"),
     ('/api/app/<app_id>/view/query', query_view_contents, "POST"),

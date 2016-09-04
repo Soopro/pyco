@@ -2,7 +2,16 @@
 from __future__ import absolute_import
 
 from flask import make_response
+from functools import wraps
 import json
+
+
+def output_json(f):
+    @wraps(f)
+    def decorate(*args, **kwargs):
+        result = f(*args, **kwargs)
+        return make_json_response(result)
+    return decorate
 
 
 def make_json_response(output, status_code):

@@ -58,6 +58,10 @@ def helper_render_ext_slots(scripts, app):
 
 
 # statistic
+def helper_record_statistic(app_id, page_id):
+    return True
+
+
 def helper_get_statistic(app_id, page_id=None):
     sa = {
         'pv': 0,

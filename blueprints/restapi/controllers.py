@@ -4,107 +4,61 @@ from __future__ import absolute_import
 from helpers.common import *
 from helpers.restapi import _query, _add_pagination
 from utils.request import get_param, get_args
-from utils.response import make_json_response
+from utils.response import output_json
+
+from helpers.app import helper_record_statistic, helper_get_statistic
+from helpers.content import (helper_render_ext_slots,
+                             helper_wrap_translates,
+                             helper_wrap_socials,
+                             helper_wrap_menu,
+                             helper_wrap_taxonomy)
+
+@output_json
+def app_visit(app_id, file_id=None):
+    helper_record_statistic(app_id, file_id)
+    return helper_get_statistic(app_id, file_id)
 
 
-def new_content_api():
-    param_fields = get_param('fields', False, [])
-    param_metas = get_param('metas', False, [])
-    param_sortby = get_param('sortby', False, [])
-    param_limit = get_param('limit', False, 0)
-    param_offset = get_param('offset', False, 0)
-    param_desc = get_param('desc', False, True)
-    param_priority = get_param('priority', False, True)
+@output_json
+def app_visit_status(app_id, file_id):
+    return helper_get_statistic(app_id, file_id)
 
-    # init
+
+@output_json
+def get_view_metas(app_id):
     config = current_app.config
-    MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
-    view_ctx = init_context()
-    status_code = 200
+    curr_app = g.curr_app
 
-    theme_meta_options = view_ctx["theme_meta"].get('options', {})
+    theme_meta = curr_app['theme_meta']
 
-    # set default params
-    if not param_sortby:
-        param_sortby = theme_meta_options.get('sortby', 'updated')
-        if isinstance(param_sortby, basestring):
-            param_sortby = [param_sortby]
-        elif not isinstance(param_sortby, list):
-            param_sortby = []
+    site_meta = curr_app["meta"]
+    site_meta['title'] = curr_app["title"]
+    site_meta['description'] = curr_app["description"]
+    site_meta['slug'] = curr_app['slug']
+    site_meta["id"] = curr_app["_id"]
+    site_meta["type"] = curr_app['type']
 
-    if not param_limit:
-        param_limit = theme_meta_options.get('perpage', 12)
+    translates = curr_app['translates']
+    locale = curr_app['locale']
 
-    # contents
-    view_ctx["pages"] = get_pages()
+    ext_slots = curr_app["slots"]
+    for k, v in ext_slots.iteritems():
+        ext_slots[k] = helper_render_ext_slots(v, curr_app)
 
-    run_hook("get_pages",
-             pages=view_ctx["pages"],
-             current_page={})
-
-    run_hook("before_render", var=view_ctx, template=None)
-
-    # make conditions
-    conditions = param_fields + param_metas
-
-    # query from contents
-    results = _query(view_ctx["pages"],
-                     conditions,
-                     param_sortby,
-                     param_priority,
-                     param_desc)
-    # offset
-    offset = param_offset if param_offset > 0 else 0
-    # length
-    length = param_limit if param_limit > 0 else MAXIMUM_QUERY
-    length = max(length, MAXIMUM_QUERY)
-
-    # resutls
-    total_count = len(results)
-    results = results[offset:length]
-    output = {
-        "results": results,
-        "count": len(results),
-        "total_count": total_count,
+    context = {
+        "app_id": curr_app["_id"],
+        "site_meta": site_meta,
+        "theme_meta": theme_meta,
+        "base_url": g.curr_base_url,
+        "theme_url": config.get("THEME_URL", u''),
+        "libs_url": config.get("LIBS_URL", u''),
+        "lang": locale.split('_')[0],
+        "locale": locale,
+        "translates": helper_wrap_translates(translates, locale),
+        "socials": helper_wrap_socials(curr_app['socials']),
+        "menu": helper_wrap_menu(curr_app['menus'], base_url),
+        "taxonomy": helper_wrap_taxonomy(curr_app['taxonomies']),
+        "content_types": curr_app['content_types'],
+        "slot": ext_slots
     }
-    return make_json_response(output, status_code)
-
-
-def get_content_api(type_slug=None):
-    param_limit = get_args('limit', default=0)
-    param_offset = get_args('offset', default=0)
-
-    # init
-    config = current_app.config
-    MAXIMUM_QUERY = config.get('MAXIMUM_QUERY', 60)
-    view_ctx = view_ctx = init_context()
-    status_code = 200
-
-    # contents
-    view_ctx["pages"] = get_pages()
-
-    run_hook("get_pages", pages=view_ctx["pages"], current_page={})
-
-    run_hook("before_render", var=view_ctx, template=None)
-
-    # make conditions
-    if type_slug:
-        conditions = [{"content_type": type_slug}]
-
-    # query from contents
-    results = _query(view_ctx["pages"], conditions)
-
-    # offset
-    offset = param_offset if param_offset > 0 else 0
-    # length
-    length = param_limit if param_limit > 0 else MAXIMUM_QUERY
-    length = max(length, MAXIMUM_QUERY)
-
-    # results
-    total_count = len(results)
-    curr_index = offset
-    output = []
-    for f in results[offset:length]:
-        output.append(_add_pagination(f, curr_index, total_count))
-        curr_index += 1
-    return make_json_response(output, status_code)
+    return context
