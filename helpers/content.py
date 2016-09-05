@@ -206,11 +206,9 @@ def helper_wrap_menu(menus, base_url):
         return menu
 
     menu_dict = {}
-    for menu in menus:
-        nodes = menu.get("nodes", [])
+    for slug, nodes in menus.iteritems():
         nodes = process_menu_url(nodes)
-        menu_dict[menu.get("slug")] = nodes
-
+        menu_dict[slug] = nodes
     return menu_dict
 
 
@@ -249,11 +247,6 @@ def helper_wrap_socials(socials):
     return social_list
 
 
-# query contents
-def count_matched(attrs):
-    pass
-
-
 # taxonomy
 def helper_wrap_taxonomy(taxonomies):
     if not taxonomies:
@@ -261,20 +254,20 @@ def helper_wrap_taxonomy(taxonomies):
 
     tax_dict = {}
 
-    def _parse_term(term, tax, content_types):
+    def _parse_term(term, tax_slug, content_types):
         attrs = [
             {'type': content_types},
-            {'taxonomy.{}'.format(tax["slug"]): term.get('key')}
+            {'taxonomy.{}'.format(tax_slug): term.get('key')}
         ]
-        term['count'] = count_matched(attrs)
+        term['count'] = count_by_files(attrs)
         return term
 
-    for tax in taxonomies:
+    for slug, tax in taxonomies.iteritems():
         content_types = tax.get("content_types", [])
-        tax_dict[tax["slug"]] = {
+        tax_dict[slug] = {
             "title": tax.get("title"),
             "content_types": content_types,
-            "terms": [_parse_term(term, tax, content_types)
+            "terms": [_parse_term(term, slug, content_types)
                       for term in tax['terms']]
         }
     return tax_dict

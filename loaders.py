@@ -162,8 +162,8 @@ def load_curr_app(app):
         'content_types': site.get('content_types', {}),
         'socials': site_meta.pop('socials', None),
         'translates': site_meta.pop('translates', None),
-        'taxonomies': site_meta.pop('taxonomies', None),
-        'menus': site_meta.pop('menus', None),
+        'taxonomies': site.get('taxonomies', None),
+        'menus': site.get('menus', None),
         'slots': site.get('slots', {}),
         'meta': site_meta,
         'theme_meta': theme_meta

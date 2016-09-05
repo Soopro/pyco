@@ -153,8 +153,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx["query_sides"] = query_sides
 
     # get current content type
-    view_ctx["content_type"] = _get_content_type(content_type_slug,
-                                                 curr_app['content_types'])
+    view_ctx["content_type"] = _get_content_type(content_type_slug)
     # template helpers
     view_ctx["saltshaker"] = saltshaker
     view_ctx["straw"] = straw
@@ -195,14 +194,13 @@ def _check_theme_hidden_types(theme_meta, curr_type):
     return status_type == 0
 
 
-def _get_content_type(content_type_slug, content_types):
-    content_type = content_types.get(content_type_slug)
-    if isinstance(content_type, dict):
-        content_type = {'slug': content_type.get('slug'),
-                        'title': content_type.get('title')}
+def _get_content_type(content_type_slug):
+    c_type = g.curr_app.get('content_types', {}).get(content_type_slug)
+    if isinstance(c_type, dict):
+        content_type = {'slug': c_type.get('slug'),
+                        'title': c_type.get('title')}
     else:
         content_type = {'slug': None, 'title': None}
-
     return content_type
 
 
