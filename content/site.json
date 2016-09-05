@@ -58,8 +58,8 @@
   },
   "meta": {
     "locale": "en_US",
-    "favicon": "[%uploads%]/favicon.png",
-    "logo": "[%uploads%]/logo.png",
+    "favicon": "",
+    "logo": "",
     "bg": "",
     "contact": "redy",
     "copyright": "2015 Made by Pyco.",

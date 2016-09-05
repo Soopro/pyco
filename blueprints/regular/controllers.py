@@ -149,7 +149,7 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # query
     view_ctx["query"] = query_contents
-    # view_ctx["query_sides"] = query_sides
+    view_ctx["query_sides"] = query_sides
 
     # get current content type
     view_ctx["content_type"] = _get_content_type(content_type_slug,
