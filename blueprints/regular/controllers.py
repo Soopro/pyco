@@ -16,6 +16,7 @@ from helpers.app import (run_hook,
                          get_theme_abs_path)
 from helpers.content import (find_content_file,
                              query_by_files,
+                             query_sides_by_file,
                              count_by_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
@@ -296,9 +297,8 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
         g.query_count += 1
 
     app = g.curr_app
-    trunk = g.curr_app_trunk
     base_url = g.curr_base_url
-    theme_opts = trunk['theme']['config'].get('options', {})
+    theme_opts = app['theme_meta'].get('options', {})
 
     # set default params
     if isinstance(attrs, basestring):
@@ -314,11 +314,11 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
     limit = parse_int(limit, 1, True)
 
     # query side mongo
-    before_pages, after_pages = query_sides_by_file(app, pid, attrs,
+    before_pages, after_pages = query_sides_by_file(pid, attrs,
                                                     sortby, limit, priority)
-    before_pages = [read_page_metas(content_file, base_url, theme_opts)
+    before_pages = [read_page_metas(content_file, theme_opts)
                     for content_file in before_pages]
-    after_pages = [read_page_metas(content_file, base_url, theme_opts)
+    after_pages = [read_page_metas(content_file, theme_opts)
                    for content_file in after_pages]
 
     make_dotted_dict(before_pages)

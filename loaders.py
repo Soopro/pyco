@@ -54,6 +54,9 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
     app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
 
+    app.config.setdefault("INVISIBLE_SLUGS",
+                          ['index', 'error-404', 'search', 'taxonomy', 'tag'])
+
     app.config.setdefault("SORTABLE_FIELD_KEYS", [])
     app.config.setdefault("QUERYABLE_FIELD_KEYS", [])
     app.config.setdefault("SHORT_FIELD_KEYS", {})

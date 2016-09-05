@@ -17,42 +17,35 @@
         "link": "/"
       },
       {
-        "key": "taxonomy",
+        "key": "posts",
         "meta": {},
         "nodes": [],
-        "title": "Taxonomy",
-        "link": "/taxonomy"
+        "title": "Posts",
+        "link": "/post/index"
       },
       {
-        "key": "portfolio",
+        "key": "works",
         "meta": {},
         "nodes": [],
         "title": "Portfolio",
-        "link": "/portfolio"
-      },
+        "link": "/works/index"
+      }
       {
-        "key": "blog",
+        "key": "about",
         "meta": {},
         "nodes": [],
-        "title": "Blog",
-        "link": "/blog"
-      },
-      {
-        "key": "price",
-        "meta": {},
-        "nodes": [],
-        "title": "Product",
-        "link": "/price"
+        "title": "About",
+        "link": "/about"
       }
     ]
   },
   "taxonomies": {
     "category": {
       "title":"Categories",
-      "content_types":["work"],
+      "content_types":["post"],
       "terms": [
-        {"key":"term1", "title":"Term1"},
-        {"key":"term2", "title":"Term2"}
+        {"key":"daily", "title":"Daily"},
+        {"key":"food", "title":"Food"}
       ]
     }
   },

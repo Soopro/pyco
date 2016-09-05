@@ -3,22 +3,22 @@
 <!DOCTYPE html>
 <html lang="{{lang}}">
 
-{% include '_head.html' %}
+<head>
+{% include '_head_.html' %}
+</head>
 
 <body>
-  <!-- Navigation -->
-  {% include '_header.html' %}
-  <!-- Page Header -->
+  {% include '_nav.html' %}
   <header>
     <h1>{{meta.title}}</h1>
   </header>
 
-  <!-- Main Content -->
+  <!--content -->
   <article>
     {{content}}
   </artcile>
   <hr>
-<!-- Footer -->
-{% include '_footer.html'%}
+
+  {% include '_footer.html'%}
 </body>
 </html>

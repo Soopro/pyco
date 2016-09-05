@@ -1,0 +1,10 @@
+body {
+  padding: 15px;
+}
+.paginator {
+  text-align: right;
+}
+
+body > footer {
+  margin-top: 30px;
+}

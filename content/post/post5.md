@@ -2,7 +2,7 @@
 Priority: 1
 Status: 1
 Template: post
-Title: Post 4
+Title: Post 5
 Description: Description text
 Featured_img:
   src: '[%uploads%]/default.jpg'

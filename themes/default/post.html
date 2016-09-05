@@ -3,23 +3,51 @@
 <!DOCTYPE html>
 <html lang="{{lang}}">
 
-{% include '_head.html' %}
+<head>
+{% include '_head_.html' %}
+</head>
 
 <body>
-  <!-- Navigation -->
-  {% include '_header.html' %}
-  <!-- Page Header -->
+  {% include '_nav.html' %}
   <header>
     <h1>{{meta.title}}</h1>
-    <h5>Posted by {{meta.author}} on {{meta.date|date_formatted}}</h5>
+    <h5>
+      {{_('Posted by %s on %s', meta.author, meta.date|date_formatted)}}
+    </h5>
   </header>
-  <!-- Main Content -->
-  <article>
-    {{content}}
-  </artcile>
+
+  <!-- content -->
+  <section>
+    <article>
+      {{content}}
+    </article>
+    {% if slot.comment %}
+    <hr>
+    <aside>
+      {{slot.comment}}
+    </aside>
+    {% endif %}
+  </section>
+
+  <!-- paginator -->
+  {% set channel = query_sides(meta.id, 'post') %}
+  {% if channel.before or channel.after %}
   <hr>
-  <a href="{{base_url}}">Return to home</a>
-<!-- Footer -->
-{% include '_footer.html'%}
+  {% endif %}
+  <div class="paginator">
+    {% if channel.before %}
+      <a href="{{channel.before.url or '#'}}">{{_('Forward')}}</a>
+    {% endif %}
+    &nbsp;/&nbsp;
+    {% if channel.after %}
+      <a href="{{channel.after.url or '#'}}">{{_('Previous')}}</a>
+    {% endif %}
+    </div>
+  </div>
+
+  <hr>
+  <a href="{{base_url}}/post/index/">{{_('Return to post index')}}</a>
+
+  {% include '_footer.html'%}
 </body>
 </html>

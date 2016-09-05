@@ -18,16 +18,23 @@
       "error_404": "404"
   },
 
-  "content_types":{
-    "post": {"title":"Posts", "status": 1}
-  },
-
   "taxonomies":{
     "category": {
       "title":"Categories",
       "content_types":["post"]
     }
   },
+
+  "content_types":{
+    "post":{"title": "Posts", "status": 1}
+  },
+
+  "reserved_contents": {
+    "post/index": "posts-index",
+    "error-404": true
+  },
+
+  "allowed_slots":["comment"],
 
 	"options":{
 		"sortby": "date",

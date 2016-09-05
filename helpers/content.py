@@ -317,6 +317,7 @@ def helper_wrap_translates(translates, locale):
 def _query(files, attrs):
     SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
+    INVISIBLE_SLUGS = current_app.config.get('INVISIBLE_SLUGS')
 
     for attr in attrs[:5]:  # max fields key is 5
         opposite = False
@@ -343,7 +344,8 @@ def _query(files, attrs):
            and '.' not in attr_key:
             attr_key = "meta.{}".format(attr_key)
         files = [f for f in files
-                 if match_cond(f, attr_key, attr_value, force, opposite)]
+                 if f['slug'] not in INVISIBLE_SLUGS and
+                 match_cond(f, attr_key, attr_value, force, opposite)]
 
     return files
 

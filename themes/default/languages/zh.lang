@@ -21,8 +21,24 @@
 		"msgstr": "下一页"
 	},
 	{
-		"msgid": "Button",
-		"msgstr": "按钮"
+		"msgid": "Posted by %s on %s",
+		"msgstr": "发布者 %s 于 %s"
+	},
+	{
+		"msgid": "Return to post index",
+		"msgstr": "返回文章列表"
+	},
+	{
+		"msgid": "Return to home",
+		"msgstr": "返回主页"
+	},
+	{
+		"msgid": "Read More",
+		"msgstr": "读更多"
+	},
+	{
+		"msgid": "Enter",
+		"msgstr": "进入"
 	},
 	{
 		"msgid": "$_CONTENT",

@@ -3,12 +3,12 @@
 <!DOCTYPE html>
 <html lang="{{lang}}">
 
-{% include '_head.html' %}
+<head>
+{% include '_head_.html' %}
+</head>
 
 <body>
-  <!-- Navigation -->
-  {% include '_header.html' %}
-  <!-- Page Header -->
+  {% include '_nav.html' %}
   <header>
     <h1>{{meta.title}}</h1>
     <hr>
@@ -17,12 +17,14 @@
     </span>
   </header>
 
-  <!-- Main Content -->
-  <article>
-    {{content}}
-  </artcile>
-  <hr>
-<!-- Footer -->
-{% include '_footer.html'%}
+  <!-- content -->
+  <section>
+    <article>
+      {{content}}
+    </artcile>
+    <hr>
+  </section>
+
+  {% include '_footer.html'%}
 </body>
 </html>
