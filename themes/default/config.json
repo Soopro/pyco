@@ -21,12 +21,13 @@
   "taxonomies":{
     "category": {
       "title":"Categories",
-      "content_types":["post"]
+      "content_types":["works"]
     }
   },
 
   "content_types":{
-    "post":{"title": "Posts", "status": 1}
+    "post":{"title": "Posts", "status": 1},
+    "works":{"title": "Portfolio", "status": 1}
   },
 
   "reserved_contents": {

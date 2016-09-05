@@ -129,7 +129,7 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # base view context
     view_ctx["app_id"] = curr_app["_id"]
-    view_ctx["api_baseurl"] = config.get('API_URL', u'')
+    view_ctx["api_baseurl"] = config.get('API_BASEURL', u'')
     view_ctx["site_meta"] = site_meta
     view_ctx["theme_meta"] = theme_meta
     view_ctx["theme_url"] = config.get('THEME_URL', u'')

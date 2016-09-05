@@ -41,15 +41,16 @@
 
   <!-- paginator -->
   {% if posts.total_pages > 1 %}
-  <div class="paginator clearfix">
+  <div class="paginator">
   	{% set has_prev_page = posts.paged < posts.total_pages %}
   	{% set has_next_page = posts.paged > 1 %}
 
-    {% if has_prev_page %}
-    <a href="{{glue({'paged':posts.paged-1})}}">{{_('Forward')}}</a>
-    {% endif %}
     {% if has_next_page %}
-    <a href="{{glue({'paged':posts.paged+1})}}">{{_('Previous')}}</a>
+    <a href="{{glue({'paged':posts.paged-1})}}">{{_('Next page')}}</a>
+    {% endif %}
+    &nbsp;/&nbsp;
+    {% if has_prev_page %}
+    <a href="{{glue({'paged':posts.paged+1})}}">{{_('Previous page')}}</a>
     {% endif %}
   </div>
   {% endif %}

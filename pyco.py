@@ -87,7 +87,7 @@ def app_before_request():
     g.request_remote_addr = get_remote_addr()
     g.request_path = request.path
 
-    g.request_url = "{}/{}".format(g.curr_base_url, g.request_path)
+    g.request_url = "{}{}".format(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
     g.query_count = 0

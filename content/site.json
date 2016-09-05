@@ -29,7 +29,7 @@
         "nodes": [],
         "title": "Portfolio",
         "link": "/works/index"
-      }
+      },
       {
         "key": "about",
         "meta": {},
@@ -42,9 +42,9 @@
   "taxonomies": {
     "category": {
       "title":"Categories",
-      "content_types":["post"],
+      "content_types":["works"],
       "terms": [
-        {"key":"daily", "title":"Daily"},
+        {"key":"web-design", "title":"Daily"},
         {"key":"food", "title":"Food"}
       ]
     }

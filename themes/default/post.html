@@ -36,11 +36,11 @@
   {% endif %}
   <div class="paginator">
     {% if channel.before %}
-      <a href="{{channel.before.url or '#'}}">{{_('Forward')}}</a>
+      <a href="{{channel.before.url or '#'}}">{{_('Next page')}}</a>
     {% endif %}
     &nbsp;/&nbsp;
     {% if channel.after %}
-      <a href="{{channel.after.url or '#'}}">{{_('Previous')}}</a>
+      <a href="{{channel.after.url or '#'}}">{{_('Previous page')}}</a>
     {% endif %}
     </div>
   </div>
