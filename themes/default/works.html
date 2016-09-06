@@ -1,0 +1,63 @@
+{% import "g" as g with context %}
+
+<!DOCTYPE html>
+<html lang="{{lang}}">
+
+<head>
+{% include '_head_.html' %}
+</head>
+
+<body>
+  {% include '_nav.html' %}
+  <header>
+    <h1>{{meta.title}}</h1>
+    <h5>
+      {{_('Posted by %s on %s', meta.author, meta.date|date_formatted)}}
+    </h5>
+  </header>
+  <!-- featured -->
+  <section>
+    <img src="{{meta.featured_img.src}}"
+         alt="{{meta.featured_img.title}}" />
+  </section>
+
+  <!-- content -->
+  <section>
+    <article>
+      {{content}}
+    </article>
+  </section>
+
+  <!-- attachments -->
+  <section class="attachments">
+    {% for pic in meta.attachments %}
+    <figure>
+      <img src="{{pic.src|thumbnail}}"
+           alt="{{pic.title}}">
+      <figcaption>{{pic.caption}}</figcaption>
+    </figure>
+    {% endfor %}
+  </section>
+
+  <!-- paginator -->
+  {% set channel = query_sides(meta.id, 'works') %}
+  {% if channel.before or channel.after %}
+  <hr>
+  {% endif %}
+  <div class="paginator">
+    {% if channel.before %}
+      <a href="{{channel.before.url or '#'}}">{{_('Next page')}}</a>
+    {% endif %}
+    &nbsp;/&nbsp;
+    {% if channel.after %}
+      <a href="{{channel.after.url or '#'}}">{{_('Previous page')}}</a>
+    {% endif %}
+    </div>
+  </div>
+
+  <hr>
+  <a href="{{base_url}}/post/index/">{{_('Return to post index')}}</a>
+
+  {% include '_footer.html'%}
+</body>
+</html>

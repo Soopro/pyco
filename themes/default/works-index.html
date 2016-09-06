@@ -1,0 +1,63 @@
+{% import "g" as g with context %}
+
+<!DOCTYPE html>
+<html lang="{{lang}}">
+
+<head>
+{% include '_head_.html' %}
+</head>
+
+<body>
+  {% include '_nav.html' %}
+  <header>
+    <h1>{{meta.title}}</h1>
+    <hr>
+    <span>
+      {{meta.description}}
+    </span>
+    <div>
+      <img src="{{meta.featured_img.src}}"
+           alt="{{ meta.featured_img.title }}" />
+    </div>
+  </header>
+
+  <!-- posts -->
+  <section>
+    {% set portfolio = query('works', args.paged) %}
+    {% for post in portfolio.contents %}
+    <article>
+      <header>
+        <h4>{{post.title}}</h4>
+        <h5>
+          {{_('Posted by %s on %s', meta.author, meta.date|date_formatted)}}
+        </h5>
+      </header>
+      <p>{{post.description}}</p>
+      <a href="{{post.url}}">{{_('Enter')}}</a>
+    </artcile>
+    <hr>
+    {% endfor %}
+  </section>
+
+  <!-- paginator -->
+  {% if portfolio.total_pages > 1 %}
+  <div class="paginator">
+  	{% set has_prev_page = portfolio.paged < portfolio.total_pages %}
+  	{% set has_next_page = portfolio.paged > 1 %}
+
+    {% if has_next_page %}
+    <a href="{{glue({'paged':portfolio.paged-1})}}">{{_('Next page')}}</a>
+    {% endif %}
+    &nbsp;/&nbsp;
+    {% if has_prev_page %}
+    <a href="{{glue({'paged':portfolio.paged+1})}}">{{_('Previous page')}}</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <hr>
+  <a href="{{base_url}}">{{_('Return to home')}}</a>
+
+  {% include '_footer.html'%}
+</body>
+</html>
