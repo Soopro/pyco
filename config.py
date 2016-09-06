@@ -53,6 +53,7 @@ MARKDOWN_EXTENSIONS = ['gfm']
 
 MAXIMUM_QUERY = 60
 
+DEFAULT_SEARCH_ATTRS = ['title']
 SHORT_FIELD_KEYS = {'type': 'content_type'}
 SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']
 QUERYABLE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',

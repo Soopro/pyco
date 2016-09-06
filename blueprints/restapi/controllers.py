@@ -8,6 +8,10 @@ from utils.response import output_json
 
 from helpers.app import helper_record_statistic, helper_get_statistic
 from helpers.content import (read_page_metas,
+                             query_by_files,
+                             query_sides_by_files,
+                             search_by_files,
+                             parse_content,
                              helper_render_ext_slots,
                              helper_wrap_translates,
                              helper_wrap_socials,
@@ -68,17 +72,153 @@ def get_view_metas(app_id):
 
 @output_json
 def search_view_contents(app_id):
-    pass
+    keywords = get_param('keywords', Struct.List, default=[])
+    content_type = get_param('content_type', Struct.Attr, default=None)
+    attrs = get_param('attrs', Struct.List, default=["title"])
+    use_tags = get_param('use_tags', Struct.Bool, default=True)
+    perpage = get_param('perpage', Struct.Int, default=0)
+    paged = get_param('paged', Struct.Int, default=0)
+
+    theme_opts = g.curr_app['theme_meta'].get('options', {})
+
+    if not perpage:
+        perpage = theme_opts.get('perpage')
+
+    perpage = parse_int(perpage, 12, True)
+    paged = parse_int(paged, 1, True)
+
+    limit = perpage
+    offset = max(perpage * (paged - 1), 0)
+
+    content_type = process_slug(content_type)
+    results, total_count = search_by_files(content_type=content_type,
+                                           keywords=keywords,
+                                           attrs=attrs,
+                                           use_tags=use_tags,
+                                           limit=limit,
+                                           offset=offset)
+
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    paged = min(max_pages, paged)
+
+    pages = []
+    for p in results:
+        p = read_page_metas(p, theme_opts, None)
+        run_hook("get_page_data", data=p)
+        pages.append(p)
+    run_hook("get_pages", pages=pages, current_page_id=None)
+
+    return {
+        "contents": pages,
+        "paged": paged,
+        "count": len(results),
+        "total_pages": max_pages,
+        "total_count": total_count
+    }
 
 
 @output_json
 def query_view_contents(app_id):
-    pass
+    attrs = get_param('attrs', Struct.List, False, [])
+    sortby = get_param('sortby', Struct.List, False, [])
+    perpage = get_param('perpage', Struct.Int, False, 1)
+    paged = get_param('paged', Struct.Int, False, 0)
+    priority = get_param('priority', Struct.Bool, False, True)
+    with_content = get_param('with_content', Struct.Bool, False, False)
+
+    theme_meta = g.curr_app['theme_meta']
+    theme_opts = theme_meta.get('options', {})
+
+    # set default params
+    if isinstance(attrs, basestring):
+        attrs = [{'type': unicode(attrs)}]
+
+    if not sortby:
+        sortby = theme_opts.get('sortby', 'updated')
+        if isinstance(sortby, basestring):
+            sortby = [sortby]
+        elif not isinstance(sortby, list):
+            sortby = []
+
+    if not perpage:
+        perpage = theme_opts.get('perpage')
+
+    perpage = parse_int(perpage, 12, True)
+    paged = parse_int(paged, 1, True)
+
+    if with_content:
+        # max 24 is returned while use with_content
+        perpage = max(perpage, 24)
+
+    # position
+    total_count = count_by_files(attrs)
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    paged = min(max_pages, paged)
+
+    limit = perpage
+    offset = max(perpage * (paged - 1), 0)
+
+    # query content files
+    results = query_by_files(attrs, sortby, limit, offset, priority)
+    pages = []
+    for p in results:
+        p_content = p.pop('content', u'')
+        p = read_page_metas(p, theme_opts, None)
+        if with_content:
+            p['content'] = parse_content(p_content)
+        run_hook("get_page_data", data=p)
+        pages.append(p)
+    run_hook("get_pages", pages=pages, current_page_id=None)
+
+    return {
+        "contents": pages,
+        "paged": paged,
+        "count": len(pages),
+        "total_count": total_count,
+        "total_pages": max_pages,
+    }
 
 
 @output_json
 def query_view_sides(app_id):
-    pass
+    pid = get_param('pid', Struct.ObjectId, True)
+    attrs = get_param('attrs', Struct.List, False, [])
+    sortby = get_param('sortby', Struct.List, False, [])
+    limit = get_param('perpage', Struct.Int, False, 1)
+    priority = get_param('priority', Struct.Bool, False, True)
+
+    theme_opts = g.curr_app['theme_meta'].get('options', {})
+
+    # set default params
+    if isinstance(attrs, basestring):
+        attrs = [{'type': unicode(attrs)}]
+
+    if not sortby:
+        sortby = theme_opts.get('sortby', 'updated')
+        if isinstance(sortby, basestring):
+            sortby = [sortby]
+        elif not isinstance(sortby, list):
+            sortby = []
+
+    limit = parse_int(limit, 1, True)
+
+    # query side mongo
+    before_pages, after_pages = query_sides_by_files(pid, attrs, sortby,
+                                                     limit, priority)
+    before_pages = [read_page_metas(content_file, theme_opts)
+                    for content_file in before_pages]
+    after_pages = [read_page_metas(content_file, theme_opts)
+                   for content_file in after_pages]
+
+    before = before_pages[-1] if before_pages else None
+    after = after_pages[0] if after_pages else None
+
+    return {
+        "before": before,
+        "after": after,
+        "entires_before": before_pages,
+        "entires_after": after_pages,
+    }
 
 
 @output_json

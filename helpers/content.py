@@ -15,8 +15,8 @@ def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
     sort_keys = make_sorts_rule(sortby, priority)
     sorting = _sorting(files, sort_keys)
 
-    limit = parse_int(limit, 1)
-    offset = parse_int(offset, 0)
+    limit = parse_int(limit, 1, True)
+    offset = parse_int(offset, 0, 0)
 
     if sorting:
         ids = [item['_id'] for item in sorting[offset:offset + limit]]
@@ -32,7 +32,7 @@ def count_by_files(attrs):
     return len(_query(g.files, attrs))
 
 
-def query_sides_by_file(pid, attrs, sortby=[], limit=1, priority=True):
+def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
     # query
     files = _query(g.files, attrs)
     # sorting
@@ -67,6 +67,48 @@ def query_sides_by_file(pid, attrs, sortby=[], limit=1, priority=True):
         afters = []
 
     return befores, afters
+
+
+def search_by_files(keywords, content_type=None, attrs=None,
+                    use_tags=True, limit=0, offset=0):
+    if content_type:
+        files = [f for f in g.files if f['content_type'] == content_type]
+    else:
+        files = g.files
+
+    if not keywords:
+        results = files
+    else:
+        results = []
+        if isinstance(keywords, basestring):
+            keywords = keywords.split()
+        elif not isinstance(keywords, list):
+            keywords = []
+
+        if isinstance(attrs, basestring):
+            attrs = attrs.split()
+        elif not isinstance(attrs, list):
+            attrs = None
+
+        if not attrs:
+            attrs = current_app.config.get('DEFAULT_SEARCH_ATTRS')
+
+        def search_match(keyword, attrs, f):
+            if use_tags and keyword in f['tags']:
+                return True
+            for attr in attrs:
+                if match_cond(f, attr, keyword, force=True):
+                    return True
+            return False
+
+        results = files
+        for kw in keywords:
+            results = [f for f in results if search_match(kw, attrs, f)]
+
+    limit = parse_int(limit, 1, True)
+    offset = parse_int(offset, 0, 0)
+
+    return results[offset:offset + limit], len(results)
 
 
 def find_content_file(type_slug, file_slug):
