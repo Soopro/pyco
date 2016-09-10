@@ -38,68 +38,79 @@ You can modify the `config.py` to change base settings.
 
 *Those settings below is for simulate the cloud platform settings. please do not chagne it if you want use pyco to develop a cloud base theme.*
 
-* DEBUG: **[ bool ]** Switch of debug mode. The debug mode will showing up some additional information and reload theme very request. you can also access from `current_app.debug`. Defualt is `True`.
+* `DEBUG`: **[ bool ]** Switch of debug mode. The debug mode will showing up some additional information and reload theme very request. you can also access from `current_app.debug`. Defualt is `True`.
 
-* HOST: **[ str ]** Host local ip address. Default is `"0.0.0.0"`.
-* PORT: **[ int ]** Host port. Default is `5500`.
+* `HOST`: **[ str ]** Host local ip address. Default is `"0.0.0.0"`.
 
-* THEME_NAME: **[ str ]** Theme name slug. Default is `"default"`.
-* STATIC_PATH: **[ str ]** Static base path of themes. Default is `"static"`.
+* `PORT`: **[ int ]** Host port. Default is `5500`.
 
-* BASE_URL: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
-* API_BASEURL: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
+* `THEME_NAME`: **[ str ]** Theme name slug. Default is `"default"`.
 
-* LIBS_URL: **[ str ]** Site libs base url, all that common libs will host here. Default is `"http://libs.soopro.io"`.
+* `STATIC_PATH`: **[ str ]** Static base path of themes. Default is `"static"`.
 
-* THEME_URL: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
+* `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
 
-* UPLOADS_DIR: **[ str ]** Uploads dir will be `"uploads"`.
-* CONTENT_DIR: **[ str ]** Contents dir will be `"content"`.
-* PLUGIN_DIR: **[ str ]** Plugin dir will be `"plugins"`.
-* THEMES_DIR: **[ str ]** Themes dir will be `"themes"`.
+* `API_BASEURL`: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
 
-* LANGUAGES_DIR = **[ str ]** The language dir in side each theme will be `"languages"`.
+* `LIBS_URL`: **[ str ]** Site libs base url, all that common libs will host here. Default is `"http://libs.soopro.io"`.
 
-* CHARSET: **[ str ]** Site date files charset. Default is `"utf8"`.
-* CONTENT_FILE_EXT: **[ str ]** content file ext will be `".md"`.
-* TEMPLATE_FILE_EXT: **[ str ]** template file ext will be `".html"`.
+* `THEME_URL`: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
 
-* SITE_DATA_FILE: **[ str ]** Site date is general data of the site, Default is "site.json".
+* `UPLOADS_DIR`: **[ str ]** Uploads dir will be `"uploads"`.
 
-* THEME_CONF_FILE: **[ str ]** Theme config file is `"config.json"`.
+* `CONTENT_DIR`: **[ str ]** Contents dir will be `"content"`.
 
-* DEFAULT_TEMPLATE: **[ str ]** Default template name is `"index"`.
-* DEFAULT_DATE_FORMAT: **[ str ]** Default input date format is `"%Y-%m-%d"`. This format will not effect while output Date format.
+* `PLUGIN_DIR`: **[ str ]** Plugin dir will be `"plugins"`.
 
-* DEFAULT_EXCERPT_LENGTH: **[ str ]** Excerpt length will be `162`.
-* DEFAULT_EXCERPT_ELLIPSIS: **[ str ]** Excerpt ellipsis will be `"&hellip;"` aka `...`.
+* `THEMES_DIR`: **[ str ]** Themes dir will be `"themes"`.
 
-* DEFAULT_INDEX_SLUG: **[ str ]** Index page slug Default as `"index"`.
+* `LANGUAGES_DIR`: **[ str ]** The language dir in side each theme will be `"languages"`.
 
-* DEFAULT_404_SLUG: **[ str ]** 404 page slug Default as `"error-404"`.
+* `CHARSET`: **[ str ]** Site date files charset. Default is `"utf8"`.
 
-* DEFAULT_SEARCH_SLUG: **[ str ]** Search page slug Default as `"search"`.
+* `CONTENT_FILE_EXT`: **[ str ]** content file ext will be `".md"`.
 
-* DEFAULT_TAXONOMY_SLUG: **[ str ]** Taxonomy page slug. In fact there are many kind of taxonomy, but we only use `category` here. Default as `"category"`.
-DEFAULT_TAG_SLUG = "tag"
+* `TEMPLATE_FILE_EXT`: **[ str ]** template file ext will be `".html"`.
 
-* INVISIBLE_SLUGS: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAXONOMY_SLUG, DEFAULT_TAG_SLUG]`.
+* `SITE_DATA_FILE`: **[ str ]** Site date is general data of the site, Default is "site.json".
 
-* USE_MARKDOWN: **[ bool ]** Use markdown for rendering or not. Default is `False`.
+* `THEME_CONF_FILE`: **[ str ]** Theme config file is `"config.json"`.
 
-* MARKDOWN_EXTENSIONS: **[ list ]** Use markdown extensions if `USE_MARKDOWN` is opened. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
+* `DEFAULT_TEMPLATE`: **[ str ]** Default template name is `"index"`.
 
-* MAXIMUM_QUERY: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
+* `DEFAULT_DATE_FORMAT`: **[ str ]** Default input date format is `"%Y-%m-%d"`. This format will not effect while output Date format.
 
-* DEFAULT_SEARCH_ATTRS: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
+* `DEFAULT_EXCERPT_LENGTH`: **[ str ]** Excerpt length will be `162`.
 
-* SHORT_FIELD_KEYS: **[ dict ]** Make short keyword for fields key. Default is: `{'type': 'content_type'}`
+* `DEFAULT_EXCERPT_ELLIPSIS`: **[ str ]** Excerpt ellipsis will be `"&hellip;"` aka `...`.
 
-* SORTABLE_FIELD_KEYS: **[ list ]** Define which major fields in raw files data can be sorting. Default is `['priority', 'date', 'creation', 'updated']`.
+* `DEFAULT_INDEX_SLUG`: **[ str ]** Index page slug default as `"index"`.
 
-* STRUCTURE_FIELD_KEYS: **[ list ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `['slug', 'content_type', 'priority', 'parent', 'date', 'creation', 'updated', 'template', 'tags']`.
+* `DEFAULT_404_SLUG`: **[ str ]** 404 page slug default as `"error-404"`.
 
-* PLUGINS: **[ list ]** all plugins packpage name here.
+* `DEFAULT_SEARCH_SLUG`: **[ str ]** Search page slug default as `"search"`.
+
+* `DEFAULT_TAXONOMY_SLUG`: **[ str ]** Taxonomy page slug. In fact there are many kind of taxonomy, but we only use `category` here. Default as `"category"`.
+
+* `DEFAULT_TAG_SLUG`: **[ str ]** Tags page slug default as `"tag"`.
+
+* `INVISIBLE_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAXONOMY_SLUG, DEFAULT_TAG_SLUG]`.
+
+* `USE_MARKDOWN`: **[ bool ]** Use markdown for rendering or not. Default is `False`.
+
+* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if `USE_MARKDOWN` is opened. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
+
+* `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
+
+* `DEFAULT_SEARCH_ATTRS`: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
+
+* `SHORT_FIELD_KEYS`: **[ dict ]** Make short keyword for fields key. Default is: `{'type': 'content_type'}`
+
+* `SORTABLE_FIELD_KEYS`: **[ list ]** Define which major fields in raw files data can be sorting. Default is `['priority', 'date', 'creation', 'updated']`.
+
+* `STRUCTURE_FIELD_KEYS`: **[ list ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `['slug', 'content_type', 'priority', 'parent', 'date', 'creation', 'updated', 'template', 'tags']`.
+
+* `PLUGINS`: **[ list ]** all plugins packpage name here.
 
 
 ### Themes
