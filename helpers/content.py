@@ -351,7 +351,7 @@ def helper_wrap_translates(translates, locale):
 # helpers
 def _query(files, attrs):
     SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
-    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
+    STRUCTURE_FIELD_KEYS = current_app.config.get('STRUCTURE_FIELD_KEYS')
     INVISIBLE_SLUGS = current_app.config.get('INVISIBLE_SLUGS')
 
     for attr in attrs[:5]:  # max fields key is 5
@@ -375,7 +375,7 @@ def _query(files, attrs):
             continue
 
         attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
-        if attr_key not in QUERYABLE_FIELD_KEYS \
+        if attr_key not in STRUCTURE_FIELD_KEYS \
            and '.' not in attr_key:
             attr_key = "meta.{}".format(attr_key)
         files = [f for f in files

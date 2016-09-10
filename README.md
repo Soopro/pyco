@@ -22,18 +22,12 @@ Never testing on Windows, if you are use windows only, We are sorry.
 
 ## Run
 
-First you have to enter the pyco folder obviously, then you can run pyco in multiple ways.
+First, you have to enter the pyco folder obviously, then you can run pyco in multiple ways.
 
 * `sh start.sh`: Run as backend. you will need `sh stop.sh` to stop it, or kill the system progress manually.
 
 * `python pyco.py`: Run as develop.
 
-
-If you want develop some Webapp, you need open `RESTful` mode, there is two ways start as RESTful model.
-
-1. Change RESTfull option to `True` in `config.py`.
-
-2. `python pyco.py --webapp`: Run RESTful mode as develop, this will override of config option.
 
 
 ## Usage
@@ -41,6 +35,72 @@ If you want develop some Webapp, you need open `RESTful` mode, there is two ways
 ### Config
 
 You can modify the `config.py` to change base settings.
+
+*Those settings below is for simulate the cloud platform settings. please do not chagne it if you want use pyco to develop a cloud base theme.*
+
+* DEBUG: **[ bool ]** Switch of debug mode. The debug mode will showing up some additional information and reload theme very request. you can also access from `current_app.debug`. Defualt is `True`.
+
+* HOST: **[ str ]** Host local ip address. Default is `"0.0.0.0"`.
+* PORT: **[ int ]** Host port. Default is `5500`.
+
+* THEME_NAME: **[ str ]** Theme name slug. Default is `"default"`.
+* STATIC_PATH: **[ str ]** Static base path of themes. Default is `"static"`.
+
+* BASE_URL: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
+* API_BASEURL: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
+
+* LIBS_URL: **[ str ]** Site libs base url, all that common libs will host here. Default is `"http://libs.soopro.io"`.
+
+* THEME_URL: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
+
+* UPLOADS_DIR: **[ str ]** Uploads dir will be `"uploads"`.
+* CONTENT_DIR: **[ str ]** Contents dir will be `"content"`.
+* PLUGIN_DIR: **[ str ]** Plugin dir will be `"plugins"`.
+* THEMES_DIR: **[ str ]** Themes dir will be `"themes"`.
+
+* LANGUAGES_DIR = **[ str ]** The language dir in side each theme will be `"languages"`.
+
+* CHARSET: **[ str ]** Site date files charset. Default is `"utf8"`.
+* CONTENT_FILE_EXT: **[ str ]** content file ext will be `".md"`.
+* TEMPLATE_FILE_EXT: **[ str ]** template file ext will be `".html"`.
+
+* SITE_DATA_FILE: **[ str ]** Site date is general data of the site, Default is "site.json".
+
+* THEME_CONF_FILE: **[ str ]** Theme config file is `"config.json"`.
+
+* DEFAULT_TEMPLATE: **[ str ]** Default template name is `"index"`.
+* DEFAULT_DATE_FORMAT: **[ str ]** Default input date format is `"%Y-%m-%d"`. This format will not effect while output Date format.
+
+* DEFAULT_EXCERPT_LENGTH: **[ str ]** Excerpt length will be `162`.
+* DEFAULT_EXCERPT_ELLIPSIS: **[ str ]** Excerpt ellipsis will be `"&hellip;"` aka `...`.
+
+* DEFAULT_INDEX_SLUG: **[ str ]** Index page slug Default as `"index"`.
+
+* DEFAULT_404_SLUG: **[ str ]** 404 page slug Default as `"error-404"`.
+
+* DEFAULT_SEARCH_SLUG: **[ str ]** Search page slug Default as `"search"`.
+
+* DEFAULT_TAXONOMY_SLUG: **[ str ]** Taxonomy page slug. In fact there are many kind of taxonomy, but we only use `category` here. Default as `"category"`.
+DEFAULT_TAG_SLUG = "tag"
+
+* INVISIBLE_SLUGS: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAXONOMY_SLUG, DEFAULT_TAG_SLUG]`.
+
+* USE_MARKDOWN: **[ bool ]** Use markdown for rendering or not. Default is `False`.
+
+* MARKDOWN_EXTENSIONS: **[ list ]** Use markdown extensions if `USE_MARKDOWN` is opened. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
+
+* MAXIMUM_QUERY: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
+
+* DEFAULT_SEARCH_ATTRS: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
+
+* SHORT_FIELD_KEYS: **[ dict ]** Make short keyword for fields key. Default is: `{'type': 'content_type'}`
+
+* SORTABLE_FIELD_KEYS: **[ list ]** Define which major fields in raw files data can be sorting. Default is `['priority', 'date', 'creation', 'updated']`.
+
+* STRUCTURE_FIELD_KEYS: **[ list ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `['slug', 'content_type', 'priority', 'parent', 'date', 'creation', 'updated', 'template', 'tags']`.
+
+* PLUGINS: **[ list ]** all plugins packpage name here.
+
 
 ### Themes
 

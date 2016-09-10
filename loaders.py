@@ -41,7 +41,7 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("TPL_FILE_EXT", ".tpl")
 
     app.config.setdefault("SITE_DATA_FILE", "site.json")
-    app.config.setdefault("THEME_META_FILE", "config.json")
+    app.config.setdefault("THEME_CONF_FILE", "config.json")
 
     app.config.setdefault("DEFAULT_TEMPLATE", "index")
     app.config.setdefault("DEFAULT_DATE_FORMAT", "%Y-%m-%d")
@@ -58,7 +58,7 @@ def load_config(app, config_name="config.py"):
                           ['index', 'error-404', 'search', 'taxonomy', 'tag'])
 
     app.config.setdefault("SORTABLE_FIELD_KEYS", [])
-    app.config.setdefault("QUERYABLE_FIELD_KEYS", [])
+    app.config.setdefault("STRUCTURE_FIELD_KEYS", [])
     app.config.setdefault("SHORT_FIELD_KEYS", {})
 
 
@@ -131,7 +131,7 @@ def load_all_files(app, curr_app):
 def load_curr_app(app):
     theme_meta_file = os.path.join(app.config.get('THEMES_DIR'),
                                    app.config.get('THEME_NAME'),
-                                   app.config.get('THEME_META_FILE'))
+                                   app.config.get('THEME_CONF_FILE'))
     site_file = os.path.join(app.config.get('CONTENT_DIR'),
                              app.config.get('SITE_DATA_FILE'))
 

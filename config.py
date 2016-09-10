@@ -3,10 +3,10 @@ from __future__ import absolute_import
 
 DEBUG = True
 
-HOST = '0.0.0.0'
+HOST = "0.0.0.0"
 PORT = 5500
 
-THEME_NAME = 'default'
+THEME_NAME = "default"
 STATIC_PATH = "static"
 
 BASE_URL = "http://localhost:5500"
@@ -19,17 +19,17 @@ CONTENT_DIR = "content"
 PLUGIN_DIR = "plugins"
 THEMES_DIR = "themes"
 
-LANGUAGES_DIR = 'languages'
+LANGUAGES_DIR = "languages"
 
 CHARSET = "utf8"
 CONTENT_FILE_EXT = ".md"
 TEMPLATE_FILE_EXT = ".html"
 
 SITE_DATA_FILE = "site.json"
-THEME_META_FILE = "config.json"
+THEME_CONF_FILE = "config.json"
 
 DEFAULT_TEMPLATE = "index"
-DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_DATE_FORMAT = "%Y-%m-%d"
 
 DEFAULT_EXCERPT_LENGTH = 162
 DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
@@ -37,7 +37,7 @@ DEFAULT_EXCERPT_ELLIPSIS = "&hellip;"
 DEFAULT_INDEX_SLUG = "index"
 DEFAULT_404_SLUG = "error-404"
 DEFAULT_SEARCH_SLUG = "search"
-DEFAULT_TAXONOMY_SLUG = "taxonomy"
+DEFAULT_TAXONOMY_SLUG = "category"
 DEFAULT_TAG_SLUG = "tag"
 
 INVISIBLE_SLUGS = [
@@ -56,7 +56,7 @@ MAXIMUM_QUERY = 60
 DEFAULT_SEARCH_ATTRS = ['title']
 SHORT_FIELD_KEYS = {'type': 'content_type'}
 SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']
-QUERYABLE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
+STRUCTURE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
                         'date', 'creation', 'updated',
                         'template', 'tags']
 # plugins
