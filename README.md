@@ -113,14 +113,21 @@ Learn Jinja2 from here [Jinja2 Docs](http://jinja.pocoo.org/docs/dev/templates)
 ### Plugins
 
 Pyco supported plugins. We already provider several plugins, such as:
-  * `draft`: add `status` support in contents. when you want mark a content as draft, just set status to `0`. (`1` for publish)
-  * `languages`: add multi-languages support for pyco.
-  * `is`: add `is_front`, `is_404`, `is_current` support.
-  * `contect_types`: automatically processing content_types for content which don't have `type` attribute.
-  * `redirect`: process redirect for content.
-  * `template`: given a default `template` base on `type` for content which don't have template attribute.
-  * `marker`: parse content with short code marks.
-  * `jinja_helper`: add multiple helpers and filters, learn more from the ***jinja2 template*** document of our system. Check [this repo](http://github.com/soopro/rafiki)
+
+* `draft`: add `status` support in contents. when you want mark a content as draft, just set status to `0`. (`1` for publish)
+
+* `languages`: add multi-languages support for pyco.
+
+* `is`: add `is_front`, `is_404`, `is_current` support.
+
+* `contect_types`: automatically processing content_types for content which don't have `type` attribute.
+* `redirect`: process redirect for content.
+
+* `template`: given a default `template` base on `type` for content which don't have template attribute.
+
+* `marker`: parse content with short code marks.
+
+* `jinja_helper`: add multiple helpers and filters, learn more from the ***jinja2 template*** document of our system. Check [this repo](http://github.com/soopro/rafiki)
 
 **Attation**: If you want build themes for our system, you should not change any thing about plugins, because our system might not support your modify.
 
