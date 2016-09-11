@@ -5,9 +5,11 @@ from flask import current_app, request, abort, render_template, redirect, g
 import os
 import math
 from services.i18n import Translator
+
 from utils.request import parse_args
 from utils.response import make_content_response
 from utils.misc import make_dotted_dict, parse_int, now
+
 from helpers.app import (run_hook,
                          helper_get_statistic,
                          helper_redirect_url,
@@ -46,7 +48,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     config['site_meta'] = site_meta
     config['theme_meta'] = theme_meta
 
-    run_hook("config_loaded", config=config)
+    run_hook("config_loaded", config=make_dotted_dict(config))
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
@@ -163,8 +165,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx["magnet"] = magnet
 
     # template
-    template = dict()
-    template['file'] = page_meta.get("template")
+    template = {'name': page_meta.get("template")}
     run_hook("before_render", var=view_ctx, template=template)
 
     template_file_path = get_theme_path(template['file'])
@@ -179,11 +180,10 @@ def rendering(content_type_slug='page', file_slug='index'):
     for k, v in view_ctx.iteritems():
         view_ctx[k] = make_dotted_dict(v)
 
-    output = {}
-    output['content'] = render_template(template_file_path, **view_ctx)
-    run_hook("after_render", output=output)
+    rendered = {'output': render_template(template_file_path, **view_ctx)}
+    run_hook("after_render", rendered=rendered)
 
-    return make_content_response(output['content'], status_code)
+    return make_content_response(rendered['output'], status_code)
 
 
 def _check_theme_hidden_types(theme_meta, curr_type):
@@ -269,7 +269,6 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         p = read_page_metas(p, theme_opts, curr_id)
         if with_content:
             p['content'] = parse_content(p_content)
-        run_hook("get_page_data", data=p)
         pages.append(p)
     run_hook("get_pages", pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)

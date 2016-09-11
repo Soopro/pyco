@@ -2,10 +2,11 @@
 
 ## Concept
 
-Pyco is a stupidly simple, blazing fast, flat file CMS base on Python Flask.
-Start a localhost with pyco help you build own `theme`.
+Pyco is a simple, not very fast, flat file CMS base on Python Flask. It is design to simulation our Could Content Service, will help developers make Themes from localhost.
 
-Never testing on Windows, if you are use windows only, We are sorry.
+Pyco build with plugin supported and custom able config settings, that mean is you can also host a website with own needs, but it is not design for large portal site, so please make sure is not very big traffic.
+
+This project NEVER testing on Windows, if you are use windows only, We are sorry.
 
 [Github Repo](http://github.com/soopro/pyco)
 
@@ -13,12 +14,13 @@ Never testing on Windows, if you are use windows only, We are sorry.
 
 ## Installation
 
-1. Make sure you have python and pip.
+1. Make sure you have `python 2.7` and `pip`.
 2. Clone this github repo [http://github.com/soopro/pyco](http://github.com/soopro/pyco).
 3. Make sure current branch is `master`.
 4. Get the project root folder, run `pip install -r requirements.txt`. (you might need `sudo`).
 5. Check all install result was succeed.
 6. Done.
+
 
 ## Run
 
@@ -30,9 +32,9 @@ First, you have to enter the pyco folder obviously, then you can run pyco in mul
 
 
 
-## Usage
+## Documentation
 
-### Config
+### Config Settings
 
 You can modify the `config.py` to change base settings.
 
@@ -113,89 +115,129 @@ You can modify the `config.py` to change base settings.
 * `PLUGINS`: **[ list ]** all plugins packpage name here.
 
 
-### Themes
+### Hooks of Plugin
 
-You can create own themes for pyco with Jinja2 template language.
-After your got a new theme, put intro themes folder and change settings in `config.py` to activated your owen theme.
+Pyco supported plugins. Plugins use several hooked functions, and order by the request work flow. Some data could be customlize, you have to print out to understand attributes. Hooks such as:
 
-Learn Jinja2 from here [Jinja2 Docs](http://jinja.pocoo.org/docs/dev/templates)
+1. `config_loaded(config)`: While site date, config, theme_meta loaded.
+    * `config`: **[ dict ]** read-only. include `config settings`, `theme_meta` and `site_meta`.
+    
+2. `request_url(request)`: While the request is confirmed.
+    * `request`: **[ dict ]** a flask request object.
+
+3. `before_load_content(path)`: Before load the page.
+    * `path`: **[ dict ]**
+      1. `content_type`: **[ str ]** content type slug.
+      2. `slug`: **[ str ]** file slug
+      
+4. `after_load_content(path, file)`: After content loaded.
+    * `path`: **[ dict ]**
+      1. `content_type`: **[ str ]** content type slug.
+      2. `slug`: **[ str ]** file slug
+    * `file`: **[ dict ]** a file dict. Print out to see all attributes.
+
+5. `before_404_load_content(path)`: Before load the 404 page.
+    * `path`: **[ dict ]**
+      1. `content_type`: **[ str ]** content type slug.
+      2. `slug`: **[ str ]** file slug
+
+6. `after_404_load_content(path, file)`: After 404 page loaded.
+    * `path`: **[ dict ]**
+      1. `content_type`: **[ str ]** content type slug.
+      2. `slug`: **[ str ]** file slug
+    * `file`: **[ dict ]** a file dict. Print out to see all attributes.
+
+7. `before_parse_content(content)`: Before parse the content.
+    * `content`: **[ dict ]**
+      1. `content`: raw content string.
+      
+8. `after_parse_content(content)`: After content parsed.
+    * `content`: **[ dict ]**
+      1. `content`: parsed content string.
+
+9. `before_read_page_meta(headers)`: Before read page meta.
+    * `headers`: **[ dict ]** Print out to see all attributes.
+
+10. `after_read_page_meta(page_meta, redirect)`: After read page meta.
+    * `page_meta`: **[ dict ]** All page readed attrbiutes.
+    * `redirect`: **[ dict ]** or **[ None ]** redirect information. for rest api this param will be None, because there is no way to redirect.
+      1. `url`: **[ str ]** redirect url, default is `None`.
+
+11. `get_pages(pages, current_page_id)`: While query contents.
+    * `pages`: all contents. Print out for attributes.
+
+12. `before_render(var, template)`: Before render (not support restapi).
+    * `var`: **[ dict ]** context for the rendering.
+    * `template`: **[ dict ]** template information.
+      1. `name`: **[ str ]** template name.
+    
+    
+13. `after_render(rendered)`: After render (not support restapi).
+    * `rendered`: **[ dict ]** rendered output.
+      1. `output`: **[ str ]** the content return to browser.
 
 
-### Plugins
-
-Pyco supported plugins. We already provider several plugins, such as:
-
-* `draft`: add `status` support in contents. when you want mark a content as draft, just set status to `0`. (`1` for publish)
-
-* `languages`: add multi-languages support for pyco.
-
-* `is`: add `is_front`, `is_404`, `is_current` support.
-
-* `contect_types`: automatically processing content_types for content which don't have `type` attribute.
-* `redirect`: process redirect for content.
-
-* `template`: given a default `template` base on `type` for content which don't have template attribute.
-
-* `marker`: parse content with short code marks.
-
-* `jinja_helper`: add multiple helpers and filters, learn more from the ***jinja2 template*** document of our system. Check [this repo](http://github.com/soopro/rafiki)
-
-**Attation**: If you want build themes for our system, you should not change any thing about plugins, because our system might not support your modify.
+**Attation**: Our cloud platform might not support your plugins modify.
 
 
-### Content
+### Manage Content
 
-Pyco is flat file CMS, there is no database. All content host as `.md` markdown file in `content` folder.
+Pyco is flat file CMS, there is no database. All content host as `.md` markdown file in `content` folder. 
 
-The type of contents is base on folder name. The files in the root of `content` folder is static page call 'page'. Add other content types just create a folder then put `.md` inside, the folder name will be `slug` of this content type.
+The type of contents is base on folder name. The files in the root of `content` folder is static page type, call `page`. Add other content types just create a folder then put `.md` inside, the folder name will be `slug` of this content type.
 
-There is global content data for whole site call **Site Meta**, to having this data, you have to put a `site.json` file in the root of `content` folder.
+There is global content data for whole site is host in a json file in root of `content` folder, call `site.json`.
 
+***DO NOT USE ANY NON ASCII CODE ON FILE NAME OR DIR NAME***
 
-## Site.json
+*the markdown parse support is turn of by default, you have you turn it on if you need, otherwise only support text/html.*
 
-Global content data for whole site.
+#### Site.json
 
-* `app_id`: **[ str ]** the app id, sometime you want work with an real `app_id`, you can put it here. If you don't know where to find an real `app_id`, leave it alone. default is `pyco_app`.
+Global content data for whole site. some data is simulation for cloud service, if you don't know what is it, leave it alone.
 
-* `slug`: **[ str ]** site slug. aka app slug
-* `type`: **[ str ]** site type. aka app type
+* `app_id`: **[ str ]** the app id, simulation an real `app_id`.
 
-* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here.
+* `slug`: **[ str ]** site slug, simulation app slug. 
+
+* `type`: **[ str ]** site type, simulation app type.
+
+* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here. `{"page": "Pages"}` etc,.
 
 * `menus`: **[ dict ]** define multiple menus. Follow `menu` structure exactly.
   1. `< menu_slug >`: **[ list ]** a menu.
-    * `slug`: **[ str ]** menu item slug
-    * `title`: **[ str ]** menu item title
+    * `slug`: **[ str ]** menu item slug.
+    * `title`: **[ str ]** menu item title.
     * `link`: **[ str ]** menu link, system will generate `url` by `link`.
-    * `meta`: **[ dict ]** menu item meta, put custom data in side as you wish.
+    * `target`: **[ str ]** menu link target, such as `_blank`, `_self`.
+    * `related_type`: **[ str ]** menu item related content type slug.
+    * `meta`: **[ dict ]** menu item meta, put custom data as you wish.
     * `nodes`: **[ list ]** children menu items
 
-* `taxonomies`: **[ dict ]** All taxonomy host here. (also could be tax for short)
+* `taxonomies`: **[ dict ]** All taxonomy host here.
   * `< taxonomy_slug >`:
     1. `title`: **[ str ]** Taxonomy title.
     2. `content_types`: **[ list ]** list of supported content types.
     3. `terms`: **[ list ]** terms of this taxonomy.
-      1. `key`: **[ str ]** term key
-      2. `title`: **[ str ]** term title
-      6. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
+      1. `key`: **[ str ]** term key.
+      2. `title`: **[ str ]** term title.
+      3. `class`: **[ str ]** term sytle class.
+      4. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
         * `pic`: **[ str ]** pic for term display.
+      5 `nodes`: **[ list ]** children terms here.
 
 * `meta`: Site meta
-  * `title`: **[ str ]** site title. aka app title
-  * `type`: **[ str ]** site type. aka app type
-  * `logo`: **[dict]** media of logo
-    * `src`: **[ str ]** media src.
-    * `title`: **[ str ]** media title.
-    * `link`: **[ str ]** media link if have one.
-    * `target`: **[ str ]** target for media link. '\_blank' or something else.
-    * `class`: **[ str ]** media class.
-
+  * `title`: **[ str ]** site title, aka app title.
+  * `logo`: **[ str ]** media src of logo.
+  * `favicon`: **[ str ]** media src of favicon.
+  * `bg`: **[ dict ]** media dict of site level background.
   * `contact`: **[ str ]** contact info.
   * `copyright`: **[ str ]** copyright.
   * `description`: **[ str ]** description text.
   * `license`: **[ str ]** license.
   * `locale`: **[ str ]** language locale.
+  * `seo`: **[ str ]** seo codes here.
+  * `analytics`: **[ str ]** third part analytic codes here.
   * `socials`: **[ dict/list ]** social medias if you need.
     ```json
     {
@@ -216,8 +258,8 @@ Global content data for whole site.
 ```json
 {
   "app_id": "pyco_app_id",
-  "slug":"pyco",
-  "type":"ws",
+  "slug": "pyco",
+  "type": "ws",
   "content_types": {
     "post": "Posts",
     "page": "Pages"
@@ -240,29 +282,35 @@ Global content data for whole site.
       }
     ]
   },
-  "meta": {
-    "logo": {
-      "src": "http://myuploads.com/logo.png",
-      "title": "my logo",
-      "link": "http://linkto.link",
-      "target": "target for media link. '_blank' or something else.",
-      "class": "logo"
-    },
-    "author": "redy",
-    "copyright": "2015 Made by Pyco.",
-    "description": "A simple example of Pyco side ...",
-    "license": "MIT",
-    "locale": "en_US",
-    "title": "Pyco"
-  },
-  "taxonomies":{
+  "taxonomies": {
     "category": {
-      "title":"Category",
+      "title": "Category",
       "content_types": ["post"],
       "terms": [
-        {"slug":"food","title":"Food","meta":{"pic":"","parent":""}, "priority": 0 },
-        {"slug":"book","title":"Book","meta":{"pic":"","parent":""}, "priority": 0 }
+        {"slug": "food", "title": "Food", 
+         "meta": {"pic": "","parent": ""}, "priority": 0},
+        {"slug": "book", "title": "Book",
+         "meta": {"pic": "","parent": ""}, "priority": 0}
       ]
+    }
+  },
+  "meta": {
+    "locale": "en_US",
+    "favicon": "",
+    "logo": "",
+    "bg": "",
+    "contact": "<a href='mailto:redy@imredy.com'>redy@imredy.com</a>",
+    "copyright": "2015 Made by Pyco.",
+    "description": "...",
+    "license": "MIT",
+    "title": "Sample",
+    "socials":{
+      "facebook": {"name": "Facebook", "url": "#", "code": "facebook"},
+      "twitter": {"name": "Twitter", "url": "#", "code": "twitter"}
+    },
+    "translates": {
+      "en_US": {"name": "English", "url": "#" },
+      "zh_CN": {"name": "中文", "url": "#" }
     }
   }
 }
@@ -270,31 +318,54 @@ Global content data for whole site.
 ```
 
 
-## Single Content
+#### Single Content File
 
 All Content is host by `.md` file put in `content` folder.
-Use folder to define different `content types`. (folder must be latin or number or - or _ )
+Use folder to define different `content types`. (folder and file name could be latin, dash `-`, underscore `_` or number)
 
 The default content type is `page`, every `.md` in root of `content` folder is `page`, that's why don't have a folder named it.
 
-In each `.md` separate `meta` and `content`.
+Each content file `.md`, separated with 2 parts, `meta` and `content`.
 
-* `meta`: Multiple line between `/* ... */` is meta. you can define attribute whatever you want. It's YAML format. learn YAML format by your self. please.
+Pyco also support `shortcode`. `shortcode` is for generation dynamic value in your contents, must exactly follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` to `&#37;`. You have to quote it while using in `meta`, such as `'[%shortcode%]/your_pic.jpg'` because that's YAML. 
 
-* `content`: After `/* ... */` is Content, must be simple HTML code here is recommend. which not recommend is use complex html with styles or classes, those content will very difficult to maintain after upload to our system. (better to use html just like markdown could do.) The complex content you have use theme to deal with not rich text contents.
+* `[%uploads%]`: A shortcode for uploads url.
 
-* `shortcode`: shortcode is for generation dynamic value in your contents, it's follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` is `&#37;`
-
-  1. `[%uploads%]`: A shortcode for uploads url, you have to quote it while using in `meta`, because that's YAML. ```[%uploads%]/your_pic.jpg```
-  2. `[%theme%]`: A shortcode for theme url, same as above.
+* `[%theme%]`: A shortcode for theme url, same as above.
 
 
+##### Meta
+
+Multiple line between `/* ... */` is meta. you can define attribute whatever you want. It's YAML format. google it to learn YAML format.
+
+
+Some attribute will be reserved:
+
+* `date`: **[ str ]** Input date format with yyyy-mm-dd.
+* `priority`: **[ int ]** Priority of content, the smaller the front, default is `0`.
+* `parent`: **[ str ]** Parent content slug, default is empty str.
+* `taxonomy`: **[ dict ]** host term's slug of all supported taxonomies, such as 'cateogry: sample-term'.
+* `tags`: **[ list ]** A list of str for tags.
+* `redirect`: **[ str ]** Redirect url.
+* `template`: **[ str ]** Template name.
+* `status`: **[ int ]** Publish status, `1` - published, `0` - draft, default is published.
+
+
+*In the .md file, the attributes's first letter is capitalized, it just for good looking, will automatice lowercase after the file is loaded.*
+
+##### Content
+
+After `/* ... */` is Content, must be simple HTML with inline styles or markdown format (make sure markdown parse is turn on in config settings). Complex html with layout styles and classes is NOT recommend, those content will very difficult to maintain after sync to cloud service. Any complex content you might have to depend on theme's layout design.
+
+
+***Example***
 ```markdown
 /*
 Date: '2014-01-01'
 Priority: 0
 Status: 1
-Category: haha
+Taxonomy:
+   category: sample-term
 Template: page
 Title: Static Page
 Featured_img:
@@ -307,7 +378,15 @@ Featured_img:
 
 ```
 
-## Template context
+### Themes
+
+You can create own themes for pyco with Jinja2 template language.
+After your got a new theme, put intro themes folder and change settings in `config.py` to activated your owen theme.
+
+Learn Jinja2 from here [Jinja2 Docs](http://jinja.pocoo.org/docs/dev/templates)
+
+
+#### Template context
 
 Learn more about template context.
 

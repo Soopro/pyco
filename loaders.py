@@ -154,12 +154,12 @@ def load_curr_app(app):
 
     return {
         '_id': site.get('app_id', 'pyco_app'),
-        'slug': site.get('slug'),
-        'type': site.get('type'),
+        'slug': site.get('slug', 'pyco'),
+        'type': site.get('type', 'ws'),
         'title': site_meta.pop('title', u'Pyco'),
         'description': site_meta.pop('description', u''),
         'locale': site_meta.pop('locale', 'en_US'),
-        'content_types': site.get('content_types', {}),
+        'content_types': site.get('content_types', {"page": "Pages"}),
         'socials': site_meta.pop('socials', None),
         'translates': site_meta.pop('translates', None),
         'taxonomies': site.get('taxonomies', None),

@@ -52,11 +52,6 @@ def after_read_page_meta(page_meta, redirect):
     return
 
 
-def get_page_data(data):
-    print "get page data"
-    return
-
-
 def get_pages(pages, current_page_id):
     print "get pages"
     return
@@ -67,6 +62,6 @@ def before_render(var, template):
     return
 
 
-def after_render(output):
+def after_render(rendered):
     print "after render"
     return

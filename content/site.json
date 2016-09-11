@@ -1,5 +1,5 @@
 {
-  "id":"pyco_app",
+  "app_id":"pyco_app",
   "slug":"pyco",
   "content_types": {
     "post": "Posts",

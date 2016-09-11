@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 from helpers.common import *
 
+from utils.misc import make_dotted_dict
 from utils.request import get_param, get_args
 from utils.response import output_json
 
@@ -36,8 +37,13 @@ def get_view_metas(app_id):
     curr_app = g.curr_app
 
     theme_meta = curr_app['theme_meta']
-
     site_meta = curr_app["meta"]
+
+    config['site_meta'] = site_meta
+    config['theme_meta'] = theme_meta
+
+    run_hook("config_loaded", config=make_dotted_dict(config))
+
     site_meta['title'] = curr_app["title"]
     site_meta['description'] = curr_app["description"]
     site_meta['slug'] = curr_app['slug']
@@ -101,11 +107,7 @@ def search_view_contents(app_id):
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     paged = min(max_pages, paged)
 
-    pages = []
-    for p in results:
-        p = read_page_metas(p, theme_opts, None)
-        run_hook("get_page_data", data=p)
-        pages.append(p)
+    pages = [read_page_metas(p, theme_opts, None) for p in results]
     run_hook("get_pages", pages=pages, current_page_id=None)
 
     return {
@@ -166,7 +168,6 @@ def query_view_contents(app_id):
         p = read_page_metas(p, theme_opts, None)
         if with_content:
             p['content'] = parse_content(p_content)
-        run_hook("get_page_data", data=p)
         pages.append(p)
     run_hook("get_pages", pages=pages, current_page_id=None)
 
@@ -270,7 +271,6 @@ def get_view_content_list(app_id, type_slug=None):
         p = read_page_metas(p, theme_opts)
         if with_content:
             p['content'] = parse_content(p_content)
-        run_hook("get_page_data", data=p)
         pages.append(p)
     run_hook("get_pages", pages=pages, current_page_id=None)
 
@@ -295,7 +295,7 @@ def get_view_content(app_id, type_slug, file_slug):
 
     run_hook("before_read_page_meta", headers=content_file)
     page_meta = read_page_metas(content, theme_opts)
-    run_hook("after_read_page_meta", meta=page_meta)
+    run_hook("after_read_page_meta", meta=page_meta, redirect=None)
 
     return output(page_meta, page_content['content'])
 
