@@ -14,7 +14,7 @@ from loaders import load_config, load_plugins, load_all_files, load_curr_app
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '1', '0')
+__version_info__ = ('2', '1', '1')
 __version__ = '.'.join(__version_info__)
 
 

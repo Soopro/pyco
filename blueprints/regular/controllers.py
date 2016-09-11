@@ -311,7 +311,7 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
 
     # query side mongo
     before_pages, after_pages = query_sides_by_files(pid, attrs,
-                                                    sortby, limit, priority)
+                                                     sortby, limit, priority)
     before_pages = [read_page_metas(content_file, theme_opts)
                     for content_file in before_pages]
     after_pages = [read_page_metas(content_file, theme_opts)

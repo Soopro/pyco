@@ -12,7 +12,8 @@ def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
     # query
     files = _query(g.files, attrs)
     # sorting
-    sort_keys = make_sorts_rule(sortby, priority)
+    sort_init = [('priority', 1)] if priority else None
+    sort_keys = make_sorts_rule(sortby, sort_init)
     sorting = _sorting(files, sort_keys)
 
     limit = parse_int(limit, 1, True)
@@ -36,10 +37,11 @@ def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
     # query
     files = _query(g.files, attrs)
     # sorting
-    sort_keys = make_sorts_rule(sortby, priority)
+    sort_init = [('priority', 1)] if priority else None
+    sort_keys = make_sorts_rule(sortby, sort_init)
     sorting = _sorting(files, sort_keys)
 
-    limit = parse_int(limit, 1)
+    limit = min(parse_int(limit, 1, True), 6)
 
     if sorting:
         ids = [item['_id'] for item in sorting]
