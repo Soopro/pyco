@@ -168,11 +168,11 @@ def rendering(content_type_slug='page', file_slug='index'):
     template = {'name': page_meta.get("template")}
     run_hook("before_render", var=view_ctx, template=template)
 
-    template_file_path = get_theme_path(template['file'])
+    template_file_path = get_theme_path(template['name'])
     template_file_abs_path = get_theme_abs_path(template_file_path)
 
     if not os.path.isfile(template_file_abs_path):
-        template['file'] = None
+        template['name'] = None
         default_template = config.get('DEFAULT_TEMPLATE')
         template_file_path = get_theme_path(default_template)
 
