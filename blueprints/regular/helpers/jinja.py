@@ -8,6 +8,7 @@ import datetime
 
 from utils.validators import url_validator
 from utils.misc import (sortedby,
+                        parse_int,
                         format_date,
                         get_url_params,
                         add_url_params,
@@ -125,17 +126,30 @@ def magnet(raw_list, current, limit=1):
     }
 
 
-def straw(raw_list, value, key='id'):
-    """return a item by key/value form a list.
-    some_page = straw(pages, some_id, 'id')
+def straw(raw_list, value, key='id', nodes_key='nodes', limit=120):
+    """return a item matched with key/value form a list.
+    some_page = straw(pages, some_id, key='id', nodes_key='nodes', limit=120)
     """
     if not isinstance(key, basestring):
         key = 'id'
-    try:
-        result = [item for item in raw_list if item.get(key) == value][0]
-    except:
-        result = None
-    return result
+    if not isinstance(nodes_key, basestring):
+        nodes_key = None
+
+    limit = min(parse_int(limit), 120)
+
+    def _find(items, level=0):
+        if not isinstance(items, list) or level > 2:
+            return None
+        for item in items[:limit]:
+            if item.get(key) == value:
+                return item
+            if nodes_key:
+                node = _find(item.get(nodes_key), level + 1)
+                if node:
+                    return node
+        return None
+
+    return _find(raw_list)
 
 
 def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
