@@ -7,7 +7,11 @@ def register_blueprints(app):
     from .regular import blueprint as regular_module
     app.register_blueprint(regular_module)
 
-    # register uploads
+    # restapi
+    from .restapi import blueprint as restapi_module
+    app.register_blueprint(restapi_module, url_prefix="/app")
+
+    # uploads
     from .uploads import blueprint as uploads_module
     uploads_dir = app.config.get('UPLOADS_DIR')
     uploads_prefix = "/{}".format(uploads_dir)

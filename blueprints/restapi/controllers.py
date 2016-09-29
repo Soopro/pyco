@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from helpers.common import *
 
-from utils.misc import make_dotted_dict
+from utils.misc import make_dotted_dict, sortedby
 from utils.request import get_param, get_args
 from utils.response import output_json
 
@@ -74,6 +74,25 @@ def get_view_metas(app_id):
         "slot": ext_slots
     }
     return context
+
+
+@output_json
+def query_view_tags(app_id, type_slug=None):
+    Struct.ObjectId(app_id, "app_id")
+
+    if type_slug:
+        type_slug = process_slug(type_slug)
+        files = [f for f in g.files if f['content_type'] == type_slug]
+    else:
+        files = [f for f in g.files]
+
+    tags = {}
+    for f in files:
+        for key in f['tags']:
+            tags[key] = 1 if key not in tags else tags[key] + 1
+
+    tag_list = [{"key": k, "count": v} for k, v in tags.iteritems()]
+    return sortedby(tag_list, [('count', -1)])
 
 
 @output_json

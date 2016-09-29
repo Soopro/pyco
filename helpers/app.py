@@ -1,12 +1,13 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app
+from flask import current_app, request
 from jinja2 import Template
 from hashlib import sha1
 import os
 import re
-import json
+
+from utils.request import get_remote_addr
 
 
 def run_hook(hook_name, **references):
@@ -59,17 +60,27 @@ def helper_render_ext_slots(scripts, app):
 
 # statistic
 def helper_record_statistic(app_id, page_id):
-    return True
+    try:
+        request_remote_addr = get_remote_addr()
+        sa_mod = current_app.sa_mod
+        sa_mod.count_app(request_remote_addr,
+                         request.user_agent.string)
+        if page_id:
+            sa_mod.count_page(page_id)
+    except:
+        pass
 
 
 def helper_get_statistic(app_id, page_id=None):
+    sa_status = current_app.sa_mod.get_app()
     sa = {
-        'pv': 0,
-        'vs': 0,
-        'uv': 0,
-        'ip': 0,
+        'pv': sa_status.get("pv"),
+        'vs': sa_status.get("vs"),
+        'uv': sa_status.get("uv"),
+        'ip': sa_status.get("ip"),
     }
     if page_id:
-        sa['page'] = 0
+        sa_page_status = current_app.sa_mod.get_page(page_id)
+        sa['page'] = sa_page_status.get("pv")
 
     return sa

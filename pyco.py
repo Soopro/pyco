@@ -11,10 +11,11 @@ from utils.request import get_remote_addr
 from utils.response import make_cors_headers
 
 from loaders import load_config, load_plugins, load_all_files, load_curr_app
+from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '1', '2')
+__version_info__ = ('2', '2', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -49,6 +50,8 @@ app.json_encoder = JSONEncoder
 load_config(app)
 # plugins
 load_plugins(app)
+# analyzer
+app.sa_mod = SimpleAnalyzer()
 
 # register blueprints
 register_blueprints(app)

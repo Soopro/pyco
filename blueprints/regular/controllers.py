@@ -31,7 +31,6 @@ from .helpers.jinja import (saltshaker,
                             glue,
                             rope,
                             straw,
-                            timemachine,
                             magnet)
 
 
@@ -161,7 +160,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx["straw"] = straw
     view_ctx["rope"] = rope
     view_ctx["glue"] = glue
-    view_ctx["timemachine"] = timemachine
     view_ctx["magnet"] = magnet
 
     # template
@@ -182,6 +180,11 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     rendered = {'output': render_template(template_file_path, **view_ctx)}
     run_hook("after_render", rendered=rendered)
+
+    sa_mod = current_app.sa_mod
+    sa_mod.count_page(g.curr_page_id)
+    sa_mod.count_app(g.request_remote_addr,
+                     request.user_agent.string)
 
     return make_content_response(rendered['output'], status_code)
 

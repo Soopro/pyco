@@ -5,20 +5,22 @@ from .controllers import *
 
 urlpatterns = [
     # analytics
-    ('app/<app_id>/visit', app_visit, "PUT"),
-    ('app/<app_id>/visit/<file_id>', app_visit, "PUT"),
-    ('app/<app_id>/visit', app_visit_status, "GET"),
-    ('app/<app_id>/visit/<file_id>', app_visit_status, "GET"),
+    ('/<app_id>/visit', app_visit, "PUT"),
+    ('/<app_id>/visit/<file_id>', app_visit, "PUT"),
+    ('/<app_id>/visit', app_visit_status, "GET"),
+    ('/<app_id>/visit/<file_id>', app_visit_status, "GET"),
 
     # contents
-    ('app/<app_id>/view/metas', get_view_metas, "GET"),
-    ('app/<app_id>/view/search', search_view_contents, "POST"),
-    ('app/<app_id>/view/query', query_view_contents, "POST"),
-    ('app/<app_id>/view/query_sides', query_view_sides, "POST"),
-    ('app/<app_id>/view/content',
+    ('/<app_id>/view/metas', get_view_metas, "GET"),
+    ('/<app_id>/view/search', search_view_contents, "POST"),
+    ('/<app_id>/view/query', query_view_contents, "POST"),
+    ('/<app_id>/view/query_sides', query_view_sides, "POST"),
+    ('/<app_id>/view/tags', query_view_tags, "GET"),
+    ('/<app_id>/view/tags/<type_slug>', query_view_tags, "GET"),
+    ('/<app_id>/view/content',
         get_view_content_list, "GET"),
-    ('app/<app_id>/view/content/<type_slug>',
+    ('/<app_id>/view/content/<type_slug>',
         get_view_content_list, "GET")
-    ('app/<app_id>/view/content/<type_slug>/<file_slug>',
+    ('/<app_id>/view/content/<type_slug>/<file_slug>',
         get_view_content, "GET")
 ]
