@@ -79,6 +79,8 @@ def get_view_metas(app_id):
 @output_json
 def query_view_tags(app_id, type_slug=None):
     Struct.ObjectId(app_id, "app_id")
+    limit = get_args('limit', default=60)
+    limit = parse_int(limit, 60, True)
 
     if type_slug:
         type_slug = process_slug(type_slug)
@@ -92,7 +94,7 @@ def query_view_tags(app_id, type_slug=None):
             tags[key] = 1 if key not in tags else tags[key] + 1
 
     tag_list = [{"key": k, "count": v} for k, v in tags.iteritems()]
-    return sortedby(tag_list, [('count', -1)])
+    return sortedby(tag_list, [('count', -1)])[:limit]
 
 
 @output_json
