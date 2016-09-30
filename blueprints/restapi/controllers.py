@@ -7,13 +7,14 @@ from utils.misc import make_dotted_dict, sortedby
 from utils.request import get_param, get_args
 from utils.response import output_json
 
-from helpers.app import helper_record_statistic, helper_get_statistic
+from helpers.app import (helper_record_statistic,
+                         helper_get_statistic,
+                         helper_render_ext_slots)
 from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
                              search_by_files,
                              parse_content,
-                             helper_render_ext_slots,
                              helper_wrap_translates,
                              helper_wrap_socials,
                              helper_wrap_menu,
@@ -77,7 +78,7 @@ def get_view_metas(app_id):
 
 
 @output_json
-def query_view_tags(app_id, type_slug=None):
+def get_view_tags(app_id, type_slug=None):
     Struct.ObjectId(app_id, "app_id")
     limit = get_args('limit', default=60)
     limit = parse_int(limit, 60, True)
