@@ -63,7 +63,10 @@ class SimpleAnalyzer(object):
         }
 
     def get_page(self, page_id):
-        return self.analytics_page_data.get(page_id) or 0
+        page_view = self.analytics_page_data.get(page_id) or 0
+        return {
+            'pv': page_view
+        }
 
     def count_page(self, page_id):
         if page_id in self.analytics_page_data:
@@ -84,20 +87,20 @@ class SimpleAnalyzer(object):
             self.analytics_data["ip"] += 1
 
         if time.time() - self.period_online < self.live_mins:
-            self._append_period(self.period['vs'])
+            self._append_period(self.period['vs'], ip_user_agent)
         else:
             self.period['vs'] = []
             self.period_online = time.time()
 
         if time.time() - self.period_day < self.live_day:
-            self._append_period(self.period['uv'])
-            self._append_period(self.period['ip'])
+            self._append_period(self.period['uv'], ip_user_agent)
+            self._append_period(self.period['ip'], ip_user_agent)
         else:
             self.period['uv'] = []
             self.period['ip'] = []
             self.period_day = time.time()
 
-        self._write_data(self)
+        self._write_data()
 
     def _append_period(self, period_list, text):
         period_list.append(text)
