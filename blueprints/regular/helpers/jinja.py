@@ -17,18 +17,8 @@ from utils.misc import (sortedby,
 
 
 # filters
-def filter_thumbnail(pic_url, suffix='thumbnail'):
-    allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
-    try:
-        _ext = os.path.splitext(pic_url)[1][1:].lower()
-    except:
-        _ext = None
-
-    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
-        pair = '&' if '?' in pic_url else '?'
-        pic_url = "{}{}{}".format(pic_url, pair, suffix)
-
-    return pic_url
+def filter_thumbnail(pic_url, thumbnail=None):
+    return _get_thumbnail_src(pic_url, thumbnail)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -89,6 +79,16 @@ def filter_date_formatted(date, to_format=None):
 
     to_format = to_format or formats.get(locale) or formats.get(lang)
     return format_date(date, to_format)
+
+
+def filter_background_image(src, default=None, thumbnail=None):
+    if not src and not default:
+        return u''
+    elif not src:
+        src = default
+    if thumbnail:
+        src = _get_thumbnail_src(src, thumbnail)
+    return u'background-image:url({});'.format(src)
 
 
 # jinja helpers
@@ -269,7 +269,7 @@ def timemachine(raw_list, filed='date', precision='month',
     return ret
 
 
-# other helpers
+# helpers
 def _make_sort_keys(sort_by, priority=False):
     sort_keys = [('priority', 1)] if priority else []
 
@@ -279,3 +279,20 @@ def _make_sort_keys(sort_by, priority=False):
         sort_keys = sort_keys + [key for key in sort_by
                                  if isinstance(key, basestring)]
     return sort_keys
+
+
+def _get_thumbnail_src(pic_url, suffix=None):
+    if not suffix or not isinstance(suffix, basestring):
+        suffix = 'thumbnail'  # make sure default suffix.
+
+    allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
+    try:
+        _ext = os.path.splitext(pic_url)[1][1:].lower()
+    except:
+        _ext = None
+
+    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
+        pair = '&' if '?' in pic_url else '?'
+        pic_url = "{}{}{}".format(pic_url, pair, suffix)
+
+    return pic_url
