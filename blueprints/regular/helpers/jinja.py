@@ -101,12 +101,7 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
     else:
         pattern = None
 
-    if isinstance(data, list):
-        length = len(data)
-    elif isinstance(data, (int, float)):
-        length = int(data)
-    else:
-        length = 0
+    length = len(data) if isinstance(data, list) else parse_int(data, 0, 0)
 
     offset = int((row_columns - length * column) / 2)
     if pattern:
