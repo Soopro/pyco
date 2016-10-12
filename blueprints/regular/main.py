@@ -10,6 +10,7 @@ from utils.misc import route_inject
 from .helpers.jinja import (filter_thumbnail,
                             filter_date_formatted,
                             filter_background_image,
+                            filter_column_offset,
                             filter_url,
                             filter_path,
                             filter_args)
@@ -29,6 +30,7 @@ def before_first_request():
     current_app.jinja_env.filters['args'] = filter_args
     current_app.jinja_env.filters['date_formatted'] = filter_date_formatted
     current_app.jinja_env.filters['bg_img'] = filter_background_image
+    current_app.jinja_env.filters['col_offset'] = filter_column_offset
 
 
 @blueprint.before_request

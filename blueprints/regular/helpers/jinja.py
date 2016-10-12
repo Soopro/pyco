@@ -91,6 +91,34 @@ def filter_background_image(src, default=None, thumbnail=None):
     return u'background-image:url({});'.format(src)
 
 
+def filter_column_offset(data, pattern=None, column=4, row_columns=12):
+    row_columns = parse_int(row_columns, 12, 0)
+    column = parse_int(column, 4, True)
+
+    if isinstance(pattern, basestring):
+        if '{}' not in pattern:
+            pattern += '{}'
+    else:
+        pattern = None
+
+    if isinstance(data, list):
+        length = len(data)
+    elif isinstance(data, (int, float)):
+        length = int(data)
+    else:
+        length = 0
+
+    offset = int((row_columns - length * column) / 2)
+    if pattern:
+        if offset > 0:
+            output = pattern.format(offset)
+        else:
+            output = ''
+    else:
+        output = offset
+    return output
+
+
 # jinja helpers
 def rope(raw_list, sort_by="updated", priority=True, reverse=False):
     """return a list of sorted results.
