@@ -328,7 +328,7 @@ def get_view_sections(app_id, type_slug, file_slug):
     type_slug = process_slug(type_slug)
     file_slug = process_slug(file_slug)
 
-    curr_app = g.curr_app
+    app = g.curr_app
 
     theme_meta = curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -337,7 +337,7 @@ def get_view_sections(app_id, type_slug, file_slug):
     refs = c_file["refs"] if c_file and c_file["refs"] else []
 
     # get sections
-    results = get_content_sections(type_slug, refs)
+    results = get_content_sections(app["_id"], refs)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

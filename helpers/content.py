@@ -131,19 +131,14 @@ def parse_content(content_string):
         return content_string
 
 
-def get_content_sections(content_type, ref_slugs):
-    if not content_type or not ref_slugs:
+def get_content_sections(refs):
+    if refs:
         return []
-
-    def _matched(f):
-        return f["content_type"] == content_type and f["slug"] in ref_slugs
-
-    sec_dict = {f["slug"]: f for f in g.files if _matched(f)}
     sections = []
-    for slug in ref_slugs:
-        sec = sec_dict.get(slug)
-        if sec:
-            sections.append(sec)
+    for ref in refs:
+        content = find_content_file(ref[0], ref[1])
+        if content and content['status']:
+            sections.append(content)
     # only limit the final results, because content may not exists.
     return sections[:24]
 

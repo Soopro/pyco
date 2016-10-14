@@ -353,7 +353,7 @@ def get_sections():
     refs = curr_page["refs"] if curr_page and curr_page["refs"] else []
 
     # get sections
-    results = get_content_sections(curr_page["content_type"], refs)
+    results = get_content_sections(app["_id"], refs)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
