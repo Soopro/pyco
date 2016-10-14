@@ -134,7 +134,11 @@ def parse_content(content_string):
 def get_content_sections(content_type, ref_slugs):
     if not content_type or not ref_slugs:
         return []
-    sec_dict = {f["slug"]: f for f in g.files if f["slug"] in ref_slugs}
+
+    def _matched(f):
+        return f["content_type"] == content_type and f["slug"] in ref_slugs
+
+    sec_dict = {f["slug"]: f for f in g.files if _matched(f)}
     sections = []
     for slug in ref_slugs:
         sec = sec_dict.get(slug)

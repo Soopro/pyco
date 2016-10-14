@@ -337,7 +337,7 @@ def get_view_sections(app_id, type_slug, file_slug):
     refs = c_file["refs"] if c_file and c_file["refs"] else []
 
     # get sections
-    results = get_content_sections(c_file["content_type"], refs)
+    results = get_content_sections(type_slug, refs)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
