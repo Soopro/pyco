@@ -131,6 +131,19 @@ def parse_content(content_string):
         return content_string
 
 
+def get_content_sections(content_type, ref_slugs):
+    if not content_type or not ref_slugs:
+        return []
+    sec_dict = {f["slug"]: f for f in g.files if f["slug"] in ref_slugs}
+    sections = []
+    for slug in ref_slugs:
+        sec = sec_dict.get(slug)
+        if sec:
+            sections.append(sec)
+    # only limit the final results, because content may not exists.
+    return sections[:24]
+
+
 def get_menus(config):
     menus = config['SITE'].get("menus", {})
     base_url = config.get("BASE_URL")
@@ -195,6 +208,7 @@ def read_page_metas(page, options, current_id=None):
     data['template'] = page['template']
     data['taxonomy'] = page['taxonomy']
     data['tags'] = page['tags']
+    data['refs'] = page['refs']
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')

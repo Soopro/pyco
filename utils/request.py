@@ -22,9 +22,10 @@ def get_param(key, validator=None, required=False, default=None):
         validators = validator if isinstance(validator, list) else [validator]
 
         for vld in validators:
-            if not hasattr(vld, '__call__'):
-                continue
-            vld(value, name=key, non_empty=required)
+            try:
+                vld(value)
+            except Exception as e:
+                raise Exception('ValidationError: {}\n{}'.format(key, str(e)))
 
     return value
 

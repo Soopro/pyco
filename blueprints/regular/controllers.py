@@ -20,6 +20,7 @@ from helpers.content import (find_content_file,
                              query_by_files,
                              query_sides_by_files,
                              count_by_files,
+                             get_content_sections,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_menu,
@@ -99,7 +100,7 @@ def rendering(content_type_slug='page', file_slug='index'):
             return redirect(redirect_to["url"], code=302)
 
     view_ctx["meta"] = page_meta
-    g.curr_page_id = page_meta['id']
+    g.curr_page = page_meta
 
     # site_meta
     site_meta = curr_app["meta"]
@@ -152,6 +153,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     # query
     view_ctx["query"] = query_contents
     view_ctx["query_sides"] = query_sides
+    view_ctx['get_sections'] = get_sections
 
     # get current content type
     view_ctx["content_type"] = _get_content_type(content_type_slug)
@@ -182,7 +184,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     run_hook("after_render", rendered=rendered)
 
     sa_mod = current_app.sa_mod
-    sa_mod.count_page(g.curr_page_id)
+    sa_mod.count_page(g.curr_page["id"])
     sa_mod.count_app(g.request_remote_addr,
                      request.user_agent.string)
 
@@ -223,15 +225,19 @@ def set_multi_language(view_context, app):
 
 
 # query
-def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
-                   priority=True, with_content=False):
-    query_limit = 3
-    if g.query_count >= query_limit:
+def _query_limit(limit):
+    if g.query_count > limit:
         raise Exception('Query Overrun')
     else:
         g.query_count += 1
+    return limit - g.query_count
 
-    curr_id = g.curr_page_id
+
+def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
+                   priority=True, with_content=False):
+    remain_queries = _query_limit(3)
+
+    curr_id = g.curr_page["id"]
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
 
@@ -282,7 +288,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         "count": len(pages),
         "total_count": total_count,
         "total_pages": max_pages,
-        "_remain_queries": query_limit - g.query_count,
+        "_remain_queries": remain_queries,
     }
 
 
@@ -290,11 +296,7 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
     if not pid:
         return make_dotted_dict({})
 
-    query_limit = 3
-    if g.query_count >= query_limit:
-        raise Exception('Query Overrun')
-    else:
-        g.query_count += 1
+    remain_queries = _query_limit(3)
 
     app = g.curr_app
     theme_opts = app['theme_meta'].get('options', {})
@@ -320,6 +322,9 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
     after_pages = [read_page_metas(content_file, theme_opts)
                    for content_file in after_pages]
 
+    run_hook("get_pages", pages=before_pages, current_page_id=None)
+    run_hook("get_pages", pages=after_pages, current_page_id=None)
+
     make_dotted_dict(before_pages)
     make_dotted_dict(after_pages)
 
@@ -334,5 +339,26 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
         "after": after,
         "entires_before": before_pages,
         "entires_after": after_pages,
-        "_remain_queries": query_limit - g.query_count,
+        "_remain_queries": remain_queries,
     }
+
+
+def get_sections():
+    _query_limit(3)
+
+    app = g.curr_app
+    theme_opts = app['theme_meta'].get('options', {})
+    curr_page = g.curr_page
+
+    refs = curr_page["refs"] if curr_page and curr_page["refs"] else []
+
+    # get sections
+    results = get_content_sections(curr_page["content_type"], refs)
+    pages = []
+    for p in results:
+        p_content = p.pop('content', u'')
+        p = read_page_metas(p, theme_opts)
+        p["content"] = parse_content(p_content)
+        pages.append(p)
+    run_hook("get_pages", pages=pages, current_page_id=None)
+    return make_dotted_dict(pages)

@@ -14,6 +14,7 @@ from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
                              search_by_files,
+                             get_content_sections,
                              parse_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
@@ -79,7 +80,6 @@ def get_view_metas(app_id):
 
 @output_json
 def get_view_tags(app_id, type_slug=None):
-    Struct.ObjectId(app_id, "app_id")
     limit = get_args('limit', default=60)
     limit = parse_int(limit, 60, True)
 
@@ -95,17 +95,19 @@ def get_view_tags(app_id, type_slug=None):
             tags[key] = 1 if key not in tags else tags[key] + 1
 
     tag_list = [{"key": k, "count": v} for k, v in tags.iteritems()]
-    return sortedby(tag_list, [('count', -1)])[:limit]
+    results = sortedby(tag_list, [('count', -1)])[:limit]
+
+    return results
 
 
 @output_json
 def search_view_contents(app_id):
-    keywords = get_param('keywords', Struct.List, default=[])
-    content_type = get_param('content_type', Struct.Attr, default=None)
-    attrs = get_param('attrs', Struct.List, default=["title"])
-    use_tags = get_param('use_tags', Struct.Bool, default=True)
-    perpage = get_param('perpage', Struct.Int, default=0)
-    paged = get_param('paged', Struct.Int, default=0)
+    keywords = get_param('keywords', list, default=[])
+    content_type = get_param('content_type', unicode, default=None)
+    attrs = get_param('attrs', list, default=["title"])
+    use_tags = get_param('use_tags', bool, default=True)
+    perpage = get_param('perpage', int, default=0)
+    paged = get_param('paged', int, default=0)
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
@@ -143,12 +145,12 @@ def search_view_contents(app_id):
 
 @output_json
 def query_view_contents(app_id):
-    attrs = get_param('attrs', Struct.List, False, [])
-    sortby = get_param('sortby', Struct.List, False, [])
-    perpage = get_param('perpage', Struct.Int, False, 1)
-    paged = get_param('paged', Struct.Int, False, 0)
-    priority = get_param('priority', Struct.Bool, False, True)
-    with_content = get_param('with_content', Struct.Bool, False, False)
+    attrs = get_param('attrs', list, False, [])
+    sortby = get_param('sortby', list, False, [])
+    perpage = get_param('perpage', int, False, 1)
+    paged = get_param('paged', int, False, 0)
+    priority = get_param('priority', bool, False, True)
+    with_content = get_param('with_content', bool, False, False)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -204,11 +206,11 @@ def query_view_contents(app_id):
 
 @output_json
 def query_view_sides(app_id):
-    pid = get_param('pid', Struct.ObjectId, True)
-    attrs = get_param('attrs', Struct.List, False, [])
-    sortby = get_param('sortby', Struct.List, False, [])
-    limit = get_param('perpage', Struct.Int, False, 1)
-    priority = get_param('priority', Struct.Bool, False, True)
+    pid = get_param('pid', unicode, True)
+    attrs = get_param('attrs', list, False, [])
+    sortby = get_param('sortby', list, False, [])
+    limit = get_param('perpage', int, False, 1)
+    priority = get_param('priority', bool, False, True)
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
@@ -233,6 +235,9 @@ def query_view_sides(app_id):
     after_pages = [read_page_metas(content_file, theme_opts)
                    for content_file in after_pages]
 
+    run_hook("get_pages", pages=before_pages, current_page_id=None)
+    run_hook("get_pages", pages=after_pages, current_page_id=None)
+
     before = before_pages[-1] if before_pages else None
     after = after_pages[0] if after_pages else None
 
@@ -249,10 +254,8 @@ def get_view_content_list(app_id, type_slug=None):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
-    with_content = get_args('with_content', default=False)
     priority = get_args('priority', default=True)
 
-    with_content = bool(with_content)
     priority = bool(priority)
 
     # get contents
@@ -289,10 +292,8 @@ def get_view_content_list(app_id, type_slug=None):
 
     pages = []
     for p in results:
-        p_content = p.pop('content', u'')
+        p.pop('content', u'')
         p = read_page_metas(p, theme_opts)
-        if with_content:
-            p['content'] = parse_content(p_content)
         pages.append(p)
     run_hook("get_pages", pages=pages, current_page_id=None)
 
@@ -320,6 +321,32 @@ def get_view_content(app_id, type_slug, file_slug):
     run_hook("after_read_page_meta", meta=page_meta, redirect=None)
 
     return output(page_meta, page_content['content'])
+
+
+@output_json
+def get_view_sections(app_id, type_slug, file_slug):
+    type_slug = process_slug(type_slug)
+    file_slug = process_slug(file_slug)
+
+    curr_app = g.curr_app
+
+    theme_meta = curr_app['theme_meta']
+    theme_opts = theme_meta.get('options', {})
+
+    c_file = find_content_file(type_slug, file_slug)
+    refs = c_file["refs"] if c_file and c_file["refs"] else []
+
+    # get sections
+    results = get_content_sections(c_file["content_type"], refs)
+    pages = []
+    for p in results:
+        p_content = p.pop('content', u'')
+        p = read_page_metas(p, theme_opts)
+        p["content"] = parse_content(p_content)
+        pages.append(p)
+    run_hook("get_pages", pages=pages, current_page_id=None)
+
+    return pages
 
 
 # helpers

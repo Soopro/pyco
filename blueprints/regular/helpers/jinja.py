@@ -86,8 +86,6 @@ def filter_background_image(src, default=None, thumbnail=None):
         return u''
     elif not src:
         src = default
-    if thumbnail:
-        src = _get_thumbnail_src(src, thumbnail)
     return u'background-image:url({});'.format(src)
 
 

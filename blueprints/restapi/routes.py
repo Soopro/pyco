@@ -12,13 +12,14 @@ urlpatterns = [
 
     # contents
     ('/<app_id>/view/metas', get_view_metas, "GET"),
-    ('/<app_id>/view/search', search_view_contents, "POST"),
-    ('/<app_id>/view/query', query_view_contents, "POST"),
-    ('/<app_id>/view/query_sides', query_view_sides, "POST"),
     ('/<app_id>/view/tags', get_view_tags, "GET"),
-    ('/<app_id>/view/tags/<type_slug>', get_view_tags, "GET"),
     ('/<app_id>/view/content', get_view_content_list, "GET"),
     ('/<app_id>/view/content/<type_slug>', get_view_content_list, "GET"),
     ('/<app_id>/view/content/<type_slug>/<file_slug>',
-        get_view_content, "GET")
+        get_view_content, "GET"),
+    ('/<app_id>/view/content/<type_slug>/<file_slug>/sections',
+        get_view_sections, "GET"),
+    ('/<app_id>/view/search', search_view_contents, "POST"),
+    ('/<app_id>/view/query', query_view_contents, "POST"),
+    ('/<app_id>/view/query_sides', query_view_sides, "POST"),
 ]
