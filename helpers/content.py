@@ -132,7 +132,7 @@ def parse_content(content_string):
 
 
 def get_content_sections(refs):
-    if refs:
+    if not refs:
         return []
     sections = []
     for ref in refs:
