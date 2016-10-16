@@ -14,7 +14,9 @@ from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
                              search_by_files,
-                             get_content_sections,
+                             get_content_refs,
+                             find_content_file,
+                             find_content_file_by_id,
                              parse_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
@@ -324,29 +326,31 @@ def get_view_content(app_id, type_slug, file_slug):
 
 
 @output_json
-def get_view_sections(app_id, type_slug, file_slug):
-    type_slug = process_slug(type_slug)
-    file_slug = process_slug(file_slug)
+def query_view_refs(app_id):
+    pid = get_param('pid', unicode, True)
 
-    app = g.curr_app
-
+    curr_app = g.curr_app
     theme_meta = curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
 
-    c_file = find_content_file(type_slug, file_slug)
+    c_file = find_content_file_by_id(pid)
     refs = c_file["refs"] if c_file and c_file["refs"] else []
 
     # get sections
-    results = get_content_sections(app["_id"], refs)
+    results = get_content_refs(refs)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
         p = read_page_metas(p, theme_opts)
         p["content"] = parse_content(p_content)
         pages.append(p)
+
     run_hook("get_pages", pages=pages, current_page_id=None)
 
-    return pages
+    return {
+        "contents": pages,
+        "count": len(pages)
+    }
 
 
 # helpers

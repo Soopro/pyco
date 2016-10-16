@@ -113,6 +113,15 @@ def search_by_files(keywords, content_type=None, attrs=None,
     return results[offset:offset + limit], len(results)
 
 
+def find_content_file_by_id(file_id):
+    if not file_id:
+        return None
+    for f in g.files:
+        if f['_id'] == file_id:
+            return f
+    return None
+
+
 def find_content_file(type_slug, file_slug):
     if not type_slug:
         type_slug = 'page'
@@ -131,7 +140,7 @@ def parse_content(content_string):
         return content_string
 
 
-def get_content_sections(refs):
+def get_content_refs(refs):
     if not refs:
         return []
     sections = []
