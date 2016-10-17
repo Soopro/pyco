@@ -146,9 +146,9 @@ def get_content_refs(content):
     content_refs = []
     sources = []
     for ref in content["refs"]:
-        content = find_content_file(content["content_type"], ref)
-        if content and content['status']:
-            content_refs.append(content)
+        _file = find_content_file(content["content_type"], ref)
+        if _file and _file['status']:
+            content_refs.append(_file)
             sources.append(ref)
     # only limit the final results, because content may not exists.
     return content_refs[:24], sources[:24]
