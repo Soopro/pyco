@@ -333,11 +333,10 @@ def query_view_refs(app_id):
     theme_meta = curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
 
-    c_file = find_content_file_by_id(pid)
-    refs = c_file["refs"] if c_file and c_file["refs"] else []
+    content = find_content_file_by_id(pid)
 
-    # get sections
-    results = get_content_refs(refs)
+    # get content refs
+    results = get_content_refs(content)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

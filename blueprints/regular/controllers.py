@@ -350,10 +350,9 @@ def query_refs(pid=None):
     theme_opts = curr_app['theme_meta'].get('options', {})
 
     content = find_content_file_by_id(file_id)
-    refs = content["refs"] if content and content["refs"] else []
 
-    # get sections
-    results = get_content_refs(refs)
+    # get content refs
+    results = get_content_refs(content)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

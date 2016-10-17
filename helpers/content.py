@@ -140,16 +140,16 @@ def parse_content(content_string):
         return content_string
 
 
-def get_content_refs(refs):
-    if not refs:
+def get_content_refs(content):
+    if not content or not content["refs"]:
         return []
-    sections = []
-    for ref in refs:
-        content = find_content_file(ref[0], ref[1])
+    content_refs = []
+    for ref in content["refs"]:
+        content = find_content_file(content["content_type"], ref)
         if content and content['status']:
-            sections.append(content)
+            content_refs.append(content)
     # only limit the final results, because content may not exists.
-    return sections[:24]
+    return content_refs[:24]
 
 
 def get_menus(config):
