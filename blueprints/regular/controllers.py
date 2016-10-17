@@ -366,5 +366,6 @@ def query_refs(pid=None):
         "contents": pages,
         "sources": sources,
         "count": len(pages),
+        "limit": 24,
         "_remain_queries": remain_queries
     }

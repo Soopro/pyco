@@ -349,7 +349,8 @@ def query_view_refs(app_id):
     return {
         "contents": pages,
         "sources": sources,
-        "count": len(pages)
+        "count": len(pages),
+        "limit": 24
     }
 
 

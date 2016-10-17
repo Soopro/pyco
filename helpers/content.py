@@ -142,7 +142,7 @@ def parse_content(content_string):
 
 def get_content_refs(content):
     if not content or not content["refs"]:
-        return []
+        return [], []
     content_refs = []
     sources = []
     for ref in content["refs"]:
