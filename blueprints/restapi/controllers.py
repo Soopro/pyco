@@ -336,7 +336,7 @@ def query_view_refs(app_id):
     content = find_content_file_by_id(pid)
 
     # get content refs
-    results = get_content_refs(content)
+    results, sources = get_content_refs(content)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
@@ -348,6 +348,7 @@ def query_view_refs(app_id):
 
     return {
         "contents": pages,
+        "sources": sources,
         "count": len(pages)
     }
 

@@ -144,12 +144,14 @@ def get_content_refs(content):
     if not content or not content["refs"]:
         return []
     content_refs = []
+    sources = []
     for ref in content["refs"]:
         content = find_content_file(content["content_type"], ref)
         if content and content['status']:
             content_refs.append(content)
+            sources.append(ref)
     # only limit the final results, because content may not exists.
-    return content_refs[:24]
+    return content_refs[:24], sources[:24]
 
 
 def get_menus(config):

@@ -352,7 +352,7 @@ def query_refs(pid=None):
     content = find_content_file_by_id(file_id)
 
     # get content refs
-    results = get_content_refs(content)
+    results, sources = get_content_refs(content)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
@@ -362,9 +362,9 @@ def query_refs(pid=None):
 
     run_hook("get_pages", pages=pages, current_page_id=None)
     pages = make_dotted_dict(pages)
-
     return {
         "contents": pages,
+        "sources": sources,
         "count": len(pages),
         "_remain_queries": remain_queries
     }
