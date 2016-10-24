@@ -91,8 +91,8 @@ def get_segment_contents(app):
     if not app["segments"]:
         return []
     tmpls = _segment_templates(app)
-    seg_files = [f for f in g.files
-                 if f["content_type"] == 'page' and f in app["segments"]]
+    seg_files = [f for f in g.files if f["content_type"] == 'page' and
+                 f["slug"] in app["segments"]]
     seg_dict = {f["slug"]: f for f in seg_files if f["template"] in tmpls}
     segment_contents = []
     segment_slugs = []
@@ -104,5 +104,5 @@ def get_segment_contents(app):
 
 
 def _segment_templates(app):
-    tmpls = app["theme_meta"].get("templates").get('templates', [])
+    tmpls = app["theme_meta"].get('templates', [])
     return [tmpl.replace('^', '') for tmpl in tmpls if tmpl.startswith('^')]
