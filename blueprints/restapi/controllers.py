@@ -9,14 +9,13 @@ from utils.response import output_json
 
 from helpers.app import (helper_record_statistic,
                          helper_get_statistic,
-                         helper_render_ext_slots)
+                         helper_render_ext_slots,
+                         get_segment_contents)
 from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
                              search_by_files,
-                             get_content_refs,
                              find_content_file,
-                             find_content_file_by_id,
                              parse_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
@@ -326,17 +325,11 @@ def get_view_content(app_id, type_slug, file_slug):
 
 
 @output_json
-def query_view_refs(app_id):
-    pid = get_param('pid', unicode, True)
-
-    curr_app = g.curr_app
-    theme_meta = curr_app['theme_meta']
-    theme_opts = theme_meta.get('options', {})
-
-    content = find_content_file_by_id(pid)
-
-    # get content refs
-    results, sources = get_content_refs(content)
+def get_view_segments(app_id):
+    app = g.curr_app
+    theme_opts = app['theme_meta'].get('options', {})
+    # get segment contents
+    results = get_segment_contents(app)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
@@ -346,12 +339,7 @@ def query_view_refs(app_id):
 
     run_hook("get_pages", pages=pages, current_page_id=None)
 
-    return {
-        "contents": pages,
-        "sources": sources,
-        "count": len(pages),
-        "limit": 24
-    }
+    return pages
 
 
 # helpers

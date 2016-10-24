@@ -140,20 +140,6 @@ def parse_content(content_string):
         return content_string
 
 
-def get_content_refs(content):
-    if not content or not content["refs"]:
-        return [], []
-    content_refs = []
-    sources = []
-    for ref in content["refs"]:
-        _file = find_content_file(content["content_type"], ref)
-        if _file and _file['status']:
-            content_refs.append(_file)
-            sources.append(ref)
-    # only limit the final results, because content may not exists.
-    return content_refs[:24], sources[:24]
-
-
 def get_menus(config):
     menus = config['SITE'].get("menus", {})
     base_url = config.get("BASE_URL")
@@ -218,7 +204,6 @@ def read_page_metas(page, options, current_id=None):
     data['template'] = page['template']
     data['taxonomy'] = page['taxonomy']
     data['tags'] = page['tags']
-    data['refs'] = page['refs']
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')

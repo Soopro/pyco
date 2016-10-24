@@ -17,7 +17,7 @@ urlpatterns = [
     ('/<app_id>/view/content/<type_slug>', get_view_content_list, "GET"),
     ('/<app_id>/view/content/<type_slug>/<file_slug>',
         get_view_content, "GET"),
-    ('/<app_id>/view/refs', query_view_refs, "POST"),
+    ('/<app_id>/view/segments', get_view_segments, "GET"),
     ('/<app_id>/view/search', search_view_contents, "POST"),
     ('/<app_id>/view/query', query_view_contents, "POST"),
     ('/<app_id>/view/query_sides', query_view_sides, "POST"),

@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, request
+from flask import current_app, g, request
 from jinja2 import Template
 from hashlib import sha1
 import os
@@ -84,3 +84,25 @@ def helper_get_statistic(app_id, page_id=None):
         sa['page'] = sa_page_status.get("pv")
 
     return sa
+
+
+# segments
+def get_segment_contents(app):
+    if not app["segments"]:
+        return []
+    tmpls = _segment_templates(app)
+    seg_files = [f for f in g.files
+                 if f["content_type"] == 'page' and f in app["segments"]]
+    seg_dict = {f["slug"]: f for f in seg_files if f["template"] in tmpls}
+    segment_contents = []
+    segment_slugs = []
+    for seg in app["segments"]:
+        if seg in seg_dict and seg not in segment_slugs:
+            segment_contents.append(seg_dict[seg])
+            segment_slugs.append(seg)
+    return segment_contents
+
+
+def _segment_templates(app):
+    tmpls = app["theme_meta"].get("templates").get('templates', [])
+    return [tmpl.replace('^', '') for tmpl in tmpls if tmpl.startswith('^')]

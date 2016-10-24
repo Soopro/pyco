@@ -15,13 +15,12 @@ from helpers.app import (run_hook,
                          helper_redirect_url,
                          helper_render_ext_slots,
                          get_theme_path,
-                         get_theme_abs_path)
+                         get_theme_abs_path,
+                         get_segment_contents)
 from helpers.content import (find_content_file,
                              query_by_files,
                              query_sides_by_files,
                              count_by_files,
-                             get_content_refs,
-                             find_content_file_by_id,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_menu,
@@ -154,7 +153,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     # query
     view_ctx["query"] = query_contents
     view_ctx["query_sides"] = query_sides
-    view_ctx['query_refs'] = query_refs
+    view_ctx['segments'] = get_segments
 
     # get current content type
     view_ctx["content_type"] = _get_content_type(content_type_slug)
@@ -342,17 +341,13 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
     }
 
 
-def query_refs(pid=None):
-    remain_queries = _query_limit(3)
-
-    file_id = pid or g.curr_page_id
-    curr_app = g.curr_app
-    theme_opts = curr_app['theme_meta'].get('options', {})
-
-    content = find_content_file_by_id(file_id)
-
-    # get content refs
-    results, sources = get_content_refs(content)
+def get_segments():
+    if 'segments' in g:
+        return g.segments
+    app = g.curr_app
+    theme_opts = app['theme_meta'].get('options', {})
+    # get segment contents
+    results = get_segment_contents(app)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
@@ -361,11 +356,6 @@ def query_refs(pid=None):
         pages.append(p)
 
     run_hook("get_pages", pages=pages, current_page_id=None)
-    pages = make_dotted_dict(pages)
-    return {
-        "contents": pages,
-        "sources": sources,
-        "count": len(pages),
-        "limit": 24,
-        "_remain_queries": remain_queries
-    }
+    g.segments = make_dotted_dict(pages)
+
+    return g.segments

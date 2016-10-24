@@ -121,7 +121,7 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
 
 1. `config_loaded(config)`: While site date, config, theme_meta loaded.
     * `config`: **[ dict ]** read-only. include `config settings`, `theme_meta` and `site_meta`.
-    
+
 2. `request_url(request)`: While the request is confirmed.
     * `request`: **[ dict ]** a flask request object.
 
@@ -129,7 +129,7 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
     * `path`: **[ dict ]**
       1. `content_type`: **[ str ]** content type slug.
       2. `slug`: **[ str ]** file slug
-      
+
 4. `after_load_content(path, file)`: After content loaded.
     * `path`: **[ dict ]**
       1. `content_type`: **[ str ]** content type slug.
@@ -150,7 +150,7 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
 7. `before_parse_content(content)`: Before parse the content.
     * `content`: **[ dict ]**
       1. `content`: raw content string.
-      
+
 8. `after_parse_content(content)`: After content parsed.
     * `content`: **[ dict ]**
       1. `content`: parsed content string.
@@ -170,8 +170,8 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
     * `var`: **[ dict ]** context for the rendering.
     * `template`: **[ dict ]** template information.
       1. `name`: **[ str ]** template name.
-    
-    
+
+
 13. `after_render(rendered)`: After render (not support restapi).
     * `rendered`: **[ dict ]** rendered output.
       1. `output`: **[ str ]** the content return to browser.
@@ -182,7 +182,7 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
 
 ### Manage Content
 
-Pyco is flat file CMS, there is no database. All content host as `.md` markdown file in `content` folder. 
+Pyco is flat file CMS, there is no database. All content host as `.md` markdown file in `content` folder.
 
 The type of contents is base on folder name. The files in the root of `content` folder is static page type, call `page`. Add other content types just create a folder then put `.md` inside, the folder name will be `slug` of this content type.
 
@@ -198,7 +198,7 @@ Global content data for whole site. some data is simulation for cloud service, i
 
 * `app_id`: **[ str ]** the app id, simulation an real `app_id`.
 
-* `slug`: **[ str ]** site slug, simulation app slug. 
+* `slug`: **[ str ]** site slug, simulation app slug.
 
 * `type`: **[ str ]** site type, simulation app type.
 
@@ -252,6 +252,10 @@ Global content data for whole site. some data is simulation for cloud service, i
        "en_US":{"name":"English","url":"http://....."}
     }
     ```
+  * `segments`: **[ list ]** Segment content slugs. max is 24.
+    ```json
+    ['content-slug-1', 'content-slug-2']
+    ```
 
 
 ***Example***
@@ -287,7 +291,7 @@ Global content data for whole site. some data is simulation for cloud service, i
       "title": "Category",
       "content_types": ["post"],
       "terms": [
-        {"slug": "food", "title": "Food", 
+        {"slug": "food", "title": "Food",
          "meta": {"pic": "","parent": ""}, "priority": 0},
         {"slug": "book", "title": "Book",
          "meta": {"pic": "","parent": ""}, "priority": 0}
@@ -327,7 +331,7 @@ The default content type is `page`, every `.md` in root of `content` folder is `
 
 Each content file `.md`, separated with 2 parts, `meta` and `content`.
 
-Pyco also support `shortcode`. `shortcode` is for generation dynamic value in your contents, must exactly follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` to `&#37;`. You have to quote it while using in `meta`, such as `'[%shortcode%]/your_pic.jpg'` because that's YAML. 
+Pyco also support `shortcode`. `shortcode` is for generation dynamic value in your contents, must exactly follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` to `&#37;`. You have to quote it while using in `meta`, such as `'[%shortcode%]/your_pic.jpg'` because that's YAML.
 
 * `[%uploads%]`: A shortcode for uploads url.
 

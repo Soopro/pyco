@@ -120,7 +120,6 @@ def load_all_files(app, curr_app):
             'meta': meta,
             'excerpt': _make_excerpt(content_string),
             'content': content_string,
-            'refs': meta.pop('refs', []),
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
         }
@@ -167,6 +166,7 @@ def load_curr_app(app):
         'menus': site.get('menus', None),
         'slots': site.get('slots', {}),
         'meta': site_meta,
+        'segments': site.get('segments', []),
         'theme_meta': theme_meta
     }
 
