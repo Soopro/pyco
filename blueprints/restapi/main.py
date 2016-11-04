@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 from flask import Blueprint, current_app
+import traceback
 
 from utils.misc import route_inject
 from utils.response import make_json_response
@@ -22,5 +23,9 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    current_app.logger.error(err)
+    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
+    current_app.logger.error(err_msg)
+    err = {
+        "errmsg": repr(err)
+    }
     return make_json_response(err, 500)

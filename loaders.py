@@ -61,6 +61,9 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("STRUCTURE_FIELD_KEYS", [])
     app.config.setdefault("SHORT_FIELD_KEYS", {})
 
+    app.config.setdefault("MAXIMUM_QUERY", 60)
+    app.config.setdefault("MAXIMUM_INTACT_QUERY", 60)
+
 
 def load_plugins(app):
     plugins = app.config.get("PLUGINS")

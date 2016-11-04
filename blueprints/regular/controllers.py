@@ -169,12 +169,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     run_hook("before_render", var=view_ctx, template=template)
 
     template_file_path = get_theme_path(template['name'])
-    template_file_abs_path = get_theme_abs_path(template_file_path)
-
-    if not os.path.isfile(template_file_abs_path):
-        template['name'] = None
-        default_template = config.get('DEFAULT_TEMPLATE')
-        template_file_path = get_theme_path(default_template)
 
     # make dotted able
     for k, v in view_ctx.iteritems():
@@ -259,8 +253,11 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     paged = parse_int(paged, 1, True)
 
     if with_content:
-        # max 24 is returned while use with_content
-        perpage = max(perpage, 24)
+        max_perpage = current_app.config.get('MAXIMUM_INTACT_QUERY')
+    else:
+        max_perpage = current_app.config.get('MAXIMUM_QUERY')
+
+    perpage = min(perpage, max_perpage)
 
     # position
     total_count = count_by_files(attrs)
@@ -284,6 +281,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
 
     return {
         "contents": pages,
+        "perpage": perpage,
         "paged": paged,
         "count": len(pages),
         "total_count": total_count,

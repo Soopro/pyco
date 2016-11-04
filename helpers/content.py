@@ -140,50 +140,6 @@ def parse_content(content_string):
         return content_string
 
 
-def get_menus(config):
-    menus = config['SITE'].get("menus", {})
-    base_url = config.get("BASE_URL")
-
-    def process_menu_url(menu):
-        for item in menu:
-            link = item.get("link", "")
-            if not link or url_validator(link):
-                item["url"] = link
-            elif link.startswith('/'):
-                item["url"] = os.path.join(base_url, link.strip('/'))
-            else:
-                item["url"] = link.rstrip('/')
-            item["nodes"] = process_menu_url(item.get("nodes", []))
-        return menu
-
-    for menu in menus:
-        menus[menu] = process_menu_url(menus[menu])
-    return menus
-
-
-def get_taxonomies(config):
-    taxs = config['SITE'].get("taxonomies", {})
-    tax_dict = {}
-    for k, v in taxs.iteritems():
-        tax_dict[k] = {
-            "title": v.get("title"),
-            "slug": k,
-            "content_types": v.get("content_types"),
-            "terms": [
-                {
-                    "key": x.get("key", u''),
-                    "title": x.get("title", u''),
-                    "class": x.get("class", u''),
-                    "meta": x.get("meta", {}),
-                    "nodes": x.get("nodes", []),
-                }
-                for x in v.get("terms", [])
-            ]
-        }
-
-    return tax_dict
-
-
 def read_page_metas(page, options, current_id=None):
     data = dict()
     meta = page.get("meta")
@@ -364,6 +320,9 @@ def _query(files, attrs):
     SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
     STRUCTURE_FIELD_KEYS = current_app.config.get('STRUCTURE_FIELD_KEYS')
     INVISIBLE_SLUGS = current_app.config.get('INVISIBLE_SLUGS')
+
+    if isinstance(attrs, (basestring, dict)):
+        attrs = [attrs]
 
     for attr in attrs[:5]:  # max fields key is 5
         opposite = False

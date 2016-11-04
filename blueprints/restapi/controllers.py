@@ -1,19 +1,25 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from helpers.common import *
+from flask import current_app, g
+import math
 
-from utils.misc import make_dotted_dict, sortedby
+from utils.misc import (sortedby,
+                        parse_int,
+                        process_slug,
+                        make_dotted_dict)
 from utils.request import get_param, get_args
 from utils.response import output_json
 
-from helpers.app import (helper_record_statistic,
+from helpers.app import (run_hook,
+                         helper_record_statistic,
                          helper_get_statistic,
                          helper_render_ext_slots,
                          get_segment_contents)
 from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
+                             count_by_files,
                              search_by_files,
                              find_content_file,
                              parse_content,
@@ -115,8 +121,7 @@ def search_view_contents(app_id):
     if not perpage:
         perpage = theme_opts.get('perpage')
 
-    perpage = parse_int(perpage, 12, True)
-    paged = parse_int(paged, 1, True)
+    perpage, paged = _safe_paging(perpage, paged)
 
     limit = perpage
     offset = max(perpage * (paged - 1), 0)
@@ -137,6 +142,7 @@ def search_view_contents(app_id):
 
     return {
         "contents": pages,
+        "perpage": perpage,
         "paged": paged,
         "count": len(results),
         "total_pages": max_pages,
@@ -170,12 +176,7 @@ def query_view_contents(app_id):
     if not perpage:
         perpage = theme_opts.get('perpage')
 
-    perpage = parse_int(perpage, 12, True)
-    paged = parse_int(paged, 1, True)
-
-    if with_content:
-        # max 24 is returned while use with_content
-        perpage = max(perpage, 24)
+    perpage, paged = _safe_paging(perpage, paged, with_content)
 
     # position
     total_count = count_by_files(attrs)
@@ -198,6 +199,7 @@ def query_view_contents(app_id):
 
     return {
         "contents": pages,
+        "perpage": perpage,
         "paged": paged,
         "count": len(pages),
         "total_count": total_count,
@@ -259,6 +261,8 @@ def get_view_content_list(app_id, type_slug=None):
 
     priority = bool(priority)
 
+    theme_opts = g.curr_app['theme_meta'].get('options', {})
+
     # get contents
     attrs = {'content_type': process_slug(type_slug)} if type_slug else None
     # set default params
@@ -272,12 +276,7 @@ def get_view_content_list(app_id, type_slug=None):
     if not perpage:
         perpage = theme_opts.get('perpage')
 
-    perpage = parse_int(perpage, 12, True)
-    paged = parse_int(paged, 1, True)
-
-    if with_content:
-        # max 24 is returned while use with_content
-        perpage = min(perpage, 24)
+    perpage, paged = _safe_paging(perpage, paged)
 
     # position
     total_count = count_by_files(attrs)
@@ -299,7 +298,7 @@ def get_view_content_list(app_id, type_slug=None):
     run_hook("get_pages", pages=pages, current_page_id=None)
 
     for p in pages:
-        _add_pagination(p, curr_index, total_count, paged, max_pages)
+        _add_cursor(p, curr_index, total_count, perpage, paged, max_pages)
         curr_index += 1
 
     return pages
@@ -343,16 +342,27 @@ def get_view_segments(app_id):
 
 
 # helpers
-def _add_pagination(content, index, total_count, paged, max_pages):
-    content['pagination'] = {
+def _add_cursor(content, index, total_count, perpage, paged, max_pages):
+    content['cursor'] = {
         'num': index + 1,
         'index': index,
+        'perpage': perpage,
         'paged': paged,
         'total_pages': max_pages,
         'total_count': total_count,
         'has_more': total_count - 1 > index,
     }
     return content
+
+
+def _safe_paging(perpage, paged, with_content=False):
+    if with_content:
+        max_perpage = current_app.config.get('MAXIMUM_INTACT_QUERY')
+    else:
+        max_perpage = current_app.config.get('MAXIMUM_QUERY')
+    perpage = parse_int(perpage, 12, True)
+    paged = parse_int(paged, 1, True)
+    return min(perpage, max_perpage), paged
 
 
 # outputs
