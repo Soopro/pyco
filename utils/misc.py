@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import secure_filename
-from bson import ObjectId
 from slugify import slugify
 from datetime import datetime
 from functools import cmp_to_key
@@ -270,10 +269,6 @@ def version_list_to_str(list_version):
     except:
         version = None
     return version
-
-
-def is_ObjectId(_id):
-    return _id and ObjectId.is_valid(_id)
 
 
 def safe_filename(filename, mimetype=None):
