@@ -118,7 +118,7 @@ def load_all_files(app, curr_app):
             'taxonomy': meta.pop('taxonomy', {}),
             'tags': meta.pop('tags', []),
             'redirect': meta.pop('redirect', u''),
-            'template': meta.pop('template', u''),
+            'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
             'excerpt': _make_excerpt(content_string),
