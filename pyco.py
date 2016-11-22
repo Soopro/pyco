@@ -7,7 +7,7 @@ import sys
 from flask import Flask, current_app, request, make_response, g
 from flask.json import JSONEncoder
 
-from utils.request import get_remote_addr, get_request_args
+from utils.request import get_remote_addr, get_request_url
 from utils.response import make_cors_headers
 
 from loaders import load_config, load_plugins, load_all_files, load_curr_app
@@ -15,7 +15,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '5', '3')
+__version_info__ = ('2', '5', '4')
 __version__ = '.'.join(__version_info__)
 
 
@@ -93,7 +93,7 @@ def app_before_request():
     g.request_remote_addr = get_remote_addr()
     g.request_path = request.path
 
-    g.request_url = get_request_args(g.curr_base_url, g.request_path)
+    g.request_url = get_request_url(g.curr_base_url, g.request_path)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
     g.query_count = 0

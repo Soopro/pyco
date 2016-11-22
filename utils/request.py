@@ -78,7 +78,7 @@ def get_remote_addr():
     return ip or request.remote_addr
 
 
-def get_request_args(base_url, path):
+def get_request_url(base_url, path):
     if '?' in request.url:
         args = request.url.split('?', 1)[1]
         return "{}{}?{}".format(base_url, path, args)
