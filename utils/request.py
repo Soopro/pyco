@@ -76,3 +76,11 @@ def get_remote_addr():
     else:
         ip = request.headers.get('X-Real-IP')
     return ip or request.remote_addr
+
+
+def get_request_args(base_url, path):
+    if '?' in request.url:
+        args = request.url.split('?', 1)[1]
+        return "{}{}?{}".format(base_url, path, args)
+    else:
+        return "{}{}".format(base_url, path)
