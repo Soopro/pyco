@@ -3,6 +3,7 @@ from __future__ import absolute_import
 
 import os
 import sys
+from urlparse import urlparse
 
 from flask import Flask, current_app, request, make_response, g
 from flask.json import JSONEncoder
@@ -15,7 +16,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '5', '1')
+__version_info__ = ('2', '5', '2')
 __version__ = '.'.join(__version_info__)
 
 
@@ -80,6 +81,9 @@ def app_before_request():
     elif request.path.strip("/") in SYS_ICON_LIST:
         return make_response('', 204)  # for browser default icons
 
+    if request.endpoint == 'uploads.get_uploads':
+        return
+
     base_url = current_app.config.get("BASE_URL")
     uploads_dir = current_app.config.get("UPLOADS_DIR")
 
@@ -90,7 +94,8 @@ def app_before_request():
     g.request_remote_addr = get_remote_addr()
     g.request_path = request.path
 
-    g.request_url = "{}{}".format(g.curr_base_url, g.request_path)
+    args = urlparse(request.url).query
+    g.request_url = "{}{}?{}".format(g.curr_base_url, g.request_path, args)
     g.uploads_url = "{}/{}".format(base_url, uploads_dir)
 
     g.query_count = 0
