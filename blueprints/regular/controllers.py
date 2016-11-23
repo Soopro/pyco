@@ -104,8 +104,6 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # site_meta
     site_meta = curr_app["meta"]
-    site_meta['title'] = curr_app["title"]
-    site_meta['description'] = curr_app["description"]
     site_meta['slug'] = curr_app['slug']
     site_meta["id"] = curr_app["_id"]
     site_meta["type"] = curr_app['type']

@@ -4,19 +4,18 @@
   "author": "Redy",
 	"title": "Default Theme",
   "description": "This is a simple default theme for pyco.",
-  "capability": "ws",
-  "thumbnail": "thumbnail.png",
+  "type": "ws",
+  "capability": 0,
+  "icon": "icon.png",
 	"previews": ["preview.png"],
 	"poster": "poster.png",
 
-  "form_mode": true,
-
-  "templates":{
-      "index": "Homepage",
-      "page": "Static Page",
-      "post": "Posts",
-      "error_404": "404"
-  },
+  "templates": [
+    "index",
+    "page",
+    "post",
+    "error_404"
+  ],
 
   "taxonomies":{
     "category": {

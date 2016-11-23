@@ -53,8 +53,6 @@ def get_view_metas(app_id):
 
     run_hook("config_loaded", config=make_dotted_dict(config))
 
-    site_meta['title'] = curr_app["title"]
-    site_meta['description'] = curr_app["description"]
     site_meta['slug'] = curr_app['slug']
     site_meta["id"] = curr_app["_id"]
     site_meta["type"] = curr_app['type']
@@ -77,7 +75,7 @@ def get_view_metas(app_id):
         "locale": locale,
         "translates": helper_wrap_translates(translates, locale),
         "socials": helper_wrap_socials(curr_app['socials']),
-        "menu": helper_wrap_menu(curr_app['menus'], base_url),
+        "menu": helper_wrap_menu(curr_app['menus'], g.curr_base_url),
         "taxonomy": helper_wrap_taxonomy(curr_app['taxonomies']),
         "content_types": curr_app['content_types'],
         "slot": ext_slots
@@ -309,7 +307,8 @@ def get_view_content(app_id, type_slug, file_slug):
     content_file = find_content_file(type_slug, file_slug)
     if not content_file:
         Exception('content file not found.')
-    theme_opts = curr_app['theme_meta'].get('options', {})
+    app = g.curr_app
+    theme_opts = app['theme_meta'].get('options', {})
 
     page_content = {'content': content_file.pop('content', u'')}
     run_hook("before_parse_content", content=page_content)
@@ -317,7 +316,7 @@ def get_view_content(app_id, type_slug, file_slug):
     run_hook("after_parse_content", content=page_content)
 
     run_hook("before_read_page_meta", headers=content_file)
-    page_meta = read_page_metas(content, theme_opts)
+    page_meta = read_page_metas(content_file, theme_opts)
     run_hook("after_read_page_meta", meta=page_meta, redirect=None)
 
     return output(page_meta, page_content['content'])

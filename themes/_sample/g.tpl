@@ -1,1 +1,0 @@
-<sup-set ng-model="g.default_favicon" value="{{theme_url+'/img/default_favicon.png'}}"></sup-set>
