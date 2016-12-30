@@ -25,13 +25,13 @@ def filter_url(url, remove_args=False, remove_hash=False):
     if not isinstance(url, basestring):
         return url
     if remove_args:
-        url = url.split("?")[0]
+        url = url.split('?')[0]
     if remove_hash:
-        url = url.split("#")[0]
+        url = url.split('#')[0]
     if not url or url_validator(url):
         return url
     elif url.startswith('/'):
-        return "{}/{}".format(g.curr_base_url, url.strip('/'))
+        return u'{}/{}'.format(g.curr_base_url, url.strip('/'))
     else:
         return url.rstrip('/')
 
@@ -40,15 +40,15 @@ def filter_path(url, remove_args=True, remove_hash=True):
     if not isinstance(url, basestring):
         return url
     if remove_args:
-        url = url.split("?")[0]
+        url = url.split('?')[0]
     if remove_hash:
-        url = url.split("#")[0]
+        url = url.split('#')[0]
     try:
         path = url.split(g.curr_base_url)[-1]
     except:
         path = url
 
-    return "/{}".format(path.strip('/'))
+    return u'/{}'.format(path.strip('/'))
 
 
 def filter_args(url, unique=True):
@@ -66,12 +66,12 @@ def filter_date_formatted(date, to_format=None):
         to_format = None
 
     formats = {
-        "en": u'%B %d, %Y',
-        "zh": u'%Y年 %m月 %d日',
+        'en': u'%B %d, %Y',
+        'zh': u'%Y年 %m月 %d日',
     }
 
     try:
-        locale = g.curr_app["locale"]
+        locale = g.curr_app['locale']
         lang = locale.split('_')[0]
     except:
         locale = None
@@ -81,7 +81,7 @@ def filter_date_formatted(date, to_format=None):
     return format_date(date, to_format)
 
 
-def filter_background_image(src, default=None, thumbnail=None):
+def filter_background_image(src, default=None):
     if not src and not default:
         return u''
     elif not src:
@@ -113,11 +113,12 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
 
 
 # jinja helpers
-def rope(raw_list, sort_by="updated", priority=True, reverse=False):
+def rope(raw_list, sort_by='updated', priority=True, reverse=False):
     """return a list of sorted results.
-    result_pages = rope(pages, sort_by="updated", priority=True, reverse=True)
+    result_pages = rope(pages, sort_by='updated', priority=True, reverse=True)
     """
-    sort_keys = _make_sort_keys(sort_by, priority)
+    sort_init = [('priority', 1)] if priority else None
+    sort_keys = make_sorts_rule(sort_by, sort_init)
     return sortedby(raw_list, sort_keys, reverse)
 
 
@@ -140,10 +141,10 @@ def magnet(raw_list, current, limit=1):
     after = after_list[0] if after_list else None
 
     return {
-        "before": before,
-        "after": after,
-        "entries_before": before_list,
-        "entries_after": after_list,
+        'before': before,
+        'after': after,
+        'entries_before': before_list,
+        'entries_after': after_list,
     }
 
 
@@ -226,7 +227,7 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
                     results.append(i)
     # sort by
     if sort_by:
-        sort_keys = _make_sort_keys(sort_by)
+        sort_keys = make_sorts_rule(sort_by)
         results = sortedby(results, sort_keys)
 
     # limit
@@ -238,12 +239,12 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
 
 def glue(args=None, url=None, clarify=False, unique=True):
     """return a url with added args.
-    relative_path_args = glue(\{"key": "value"\})
+    relative_path_args = glue(\{'key': 'value'\})
     """
     if not url:
         url = g.request_url or request.url
     if clarify:
-        url = url.split("?")[0].split("#")[0]
+        url = url.split('?')[0].split('#')[0]
     return add_url_params(url, args, unique=unique)
 
 
@@ -270,11 +271,11 @@ def timemachine(raw_list, filed='date', precision='month',
         elif isinstance(date, datetime.datetime):
             date = date
         else:
-            raise ValueError("invalid date format.")
+            raise ValueError('invalid date format.')
         try:
             return get_group_key.get(precision, 'month')(date)
         except Exception:
-            raise ValueError("invalid precision, precision must be str.")
+            raise ValueError('invalid precision, precision must be str.')
 
     pages = sorted(filter(lambda x: x.get(filed), raw_list),
                    key=lambda x: x[filed],
@@ -292,18 +293,6 @@ def timemachine(raw_list, filed='date', precision='month',
     return ret
 
 
-# helpers
-def _make_sort_keys(sort_by, priority=False):
-    sort_keys = [('priority', 1)] if priority else []
-
-    if isinstance(sort_by, basestring):
-        sort_keys.append(sort_by)
-    elif isinstance(sort_by, list):
-        sort_keys = sort_keys + [key for key in sort_by
-                                 if isinstance(key, basestring)]
-    return sort_keys
-
-
 def _get_thumbnail_src(pic_url, suffix=None):
     if not suffix or not isinstance(suffix, basestring):
         suffix = 'thumbnail'  # make sure default suffix.
@@ -316,6 +305,6 @@ def _get_thumbnail_src(pic_url, suffix=None):
 
     if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
         pair = '&' if '?' in pic_url else '?'
-        pic_url = "{}{}{}".format(pic_url, pair, suffix)
+        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
 
     return pic_url
