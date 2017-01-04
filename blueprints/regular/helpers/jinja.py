@@ -18,7 +18,7 @@ from utils.misc import (sortedby,
 
 # filters
 def filter_thumbnail(pic_url, thumbnail=None):
-    return _get_thumbnail_src(pic_url, thumbnail)
+    return _get_media_src(pic_url, thumbnail)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -293,7 +293,7 @@ def timemachine(raw_list, filed='date', precision='month',
     return ret
 
 
-def _get_thumbnail_src(pic_url, suffix=None):
+def _get_media_src(pic_url, suffix=None):
     if not suffix or not isinstance(suffix, basestring):
         suffix = 'thumbnail'  # make sure default suffix.
 
