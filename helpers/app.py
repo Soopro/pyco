@@ -20,7 +20,7 @@ def run_hook(hook_name, **references):
 
 def generate_etag(content_file_full_path):
     file_stat = os.stat(content_file_full_path)
-    base = "{mtime:0.0f}_{size:d}_{fpath}".format(
+    base = '{mtime:0.0f}_{size:d}_{fpath}'.format(
         mtime=file_stat.st_mtime,
         size=file_stat.st_size,
         fpath=content_file_full_path
@@ -30,7 +30,7 @@ def generate_etag(content_file_full_path):
 
 
 def get_theme_path(tmpl_name):
-    return "{}{}".format(tmpl_name,
+    return '{}{}'.format(tmpl_name,
                          current_app.config.get('TEMPLATE_FILE_EXT'))
 
 
@@ -43,10 +43,10 @@ def get_theme_abs_path(tmpl_path):
 def helper_redirect_url(url, base_url):
     if not url or not isinstance(url, (str, unicode)):
         return None
-    if re.match("^(?:http|ftp)s?://", url):
+    if re.match('^(?:http|ftp)s?://', url):
         return url
     else:
-        return "{}/{}".format(base_url, url.strip('/'))
+        return '{}/{}'.format(base_url, url.strip('/'))
 
 
 def helper_render_ext_slots(scripts, app):
@@ -74,29 +74,29 @@ def helper_record_statistic(app_id, page_id):
 def helper_get_statistic(app_id, page_id=None):
     sa_status = current_app.sa_mod.get_app()
     sa = {
-        'pv': sa_status.get("pv"),
-        'vs': sa_status.get("vs"),
-        'uv': sa_status.get("uv"),
-        'ip': sa_status.get("ip"),
+        'pv': sa_status.get('pv'),
+        'vs': sa_status.get('vs'),
+        'uv': sa_status.get('uv'),
+        'ip': sa_status.get('ip'),
     }
     if page_id:
         sa_page_status = current_app.sa_mod.get_page(page_id)
-        sa['page'] = sa_page_status.get("pv")
+        sa['page'] = sa_page_status.get('pv')
 
     return sa
 
 
 # segments
 def get_segment_contents(app):
-    if not app["segments"]:
+    if not app['segments']:
         return []
     tmpls = _segment_templates(app)
-    seg_files = [f for f in g.files if f["content_type"] == 'page' and
-                 f["slug"] in app["segments"]]
-    seg_dict = {f["slug"]: f for f in seg_files if f["template"] in tmpls}
+    seg_files = [f for f in g.files if f['content_type'] == 'page' and
+                 f['slug'] in app['segments']]
+    seg_dict = {f['slug']: f for f in seg_files if f['template'] in tmpls}
     segment_contents = []
     segment_slugs = []
-    for seg in app["segments"]:
+    for seg in app['segments']:
         if seg in seg_dict and seg not in segment_slugs:
             segment_contents.append(seg_dict[seg])
             segment_slugs.append(seg)
@@ -104,5 +104,5 @@ def get_segment_contents(app):
 
 
 def _segment_templates(app):
-    tmpls = app["theme_meta"].get('templates', [])
+    tmpls = app['theme_meta'].get('templates', [])
     return [tmpl.replace('^', '') for tmpl in tmpls if tmpl.startswith('^')]

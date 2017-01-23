@@ -166,7 +166,8 @@ def read_page_metas(page, options, current_id=None):
     data['excerpt'] = gen_file_excerpt(page['excerpt'], excerpt_len, ellipsis)
 
     data['description'] = meta.get('description') or data['excerpt']
-    data['url'] = gen_page_url(page['content_type'], page['slug'])
+    data['url'] = gen_page_url(page)
+    data['path'] = gen_page_path(page)
 
     # content marks
     config = current_app.config
@@ -180,8 +181,26 @@ def read_page_metas(page, options, current_id=None):
     return data
 
 
-def gen_page_url(content_type_slug, file_slug):
-    return "{}/{}/{}".format(g.curr_base_url, content_type_slug, file_slug)
+def gen_page_path(data, static_type='page', index='index'):
+    slug = data.get('slug')
+    if data['content_type'] == static_type:
+        if slug == index:
+            slug = ''
+        path = u'/{}'.format(slug)
+    else:
+        path = u'/{}/{}'.format(data['content_type'], slug)
+    return path
+
+
+def gen_page_url(data, static_type='page', index='index'):
+    slug = data.get('slug')
+    if data.get('content_type') == static_type:
+        if slug == index:
+            slug = ''
+        url = u'{}/{}'.format(g.curr_base_url, slug)
+    else:
+        url = u'{}/{}/{}'.format(g.curr_base_url, data['content_type'], slug)
+    return url
 
 
 def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
