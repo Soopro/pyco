@@ -48,123 +48,123 @@ def rendering(content_type_slug='page', file_slug='index'):
     config['site_meta'] = site_meta
     config['theme_meta'] = theme_meta
 
-    run_hook("config_loaded", config=make_dotted_dict(config))
+    run_hook('config_loaded', config=make_dotted_dict(config))
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
-        redirect_url = helper_redirect_url(config.get("DEFAULT_404_SLUG"),
+        redirect_url = helper_redirect_url(config.get('DEFAULT_404_SLUG'),
                                            base_url)
         return redirect(redirect_url, code=302)
 
-    run_hook("request_url", request=request)
+    run_hook('request_url', request=request)
 
     view_ctx = dict()
 
     # load file content
-    path = {"content_type": content_type_slug, "slug": file_slug}
-    run_hook("before_load_content", path=path)
+    path = {'content_type': content_type_slug, 'slug': file_slug}
+    run_hook('before_load_content', path=path)
     content_file = find_content_file(path['content_type'], path['slug'])
 
     # if not found
     if content_file is None:
         status_code = 404
-        path = {"slug": config.get("DEFAULT_404_SLUG")}
-        run_hook("before_404_load_content", path=path)
+        path = {'slug': config.get('DEFAULT_404_SLUG')}
+        run_hook('before_404_load_content', path=path)
         content_file = find_content_file(None, path['slug'])
         if not content_file:
             abort(404)  # without not found 404 file
             return
 
     if status_code == 404:
-        run_hook("after_404_load_content", path=path, file=content_file)
+        run_hook('after_404_load_content', path=path, file=content_file)
 
-    run_hook("after_load_content", path=path, file=content_file)
+    run_hook('after_load_content', path=path, file=content_file)
 
     # content
     page_content = {'content': content_file.pop('content', u'')}
-    run_hook("before_parse_content", content=page_content)
+    run_hook('before_parse_content', content=page_content)
     page_content['content'] = parse_content(page_content['content'])
-    run_hook("after_parse_content", content=page_content)
+    run_hook('after_parse_content', content=page_content)
 
-    view_ctx["content"] = page_content['content']
+    view_ctx['content'] = page_content['content']
 
-    run_hook("before_read_page_meta", headers=content_file)
+    run_hook('before_read_page_meta', headers=content_file)
     page_meta = read_page_metas(content_file, theme_options)
-    redirect_to = {"url": None}
-    run_hook("after_read_page_meta", meta=page_meta, redirect=redirect_to)
+    redirect_to = {'url': None}
+    run_hook('after_read_page_meta', meta=page_meta, redirect=redirect_to)
 
     # page redirect
-    if redirect_to["url"]:
-        redirect_to = helper_redirect_url(redirect_to["url"], base_url)
+    if redirect_to['url']:
+        redirect_to = helper_redirect_url(redirect_to['url'], base_url)
         if redirect_to and request.url != redirect_to:
-            return redirect(redirect_to["url"], code=302)
+            return redirect(redirect_to['url'], code=302)
 
-    view_ctx["meta"] = page_meta
-    g.curr_page_id = page_meta["id"]
+    view_ctx['meta'] = page_meta
+    g.curr_page_id = page_meta['id']
 
     # site_meta
-    site_meta = curr_app["meta"]
+    site_meta = curr_app['meta']
     site_meta['slug'] = curr_app['slug']
-    site_meta["id"] = curr_app["_id"]
-    site_meta["type"] = curr_app['type']
-    site_meta["visit"] = helper_get_statistic(curr_app['_id'],
+    site_meta['id'] = curr_app['_id']
+    site_meta['type'] = curr_app['type']
+    site_meta['visit'] = helper_get_statistic(curr_app['_id'],
                                               content_file['_id'])
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
     # soical media support
-    view_ctx["socials"] = helper_wrap_socials(curr_app['socials'])
+    view_ctx['socials'] = helper_wrap_socials(curr_app['socials'])
 
     # menu
-    view_ctx["menu"] = helper_wrap_menu(curr_app['menus'], base_url)
+    view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
 
     # taxonomy
-    view_ctx["taxonomy"] = helper_wrap_taxonomy(curr_app['taxonomies'])
+    view_ctx['taxonomy'] = helper_wrap_taxonomy(curr_app['taxonomies'])
 
     # extension slots
-    ext_slots = curr_app["slots"]
+    ext_slots = curr_app['slots']
     for k, v in ext_slots.iteritems():
         ext_slots[k] = helper_render_ext_slots(v, curr_app)
-    view_ctx["slot"] = ext_slots
+    view_ctx['slot'] = ext_slots
 
     # base view context
-    view_ctx["app_id"] = curr_app["_id"]
-    view_ctx["api_baseurl"] = config.get('API_BASEURL', u'')
-    view_ctx["site_meta"] = site_meta
-    view_ctx["theme_meta"] = theme_meta
-    view_ctx["theme_url"] = config.get('THEME_URL', u'')
-    view_ctx["libs_url"] = config.get("LIBS_URL", u'')
-    view_ctx["base_url"] = base_url
+    view_ctx['app_id'] = curr_app['_id']
+    view_ctx['api_baseurl'] = config.get('API_BASEURL', u'')
+    view_ctx['site_meta'] = site_meta
+    view_ctx['theme_meta'] = theme_meta
+    view_ctx['theme_url'] = config.get('THEME_URL', u'')
+    view_ctx['libs_url'] = config.get('LIBS_URL', u'')
+    view_ctx['base_url'] = base_url
 
     # now for refresh cache
-    view_ctx["now"] = now()
+    view_ctx['now'] = now()
 
     # request
-    view_ctx["request"] = {
-        "remote_addr": g.request_remote_addr,
-        "path": g.request_path,
-        "url": g.request_url,
-        "args": parse_args(),
+    view_ctx['request'] = {
+        'remote_addr': g.request_remote_addr,
+        'path': g.request_path,
+        'url': g.request_url,
+        'args': parse_args(),
     }
-    view_ctx["args"] = view_ctx["request"]["args"]
+    view_ctx['args'] = view_ctx['request']['args']
 
     # query
-    view_ctx["query"] = query_contents
-    view_ctx["query_sides"] = query_sides
+    view_ctx['query'] = query_contents
+    view_ctx['query_sides'] = query_sides
     view_ctx['segments'] = get_segments
 
     # get current content type
-    view_ctx["content_type"] = _get_content_type(content_type_slug)
+    view_ctx['content_type'] = _get_content_type(content_type_slug)
     # template helpers
-    view_ctx["saltshaker"] = saltshaker
-    view_ctx["straw"] = straw
-    view_ctx["rope"] = rope
-    view_ctx["glue"] = glue
-    view_ctx["magnet"] = magnet
+    view_ctx['saltshaker'] = saltshaker
+    view_ctx['straw'] = straw
+    view_ctx['rope'] = rope
+    view_ctx['glue'] = glue
+    view_ctx['magnet'] = magnet
 
     # template
-    template = {'name': page_meta.get("template")}
-    run_hook("before_render", var=view_ctx, template=template)
+    template = {'name': page_meta.get('template')}
+    run_hook('before_render', var=view_ctx, template=template)
 
     template_file_path = get_theme_path(template['name'])
 
@@ -173,7 +173,7 @@ def rendering(content_type_slug='page', file_slug='index'):
         view_ctx[k] = make_dotted_dict(v)
 
     rendered = {'output': render_template(template_file_path, **view_ctx)}
-    run_hook("after_render", rendered=rendered)
+    run_hook('after_render', rendered=rendered)
 
     sa_mod = current_app.sa_mod
     sa_mod.count_page(g.curr_page_id)
@@ -209,11 +209,11 @@ def set_multi_language(view_context, app):
     translator = Translator(locale, lang_path)
     view_context['_'] = translator.gettext
     view_context['_t'] = translator.t_gettext
-    view_context["locale"] = locale
-    view_context["lang"] = locale.split('_')[0]
+    view_context['locale'] = locale
+    view_context['lang'] = locale.split('_')[0]
     # make translates
     trans_list = helper_wrap_translates(app['translates'], locale)
-    view_context["translates"] = make_dotted_dict(trans_list)
+    view_context['translates'] = make_dotted_dict(trans_list)
 
 
 # query
@@ -274,17 +274,17 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         if with_content:
             p['content'] = parse_content(p_content)
         pages.append(p)
-    run_hook("get_pages", pages=pages, current_page_id=curr_id)
+    run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
 
     return {
-        "contents": pages,
-        "perpage": perpage,
-        "paged": paged,
-        "count": len(pages),
-        "total_count": total_count,
-        "total_pages": max_pages,
-        "_remain_queries": remain_queries,
+        'contents': pages,
+        'perpage': perpage,
+        'paged': paged,
+        'count': len(pages),
+        'total_count': total_count,
+        'total_pages': max_pages,
+        '_remain_queries': remain_queries,
     }
 
 
@@ -316,8 +316,8 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
     after_pages = [read_page_metas(content_file, theme_opts)
                    for content_file in after_pages]
 
-    run_hook("get_pages", pages=before_pages, current_page_id=None)
-    run_hook("get_pages", pages=after_pages, current_page_id=None)
+    run_hook('get_pages', pages=before_pages, current_page_id=None)
+    run_hook('get_pages', pages=after_pages, current_page_id=None)
 
     make_dotted_dict(before_pages)
     make_dotted_dict(after_pages)
@@ -329,11 +329,11 @@ def query_sides(pid, attrs=[], limit=0, sortby=[], priority=True):
         print 'sides:', limit, len(before_pages), len(after_pages)
 
     return {
-        "before": before,
-        "after": after,
-        "entires_before": before_pages,
-        "entires_after": after_pages,
-        "_remain_queries": remain_queries,
+        'before': before,
+        'after': after,
+        'entires_before': before_pages,
+        'entires_after': after_pages,
+        '_remain_queries': remain_queries,
     }
 
 
@@ -348,10 +348,10 @@ def get_segments():
     for p in results:
         p_content = p.pop('content', u'')
         p = read_page_metas(p, theme_opts)
-        p["content"] = parse_content(p_content)
+        p['content'] = parse_content(p_content)
         pages.append(p)
 
-    run_hook("get_pages", pages=pages, current_page_id=None)
+    run_hook('get_pages', pages=pages, current_page_id=None)
     g.segments = make_dotted_dict(pages)
 
     return g.segments
