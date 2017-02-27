@@ -21,7 +21,6 @@ THEMES_DIR = 'themes'
 
 LANGUAGES_DIR = 'languages'
 
-CHARSET = 'utf8'
 CONTENT_FILE_EXT = '.md'
 TEMPLATE_FILE_EXT = '.html'
 
@@ -54,7 +53,6 @@ MARKDOWN_EXTENSIONS = ['gfm']
 MAXIMUM_QUERY = 60
 MAXIMUM_INTACT_QUERY = 24
 
-DEFAULT_SEARCH_ATTRS = ['title']
 SHORT_FIELD_KEYS = {'type': 'content_type'}
 SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']
 STRUCTURE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',

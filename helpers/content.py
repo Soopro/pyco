@@ -71,7 +71,7 @@ def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
     return befores, afters
 
 
-def search_by_files(keywords, content_type=None, attrs=None,
+def search_by_files(keywords, content_type=None, attrs=[],
                     use_tags=True, limit=0, offset=0):
     if content_type:
         files = [f for f in g.files if f['content_type'] == content_type]
@@ -87,18 +87,15 @@ def search_by_files(keywords, content_type=None, attrs=None,
         elif not isinstance(keywords, list):
             keywords = []
 
-        if isinstance(attrs, basestring):
-            attrs = attrs.split()
-        elif not isinstance(attrs, list):
-            attrs = None
-
-        if not attrs:
-            attrs = current_app.config.get('DEFAULT_SEARCH_ATTRS')
+        if not isinstance(attrs, list):
+            attrs = []
 
         def search_match(keyword, attrs, f):
             if use_tags and keyword in f['tags']:
                 return True
-            for attr in attrs:
+            if keyword in f['searching']:
+                return True
+            for attr in attrs[:2]:
                 if match_cond(f, attr, keyword, force=True):
                     return True
             return False

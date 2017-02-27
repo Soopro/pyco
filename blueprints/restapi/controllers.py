@@ -109,7 +109,7 @@ def get_view_tags(app_id, type_slug=None):
 def search_view_contents(app_id):
     keywords = get_param('keywords', list, default=[])
     content_type = get_param('content_type', unicode, default=None)
-    attrs = get_param('attrs', list, default=["title"])
+    attrs = get_param('attrs', list, default=['title'])
     use_tags = get_param('use_tags', bool, default=True)
     perpage = get_param('perpage', int, default=0)
     paged = get_param('paged', int, default=0)

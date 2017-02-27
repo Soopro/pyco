@@ -175,6 +175,14 @@ def safe_regex_str(val):
     return val
 
 
+def remove_multi_space(text):
+    if isinstance(text, str):
+        text = text.decode('utf-8')
+    elif not isinstance(text, unicode):
+        return u''
+    return re.sub(r'\s+', ' ', text).replace('\n', ' ').replace('\b', ' ')
+
+
 def make_sorts_rule(sort_by, initial=None):
     if initial and isinstance(initial, list):
         sort_rules = [item for item in initial

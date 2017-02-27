@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from flask import current_app
-from utils.misc import process_slug
+from utils.misc import process_slug, remove_multi_space
 
 from types import ModuleType
 import os
@@ -32,7 +32,6 @@ def load_config(app, config_name="config.py"):
     app.config.setdefault("PORT", 5500)
     app.config.setdefault("SITE", {})
     app.config.setdefault("THEME_META", {})
-    app.config.setdefault("CHARSET", "utf8")
     app.config.setdefault("SYS_ICON_LIST", [])
 
     app.config.setdefault("PLUGIN_DIR", "plugins")
@@ -99,7 +98,7 @@ def load_all_files(app, curr_app):
             continue
 
         with open(f, "r") as fh:
-            readed = fh.read().decode(app.config.get('CHARSET'))
+            readed = fh.read().decode('utf-8')
         meta_string, content_string = _content_splitter(readed)
         try:
             meta = _file_headers(meta_string)
@@ -121,6 +120,7 @@ def load_all_files(app, curr_app):
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
+            'searching': _make_searching_words(meta),
             'excerpt': _make_excerpt(content_string),
             'content': content_string,
             'updated': _auto_file_updated(f),
@@ -147,7 +147,7 @@ def load_curr_app(app):
 
     try:
         with open(site_file) as site_data:
-            site_json_str = site_data.read().decode(app.config.get('CHARSET'))
+            site_json_str = site_data.read().decode('utf-8')
             site = json.loads(_shortcode(site_json_str))
     except Exception as e:
         err_msg = "Load Site Meta faild: {}".format(str(e))
@@ -258,3 +258,13 @@ def _make_excerpt(content_string, length=600):
         content = content_string
     excerpt = re.sub(r'<[^>]*?>', '', content)
     return excerpt[:length].strip()
+
+
+def _make_searching_words(meta):
+    title = meta.get('title', u'')
+    des = meta.get('description', u'')
+    try:
+        text = remove_multi_space(u'{} {}'.format(title, des)[:600])
+    except:
+        text = u''
+    return text
