@@ -30,7 +30,6 @@ from helpers.content import (find_content_file,
 
 from .helpers.jinja import (saltshaker,
                             glue,
-                            rope,
                             straw,
                             magnet)
 
@@ -158,7 +157,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     # template helpers
     view_ctx['saltshaker'] = saltshaker
     view_ctx['straw'] = straw
-    view_ctx['rope'] = rope
     view_ctx['glue'] = glue
     view_ctx['magnet'] = magnet
 

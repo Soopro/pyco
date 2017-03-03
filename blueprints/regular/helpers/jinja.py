@@ -16,6 +16,7 @@ from utils.misc import (sortedby,
                         match_cond)
 
 
+
 # filters
 def filter_thumbnail(pic_url, thumbnail=None):
     return _get_media_src(pic_url, thumbnail)
@@ -100,7 +101,6 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
         pattern = None
 
     length = len(data) if isinstance(data, list) else parse_int(data, 0, 0)
-
     offset = int((row_columns - length * column) / 2)
     if pattern:
         if offset > 0:
@@ -113,13 +113,68 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
 
 
 # jinja helpers
-def rope(raw_list, sort_by='updated', priority=True, reverse=False):
-    """return a list of sorted results.
-    result_pages = rope(pages, sort_by='updated', priority=True, reverse=True)
+def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
+               intersection=True):
+    """return a list of results matched conditions.
+    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
+                              limit=12, intersection=True, sort_by='updated')
     """
-    sort_init = [('priority', 1)] if priority else None
-    sort_keys = make_sorts_rule(sort_by, sort_init)
-    return sortedby(raw_list, sort_keys, reverse)
+    if not isinstance(raw_salts, (list, dict)):
+        return []
+    elif isinstance(raw_salts, dict):
+        salts = []
+        for k, v in raw_salts.iteritems():
+            v['_saltkey'] = k
+            salts.append(v)
+    else:
+        salts = raw_salts
+
+    if not isinstance(conditions, (basestring, dict)):
+        conditions = [conditions]
+    elif not isinstance(conditions, list):
+        conditions = []
+
+    results = []
+
+    for cond in conditions[:5]:
+        opposite = False
+        force = False
+        cond_key = None
+        cond_value = ''
+        if isinstance(cond, (basestring)):
+            cond_key = cond.lower()
+        elif isinstance(cond, dict):
+            opposite = bool(cond.pop('not', False))
+            force = bool(cond.pop('force', False))
+            if cond:
+                cond_key = cond.keys()[0]
+                cond_value = cond[cond_key]
+            else:
+                continue
+
+        if cond_key is None:
+            continue
+
+        if intersection and results:
+            c_k = cond_key
+            c_v = cond_value
+            results = [i for i in results
+                       if match_cond(i, c_k, c_v, force, opposite)]
+        else:
+            for i in salts:
+                _mch = match_cond(i, cond_key, cond_value, force, opposite)
+                if i not in results and _mch:
+                    results.append(i)
+    # sort by
+    if sort_by:
+        sort_keys = make_sorts_rule(sort_by)
+        results = sortedby(results, sort_keys)
+
+    # limit
+    if limit > 0:
+        results = results[0:limit]
+        # do not limit in loop, because results is not settled down.
+    return results
 
 
 def magnet(raw_list, current, limit=1):
@@ -172,69 +227,6 @@ def straw(raw_list, value, key='id', nodes_key='nodes', limit=120):
         return None
 
     return _find(raw_list)
-
-
-def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
-               intersection=True):
-    """return a list of results matched conditions.
-    result_pages = saltshaker(pages, [{'type':'test'},'thumbnail'],
-                              limit=12, intersection=True, sort_by='updated')
-    """
-
-    if not isinstance(raw_salts, (list, dict)):
-        return []
-    elif isinstance(raw_salts, dict):
-        salts = []
-        for k, v in raw_salts.iteritems():
-            v['_saltkey'] = k
-            salts.append(v)
-    else:
-        salts = raw_salts
-
-    if not isinstance(conditions, list):
-        conditions = [conditions]
-
-    results = []
-
-    for cond in conditions[:5]:
-        opposite = False
-        force = False
-        cond_key = None
-        cond_value = ''
-        if isinstance(cond, (str, unicode)):
-            cond_key = cond.lower()
-        elif isinstance(cond, dict):
-            opposite = bool(cond.pop('not', False))
-            force = bool(cond.pop('force', False))
-            if cond:
-                cond_key = cond.keys()[0]
-                cond_value = cond[cond_key]
-            else:
-                continue
-
-        if cond_key is None:
-            continue
-
-        if intersection and results:
-            c_k = cond_key
-            c_v = cond_value
-            results = [i for i in results
-                       if match_cond(i, c_k, c_v, force, opposite)]
-        else:
-            for i in salts:
-                _mch = match_cond(i, cond_key, cond_value, force, opposite)
-                if i not in results and _mch:
-                    results.append(i)
-    # sort by
-    if sort_by:
-        sort_keys = make_sorts_rule(sort_by)
-        results = sortedby(results, sort_keys)
-
-    # limit
-    if limit > 0:
-        results = results[0:limit]
-        # do not limit in loop, because results is not settled down.
-    return results
 
 
 def glue(args=None, url=None, clarify=False, unique=True):
