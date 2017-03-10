@@ -178,7 +178,7 @@ def query_view_contents(app_id):
     if not perpage:
         perpage = theme_opts.get('perpage')
 
-    perpage, paged = _safe_paging(perpage, paged, with_content)
+    perpage, paged = _safe_paging(perpage, paged)
 
     # position
     total_count = count_by_files(attrs)
@@ -362,11 +362,8 @@ def _add_cursor(content, index, total_count, perpage, paged, max_pages):
     return content
 
 
-def _safe_paging(perpage, paged, with_content=False):
-    if with_content:
-        max_perpage = current_app.config.get('MAXIMUM_INTACT_QUERY')
-    else:
-        max_perpage = current_app.config.get('MAXIMUM_QUERY')
+def _safe_paging(perpage, paged):
+    max_perpage = current_app.config.get('MAXIMUM_QUERY')
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
     return min(perpage, max_perpage), paged
