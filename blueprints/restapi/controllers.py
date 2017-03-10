@@ -133,6 +133,7 @@ def search_view_contents(app_id):
                                            offset=offset)
 
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
     pages = [read_page_metas(p, theme_opts, None) for p in results]
@@ -145,6 +146,7 @@ def search_view_contents(app_id):
         'count': len(results),
         'total_pages': max_pages,
         'total_count': total_count,
+        'page_range': page_range,
         'has_prev': paged > 1,
         'has_next': paged < max_pages,
     }
@@ -181,6 +183,7 @@ def query_view_contents(app_id):
     # position
     total_count = count_by_files(attrs)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
     limit = perpage
@@ -204,6 +207,9 @@ def query_view_contents(app_id):
         'count': len(pages),
         'total_count': total_count,
         'total_pages': max_pages,
+        'page_range': page_range,
+        'has_prev': paged > 1,
+        'has_next': paged < max_pages
     }
 
 

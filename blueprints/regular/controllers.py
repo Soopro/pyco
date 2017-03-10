@@ -258,6 +258,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     # position
     total_count = count_by_files(attrs)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
     limit = perpage
@@ -282,6 +283,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         'count': len(pages),
         'total_count': total_count,
         'total_pages': max_pages,
+        'page_range': page_range,
         'has_prev': paged > 1,
         'has_next': paged < max_pages,
         '_remain_queries': remain_queries,
