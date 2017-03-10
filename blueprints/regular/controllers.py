@@ -282,6 +282,8 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
         'count': len(pages),
         'total_count': total_count,
         'total_pages': max_pages,
+        'has_prev': paged > 1,
+        'has_next': paged < max_pages,
         '_remain_queries': remain_queries,
     }
 

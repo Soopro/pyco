@@ -46,39 +46,39 @@ def get_view_metas(app_id):
     curr_app = g.curr_app
 
     theme_meta = curr_app['theme_meta']
-    site_meta = curr_app["meta"]
+    site_meta = curr_app['meta']
 
     config['site_meta'] = site_meta
     config['theme_meta'] = theme_meta
 
-    run_hook("config_loaded", config=make_dotted_dict(config))
+    run_hook('config_loaded', config=make_dotted_dict(config))
 
     site_meta['slug'] = curr_app['slug']
-    site_meta["id"] = curr_app["_id"]
-    site_meta["type"] = curr_app['type']
+    site_meta['id'] = curr_app['_id']
+    site_meta['type'] = curr_app['type']
 
     translates = curr_app['translates']
     locale = curr_app['locale']
 
-    ext_slots = curr_app["slots"]
+    ext_slots = curr_app['slots']
     for k, v in ext_slots.iteritems():
         ext_slots[k] = helper_render_ext_slots(v, curr_app)
 
     context = {
-        "app_id": curr_app["_id"],
-        "site_meta": site_meta,
-        "theme_meta": theme_meta,
-        "base_url": g.curr_base_url,
-        "theme_url": config.get("THEME_URL", u''),
-        "libs_url": config.get("LIBS_URL", u''),
-        "lang": locale.split('_')[0],
-        "locale": locale,
-        "translates": helper_wrap_translates(translates, locale),
-        "socials": helper_wrap_socials(curr_app['socials']),
-        "menu": helper_wrap_menu(curr_app['menus'], g.curr_base_url),
-        "taxonomy": helper_wrap_taxonomy(curr_app['taxonomies']),
-        "content_types": curr_app['content_types'],
-        "slot": ext_slots
+        'app_id': curr_app['_id'],
+        'site_meta': site_meta,
+        'theme_meta': theme_meta,
+        'base_url': g.curr_base_url,
+        'theme_url': config.get('THEME_URL', u''),
+        'libs_url': config.get('LIBS_URL', u''),
+        'lang': locale.split('_')[0],
+        'locale': locale,
+        'translates': helper_wrap_translates(translates, locale),
+        'socials': helper_wrap_socials(curr_app['socials']),
+        'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
+        'taxonomy': helper_wrap_taxonomy(curr_app['taxonomies']),
+        'content_types': curr_app['content_types'],
+        'slot': ext_slots
     }
     return context
 
@@ -99,7 +99,7 @@ def get_view_tags(app_id, type_slug=None):
         for key in f['tags']:
             tags[key] = 1 if key not in tags else tags[key] + 1
 
-    tag_list = [{"key": k, "count": v} for k, v in tags.iteritems()]
+    tag_list = [{'key': k, 'count': v} for k, v in tags.iteritems()]
     results = sortedby(tag_list, [('count', -1)])[:limit]
 
     return results
@@ -136,15 +136,17 @@ def search_view_contents(app_id):
     paged = min(max_pages, paged)
 
     pages = [read_page_metas(p, theme_opts, None) for p in results]
-    run_hook("get_pages", pages=pages, current_page_id=None)
+    run_hook('get_pages', pages=pages, current_page_id=None)
 
     return {
-        "contents": pages,
-        "perpage": perpage,
-        "paged": paged,
-        "count": len(results),
-        "total_pages": max_pages,
-        "total_count": total_count
+        'contents': pages,
+        'perpage': perpage,
+        'paged': paged,
+        'count': len(results),
+        'total_pages': max_pages,
+        'total_count': total_count,
+        'has_prev': paged > 1,
+        'has_next': paged < max_pages,
     }
 
 
@@ -193,15 +195,15 @@ def query_view_contents(app_id):
         if with_content:
             p['content'] = parse_content(p_content)
         pages.append(p)
-    run_hook("get_pages", pages=pages, current_page_id=None)
+    run_hook('get_pages', pages=pages, current_page_id=None)
 
     return {
-        "contents": pages,
-        "perpage": perpage,
-        "paged": paged,
-        "count": len(pages),
-        "total_count": total_count,
-        "total_pages": max_pages,
+        'contents': pages,
+        'perpage': perpage,
+        'paged': paged,
+        'count': len(pages),
+        'total_count': total_count,
+        'total_pages': max_pages,
     }
 
 
@@ -236,17 +238,17 @@ def query_view_sides(app_id):
     after_pages = [read_page_metas(content_file, theme_opts)
                    for content_file in after_pages]
 
-    run_hook("get_pages", pages=before_pages, current_page_id=None)
-    run_hook("get_pages", pages=after_pages, current_page_id=None)
+    run_hook('get_pages', pages=before_pages, current_page_id=None)
+    run_hook('get_pages', pages=after_pages, current_page_id=None)
 
     before = before_pages[-1] if before_pages else None
     after = after_pages[0] if after_pages else None
 
     return {
-        "before": before,
-        "after": after,
-        "entires_before": before_pages,
-        "entires_after": after_pages,
+        'before': before,
+        'after': after,
+        'entires_before': before_pages,
+        'entires_after': after_pages,
     }
 
 
@@ -293,7 +295,7 @@ def get_view_content_list(app_id, type_slug=None):
         p.pop('content', u'')
         p = read_page_metas(p, theme_opts)
         pages.append(p)
-    run_hook("get_pages", pages=pages, current_page_id=None)
+    run_hook('get_pages', pages=pages, current_page_id=None)
 
     for p in pages:
         _add_cursor(p, curr_index, total_count, perpage, paged, max_pages)
@@ -311,13 +313,13 @@ def get_view_content(app_id, type_slug, file_slug):
     theme_opts = app['theme_meta'].get('options', {})
 
     page_content = {'content': content_file.pop('content', u'')}
-    run_hook("before_parse_content", content=page_content)
+    run_hook('before_parse_content', content=page_content)
     page_content['content'] = parse_content(page_content['content'])
-    run_hook("after_parse_content", content=page_content)
+    run_hook('after_parse_content', content=page_content)
 
-    run_hook("before_read_page_meta", headers=content_file)
+    run_hook('before_read_page_meta', headers=content_file)
     page_meta = read_page_metas(content_file, theme_opts)
-    run_hook("after_read_page_meta", meta=page_meta, redirect=None)
+    run_hook('after_read_page_meta', meta=page_meta, redirect=None)
 
     return output(page_meta, page_content['content'])
 
@@ -332,10 +334,10 @@ def get_view_segments(app_id):
     for p in results:
         p_content = p.pop('content', u'')
         p = read_page_metas(p, theme_opts)
-        p["content"] = parse_content(p_content)
+        p['content'] = parse_content(p_content)
         pages.append(p)
 
-    run_hook("get_pages", pages=pages, current_page_id=None)
+    run_hook('get_pages', pages=pages, current_page_id=None)
 
     return pages
 
@@ -367,5 +369,5 @@ def _safe_paging(perpage, paged, with_content=False):
 # outputs
 def output(content_file, content_body=None):
     if content_body:
-        content_file["content"] = content_body
+        content_file['content'] = content_body
     return content_file
