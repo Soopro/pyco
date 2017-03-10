@@ -247,11 +247,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
 
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
-
-    if with_content:
-        max_perpage = current_app.config.get('MAXIMUM_INTACT_QUERY')
-    else:
-        max_perpage = current_app.config.get('MAXIMUM_QUERY')
+    max_perpage = current_app.config.get('MAXIMUM_QUERY', 60)
 
     perpage = min(perpage, max_perpage)
 

@@ -50,7 +50,7 @@ INVISIBLE_SLUGS = [
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = ['gfm']
 
-MAXIMUM_QUERY = 36
+MAXIMUM_QUERY = 60
 
 SHORT_FIELD_KEYS = {'type': 'content_type'}
 SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']

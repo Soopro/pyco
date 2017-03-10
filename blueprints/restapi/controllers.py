@@ -363,7 +363,7 @@ def _add_cursor(content, index, total_count, perpage, paged, max_pages):
 
 
 def _safe_paging(perpage, paged):
-    max_perpage = current_app.config.get('MAXIMUM_QUERY')
+    max_perpage = current_app.config.get('MAXIMUM_QUERY', 60)
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
     return min(perpage, max_perpage), paged
