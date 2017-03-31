@@ -1,4 +1,6 @@
 {% for item in menu.primary %}
-  <a href="{{item.url}}">{{item.title}}</a> &nbsp;
+  <a href="{{item.url}}"
+     target="{{item.target}}"
+     class="{{item.class}}">{{item.name}}</a> &nbsp;
 {% endfor %}
 

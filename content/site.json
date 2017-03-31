@@ -13,28 +13,28 @@
         "key": "index",
         "meta": {},
         "nodes": [],
-        "title": "Home",
+        "name": "Home",
         "link": "/"
       },
       {
         "key": "posts",
         "meta": {},
         "nodes": [],
-        "title": "Posts",
+        "name": "Posts",
         "link": "/post/index"
       },
       {
         "key": "works",
         "meta": {},
         "nodes": [],
-        "title": "Portfolio",
+        "name": "Portfolio",
         "link": "/works/index"
       },
       {
         "key": "about",
         "meta": {},
         "nodes": [],
-        "title": "About",
+        "name": "About",
         "link": "/about"
       }
     ]
