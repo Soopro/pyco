@@ -15,7 +15,6 @@ from helpers.app import (run_hook,
                          helper_redirect_url,
                          helper_render_ext_slots,
                          get_theme_path,
-                         get_theme_abs_path,
                          get_segment_contents)
 from helpers.content import (find_content_file,
                              query_by_files,
@@ -99,6 +98,7 @@ def rendering(content_type_slug='page', file_slug='index'):
             return redirect(redirect_to['url'], code=302)
 
     view_ctx['meta'] = page_meta
+    view_ctx['content_type'] = _get_content_type(content_type_slug)
     g.curr_page_id = page_meta['id']
 
     # site_meta
@@ -106,8 +106,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     site_meta['slug'] = curr_app['slug']
     site_meta['id'] = curr_app['_id']
     site_meta['type'] = curr_app['type']
-    site_meta['visit'] = helper_get_statistic(curr_app['_id'],
-                                              content_file['_id'])
+
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
@@ -119,6 +118,9 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # taxonomy
     view_ctx['taxonomy'] = helper_wrap_taxonomy(curr_app['taxonomies'])
+
+    # segments
+    view_ctx['segments'] = get_segments
 
     # extension slots
     ext_slots = curr_app['slots']
@@ -135,9 +137,9 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['libs_url'] = config.get('LIBS_URL', u'')
     view_ctx['base_url'] = base_url
 
-    # now for refresh cache
-    view_ctx['now'] = now()
-
+    # visit
+    site_meta['visit'] = helper_get_statistic(curr_app['_id'],
+                                              content_file['_id'])
     # request
     view_ctx['request'] = {
         'remote_addr': g.request_remote_addr,
@@ -145,16 +147,12 @@ def rendering(content_type_slug='page', file_slug='index'):
         'url': g.request_url,
         'args': parse_args(),
     }
-    view_ctx['args'] = view_ctx['request']['args']
 
-    # query
+    # query contents
     view_ctx['query'] = query_contents
     view_ctx['query_sides'] = query_sides
-    view_ctx['segments'] = get_segments
 
-    # get current content type
-    view_ctx['content_type'] = _get_content_type(content_type_slug)
-    # template helpers
+    # helper functions
     view_ctx['saltshaker'] = saltshaker
     view_ctx['straw'] = straw
     view_ctx['glue'] = glue
@@ -170,7 +168,9 @@ def rendering(content_type_slug='page', file_slug='index'):
     for k, v in view_ctx.iteritems():
         view_ctx[k] = make_dotted_dict(v)
 
-    rendered = {'output': render_template(template_file_path, **view_ctx)}
+    rendered = {
+        'output': render_template(template_file_path, **view_ctx)
+    }
     run_hook('after_render', rendered=rendered)
 
     sa_mod = current_app.sa_mod
