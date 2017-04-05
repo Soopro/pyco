@@ -138,8 +138,8 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['base_url'] = base_url
 
     # visit
-    site_meta['visit'] = helper_get_statistic(curr_app['_id'],
-                                              content_file['_id'])
+    view_ctx['visit'] = helper_get_statistic(curr_app['_id'],
+                                             content_file['_id'])
     # request
     view_ctx['request'] = {
         'remote_addr': g.request_remote_addr,
