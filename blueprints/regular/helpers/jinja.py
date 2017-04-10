@@ -16,10 +16,22 @@ from utils.misc import (sortedby,
                         match_cond)
 
 
-
 # filters
-def filter_thumbnail(pic_url, thumbnail=None):
-    return _get_media_src(pic_url, thumbnail)
+def filter_thumbnail(pic_url, suffix=u'thumbnail'):
+    if not isinstance(pic_url, basestring):
+        return pic_url
+    if not suffix or not isinstance(suffix, basestring):
+        suffix = u'thumbnail'
+    allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
+    try:
+        _url = pic_url.split('?', 1)[0]
+        _ext = os.path.splitext(_url)[1][1:].lower()
+    except Exception:
+        _ext = None
+    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
+        pair = '&' if '?' in pic_url else '?'
+        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
+    return pic_url
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -283,20 +295,3 @@ def timemachine(raw_list, filed='date', precision='month',
         ret.append((date, [x for x in group]))
 
     return ret
-
-
-def _get_media_src(pic_url, suffix=None):
-    if not suffix or not isinstance(suffix, basestring):
-        suffix = 'thumbnail'  # make sure default suffix.
-
-    allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
-    try:
-        _ext = os.path.splitext(pic_url)[1][1:].lower()
-    except:
-        _ext = None
-
-    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
-        pair = '&' if '?' in pic_url else '?'
-        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
-
-    return pic_url
