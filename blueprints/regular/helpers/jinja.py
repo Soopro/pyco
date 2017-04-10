@@ -12,26 +12,14 @@ from utils.misc import (sortedby,
                         format_date,
                         get_url_params,
                         add_url_params,
+                        make_sorts_rule,
                         make_dotted_dict,
                         match_cond)
 
 
 # filters
 def filter_thumbnail(pic_url, suffix=u'thumbnail'):
-    if not isinstance(pic_url, basestring):
-        return pic_url
-    if not suffix or not isinstance(suffix, basestring):
-        suffix = u'thumbnail'
-    allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
-    try:
-        _url = pic_url.split('?', 1)[0]
-        _ext = os.path.splitext(_url)[1][1:].lower()
-    except Exception:
-        _ext = None
-    if pic_url.startswith(g.uploads_url) and _ext in allowed_exts:
-        pair = '&' if '?' in pic_url else '?'
-        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
-    return pic_url
+    return _get_media_src(pic_url, suffix)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -58,7 +46,7 @@ def filter_path(url, remove_args=True, remove_hash=True):
         url = url.split('#')[0]
     try:
         path = url.split(g.curr_base_url)[-1]
-    except:
+    except Exception:
         path = url
 
     return u'/{}'.format(path.strip('/'))
@@ -86,7 +74,7 @@ def filter_date_formatted(date, to_format=None):
     try:
         locale = g.curr_app['locale']
         lang = locale.split('_')[0]
-    except:
+    except Exception:
         locale = None
         lang = None
 
@@ -295,3 +283,20 @@ def timemachine(raw_list, filed='date', precision='month',
         ret.append((date, [x for x in group]))
 
     return ret
+
+
+# helpers
+def _get_media_src(url, suffix=None):
+    if not isinstance(url, basestring):
+        return url
+    if not suffix or not isinstance(suffix, basestring):
+        suffix = u'none'
+    allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
+    try:
+        _ext = os.path.splitext(url.split('?', 1)[0])[1][1:].lower()
+    except Exception:
+        _ext = None
+    if url.startswith(g.uploads_url) and _ext in allowed_exts:
+        pair = '&' if '?' in url else '?'
+        url = '{}{}{}'.format(url, pair, suffix)
+    return url
