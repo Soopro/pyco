@@ -23,7 +23,7 @@
 
   <!-- posts -->
   <section>
-    {% set portfolio = query('works', args.paged) %}
+    {% set portfolio = query('works', request.args.paged) %}
     {% for post in portfolio.contents %}
     <article>
       <header>
