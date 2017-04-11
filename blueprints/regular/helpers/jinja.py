@@ -287,7 +287,8 @@ def timemachine(raw_list, filed='date', precision='month',
 
 # helpers
 def _get_media_src(url, suffix=None):
-    if not isinstance(url, basestring):
+    if not isinstance(url, basestring) or \
+       not url.startswith(g.uploads_url):
         return url
     if not suffix or not isinstance(suffix, basestring):
         suffix = u'none'
