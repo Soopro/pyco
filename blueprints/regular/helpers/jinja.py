@@ -203,16 +203,17 @@ def magnet(raw_list, current, limit=1):
     }
 
 
-def straw(raw_list, value, key='id', nodes_key='nodes', limit=120):
+def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
     """return a item matched with key/value form a list.
-    some_page = straw(pages, some_id, key='id', nodes_key='nodes', limit=120)
+    some_page = straw(pages, some_id, key='id',
+                      recursive_key='nodes', limit=600)
     """
     if not isinstance(key, basestring):
         key = 'id'
-    if not isinstance(nodes_key, basestring):
-        nodes_key = None
+    if not isinstance(recursive_key, basestring):
+        recursive_key = None
 
-    limit = min(parse_int(limit), 120)
+    limit = min(parse_int(limit), 600)
 
     def _find(items, level=0):
         if not isinstance(items, list) or level > 2:
@@ -220,8 +221,8 @@ def straw(raw_list, value, key='id', nodes_key='nodes', limit=120):
         for item in items[:limit]:
             if item.get(key) == value:
                 return item
-            if nodes_key:
-                node = _find(item.get(nodes_key), level + 1)
+            if recursive_key:
+                node = _find(item.get(recursive_key), level + 1)
                 if node:
                     return node
         return None
