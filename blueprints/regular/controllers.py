@@ -224,7 +224,7 @@ def _query_limit(limit):
 
 
 def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
-                   taxonomy={}, priority=True, with_content=False):
+                   taxonomy={}, priority=True):
     remain_queries = _query_limit(3)
 
     curr_id = g.curr_page_id
@@ -267,13 +267,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
 
     # query content files
     results = query_by_files(attrs, sortby, limit, offset, priority)
-    pages = []
-    for p in results:
-        p_content = p.pop('content', u'')
-        p = read_page_metas(p, theme_opts, curr_id)
-        if with_content:
-            p['content'] = parse_content(p_content)
-        pages.append(p)
+    pages = [read_page_metas(p, theme_opts, curr_id) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
 

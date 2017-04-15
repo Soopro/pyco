@@ -160,7 +160,6 @@ def query_view_contents(app_id):
     paged = get_param('paged', int, False, 0)
     priority = get_param('priority', bool, False, True)
     taxonomy = get_param('taxonomy', dict, False, True)
-    with_content = get_param('with_content', bool, False, False)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -197,13 +196,7 @@ def query_view_contents(app_id):
 
     # query content files
     results = query_by_files(attrs, sortby, limit, offset, priority)
-    pages = []
-    for p in results:
-        p_content = p.pop('content', u'')
-        p = read_page_metas(p, theme_opts, None)
-        if with_content:
-            p['content'] = parse_content(p_content)
-        pages.append(p)
+    pages = [read_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     return {
