@@ -120,7 +120,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['taxonomy'] = helper_wrap_taxonomy(curr_app['taxonomies'])
 
     # segments
-    view_ctx['segments'] = get_segments
+    view_ctx['segments'] = load_segments(curr_app)
 
     # extension slots
     ext_slots = curr_app['slots']
@@ -346,10 +346,9 @@ def query_sides(pid, attrs=[], limit=0, sortby=[],
     }
 
 
-def get_segments():
-    if 'segments' in g:
-        return g.segments
-    app = g.curr_app
+def load_segments(app):
+    if not app['theme_meta'].get('use_segments'):
+        return []
     theme_opts = app['theme_meta'].get('options', {})
     # get segment contents
     results = get_segment_contents(app)
@@ -361,6 +360,4 @@ def get_segments():
         pages.append(p)
 
     run_hook('get_pages', pages=pages, current_page_id=None)
-    g.segments = make_dotted_dict(pages)
-
-    return g.segments
+    return make_dotted_dict(pages)
