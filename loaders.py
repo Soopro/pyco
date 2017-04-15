@@ -12,60 +12,60 @@ import json
 import markdown
 
 
-def load_config(app, config_name="config.py"):
+def load_config(app, config_name='config.py'):
     app.config.from_pyfile(config_name)
-    app.config.setdefault("DEBUG", False)
-    app.config.setdefault("STATIC_PATH", "static")
-    app.config.setdefault("UPLOADS_DIR", "uploads")
-    app.config.setdefault("CONTENT_DIR", "content")
-    app.config.setdefault("CONTENT_FILE_EXT", ".md")
+    app.config.setdefault('DEBUG', False)
+    app.config.setdefault('STATIC_PATH', 'static')
+    app.config.setdefault('UPLOADS_DIR', 'uploads')
+    app.config.setdefault('CONTENT_DIR', 'content')
+    app.config.setdefault('CONTENT_FILE_EXT', '.md')
 
-    app.config.setdefault("BASE_URL", "/")
-    app.config.setdefault("LIBS_URL", "")
-    app.config.setdefault("THEME_URL", "")
-    app.config.setdefault("API_BASEURL", "")
+    app.config.setdefault('BASE_URL', '/')
+    app.config.setdefault('LIBS_URL', '')
+    app.config.setdefault('THEME_URL', '')
+    app.config.setdefault('API_BASEURL', '')
 
-    app.config.setdefault("PLUGINS", [])
-    app.config.setdefault("INVISIBLE_PAGE_LIST", [])
-    app.config.setdefault("THEME_NAME", "default")
-    app.config.setdefault("HOST", "0.0.0.0")
-    app.config.setdefault("PORT", 5500)
-    app.config.setdefault("SITE", {})
-    app.config.setdefault("THEME_META", {})
-    app.config.setdefault("SYS_ICON_LIST", [])
+    app.config.setdefault('PLUGINS', [])
+    app.config.setdefault('INVISIBLE_PAGE_LIST', [])
+    app.config.setdefault('THEME_NAME', 'default')
+    app.config.setdefault('HOST', '0.0.0.0')
+    app.config.setdefault('PORT', 5500)
+    app.config.setdefault('SITE', {})
+    app.config.setdefault('THEME_META', {})
+    app.config.setdefault('SYS_ICON_LIST', [])
 
-    app.config.setdefault("PLUGIN_DIR", "plugins")
-    app.config.setdefault("THEMES_DIR", "themes")
-    app.config.setdefault("TEMPLATE_FILE_EXT", ".html")
-    app.config.setdefault("TPL_FILE_EXT", ".tpl")
+    app.config.setdefault('PLUGIN_DIR', 'plugins')
+    app.config.setdefault('THEMES_DIR', 'themes')
+    app.config.setdefault('TEMPLATE_FILE_EXT', '.html')
+    app.config.setdefault('TPL_FILE_EXT', '.tpl')
 
-    app.config.setdefault("SITE_DATA_FILE", "site.json")
-    app.config.setdefault("THEME_CONF_FILE", "config.json")
+    app.config.setdefault('SITE_DATA_FILE', 'site.json')
+    app.config.setdefault('THEME_CONF_FILE', 'config.json')
 
-    app.config.setdefault("DEFAULT_TEMPLATE", "index")
-    app.config.setdefault("DEFAULT_DATE_FORMAT", "%Y-%m-%d")
-    app.config.setdefault("DEFAULT_EXCERPT_LENGTH", 162)
-    app.config.setdefault("DEFAULT_EXCERPT_ELLIPSIS", "&hellip;")
+    app.config.setdefault('DEFAULT_TEMPLATE', 'index')
+    app.config.setdefault('DEFAULT_DATE_FORMAT', '%Y-%m-%d')
+    app.config.setdefault('DEFAULT_EXCERPT_LENGTH', 162)
+    app.config.setdefault('DEFAULT_EXCERPT_ELLIPSIS', '&hellip;')
 
-    app.config.setdefault("DEFAULT_INDEX_SLUG", "index")
-    app.config.setdefault("DEFAULT_404_SLUG", "error-404")
-    app.config.setdefault("DEFAULT_SEARCH_SLUG", "search")
-    app.config.setdefault("DEFAULT_TAXONOMY_SLUG", "taxonomy")
-    app.config.setdefault("DEFAULT_TAG_SLUG", "tag")
+    app.config.setdefault('DEFAULT_INDEX_SLUG', 'index')
+    app.config.setdefault('DEFAULT_404_SLUG', 'error-404')
+    app.config.setdefault('DEFAULT_SEARCH_SLUG', 'search')
+    app.config.setdefault('DEFAULT_TAXONOMY_SLUG', 'taxonomy')
+    app.config.setdefault('DEFAULT_TAG_SLUG', 'tag')
 
-    app.config.setdefault("INVISIBLE_SLUGS",
+    app.config.setdefault('RESERVED_SLUGS',
                           ['index', 'error-404', 'search', 'taxonomy', 'tag'])
 
-    app.config.setdefault("SORTABLE_FIELD_KEYS", [])
-    app.config.setdefault("STRUCTURE_FIELD_KEYS", [])
-    app.config.setdefault("SHORT_FIELD_KEYS", {})
+    app.config.setdefault('SORTABLE_FIELD_KEYS', [])
+    app.config.setdefault('STRUCTURE_FIELD_KEYS', [])
+    app.config.setdefault('SHORT_FIELD_KEYS', {})
 
-    app.config.setdefault("MAXIMUM_QUERY", 60)
-    app.config.setdefault("MAXIMUM_INTACT_QUERY", 60)
+    app.config.setdefault('MAXIMUM_QUERY', 60)
+    app.config.setdefault('MAXIMUM_INTACT_QUERY', 60)
 
 
 def load_plugins(app):
-    plugins = app.config.get("PLUGINS")
+    plugins = app.config.get('PLUGINS')
     loaded_plugins = []
     for module_or_module_name in plugins:
         if type(module_or_module_name) is ModuleType:
@@ -93,11 +93,11 @@ def load_all_files(app, curr_app):
 
     data_list = []
     for f in all_files:
-        relative_path = f.split(content_dir + "/", 1)[1]
-        if relative_path.startswith("_"):
+        relative_path = f.split(content_dir + '/', 1)[1]
+        if relative_path.startswith('_'):
             continue
 
-        with open(f, "r") as fh:
+        with open(f, 'r') as fh:
             readed = fh.read().decode('utf-8')
         meta_string, content_string = _content_splitter(readed)
         try:
@@ -142,7 +142,7 @@ def load_curr_app(app):
         with open(theme_meta_file) as theme_data:
             theme_meta = json.load(theme_data)
     except Exception as e:
-        err_msg = "Load Theme Meta faild: {}".format(str(e))
+        err_msg = 'Load Theme Meta faild: {}'.format(str(e))
         raise Exception(err_msg)
 
     try:
@@ -150,7 +150,7 @@ def load_curr_app(app):
             site_json_str = site_data.read().decode('utf-8')
             site = json.loads(_shortcode(site_json_str))
     except Exception as e:
-        err_msg = "Load Site Meta faild: {}".format(str(e))
+        err_msg = 'Load Site Meta faild: {}'.format(str(e))
         raise Exception(err_msg)
 
     site_meta = site.get('meta', {})
@@ -160,7 +160,7 @@ def load_curr_app(app):
         'slug': site.get('slug', 'pyco'),
         'type': site.get('type', 'ws'),
         'locale': site.get('locale', 'en_US'),
-        'content_types': site.get('content_types', {"page": "Pages"}),
+        'content_types': site.get('content_types', {'page': 'Pages'}),
         'taxonomies': site.get('taxonomies', None),
         'menus': site.get('menus', None),
         'slots': site.get('slots', {}),
@@ -175,23 +175,23 @@ def load_curr_app(app):
 # helpers
 def _content_splitter(file_content):
     file_content = _shortcode(file_content)
-    pattern = r"(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)"
+    pattern = r'(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)'
     re_pattern = re.compile(pattern)
     m = re_pattern.match(file_content)
     if m is None:
-        return "", ""
-    return m.group("meta"), m.group("content")
+        return '', ''
+    return m.group('meta'), m.group('content')
 
 
 def _shortcode(text):
     config = current_app.config
-    re_uploads_dir = re.compile(r"\[\%uploads\%\]", re.IGNORECASE)
-    re_theme_dir = re.compile(r"\[\%theme\%\]", re.IGNORECASE)
+    re_uploads_dir = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
+    re_theme_dir = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
     # uploads
-    uploads_dir = "{}/{}".format(config["BASE_URL"], config["UPLOADS_DIR"])
+    uploads_dir = '{}/{}'.format(config['BASE_URL'], config['UPLOADS_DIR'])
     text = re.sub(re_uploads_dir, unicode(uploads_dir), text)
     # theme
-    text = re.sub(re_theme_dir, unicode(config["THEME_URL"]), text)
+    text = re.sub(re_theme_dir, unicode(config['THEME_URL']), text)
     return text
 
 
@@ -214,7 +214,7 @@ def _auto_content_type(file_path, default_type=u'page'):
 
 def _auto_id(file_path):
     content_dir = current_app.config.get('CONTENT_DIR')
-    page_id = file_path.replace(content_dir + "/", '', 1).lstrip('/')
+    page_id = file_path.replace(content_dir + '/', '', 1).lstrip('/')
     return page_id
 
 
@@ -234,12 +234,12 @@ def _file_headers(meta_string):
         elif isinstance(x, list):
             return list([convert_data(i) for i in x])
         elif isinstance(x, str):
-            return x.decode("utf-8")
+            return x.decode('utf-8')
         elif isinstance(x, (unicode, int, float, bool)) or x is None:
             return x
         else:
             try:
-                x = str(x).decode("utf-8")
+                x = str(x).decode('utf-8')
             except Exception as e:
                 print e
                 pass
@@ -250,9 +250,9 @@ def _file_headers(meta_string):
 
 
 def _make_excerpt(content_string, length=600):
-    use_markdown = current_app.config.get("USE_MARKDOWN")
+    use_markdown = current_app.config.get('USE_MARKDOWN')
     if use_markdown:
-        markdown_exts = current_app.config.get("MARKDOWN_EXTENSIONS", [])
+        markdown_exts = current_app.config.get('MARKDOWN_EXTENSIONS', [])
         content = markdown.markdown(content_string, markdown_exts)
     else:
         content = content_string
@@ -265,6 +265,6 @@ def _make_searching_words(meta):
     des = meta.get('description', u'')
     try:
         text = remove_multi_space(u'{} {}'.format(title, des)[:600])
-    except:
+    except Exception:
         text = u''
     return text

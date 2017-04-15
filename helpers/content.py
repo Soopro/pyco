@@ -23,7 +23,7 @@ def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
         ids = [item['_id'] for item in sorting[offset:offset + limit]]
         order_dict = {_id: index for index, _id in enumerate(ids)}
         files = [f for f in files if f['_id'] in ids]
-        files.sort(key=lambda x: order_dict[x["_id"]])
+        files.sort(key=lambda x: order_dict[x['_id']])
     else:
         files = files[offset:offset + limit]
     return files
@@ -343,7 +343,7 @@ def helper_wrap_translates(translates, locale):
 def _query(files, attrs):
     SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
     STRUCTURE_FIELD_KEYS = current_app.config.get('STRUCTURE_FIELD_KEYS')
-    INVISIBLE_SLUGS = current_app.config.get('INVISIBLE_SLUGS')
+    RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
     if isinstance(attrs, (basestring, dict)):
         attrs = [attrs]
@@ -371,9 +371,9 @@ def _query(files, attrs):
         attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
         if attr_key not in STRUCTURE_FIELD_KEYS \
            and '.' not in attr_key:
-            attr_key = "meta.{}".format(attr_key)
+            attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files
-                 if f['slug'] not in INVISIBLE_SLUGS and
+                 if f['slug'] not in RESERVED_SLUGS and
                  match_cond(f, attr_key, attr_value, force, opposite)]
 
     return files
@@ -384,7 +384,7 @@ def _sorting(files, sort_keys):
     SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
 
     if not sort_keys:
-        sorts_list = [("updated", -1)]
+        sorts_list = [('updated', -1)]
     else:
         sorts_list = []
         for sort in sort_keys[:5]:  # max sort keys is 5

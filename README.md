@@ -96,7 +96,7 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_TAG_SLUG`: **[ str ]** Tags page slug default as `"tag"`.
 
-* `INVISIBLE_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAXONOMY_SLUG, DEFAULT_TAG_SLUG]`.
+* `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAG_SLUG]`.
 
 * `USE_MARKDOWN`: **[ bool ]** Use markdown for rendering or not. Default is `False`.
 

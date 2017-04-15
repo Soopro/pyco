@@ -159,6 +159,7 @@ def query_view_contents(app_id):
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
     priority = get_param('priority', bool, False, True)
+    taxonomy = get_param('taxonomy', dict, False, True)
     with_content = get_param('with_content', bool, False, False)
 
     theme_meta = g.curr_app['theme_meta']
@@ -179,6 +180,11 @@ def query_view_contents(app_id):
         perpage = theme_opts.get('perpage')
 
     perpage, paged = _safe_paging(perpage, paged)
+
+    # taxonomy term
+    if taxonomy:
+        tax_key = 'taxonomy.{}'.format(taxonomy.get('slug'))
+        attrs.append({tax_key: taxonomy.get('term')})
 
     # position
     total_count = count_by_files(attrs)
@@ -220,6 +226,7 @@ def query_view_sides(app_id):
     sortby = get_param('sortby', list, False, [])
     limit = get_param('perpage', int, False, 1)
     priority = get_param('priority', bool, False, True)
+    taxonomy = get_param('taxonomy', dict, False, True)
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
@@ -235,6 +242,11 @@ def query_view_sides(app_id):
             sortby = []
 
     limit = parse_int(limit, 1, True)
+
+    # taxonomy term
+    if taxonomy:
+        tax_key = 'taxonomy.{}'.format(taxonomy.get('slug'))
+        attrs.append({tax_key: taxonomy.get('term')})
 
     # query side mongo
     before_pages, after_pages = query_sides_by_files(pid, attrs, sortby,
