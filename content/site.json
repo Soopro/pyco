@@ -44,8 +44,8 @@
       "title":"Categories",
       "content_types":["works"],
       "terms": [
-        {"key":"web-design", "title":"Daily"},
-        {"key":"food", "title":"Food"}
+        {"key":"web-design", "meta":{"name": "Daily"}},
+        {"key":"food", "meta":{"name": "Food"}}
       ]
     }
   },
