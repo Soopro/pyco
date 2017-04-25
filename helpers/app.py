@@ -61,7 +61,7 @@ def helper_record_statistic(app_id, page_id):
                          request.user_agent.string)
         if page_id:
             sa_mod.count_page(page_id)
-    except:
+    except Exception:
         pass
 
 
@@ -78,25 +78,3 @@ def helper_get_statistic(app_id, page_id=None):
         sa['page'] = sa_page_status.get('pv')
 
     return sa
-
-
-# segments
-def get_segment_contents(app):
-    if not app['segments']:
-        return []
-    tmpls = _segment_templates(app)
-    seg_files = [f for f in g.files if f['content_type'] == 'page' and
-                 f['slug'] in app['segments']]
-    seg_dict = {f['slug']: f for f in seg_files if f['template'] in tmpls}
-    segment_contents = []
-    segment_slugs = []
-    for seg in app['segments']:
-        if seg in seg_dict and seg not in segment_slugs:
-            segment_contents.append(seg_dict[seg])
-            segment_slugs.append(seg)
-    return segment_contents
-
-
-def _segment_templates(app):
-    tmpls = app['theme_meta'].get('templates', [])
-    return [tmpl.replace('^', '') for tmpl in tmpls if tmpl.startswith('^')]

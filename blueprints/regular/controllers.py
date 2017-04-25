@@ -8,17 +8,17 @@ from services.i18n import Translator
 
 from utils.request import parse_args
 from utils.response import make_content_response
-from utils.misc import make_dotted_dict, parse_int, now
+from utils.misc import make_dotted_dict, parse_int
 
 from helpers.app import (run_hook,
                          helper_get_statistic,
                          helper_redirect_url,
                          helper_render_ext_slots,
-                         get_theme_path,
-                         get_segment_contents)
+                         get_theme_path)
 from helpers.content import (find_content_file,
                              query_by_files,
                              query_sides_by_files,
+                             query_segments,
                              count_by_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
@@ -345,7 +345,7 @@ def load_segments(app):
         return []
     theme_opts = app['theme_meta'].get('options', {})
     # get segment contents
-    results = get_segment_contents(app)
+    results = query_segments(app)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

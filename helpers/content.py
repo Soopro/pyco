@@ -2,8 +2,8 @@
 from __future__ import absolute_import
 
 from flask import current_app, g
-import os
 import markdown
+
 from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, make_sorts_rule
 
@@ -71,6 +71,30 @@ def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
     return befores, afters
 
 
+# segments
+def query_segments(app, limit=24):
+    theme_config = app['theme_meta']
+    tmpls = [tmpl.replace('^', '')
+             for tmpl in theme_config.get('templates', [])
+             if tmpl.startswith('^')]
+    seg_files = [f for f in g.files if f['template'] in tmpls]
+
+    # sorts
+    opts = theme_config.get('options', {})
+    sorts = make_sorts_rule(opts.get('sortby'), [('priority', 1)])
+
+    limit = min(parse_int(limit, 1, 1), 60)
+
+    # resulting
+    results = []
+    segments = sortedby(list(seg_files), sorts)[:limit]
+    for index, segment in enumerate(segments):
+        segment['meta']['remain'] = limit - (index + 1)
+        results.append(segment)
+    return results
+
+
+# search
 def search_by_files(keywords, content_type=None, attrs=[],
                     use_tags=True, limit=0, offset=0):
     if content_type:

@@ -14,11 +14,11 @@ from utils.response import output_json
 from helpers.app import (run_hook,
                          helper_record_statistic,
                          helper_get_statistic,
-                         helper_render_ext_slots,
-                         get_segment_contents)
+                         helper_render_ext_slots)
 from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
+                             query_segments,
                              count_by_files,
                              search_by_files,
                              find_content_file,
@@ -341,8 +341,7 @@ def get_view_segments(app_id):
     if not app['theme_meta'].get('use_segments'):
         return []
     theme_opts = app['theme_meta'].get('options', {})
-    # get segment contents
-    results = get_segment_contents(app)
+    results = query_segments(app)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

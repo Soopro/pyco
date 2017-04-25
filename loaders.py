@@ -165,7 +165,6 @@ def load_curr_app(app):
         'menus': site.get('menus', None),
         'slots': site.get('slots', {}),
         'meta': site_meta,
-        'segments': site.get('segments', []),
         'socials': site_meta.pop('socials', None),
         'translates': site_meta.pop('translates', None),
         'theme_meta': theme_meta
