@@ -338,10 +338,11 @@ def get_view_content(app_id, type_slug, file_slug):
 @output_json
 def get_view_segments(app_id):
     app = g.curr_app
-    if not app['theme_meta'].get('use_segments'):
-        return []
     theme_opts = app['theme_meta'].get('options', {})
-    results = query_segments(app)
+    use_segments = theme_opts.get('segments')
+    if not use_segments:
+        return []
+    results = query_segments(app, use_segments)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')

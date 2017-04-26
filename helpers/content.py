@@ -83,7 +83,8 @@ def query_segments(app, limit=24):
     opts = theme_config.get('options', {})
     sorts = make_sorts_rule(opts.get('sortby'), [('priority', 1)])
 
-    limit = min(parse_int(limit, 1, 1), 60)
+    # limit
+    limit = min(parse_int(limit, 24, 1), 60)
 
     # resulting
     results = []

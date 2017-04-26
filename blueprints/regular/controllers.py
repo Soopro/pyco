@@ -341,11 +341,12 @@ def query_sides(pid, attrs=[], limit=0, sortby=[],
 
 
 def load_segments(app):
-    if not app['theme_meta'].get('use_segments'):
-        return []
     theme_opts = app['theme_meta'].get('options', {})
+    use_segments = theme_opts.get('segments')
+    if not use_segments:
+        return []
     # get segment contents
-    results = query_segments(app)
+    results = query_segments(app, use_segments)
     pages = []
     for p in results:
         p_content = p.pop('content', u'')
