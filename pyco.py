@@ -116,7 +116,7 @@ if __name__ == '__main__':
     port = app.config.get('PORT')
 
     print "-------------------------------------------------------"
-    print "Pyco: {}".format(app.version)
+    print 'Pyco: {}'.format(app.version)
     print "-------------------------------------------------------"
 
     if app.debug:
