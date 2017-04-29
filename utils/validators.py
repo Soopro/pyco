@@ -33,27 +33,20 @@ def max_length(length):
 def email_validator(val):
     if not val:
         return False
-    if re.match(r"^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$", val) and \
+    if re.match(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$', val) and \
        max_length(100)(val):
         return True
     else:
         return False
 
 
-def login_validator(val):
-    if not val:
-        return False
-    return email_validator(val)
-
-
 def url_validator(val):
     if not isinstance(val, basestring):
         return False
     try:
-        # if re.match("^(?:http|ftp)s?://", val):
-        if re.match(r"^\w+:", val):
+        if re.match('^(?:http|ftp)s?://', val):
             return True
         else:
             return False
-    except:
+    except Exception:
         return False

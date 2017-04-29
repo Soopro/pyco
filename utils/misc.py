@@ -6,8 +6,10 @@ from werkzeug.utils import secure_filename
 from slugify import slugify
 from datetime import datetime
 from functools import cmp_to_key
+from bson import ObjectId
 import os
 import re
+import uuid
 import time
 import hashlib
 import hmac
@@ -60,26 +62,24 @@ def route_inject(app_or_blueprint, url_patterns):
                                       **options)
 
 
-_valid_slug = re.compile(r'^[a-z0-9_\-]+$')
-_word = re.compile(r'\w')
-_white_space = re.compile(r'\s')
-
-
-def process_slug(value, ensure=True):
+def process_slug(value, autofill=True):
     try:
         slug = unicode(slugify(value))
     except Exception:
         slug = u''
-    if not slug and ensure:
+    if not slug and autofill:
         slug = unicode(repr(time.time())).replace('.', '-')
     return slug
 
 
-def safe_cast(val, to_type, default=None):
-    try:
-        return to_type(val)
-    except ValueError:
-        return default
+def slug_uuid_suffix(slug, dig=6):
+    if not slug:
+        return uuid.uuid4().hex[:dig]
+    return u'{}-{}'.format(slug, uuid.uuid4().hex[:dig])
+
+
+def uuid4_hex(dig=32):
+    return unicode(uuid.uuid4().hex[:dig])
 
 
 def now(dig=10):
@@ -155,24 +155,11 @@ def add_url_params(url, new_params, concat=True, unique=True):
 
 
 def safe_regex_str(val):
-    if isinstance(val, unicode):
-        val = val.decode("utf-8")
-    elif not isinstance(val, str):
-        return None
-    val = val.replace("/", "\/")
-    val = val.replace("*", "\*")
-    val = val.replace(".", "\.")
-    val = val.replace("[", "\[")
-    val = val.replace("]", "\]")
-    val = val.replace("(", "\(")
-    val = val.replace(")", "\)")
-    val = val.replace("^", "\^")
-    val = val.replace("|", "\|")
-    val = val.replace("{", "\{")
-    val = val.replace("}", "\}")
-    val = val.replace("?", "\?")
-    val = val.replace("$", "\$")
-    return val
+    if isinstance(val, str):
+        val = val.decode('utf-8')
+    elif not isinstance(val, unicode):
+        return u''
+    return re.sub(r'[\/\\*\.\[\]\(\)\^\|\{\}\?\$\!\@\#]', '', val)
 
 
 def remove_multi_space(text):
@@ -184,39 +171,51 @@ def remove_multi_space(text):
 
 
 def make_sorts_rule(sort_by, initial=None):
-    if initial and isinstance(initial, list):
-        sort_rules = [item for item in initial
-                      if isinstance(item, (basestring, tuple))]
-    else:
-        sort_rules = []
+    sort_rules = initial if isinstance(initial, list) else []
 
     if isinstance(sort_by, (basestring, tuple)):
         sort_rules.append(sort_by)
     elif isinstance(sort_by, list):
-        sort_rules = sort_rules + [key for key in sort_by
-                                   if isinstance(key, (basestring, tuple))]
-    return sort_rules
+        sort_rules += sort_by
+
+    sorts_list = []
+    for sort in sort_rules:
+        key = None
+        direction = None
+        if isinstance(sort, basestring):
+            if sort.startswith('+'):
+                key = sort.lstrip('+')
+                direction = 1
+            else:
+                key = sort.lstrip('-')
+                direction = -1
+        elif isinstance(sort, tuple):
+            key = sort[0]
+            direction = sort[1]
+        if key:
+            sorts_list.append((key, direction))
+
+    return sorts_list
 
 
 def sortedby(source, sort_keys, reverse=False):
     sorts = []
-    if not isinstance(sort_keys, list):
+    if isinstance(sort_keys, (basestring, tuple)):
         sort_keys = [sort_keys]
+    elif not isinstance(sort_keys, list):
+        sort_keys = []
 
-    def parse_sorts(key):
+    for key in sort_keys:
         if isinstance(key, tuple):
             sorts.append((key[0], key[1]))
         elif isinstance(key, basestring):
-            if key.startswith('-'):
-                key = key.lstrip('-')
-                direction = -1
-            else:
+            if key.startswith('+'):
                 key = key.lstrip('+')
                 direction = 1
+            else:
+                key = key.lstrip('-')
+                direction = -1
             sorts.append((key, direction))
-
-    for key in sort_keys:
-        parse_sorts(key)
 
     def compare(a, b):
         for sort in sorts:
@@ -238,7 +237,7 @@ def parse_int(num, default=0, natural=False):
         natural = False
     try:
         num = int(float(num))
-    except:
+    except (ValueError, TypeError):
         num = default
     if natural == 0:
         num = max(0, num)
@@ -252,11 +251,36 @@ def parse_dict_by_structure(obj, structure):
         return None
     newobj = {}
     for k, v in structure.iteritems():
-        if type(obj.get(k)) is not v:
-            newobj.update({k: v()})
+        if v is ObjectId:
+            if ObjectId.is_valid(obj.get(k)):
+                newobj.update({k: ObjectId(obj.get(k))})
+            else:
+                newobj.update({k: None})
         else:
-            newobj.update({k: obj.get(k)})
+            if type(obj.get(k)) is v:
+                newobj.update({k: obj.get(k)})
+            else:
+                try:
+                    _v = v(obj.get(k))
+                except Exception:
+                    _v = v()
+                newobj.update({k: _v})
     return newobj
+
+
+def limit_dict(dict_obj, length=None):
+    if not isinstance(dict_obj, dict):
+        return {}
+    elif not length or len(dict_obj) <= length:
+        return dict(dict_obj)
+    else:
+        obj = {}
+        for k, v in dict_obj.iteritems():
+            if len(obj) < length:
+                obj[k] = v
+            else:
+                break
+        return obj
 
 
 def version_str_to_list(str_version):
@@ -265,16 +289,19 @@ def version_str_to_list(str_version):
         version = [int(v) for v in str_ver_list[:3]]
         if len(str_ver_list) > 3:
             version.append(str_ver_list[3])
-    except:
+    except Exception:
         version = None
     return version
 
 
 def version_list_to_str(list_version):
     try:
-        list_version += [0, 0, 0]  # ensure has 3 items
-        version = '.'.join(map(str, list_version[:4]))
-    except:
+        # ensure has 3 items
+        if len(list_version) < 3:
+            for x in range(3 - len(list_version)):
+                list_version.append(0)
+        version = '.'.join(map(unicode, list_version[:4]))
+    except Exception:
         version = None
     return version
 
@@ -286,7 +313,7 @@ def safe_filename(filename, mimetype=None):
     if not mimetype:
         try:
             mimetype = mimetypes.guess_type(filename)[0]
-        except:
+        except Exception:
             mimetype = None
 
     filename = secure_filename(filename)
@@ -297,14 +324,14 @@ def safe_filename(filename, mimetype=None):
     if not ext and mimetype:
         ext = mimetypes.guess_extension(mimetype)
         ext = ext if ext else '.{}'.format(mimetypes.split('/')[-1])
-    filename = u"{}{}".format(name, ext)
-    return u"{}{}".format(_starts.group(), filename)
+    filename = u'{}{}'.format(name, ext)
+    return u'{}{}'.format(_starts.group(), filename)
 
 
 def file_md5(fname):
     _hash = hashlib.md5()
-    with open(fname, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
+    with open(fname, 'rb') as f:
+        for chunk in iter(lambda: f.read(4096), b''):
             _hash.update(chunk)
     return _hash.hexdigest()
 
@@ -319,7 +346,7 @@ def hmac_sha(key, msg, digestmod=None, output=True):
         return sha
 
 
-def format_date(date, to_format, input_datefmt="%Y-%m-%d"):
+def format_date(date, to_format, input_datefmt='%Y-%m-%d'):
     if not to_format:
         return date
     if isinstance(date, basestring):
@@ -418,3 +445,58 @@ def match_cond(target, cond_key, cond_value, force=True, opposite=False):
             matched = cond_value == target_value
 
     return matched != opposite
+
+
+def format_tags(tags, limit=60, upper=False):
+    def _styl(text):
+        if upper:
+            return text.upper()
+        else:
+            return text.lower()
+    _tags = []
+    for tag in tags:
+        if not isinstance(tag, basestring):
+            continue
+        _tag = _styl(tag)
+        if _tag not in _tags:
+            _tags.append(_tag)
+    return _tags[:limit]
+
+
+# mimetypes
+def split_file_ext(filename):
+    try:
+        return os.path.splitext(filename)[1][1:].lower()
+    except Exception:
+        return None
+
+
+def guess_file_type(filename, default=None, output_mimetype=True):
+    try:
+        guessed_type = mimetypes.guess_type(filename)[0]
+    except Exception:
+        guessed_type = None
+
+    mimetype = guessed_type or default
+
+    if not output_mimetype and mimetype:
+        return mimetype.split('/')[0]
+    else:
+        return mimetype
+
+
+# nonascii
+def contains_nonascii_characters(string):
+    """ check if the body contain nonascii characters"""
+    for c in string:
+        if not ord(c) < 128:
+            return True
+    return False
+
+
+# escapes
+def escape_asterisk(key, asterisk='*', output=None):
+    if key == asterisk:
+        return output
+    else:
+        return key

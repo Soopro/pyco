@@ -6,10 +6,10 @@ import json
 
 class SimpleAnalyzer(object):
     analytics_data = {
-        "pv": 0,
-        "vs": 0,
-        "uv": 0,
-        "ip": 0,
+        'pv': 0,
+        'vs': 0,
+        'uv': 0,
+        'ip': 0,
     }
     analytics_page_data = {}
     period = {
@@ -36,7 +36,7 @@ class SimpleAnalyzer(object):
         try:
             with open(self.data_src) as f:
                 loaded = json.load(f)
-        except:
+        except Exception:
             loaded = {}
 
         if loaded:
