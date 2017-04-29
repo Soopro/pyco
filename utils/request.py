@@ -59,16 +59,6 @@ def parse_args():
     return new
 
 
-def make_query(args):
-    query = ""
-    for arg in args:
-        s = "{}={}".format(arg, args.get(arg)) if query == "" \
-            else "&{}={}".format(arg, args.get(arg))
-
-        query = "{}{}".format(query, s)
-    return query
-
-
 def get_remote_addr():
     ip = request.headers.get('X-Forwarded-For')
     if ip:
@@ -81,6 +71,6 @@ def get_remote_addr():
 def get_request_url(base_url, path):
     if '?' in request.url:
         args = request.url.split('?', 1)[1]
-        return "{}{}?{}".format(base_url, path, args)
+        return '{}{}?{}'.format(base_url, path, args)
     else:
-        return "{}{}".format(base_url, path)
+        return '{}{}'.format(base_url, path)
