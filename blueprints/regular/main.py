@@ -16,7 +16,7 @@ from .helpers.jinja import (filter_thumbnail,
                             filter_args)
 from .routes import urlpatterns
 
-bp_name = "regular"
+bp_name = 'regular'
 
 blueprint = Blueprint(bp_name, __name__)
 route_inject(blueprint, urlpatterns)

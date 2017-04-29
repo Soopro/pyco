@@ -10,7 +10,7 @@ from utils.response import make_json_response
 from .routes import urlpatterns
 
 
-bp_name = "restapi"
+bp_name = 'restapi'
 
 blueprint = Blueprint(bp_name, __name__)
 route_inject(blueprint, urlpatterns)
@@ -23,9 +23,9 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
+    err_msg = '{}\n{}'.format(repr(err), traceback.format_exc())
     current_app.logger.error(err_msg)
     err = {
-        "errmsg": repr(err)
+        'errmsg': repr(err)
     }
     return make_json_response(err, 500)
