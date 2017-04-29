@@ -9,10 +9,10 @@ def register_blueprints(app):
 
     # restapi
     from .restapi import blueprint as restapi_module
-    app.register_blueprint(restapi_module, url_prefix="/restapi/app")
+    app.register_blueprint(restapi_module, url_prefix='/restapi/app')
 
     # uploads
     from .uploads import blueprint as uploads_module
     uploads_dir = app.config.get('UPLOADS_DIR')
-    uploads_prefix = "/{}".format(uploads_dir)
+    uploads_prefix = '/{}'.format(uploads_dir)
     app.register_blueprint(uploads_module, url_prefix=uploads_prefix)
