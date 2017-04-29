@@ -46,8 +46,7 @@ app.jinja_env.add_extension('jinja2.ext.with_')
 
 # encoder
 app.json_encoder = JSONEncoder
-# config
-load_config(app)
+
 # plugins
 load_plugins(app)
 # analyzer
