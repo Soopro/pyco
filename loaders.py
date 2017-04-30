@@ -1,7 +1,6 @@
 # coding=utf8
 from __future__ import absolute_import
 
-from flask import current_app
 from utils.misc import process_slug, remove_multi_space
 
 from types import ModuleType
@@ -98,7 +97,7 @@ def load_all_files(app, curr_app):
 
         with open(f, 'r') as fh:
             readed = fh.read().decode('utf-8')
-        meta_string, content_string = _content_splitter(readed)
+        meta_string, content_string = _content_splitter(app.config, readed)
         try:
             meta = _file_headers(meta_string)
         except Exception as e:
@@ -106,9 +105,9 @@ def load_all_files(app, curr_app):
             raise e
 
         file_data = {
-            '_id': _auto_id(f),
+            '_id': _auto_id(app.config, f),
             'app_id': curr_app['_id'],
-            'slug': _auto_page_slug(f),
+            'slug': _auto_page_slug(app.config, f),
             'content_type': _auto_content_type(f),
             'priority': meta.pop('priority', 0),
             'parent': meta.pop('parent', u''),
@@ -120,7 +119,7 @@ def load_all_files(app, curr_app):
             'status': meta.pop('status', 1),
             'meta': meta,
             'searching': _make_searching_words(meta),
-            'excerpt': _make_excerpt(content_string),
+            'excerpt': _make_excerpt(app.config, content_string),
             'content': content_string,
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
@@ -171,8 +170,8 @@ def load_curr_app(app):
 
 
 # helpers
-def _content_splitter(file_content):
-    file_content = _shortcode(file_content)
+def _content_splitter(config, file_content):
+    file_content = _shortcode(config, file_content)
     pattern = r'(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)'
     re_pattern = re.compile(pattern)
     m = re_pattern.match(file_content)
@@ -181,8 +180,7 @@ def _content_splitter(file_content):
     return m.group('meta'), m.group('content')
 
 
-def _shortcode(text):
-    config = current_app.config
+def _shortcode(config, text):
     re_uploads_dir = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
     re_theme_dir = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
     # uploads
@@ -210,14 +208,14 @@ def _auto_content_type(file_path, default_type=u'page'):
     return content_type
 
 
-def _auto_id(file_path):
-    content_dir = current_app.config.get('CONTENT_DIR')
+def _auto_id(config, file_path):
+    content_dir = config.get('CONTENT_DIR')
     page_id = file_path.replace(content_dir + '/', '', 1).lstrip('/')
     return page_id
 
 
-def _auto_page_slug(file_path):
-    content_ext = current_app.config.get('CONTENT_FILE_EXT')
+def _auto_page_slug(config, file_path):
+    content_ext = config.get('CONTENT_FILE_EXT')
     if file_path.endswith(content_ext):
         file_path = os.path.splitext(file_path)[0]
     slug = file_path.split('/')[-1]
@@ -247,10 +245,10 @@ def _file_headers(meta_string):
     return headers
 
 
-def _make_excerpt(content_string, length=600):
-    use_markdown = current_app.config.get('USE_MARKDOWN')
+def _make_excerpt(config, content_string, length=600):
+    use_markdown = config.get('USE_MARKDOWN')
     if use_markdown:
-        markdown_exts = current_app.config.get('MARKDOWN_EXTENSIONS', [])
+        markdown_exts = config.get('MARKDOWN_EXTENSIONS', [])
         content = markdown.markdown(content_string, markdown_exts)
     else:
         content = content_string
