@@ -140,7 +140,7 @@ def load_curr_app(app):
         with open(theme_meta_file) as theme_data:
             theme_meta = json.load(theme_data)
     except Exception as e:
-        err_msg = 'Load Theme Meta faild: {}'.format(str(e))
+        err_msg = 'Load Theme Meta failed: {}'.format(str(e))
         raise Exception(err_msg)
 
     try:
@@ -148,7 +148,7 @@ def load_curr_app(app):
             site_json_str = site_data.read().decode('utf-8')
             site = json.loads(_shortcode(site_json_str))
     except Exception as e:
-        err_msg = 'Load Site Meta faild: {}'.format(str(e))
+        err_msg = 'Load Site Meta failed: {}'.format(str(e))
         raise Exception(err_msg)
 
     site_meta = site.get('meta', {})
