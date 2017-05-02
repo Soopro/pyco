@@ -223,12 +223,12 @@ def _auto_page_slug(config, file_path):
 
 
 def _file_headers(meta_string):
-    def convert_data(x):
+    def convert_data_decode(x):
         if isinstance(x, dict):
-            return dict((k.lower(), convert_data(v))
+            return dict((k.lower(), convert_data_decode(v))
                         for k, v in x.iteritems())
         elif isinstance(x, list):
-            return list([convert_data(i) for i in x])
+            return list([convert_data_decode(i) for i in x])
         elif isinstance(x, str):
             return x.decode('utf-8')
         elif isinstance(x, (unicode, int, float, bool)) or x is None:
@@ -241,7 +241,7 @@ def _file_headers(meta_string):
                 pass
         return x
     yaml_data = yaml.safe_load(meta_string)
-    headers = convert_data(yaml_data)
+    headers = convert_data_decode(yaml_data)
     return headers
 
 
