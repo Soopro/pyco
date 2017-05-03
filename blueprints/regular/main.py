@@ -37,8 +37,8 @@ def before_first_request():
 def before_request():
     if current_app.debug:
         # change template folder
-        themes_dir = current_app.config.get("THEMES_DIR")
-        theme_name = current_app.config.get("THEME_NAME")
+        themes_dir = current_app.config.get('THEMES_DIR')
+        theme_name = current_app.config.get('THEME_NAME')
         current_app.template_folder = os.path.join(themes_dir, theme_name)
         # change reload template folder
         current_app.jinja_env.cache = None
@@ -48,7 +48,7 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = "{}\n{}".format(repr(err), traceback.format_exc())
-    err_html_msg = "<h1>{}</h1><p>{}</p>".format(repr(err), str(err))
+    err_msg = '{}\n{}'.format(repr(err), traceback.format_exc())
+    err_html_msg = '<h1>{}</h1><p>{}</p>'.format(repr(err), str(err))
     current_app.logger.error(err_msg)
     return make_response(err_html_msg, 579)
