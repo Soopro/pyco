@@ -342,7 +342,8 @@ def query_sides(pid, attrs=[], limit=0, sortby=[],
 
 def load_segments(app):
     theme_opts = app['theme_meta'].get('options', {})
-    use_segments = theme_opts.get('segments')
+    use_segments = theme_opts.get('segments',
+                                  app['theme_meta'].get('segments'))
     if not use_segments:
         return []
     # get segment contents

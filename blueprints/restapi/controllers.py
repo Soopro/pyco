@@ -339,7 +339,8 @@ def get_view_content(app_id, type_slug, file_slug):
 def get_view_segments(app_id):
     app = g.curr_app
     theme_opts = app['theme_meta'].get('options', {})
-    use_segments = theme_opts.get('segments')
+    use_segments = theme_opts.get('segments',
+                                  app['theme_meta'].get('segments'))
     if not use_segments:
         return []
     results = query_segments(app, use_segments)
