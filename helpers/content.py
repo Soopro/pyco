@@ -58,12 +58,12 @@ def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
         before_ids = ids[max(curr_idx - limit, 0):curr_idx]
         befores = [f for f in files if f['_id'] in before_ids]
         before_order = {_id: idx for idx, _id in enumerate(before_ids)}
-        befores.sort(key=lambda x: before_order[x["_id"]])
+        befores.sort(key=lambda x: before_order[x['_id']])
 
         after_ids = ids[curr_idx + 1:curr_idx + 1 + limit]
         afters = [f for f in files if f['_id'] in after_ids]
         after_order = {_id: idx for idx, _id in enumerate(after_ids)}
-        afters.sort(key=lambda x: after_order[x["_id"]])
+        afters.sort(key=lambda x: after_order[x['_id']])
     else:
         befores = []
         afters = []
@@ -154,9 +154,9 @@ def find_content_file(type_slug, file_slug):
 
 
 def parse_content(content_string):
-    use_markdown = current_app.config.get("USE_MARKDOWN")
+    use_markdown = current_app.config.get('USE_MARKDOWN')
     if use_markdown:
-        markdown_exts = current_app.config.get("MARKDOWN_EXTENSIONS", [])
+        markdown_exts = current_app.config.get('MARKDOWN_EXTENSIONS', [])
         return markdown.markdown(content_string, markdown_exts)
     else:
         return content_string
@@ -164,7 +164,7 @@ def parse_content(content_string):
 
 def read_page_metas(page, options, current_id=None):
     data = dict()
-    meta = page.get("meta")
+    meta = page.get('meta')
     for m in meta:
         data[m] = meta[m]
     data['id'] = unicode(page['_id'])
@@ -233,8 +233,8 @@ def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
         excerpt_ellipsis = u'&hellip;'
 
     if excerpt:
-        excerpt = u" ".join(excerpt.split())  # remove empty strings.
-        excerpt = u"{}{}".format(excerpt[0:excerpt_length], excerpt_ellipsis)
+        excerpt = u' '.join(excerpt.split())  # remove empty strings.
+        excerpt = u'{}{}'.format(excerpt[0:excerpt_length], excerpt_ellipsis)
     return excerpt
 
 
@@ -245,7 +245,7 @@ def helper_wrap_menu(menus, base_url):
 
     def process_menu_url(menu):
         for item in menu:
-            link = item.get("link", "")
+            link = item.get('link', '')
             # url
             if not link or url_validator(link):
                 item['url'] = link
@@ -260,7 +260,7 @@ def helper_wrap_menu(menus, base_url):
                 _hash = link.replace('#', '').strip('/')
             item['hash'] = u'#{}'.format(_hash)
             # nodes
-            item["nodes"] = process_menu_url(item.get("nodes", []))
+            item['nodes'] = process_menu_url(item.get('nodes', []))
         return menu
 
     menu_dict = {}
@@ -274,33 +274,34 @@ def helper_wrap_menu(menus, base_url):
 def helper_wrap_socials(socials):
     """ socials json sample
     {
-       "facebook":{
-           "name":"Facebook",
-           "url":"http://....",
-           "code":"..."
+       'facebook':{
+           'name':'Facebook',
+           'url':'http://....',
+           'poster':'http://....',
+           'script': '....'
        },
-       "twitter":{
-           "name":"Twitter",
-           "url":"http://....",
-           "code":"..."
+       'twitter':{
+           'name':'Twitter',
+           'url':'http://....',
+           'poster':'http://....',
+           'script': '....'
        }
     }
     """
     if not socials:
         return []
 
-    social_list = []
-
     if isinstance(socials, list):
         # directly append if is list
         social_list = [social for social in socials if social.get('key')]
-
     elif isinstance(socials, dict):
         # change to list if is dict
         def _make_key(k, v):
-            v.update({"key": k})
+            v.update({'key': k})
             return v
         social_list = [_make_key(k, v) for k, v in socials.iteritems()]
+    else:
+        social_list = []
 
     return social_list
 
@@ -321,11 +322,11 @@ def helper_wrap_taxonomy(taxonomies):
         return term
 
     for slug, tax in taxonomies.iteritems():
-        content_types = tax.get("content_types", [])
+        content_types = tax.get('content_types', [])
         tax_dict[slug] = {
-            "title": tax.get("title"),
-            "content_types": content_types,
-            "terms": [_parse_term(term, slug, content_types)
+            'title': tax.get('title'),
+            'content_types': content_types,
+            'terms': [_parse_term(term, slug, content_types)
                       for term in tax['terms']]
         }
     return tax_dict
@@ -352,14 +353,14 @@ def helper_wrap_translates(translates, locale):
     elif isinstance(translates, dict):
         # change to list if is dict
         def _make_key(k, v):
-            v.update({"key": k})
+            v.update({'key': k})
             return v
         trans_list = [_make_key(k, v) for k, v in translates.iteritems()]
 
     for trans in trans_list:
         trans_key = trans['key'].lower()
         if trans_key == locale.lower() or trans_key == lang.lower():
-            trans["active"] = True
+            trans['active'] = True
 
     return trans_list
 
@@ -441,7 +442,7 @@ def _sorting(files, sort_keys):
 
     sorting = []
     for f in files:
-        new_entry = {"_id": f["_id"]}
+        new_entry = {'_id': f['_id']}
         for sort in sorts_list:
             key = sort[0]
             if key in SORTABLE_FIELD_KEYS:
