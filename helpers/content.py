@@ -247,18 +247,20 @@ def helper_wrap_menu(menus, base_url):
         for item in menu:
             link = item.get('link', '')
             # url
-            if not link or url_validator(link):
-                item['url'] = link
-            elif link.startswith('/'):
+            if link.startswith('/'):
                 item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
             else:
-                item['url'] = link.rstrip('/')
+                item['url'] = link
             # hash
-            if not link or url_validator(link):
-                _hash = u'#'
+            if link:
+                if url_validator(link):
+                    item['path'] = u'/{}'.format(link.replace(base_url, ''))
+                else:
+                    item['path'] = link
+                item['hash'] = u'#{}'.format(item['path'].strip('/'))
             else:
-                _hash = link.replace('#', '').strip('/')
-            item['hash'] = u'#{}'.format(_hash)
+                item['hash'] = u''
+                item['path'] = u''
             # nodes
             item['nodes'] = process_menu_url(item.get('nodes', []))
         return menu
