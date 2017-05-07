@@ -11,6 +11,7 @@ from .helpers.jinja import (filter_thumbnail,
                             filter_date_formatted,
                             filter_background_image,
                             filter_column_offset,
+                            filter_active,
                             filter_url,
                             filter_path,
                             filter_args)
@@ -27,6 +28,7 @@ def before_first_request():
     current_app.jinja_env.filters['thumbnail'] = filter_thumbnail
     current_app.jinja_env.filters['url'] = filter_url
     current_app.jinja_env.filters['path'] = filter_path
+    current_app.jinja_env.filters['active'] = filter_active
     current_app.jinja_env.filters['args'] = filter_args
     current_app.jinja_env.filters['date_formatted'] = filter_date_formatted
     current_app.jinja_env.filters['bg_img'] = filter_background_image

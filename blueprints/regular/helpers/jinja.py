@@ -52,6 +52,18 @@ def filter_path(url, remove_args=True, remove_hash=True):
     return u'/{}'.format(path.strip('/'))
 
 
+def filter_active(menu_item, path, active='active', inactive=''):
+    if not isinstance(menu_item, dict) or not isinstance(path, basestring):
+        return inactive
+    if path == menu_item.get('path'):
+        return active
+    elif menu_item.get('path_scope'):
+        path_scope = menu_item.get('path_scope').strip('/')
+        if path.startswith(u'/{}/'.format(path_scope)):
+            return active
+    return inactive
+
+
 def filter_args(url, unique=True):
     if not isinstance(url, basestring):
         args = {}
