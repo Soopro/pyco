@@ -94,11 +94,9 @@ def filter_date_formatted(date, to_format=None):
     return format_date(date, to_format)
 
 
-def filter_background_image(src, default=None):
-    if not src and not default:
+def filter_background_image(src):
+    if not src:
         return u''
-    elif not src:
-        src = default
     return u'background-image:url({});'.format(src)
 
 
