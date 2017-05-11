@@ -52,10 +52,10 @@ def filter_path(url, remove_args=True, remove_hash=True):
     return u'/{}'.format(path.strip('/'))
 
 
-def filter_active(menu_item, path, active='active', inactive=''):
+def filter_active(menu_item, path, extra=None, active='active', inactive=''):
     if not isinstance(menu_item, dict) or not isinstance(path, basestring):
         return inactive
-    if path == menu_item.get('path'):
+    if path == menu_item.get('path') or extra:
         return active
     elif menu_item.get('path_scope'):
         path_scope = menu_item.get('path_scope').strip('/')
