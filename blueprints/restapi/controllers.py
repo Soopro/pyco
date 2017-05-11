@@ -182,8 +182,8 @@ def query_view_contents(app_id):
 
     # taxonomy term
     if taxonomy:
-        tax_key = 'taxonomy.{}'.format(taxonomy.get('slug'))
-        attrs.append({tax_key: taxonomy.get('term')})
+        _term_k = next(iter(taxonomy))
+        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
 
     # position
     total_count = count_by_files(attrs)
@@ -238,8 +238,8 @@ def query_view_sides(app_id):
 
     # taxonomy term
     if taxonomy:
-        tax_key = 'taxonomy.{}'.format(taxonomy.get('slug'))
-        attrs.append({tax_key: taxonomy.get('term')})
+        _term_k = next(iter(taxonomy))
+        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
 
     # query side mongo
     before_pages, after_pages = query_sides_by_files(pid, attrs, sortby,
