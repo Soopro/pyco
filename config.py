@@ -11,7 +11,6 @@ STATIC_PATH = 'static'
 
 BASE_URL = 'http://localhost:5500'
 API_BASEURL = 'http://localhost:5500/restapi'
-LIBS_URL = 'http://libs.soopro.io'
 THEME_URL = '{}/{}/{}'.format(BASE_URL, STATIC_PATH, THEME_NAME)
 
 UPLOADS_DIR = 'uploads'
@@ -52,9 +51,11 @@ MARKDOWN_EXTENSIONS = ['gfm']
 MAXIMUM_QUERY = 60
 
 SHORT_FIELD_KEYS = {'type': 'content_type'}
-SORTABLE_FIELD_KEYS = ['priority', 'date', 'creation', 'updated']
-STRUCTURE_FIELD_KEYS = ['slug', 'content_type', 'priority', 'parent',
+SORTABLE_FIELD_KEYS = ('priority', 'date', 'creation', 'updated')
+STRUCTURE_FIELD_KEYS = ('slug', 'content_type', 'priority', 'parent',
                         'date', 'creation', 'updated',
-                        'template', 'tags']
+                        'template', 'tags')
+IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
+
 # plugins
 PLUGINS = []

@@ -134,7 +134,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['site_meta'] = site_meta
     view_ctx['theme_meta'] = theme_meta
     view_ctx['theme_url'] = config.get('THEME_URL', u'')
-    view_ctx['libs_url'] = config.get('LIBS_URL', u'')
     view_ctx['base_url'] = base_url
 
     # visit

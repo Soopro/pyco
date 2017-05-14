@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import request, g
+from flask import current_app, request, g
 from itertools import groupby
 import os
 import datetime
@@ -303,11 +303,11 @@ def _get_media_src(url, suffix=None):
         return url
     if not suffix or not isinstance(suffix, basestring):
         suffix = u'none'
-    allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff']
     try:
         _ext = os.path.splitext(url.split('?', 1)[0])[1][1:].lower()
     except Exception:
         _ext = None
+    allowed_exts = current_app.config.get('IMAGE_MEDIA_EXTS', set())
     if url.startswith(g.uploads_url) and _ext in allowed_exts:
         pair = '&' if '?' in url else '?'
         url = '{}{}{}'.format(url, pair, suffix)

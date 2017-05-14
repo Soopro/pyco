@@ -70,7 +70,6 @@ def get_view_metas(app_id):
         'theme_meta': theme_meta,
         'base_url': g.curr_base_url,
         'theme_url': config.get('THEME_URL', u''),
-        'libs_url': config.get('LIBS_URL', u''),
         'lang': locale.split('_')[0],
         'locale': locale,
         'translates': helper_wrap_translates(translates, locale),
