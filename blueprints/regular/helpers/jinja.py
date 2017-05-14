@@ -18,8 +18,8 @@ from utils.misc import (sortedby,
 
 
 # filters
-def filter_thumbnail(pic_url, suffix=u'thumbnail'):
-    return _get_media_src(pic_url, suffix)
+def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
+    return _get_media_src(pic_url, preset_name)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -299,16 +299,14 @@ def timemachine(raw_list, filed='date', precision='month',
 # helpers
 def _get_media_src(url, suffix=None):
     if not isinstance(url, basestring) or \
-       not url.startswith(g.uploads_url):
+       not url.startswith(g.uploads_url) or \
+       not isinstance(suffix, basestring) or not suffix:
         return url
-    if not suffix or not isinstance(suffix, basestring):
-        suffix = u'none'
     try:
         _ext = os.path.splitext(url.split('?', 1)[0])[1][1:].lower()
     except Exception:
         _ext = None
-    allowed_exts = current_app.config.get('IMAGE_MEDIA_EXTS', set())
-    if url.startswith(g.uploads_url) and _ext in allowed_exts:
+    if _ext in current_app.config['IMAGE_MEDIA_EXTS']:
         pair = '&' if '?' in url else '?'
         url = '{}{}{}'.format(url, pair, suffix)
     return url
