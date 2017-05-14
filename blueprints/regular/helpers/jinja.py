@@ -19,7 +19,17 @@ from utils.misc import (sortedby,
 
 # filters
 def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
-    return _get_media_src(pic_url, preset_name)
+    if not isinstance(pic_url, basestring) or \
+       not pic_url.startswith(g.uploads_url):
+        return pic_url
+    try:
+        _ext = os.path.splitext(pic_url.split('?', 1)[0])[1][1:].lower()
+    except Exception:
+        _ext = None
+    if _ext in current_app.config['IMAGE_MEDIA_EXTS']:
+        pair = '&' if '?' in pic_url else '?'
+        pic_url = '{}{}{}'.format(pic_url, pair, preset_name)
+    return pic_url
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
@@ -294,19 +304,3 @@ def timemachine(raw_list, filed='date', precision='month',
         ret.append((date, [x for x in group]))
 
     return ret
-
-
-# helpers
-def _get_media_src(url, suffix=None):
-    if not isinstance(url, basestring) or \
-       not url.startswith(g.uploads_url) or \
-       not isinstance(suffix, basestring) or not suffix:
-        return url
-    try:
-        _ext = os.path.splitext(url.split('?', 1)[0])[1][1:].lower()
-    except Exception:
-        _ext = None
-    if _ext in current_app.config['IMAGE_MEDIA_EXTS']:
-        pair = '&' if '?' in url else '?'
-        url = '{}{}{}'.format(url, pair, suffix)
-    return url
