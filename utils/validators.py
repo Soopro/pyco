@@ -38,15 +38,3 @@ def email_validator(val):
         return True
     else:
         return False
-
-
-def url_validator(val):
-    if not isinstance(val, basestring):
-        return False
-    try:
-        if re.match('^(?:http|ftp)s?://', val):
-            return True
-        else:
-            return False
-    except Exception:
-        return False
