@@ -11,6 +11,7 @@ import os
 import re
 import uuid
 import time
+import random
 import hashlib
 import hmac
 import urllib
@@ -453,14 +454,16 @@ def format_tags(tags, limit=60, upper=False):
             return text.upper()
         else:
             return text.lower()
-    _tags = []
-    for tag in tags:
+    tag_list = []
+    tag_set = set()
+    for tag in tags[:limit]:
         if not isinstance(tag, basestring):
             continue
         _tag = _styl(tag)
-        if _tag not in _tags:
-            _tags.append(_tag)
-    return _tags[:limit]
+        if _tag not in tag_set:
+            tag_set.add(_tag)
+            tag_list.append(_tag)
+    return tag_list
 
 
 # mimetypes
@@ -500,3 +503,24 @@ def escape_asterisk(key, asterisk='*', output=None):
         return output
     else:
         return key
+
+
+# random
+def random_choices(seq, limit=1):
+    seq = list(seq)
+    selected = []
+
+    def _random_item(seq):
+        if not seq:
+            return None
+        rand = random.choice(seq)
+        seq.remove(rand)
+        return rand
+
+    for i in xrange(limit):
+        rand = _random_item(seq)
+        if rand is not None:
+            selected.append(rand)
+        else:
+            break
+    return selected
