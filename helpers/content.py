@@ -246,19 +246,27 @@ def helper_wrap_menu(menus, base_url):
     def process_menu_url(menu):
         for item in menu:
             link = item.get('link', '')
-            # url
-            if link.startswith('/'):
-                item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
-            else:
-                item['url'] = link
-            # hash
             if link:
+                # url
                 if url_validator(link):
-                    item['path'] = u'/{}'.format(link.replace(base_url, ''))
+                    item['url'] = link
+                else:
+                    item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
+                # path
+                if url_validator(link):
+                    if link.startswith(base_url):
+                        _path = link.replace(base_url, '')
+                        item['path'] = u'/{}'.format(_path)
+                    else:
+                        item['path'] = u''
+                elif not link.startswith('/'):
+                    item['path'] = u'/{}'.format(link)
                 else:
                     item['path'] = link
+                # hash
                 item['hash'] = u'#{}'.format(item['path'].strip('/'))
             else:
+                item['url'] = u''
                 item['hash'] = u''
                 item['path'] = u''
             # nodes
