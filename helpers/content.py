@@ -264,10 +264,10 @@ def helper_wrap_menu(menus, base_url):
                 else:
                     item['path'] = link
                 # hash
-                if item['path']:
-                    _path = item['path'].strip('/')
-                    _hashtag = '' if _path.startswith('#') else '#'
-                    item['hash'] = u'{}{}'.format(_hashtag, _path)
+                if not url_validator(link):
+                    _relpath = link.strip('/')
+                    _hashtag = '' if _relpath.startswith('#') else '#'
+                    item['hash'] = u'{}{}'.format(_hashtag, _relpath)
                 else:
                     item['hash'] = u''
             else:
