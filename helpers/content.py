@@ -265,7 +265,9 @@ def helper_wrap_menu(menus, base_url):
                     item['path'] = link
                 # hash
                 if item['path']:
-                    item['hash'] = u'#{}'.format(item['path'].strip('/'))
+                    _path = item['path'].strip('/')
+                    _hashtag = '' if _path.startswith('#') else '#'
+                    item['hash'] = u'{}{}'.format(_hashtag, _path)
                 else:
                     item['hash'] = u''
             else:
