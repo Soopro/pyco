@@ -38,3 +38,30 @@ def email_validator(val):
         return True
     else:
         return False
+
+
+def url_validator(val, allow_relative=False):
+    return _url_validator(val, allow_relative)
+
+
+def ensure_absurl(src, url_base):
+    if not src:
+        return ''
+    if _url_validator(src):
+        return src
+    else:
+        return '{}/{}'.format(url_base.rstrip('/'), src.lstrip('/'))
+
+
+def _url_validator(val, allow_relative=False):
+    if not val or not isinstance(val, basestring):
+        return False
+    try:
+        if allow_relative and re.match('^//[^/]', val):
+            return True
+        if re.match('^(?:http|ftp)s?://', val):
+            return True
+        else:
+            return False
+    except Exception:
+        return False
