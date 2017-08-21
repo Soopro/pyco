@@ -247,66 +247,6 @@ def parse_int(num, default=0, natural=False):
     return num
 
 
-def parse_dict_by_structure(obj, structure):
-    if not isinstance(obj, dict):
-        return None
-    newobj = {}
-    for k, v in structure.iteritems():
-        if v is ObjectId:
-            if ObjectId.is_valid(obj.get(k)):
-                newobj.update({k: ObjectId(obj.get(k))})
-            else:
-                newobj.update({k: None})
-        else:
-            if type(obj.get(k)) is v:
-                newobj.update({k: obj.get(k)})
-            else:
-                try:
-                    _v = v(obj.get(k))
-                except Exception:
-                    _v = v()
-                newobj.update({k: _v})
-    return newobj
-
-
-def limit_dict(dict_obj, length=None):
-    if not isinstance(dict_obj, dict):
-        return {}
-    elif not length or len(dict_obj) <= length:
-        return dict(dict_obj)
-    else:
-        obj = {}
-        for k, v in dict_obj.iteritems():
-            if len(obj) < length:
-                obj[k] = v
-            else:
-                break
-        return obj
-
-
-def version_str_to_list(str_version):
-    try:
-        str_ver_list = str_version.split('.')[:4]
-        version = [int(v) for v in str_ver_list[:3]]
-        if len(str_ver_list) > 3:
-            version.append(str_ver_list[3])
-    except Exception:
-        version = None
-    return version
-
-
-def version_list_to_str(list_version):
-    try:
-        # ensure has 3 items
-        if len(list_version) < 3:
-            for x in range(3 - len(list_version)):
-                list_version.append(0)
-        version = '.'.join(map(unicode, list_version[:4]))
-    except Exception:
-        version = None
-    return version
-
-
 def safe_filename(filename, mimetype=None):
     _starts = re.match(r'_*', filename)
     # this is for filename starts with one or many '_'
