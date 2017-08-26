@@ -8,13 +8,13 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 
 
-def query_by_files(attrs, taxonomy=None, sortby=None,
-                   offset=0, limit=1, priority=True):
+def query_by_files(attrs, taxonomy=None, offset=0, limit=1,
+                   sortby=None, priority=True):
     # query
     files = _query(g.files, attrs, taxonomy)
 
     # sorting
-    sorting = _sorting(files, parse_sortby(sortby))
+    sorting = _sorting(files, parse_sortby(sortby), priority)
 
     limit = parse_int(limit, 1, True)
     offset = parse_int(offset, 0, 0)
@@ -29,17 +29,17 @@ def query_by_files(attrs, taxonomy=None, sortby=None,
     return files
 
 
-def count_by_files(attrs):
-    return len(_query(g.files, attrs))
+def count_by_files(attrs, taxonomy=None):
+    return len(_query(g.files, attrs, taxonomy))
 
 
-def query_sides_by_files(pid, attrs, taxonomy=None, sortby=None,
-                         limit=1, priority=True):
+def query_sides_by_files(pid, attrs, taxonomy=None, limit=1,
+                         sortby=None, priority=True):
     # query
     files = _query(g.files, attrs, taxonomy)
 
     # sorting
-    sorting = _sorting(files, parse_sortby(sortby))
+    sorting = _sorting(files, parse_sortby(sortby), priority=True)
 
     limit = min(parse_int(limit, 1, True), 6)
 
@@ -73,20 +73,26 @@ def query_sides_by_files(pid, attrs, taxonomy=None, sortby=None,
 
 # segments
 def query_segments(app, limit=24):
-    theme_config = app['theme_meta']
-    tmpls = [tmpl.replace('^', '')
-             for tmpl in theme_config.get('templates', [])
+    _config = app['theme_meta']
+    _opts = _config.get('options', {})
+
+    tmpls = [tmpl.replace('^', '') for tmpl in _config.get('templates', [])
              if tmpl.startswith('^')]
+    # sort
+    sortby = parse_sortby(_opts.get('sortby', 'updated'))
+
+    # query
     segs = sortedby([f for f in g.files if f['template'] in tmpls],
-                    [('priority', 1), ('updated', 1)])
+                    [('priority', 1), sortby])
     # limit
     limit = min(parse_int(limit, 24, 1), 60)
+
     return segs[:limit]
 
 
 # search
-def search_by_files(keywords, content_type=None, attrs=[],
-                    use_tags=True, limit=0, offset=0):
+def search_by_files(keywords, content_type=None,
+                    offset=0, limit=0, use_tags=True):
     if content_type:
         files = [f for f in g.files if f['content_type'] == content_type]
     else:
@@ -101,22 +107,16 @@ def search_by_files(keywords, content_type=None, attrs=[],
         elif not isinstance(keywords, list):
             keywords = []
 
-        if not isinstance(attrs, list):
-            attrs = []
-
-        def search_match(keyword, attrs, f):
+        def _search_match(keyword, f):
             if use_tags and keyword in f['tags']:
                 return True
-            if keyword in f['searching']:
+            if keyword in f['gist']:
                 return True
-            for attr in attrs[:2]:
-                if match_cond(f, attr, keyword, force=True):
-                    return True
             return False
 
         results = files
         for kw in keywords:
-            results = [f for f in results if search_match(kw, attrs, f)]
+            results = [f for f in results if _search_match(kw, f)]
 
     limit = parse_int(limit, 1, True)
     offset = parse_int(offset, 0, 0)
@@ -382,6 +382,8 @@ def _query(files, attrs, taxonomy=None):
 
     if isinstance(attrs, (basestring, dict)):
         attrs = [attrs]
+    elif not isinstance(attrs, list):
+        attrs = []
 
     for attr in attrs[:5]:  # max fields key is 5
         opposite = False
@@ -404,8 +406,7 @@ def _query(files, attrs, taxonomy=None):
             continue
 
         attr_key = FIELD_KEY_ALIASES.get(attr_key, attr_key)
-        if attr_key not in QUERYABLE_FIELD_KEYS \
-           and '.' not in attr_key:
+        if attr_key not in QUERYABLE_FIELD_KEYS and '.' not in attr_key:
             attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files
                  if f['slug'] not in RESERVED_SLUGS and

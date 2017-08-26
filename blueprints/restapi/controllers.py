@@ -108,8 +108,6 @@ def get_view_tags(app_id, type_slug=None):
 def search_view_contents(app_id):
     keywords = get_param('keywords', list, default=[])
     content_type = get_param('content_type', unicode, default=None)
-    attrs = get_param('attrs', list, default=['title'])
-    use_tags = get_param('use_tags', bool, default=True)
     perpage = get_param('perpage', int, default=0)
     paged = get_param('paged', int, default=0)
 
@@ -126,10 +124,8 @@ def search_view_contents(app_id):
     content_type = process_slug(content_type)
     results, total_count = search_by_files(content_type=content_type,
                                            keywords=keywords,
-                                           attrs=attrs,
-                                           use_tags=use_tags,
-                                           limit=limit,
-                                           offset=offset)
+                                           offset=offset,
+                                           limit=limit)
 
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     page_range = [p for p in range(1, max_pages + 1)]
@@ -153,11 +149,11 @@ def search_view_contents(app_id):
 @output_json
 def query_view_contents(app_id):
     attrs = get_param('attrs', list, False, [])
+    taxonomy = get_param('taxonomy', dict, False, {})
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
     priority = get_param('priority', bool, False, True)
-    taxonomy = get_param('taxonomy', dict, False, True)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -168,23 +164,14 @@ def query_view_contents(app_id):
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, basestring):
-            sortby = [sortby]
-        elif not isinstance(sortby, list):
-            sortby = []
 
     if not perpage:
         perpage = theme_opts.get('perpage')
 
     perpage, paged = _safe_paging(perpage, paged)
 
-    # taxonomy term
-    if taxonomy:
-        _term_k = next(iter(taxonomy))
-        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
-
     # position
-    total_count = count_by_files(attrs)
+    total_count = count_by_files(attrs, taxonomy)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
@@ -193,7 +180,12 @@ def query_view_contents(app_id):
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs, sortby, limit, offset, priority)
+    results = query_by_files(attrs=attrs,
+                             taxonomy=taxonomy,
+                             offset=offset,
+                             limit=limit,
+                             sortby=sortby,
+                             priority=priority)
     pages = [read_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
@@ -214,10 +206,10 @@ def query_view_contents(app_id):
 def query_view_sides(app_id):
     pid = get_param('pid', unicode, True)
     attrs = get_param('attrs', list, False, [])
+    taxonomy = get_param('taxonomy', dict, False, {})
     sortby = get_param('sortby', list, False, [])
     limit = get_param('perpage', int, False, 1)
     priority = get_param('priority', bool, False, True)
-    taxonomy = get_param('taxonomy', dict, False, True)
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
@@ -227,21 +219,16 @@ def query_view_sides(app_id):
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, basestring):
-            sortby = [sortby]
-        elif not isinstance(sortby, list):
-            sortby = []
 
     limit = parse_int(limit, 1, True)
 
-    # taxonomy term
-    if taxonomy:
-        _term_k = next(iter(taxonomy))
-        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
-
     # query side mongo
-    before_pages, after_pages = query_sides_by_files(pid, attrs, sortby,
-                                                     limit, priority)
+    before_pages, after_pages = query_sides_by_files(pid=pid,
+                                                     attrs=attrs,
+                                                     taxonomy=taxonomy,
+                                                     limit=limit,
+                                                     sortby=sortby,
+                                                     priority=priority)
     before_pages = [read_page_metas(content_file, theme_opts)
                     for content_file in before_pages]
     after_pages = [read_page_metas(content_file, theme_opts)
@@ -296,7 +283,12 @@ def get_view_content_list(app_id, type_slug=None):
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs, sortby, limit, offset, priority)
+    results = query_by_files(attrs=attrs,
+                             taxonomy=None,
+                             offset=offset,
+                             limit=limit,
+                             sortby=sortby,
+                             priority=priority)
     curr_index = offset
 
     pages = []

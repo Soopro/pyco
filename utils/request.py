@@ -23,7 +23,7 @@ def get_param(key, validator=None, required=False, default=None):
 
         for vld in validators:
             try:
-                vld(value)
+                value = vld(value)
             except Exception as e:
                 raise Exception('ValidationError: {}\n{}'.format(key, str(e)))
 

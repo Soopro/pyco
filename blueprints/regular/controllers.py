@@ -222,8 +222,8 @@ def _query_limit(limit):
     return limit - g.query_count
 
 
-def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
-                   taxonomy={}, priority=True):
+def query_contents(attrs=None, paged=0, perpage=0, sortby=None,
+                   taxonomy=None, priority=True):
     remain_queries = _query_limit(3)
 
     curr_id = g.curr_page_id
@@ -236,10 +236,6 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, basestring):
-            sortby = [sortby]
-        elif not isinstance(sortby, list):
-            sortby = []
 
     if not perpage:
         perpage = theme_opts.get('perpage')
@@ -251,7 +247,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     perpage = min(perpage, max_perpage)
 
     # position
-    total_count = count_by_files(attrs)
+    total_count = count_by_files(attrs, taxonomy)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
@@ -260,7 +256,12 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs, taxonomy, sortby, offset, limit, priority)
+    results = query_by_files(attrs=attrs,
+                             taxonomy=taxonomy,
+                             offset=offset,
+                             limit=limit,
+                             sortby=sortby,
+                             priority=priority)
     pages = [read_page_metas(p, theme_opts, curr_id) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
@@ -278,8 +279,8 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     }
 
 
-def query_sides(pid, attrs=[], limit=0, sortby=[],
-                taxonomy={}, priority=True):
+def query_sides(pid, attrs=None, limit=0, sortby=None,
+                taxonomy=None, priority=True):
     remain_queries = _query_limit(3)
 
     file_id = pid or g.curr_page_id
@@ -299,14 +300,13 @@ def query_sides(pid, attrs=[], limit=0, sortby=[],
 
     limit = parse_int(limit, 1, True)
 
-    # taxonomy term
-    if taxonomy:
-        _term_k = next(iter(taxonomy))
-        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
-
     # query side mongo
-    before_pages, after_pages = query_sides_by_files(file_id, attrs,
-                                                     sortby, limit, priority)
+    before_pages, after_pages = query_sides_by_files(pid=file_id,
+                                                     attrs=attrs,
+                                                     taxonomy=taxonomy,
+                                                     limit=limit,
+                                                     sortby=sortby,
+                                                     priority=priority)
     before_pages = [read_page_metas(content_file, theme_opts)
                     for content_file in before_pages]
     after_pages = [read_page_metas(content_file, theme_opts)

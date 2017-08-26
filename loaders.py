@@ -123,7 +123,7 @@ def load_all_files(app, curr_app):
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
-            'searching': _make_searching_words(meta),
+            'gist': _make_gist(meta, content_string),
             'excerpt': _make_excerpt(app.config, content_string),
             'content': content_string,
             'updated': _auto_file_updated(f),
@@ -261,9 +261,12 @@ def _make_excerpt(config, content_string, length=600):
     return excerpt[:length].strip()
 
 
-def _make_searching_words(meta):
+def _make_gist(meta, content):
     title = meta.get('title', u'')
     des = meta.get('description', u'')
+    if not des:
+        _excerpt = re.sub(r'<[^>]*?>', '', content)
+        des = _excerpt[:600].strip()
     try:
         text = remove_multi_space(u'{} {}'.format(title, des)[:600])
     except Exception:
