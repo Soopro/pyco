@@ -137,7 +137,7 @@ def remove_multi_space(text):
     return re.sub(r'\s+', ' ', text).replace('\n', ' ').replace('\b', ' ')
 
 
-def parse_sortby(sort_by, strict_mode=False):
+def parse_sortby(sort_by):
     key = None
     direction = None
     if isinstance(sort_by, basestring):
@@ -151,10 +151,7 @@ def parse_sortby(sort_by, strict_mode=False):
         key = sort_by[0]
         direction = sort_by[1]
     else:
-        if strict_mode:
-            raise TypeError
-        else:
-            return None
+        return None
     return (key, direction)
 
 
