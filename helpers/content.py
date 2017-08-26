@@ -160,17 +160,15 @@ def read_page_metas(page, options, current_id=None):
     data['app_id'] = unicode(page['app_id'])
     data['slug'] = page['slug']
     data['type'] = data['content_type'] = page['content_type']
-    data['updated'] = page['updated']
-    data['creation'] = page['creation']
-
+    data['template'] = page['template']
     data['parent'] = page['parent']
     data['priority'] = page['priority']
     data['status'] = page['status']
     data['date'] = page['date']
-
-    data['template'] = page['template']
     data['taxonomy'] = page['taxonomy']
     data['tags'] = page['tags']
+    data['updated'] = page['updated']
+    data['creation'] = page['creation']
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')
@@ -429,7 +427,8 @@ def _query(files, attrs, taxonomy=None):
                 output.append(_f)
     else:
         output = files
-    return files
+
+    return output
 
 
 def _sorting(files, sort, priority=True):

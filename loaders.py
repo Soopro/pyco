@@ -48,7 +48,7 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('DEFAULT_INDEX_SLUG', 'index')
     app.config.setdefault('DEFAULT_404_SLUG', 'error-404')
     app.config.setdefault('DEFAULT_SEARCH_SLUG', 'search')
-    app.config.setdefault('DEFAULT_TAXONOMY_SLUG', 'taxonomy')
+    app.config.setdefault('DEFAULT_TAXONOMY_SLUG', 'category')
     app.config.setdefault('DEFAULT_TAG_SLUG', 'tag')
 
     app.config.setdefault('RESERVED_SLUGS',
@@ -108,7 +108,6 @@ def load_all_files(app, curr_app):
         except Exception as e:
             e.current_file = f
             raise e
-
         file_data = {
             '_id': _auto_id(app.config, f),
             'app_id': curr_app['_id'],
@@ -275,7 +274,7 @@ def _make_gist(meta, content):
 
 
 def _make_taxonomy(taxonomy):
-    if isinstance(taxonomy, list):
+    if not isinstance(taxonomy, list):
         return []
     item_list = []
     for tax in taxonomy:
@@ -284,5 +283,5 @@ def _make_taxonomy(taxonomy):
         tax_slug = tax.get('tax')
         term_key = tax.get('term')
         if tax_slug and term_key:
-            item_list.push({'tax': tax_slug, 'term': term_key})
+            item_list.append({'tax': tax_slug, 'term': term_key})
     return [dict(term) for term in set(tuple(i.items()) for i in item_list)]

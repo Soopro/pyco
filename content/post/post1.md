@@ -2,7 +2,7 @@
 Priority: 1
 Status: 1
 Template: post
-Title: Post 1
+Title: Post @1
 Description: Description text
 Taxonomy:
 - tax: 'category'
@@ -10,7 +10,7 @@ Taxonomy:
 - tax: 'category'
   term: 'daily'
 Featured_img:
-  src: '[%uploads%]/default.jpg'
+  src: ''
 Author: author
 Date: '2016-04-06'
 Gallery:

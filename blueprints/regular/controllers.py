@@ -8,7 +8,8 @@ from services.i18n import Translator
 
 from utils.request import parse_args
 from utils.response import make_content_response
-from utils.misc import make_dotted_dict, parse_int
+from utils.model import make_dotted_dict
+from utils.misc import parse_int
 
 from helpers.app import (run_hook,
                          helper_get_statistic,

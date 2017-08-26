@@ -49,9 +49,13 @@
   {% else %}
     {% if macthed_term.meta.figure %}
     <div class="container">
-      <img src="{{macthed_term.meta.figure}}"
+      <img src="{{macthed_term.meta.figure or g.default_img}}"
            class="img-responsive center-block"
            alt="{{macthed_term.meta.name}}"/>
+    </div>
+    {% else %}
+    <div class="container">
+      <h3>{{macthed_term.meta.name}}</h3>
     </div>
     {% endif %}
     <div class="container prd-container">

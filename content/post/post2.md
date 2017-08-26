@@ -8,7 +8,7 @@ Taxonomy:
 - tax: 'category'
   term: 'food'
 Featured_img:
-  src: '[%uploads%]/default.jpg'
+  src: ''
 Author: author
 Date: '2016-04-06'
 Gallery:

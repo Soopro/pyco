@@ -4,12 +4,10 @@ from __future__ import absolute_import
 from flask import current_app, g
 import math
 
-from utils.misc import (sortedby,
-                        parse_int,
-                        process_slug,
-                        make_dotted_dict)
-from utils.request import get_param, get_args
 from utils.response import output_json
+from utils.request import get_param, get_args
+from utils.model import make_dotted_dict
+from utils.misc import sortedby, parse_int, process_slug
 
 from helpers.app import (run_hook,
                          helper_record_statistic,
