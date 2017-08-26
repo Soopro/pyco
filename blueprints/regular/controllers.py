@@ -250,11 +250,6 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
 
     perpage = min(perpage, max_perpage)
 
-    # taxonomy term
-    if taxonomy:
-        _term_k = next(iter(taxonomy))
-        attrs.append({'taxonomy.{}'.format(_term_k): taxonomy.get(_term_k)})
-
     # position
     total_count = count_by_files(attrs)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
@@ -265,7 +260,7 @@ def query_contents(attrs=[], paged=0, perpage=0, sortby=[],
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs, sortby, limit, offset, priority)
+    results = query_by_files(attrs, taxonomy, sortby, offset, limit, priority)
     pages = [read_page_metas(p, theme_opts, curr_id) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)

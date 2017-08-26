@@ -5,16 +5,16 @@ from flask import current_app, g
 import markdown
 
 from utils.validators import url_validator
-from utils.misc import parse_int, match_cond, sortedby, make_sorts_rule
+from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 
 
-def query_by_files(attrs, sortby=[], limit=1, offset=0, priority=True):
+def query_by_files(attrs, taxonomy=None, sortby=None,
+                   offset=0, limit=1, priority=True):
     # query
     files = _query(g.files, attrs)
+
     # sorting
-    sort_init = [('priority', 1)] if priority else None
-    sort_keys = make_sorts_rule(sortby, sort_init)
-    sorting = _sorting(files, sort_keys)
+    sorting = _sorting(files, parse_sortby(sortby))
 
     limit = parse_int(limit, 1, True)
     offset = parse_int(offset, 0, 0)
@@ -387,8 +387,8 @@ def helper_wrap_translates(translates, locale):
 
 # helpers
 def _query(files, attrs):
-    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
-    STRUCTURE_FIELD_KEYS = current_app.config.get('STRUCTURE_FIELD_KEYS')
+    FIELD_KEY_ALIASES = current_app.config.get('FIELD_KEY_ALIASES')
+    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
     if isinstance(attrs, (basestring, dict)):
@@ -414,8 +414,8 @@ def _query(files, attrs):
         if attr_key is None:
             continue
 
-        attr_key = SHORT_FIELD_KEYS.get(attr_key, attr_key)
-        if attr_key not in STRUCTURE_FIELD_KEYS \
+        attr_key = FIELD_KEY_ALIASES.get(attr_key, attr_key)
+        if attr_key not in QUERYABLE_FIELD_KEYS \
            and '.' not in attr_key:
             attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files
@@ -425,50 +425,22 @@ def _query(files, attrs):
     return files
 
 
-def _sorting(files, sort_keys):
-    SHORT_FIELD_KEYS = current_app.config.get('SHORT_FIELD_KEYS')
+def _sorting(files, sort, priority=True):
     SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
 
-    if not sort_keys:
-        sorts_list = [('updated', -1)]
-    else:
-        sorts_list = []
-        for sort in sort_keys[:5]:  # max sort keys is 5
-            if isinstance(sort, basestring):
-                if sort.startswith('+'):
-                    key = sort.lstrip('+')
-                    direction = 1
-                else:
-                    key = sort.lstrip('-')
-                    direction = -1
-            elif isinstance(sort, tuple):
-                key = sort[0]
-                direction = sort[1]
-            else:
-                continue
-
-            # format to match the structure
-            if key in SHORT_FIELD_KEYS:
-                key = SHORT_FIELD_KEYS.get(key)
-
-            # remove duplicate key, and append end of the sorts list.
-            # DO NOT use set, because the only check key.
-            for idx, sort in enumerate(sorts_list):
-                if sort and key == sort[0]:
-                    sorts_list[idx] = None
-            sorts_list.append((key, direction))
-
-        sorts_list = [sort for sort in sorts_list if sort]
+    sorts = []
+    if priority:
+        sorts.append(('priority', 1))
+    if isinstance(sort, tuple):
+        sort_key = sort[0]
+        if sort_key in SORTABLE_FIELD_KEYS:
+            sorts.append(sort)
 
     sorting = []
     for f in files:
         new_entry = {'_id': f['_id']}
-        for sort in sorts_list:
-            key = sort[0]
-            if key in SORTABLE_FIELD_KEYS:
-                new_entry[key] = f[key]
-            else:
-                new_entry[key] = f['meta'].get(key)
+        for sort in sorts:
+            new_entry[sort[0]] = f[sort[0]]
         sorting.append(new_entry)
 
-    return sortedby(sorting, sorts_list)
+    return sortedby(sorting, sorts)

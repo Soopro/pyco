@@ -7,13 +7,12 @@ import os
 import datetime
 
 from utils.validators import url_validator
+from utils.model import make_dotted_dict
 from utils.misc import (sortedby,
                         parse_int,
                         format_date,
                         get_url_params,
                         add_url_params,
-                        make_sorts_rule,
-                        make_dotted_dict,
                         match_cond)
 
 
@@ -187,8 +186,7 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
                     results.append(i)
     # sort by
     if sort_by:
-        sort_keys = make_sorts_rule(sort_by)
-        results = sortedby(results, sort_keys)
+        results = sortedby(results, sort_by)
 
     # limit
     if limit > 0:

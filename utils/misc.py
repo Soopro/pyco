@@ -6,7 +6,6 @@ from werkzeug.utils import secure_filename
 from slugify import slugify
 from datetime import datetime
 from functools import cmp_to_key
-from bson import ObjectId
 import os
 import re
 import uuid
@@ -19,41 +18,6 @@ import urlparse
 import mimetypes
 
 
-class SilentlyStr(str):
-    def return_new(*args, **kwargs):
-        return SilentlyStr('')
-
-    def silently(*args, **kwargs):
-        return ''
-
-    __getattr__ = return_new
-    __call__ = return_new
-    __unicode__ = silently
-    __str__ = silently
-
-
-class DottedImmutableDict(ImmutableDict):
-    def __getattr__(self, item):
-        try:
-            v = self.__getitem__(item)
-        except KeyError:
-            # do not use None, it could be use by a loop.
-            # None is not iterable.
-            return SilentlyStr()
-        if isinstance(v, dict):
-            v = DottedImmutableDict(v)
-        return v
-
-
-def make_dotted_dict(obj):
-    if isinstance(obj, dict):
-        return DottedImmutableDict(obj)
-    elif isinstance(obj, list):
-        return [make_dotted_dict(o) for o in obj]
-    else:
-        return obj
-
-
 def route_inject(app_or_blueprint, url_patterns):
     for pattern in url_patterns:
         options = pattern[3] if len(pattern) > 3 else {}
@@ -63,19 +27,25 @@ def route_inject(app_or_blueprint, url_patterns):
                                       **options)
 
 
+def _slug_not_startswith_num(slug):
+    if slug[:1] and slug[:1].isdigit():
+        slug = u's-{}'.format(slug)
+    return slug
+
+
 def process_slug(value, autofill=True):
     try:
         slug = unicode(slugify(value))
     except Exception:
         slug = u''
     if not slug and autofill:
-        slug = unicode(repr(time.time())).replace('.', '-')
-    return slug
+        slug = unicode(uuid.uuid4().hex[:6])
+    return _slug_not_startswith_num(slug)
 
 
 def slug_uuid_suffix(slug, dig=6):
     if not slug:
-        return uuid.uuid4().hex[:dig]
+        return _slug_not_startswith_num(uuid.uuid4().hex[:dig])
     return u'{}-{}'.format(slug, uuid.uuid4().hex[:dig])
 
 
@@ -100,10 +70,6 @@ def now(dig=10):
         return int(time.time() * 1000000)
     else:
         return time.time()
-
-
-def sleep(t):
-    time.sleep(t)
 
 
 def get_url_params(url, unique=True):
@@ -171,55 +137,39 @@ def remove_multi_space(text):
     return re.sub(r'\s+', ' ', text).replace('\n', ' ').replace('\b', ' ')
 
 
-def make_sorts_rule(sort_by, initial=None):
-    sort_rules = initial if isinstance(initial, list) else []
-
-    if isinstance(sort_by, (basestring, tuple)):
-        sort_rules.append(sort_by)
-    elif isinstance(sort_by, list):
-        sort_rules += sort_by
-
-    sorts_list = []
-    for sort in sort_rules:
-        key = None
-        direction = None
-        if isinstance(sort, basestring):
-            if sort.startswith('+'):
-                key = sort.lstrip('+')
-                direction = 1
-            else:
-                key = sort.lstrip('-')
-                direction = -1
-        elif isinstance(sort, tuple):
-            key = sort[0]
-            direction = sort[1]
-        if key:
-            sorts_list.append((key, direction))
-
-    return sorts_list
+def parse_sortby(sort_by, strict_mode=False):
+    key = None
+    direction = None
+    if isinstance(sort_by, basestring):
+        if sort_by.startswith('+'):
+            key = sort_by.lstrip('+')
+            direction = 1
+        else:
+            key = sort_by.lstrip('-')
+            direction = -1
+    elif isinstance(sort_by, tuple):
+        key = sort_by[0]
+        direction = sort_by[1]
+    else:
+        if strict_mode:
+            raise TypeError
+        else:
+            return None
+    return (key, direction)
 
 
 def sortedby(source, sort_keys, reverse=False):
-    sorts = []
     if isinstance(sort_keys, (basestring, tuple)):
         sort_keys = [sort_keys]
     elif not isinstance(sort_keys, list):
         sort_keys = []
 
-    for key in sort_keys:
-        if isinstance(key, tuple):
-            sorts.append((key[0], key[1]))
-        elif isinstance(key, basestring):
-            if key.startswith('+'):
-                key = key.lstrip('+')
-                direction = 1
-            else:
-                key = key.lstrip('-')
-                direction = -1
-            sorts.append((key, direction))
+    sorts = [parse_sortby(key) for key in sort_keys]
 
     def compare(a, b):
         for sort in sorts:
+            if sort is None:
+                continue
             key = sort[0]
             direction = sort[1]
             if a.get(key) < b.get(key):
@@ -269,14 +219,6 @@ def safe_filename(filename, mimetype=None):
     return u'{}{}'.format(_starts.group(), filename)
 
 
-def file_md5(fname):
-    _hash = hashlib.md5()
-    with open(fname, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b''):
-            _hash.update(chunk)
-    return _hash.hexdigest()
-
-
 def hmac_sha(key, msg, digestmod=None, output=True):
     if digestmod is None:
         digestmod = hashlib.sha1
@@ -312,6 +254,41 @@ def format_date(date, to_format, input_datefmt='%Y-%m-%d'):
     except Exception:
         date_formatted = date
     return date_formatted
+
+
+def to_timestamp(date, input_datefmt='%Y-%m-%d'):
+    if isinstance(date, basestring):
+        try:
+            date = datetime.strptime(date, input_datefmt)
+        except Exception:
+            return 0
+    elif not isinstance(date, datetime.datetime):
+        return 0
+    return int((date - datetime(1970, 1, 1)).total_seconds())
+
+
+def time_age(date, gap=None, input_datefmt='%Y-%m-%d'):
+    if not isinstance(gap, int):
+        gap = 3600 * 24 * 365
+    if isinstance(date, basestring):
+        try:
+            dt = datetime.strptime(date, input_datefmt)
+            dt_stamp = (dt - datetime(1970, 1, 1)).total_seconds()
+        except Exception:
+            return None
+    elif isinstance(date, int):
+        if len(str(date)) == 13:
+            date = int(date / 1000)
+        dt_stamp = date
+    elif isinstance(date, datetime.datetime):
+        dt_stamp = (date - datetime(1970, 1, 1)).total_seconds()
+    else:
+        return None
+    try:
+        age = int(int(time.time()) - dt_stamp) / gap
+    except Exception:
+        return None
+    return age
 
 
 def str2unicode(text):

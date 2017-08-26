@@ -36,10 +36,9 @@
         {% for term in taxonomy.category.terms %}
         <div class="col-md-6 prd">
           <a href="{{glue({'term': term.key})}}">
-            <img src="{{g.img_holder_cover}}"
-                 class="img-holder"
-                 alt="{{term.meta.name}}"
-                 style="{{(term.meta.figure or g.default_banner)|bg_img}}" />
+            <img style="max-width: 100px;"
+                 src="{{term.meta.figure or g.default_img}}"
+                 alt="{{term.meta.name}}"/>
           </a>
           <h4 class="text-nowrap">{{term.meta.name}}</h4>
         </div>
@@ -50,16 +49,16 @@
   {% else %}
     {% if macthed_term.meta.figure %}
     <div class="container">
-      <img src="{{g.img_holder_cover}}"
-           class="img-responsive center-block img-holder"
-           alt="{{macthed_term.meta.name}}"
-           style="{{macthed_term.meta.figure|bg_img}}"/>
+      <img src="{{macthed_term.meta.figure}}"
+           class="img-responsive center-block"
+           alt="{{macthed_term.meta.name}}"/>
     </div>
     {% endif %}
     <div class="container prd-container">
       <div class="row">
-        {% set _cond = [{'type': 'product'}] %}
-        {% set _tax_cond = {'category': macthed_term.key} %}
+        {% set _cond = [{'type': 'post'}] %}
+        {% set _tax_cond = {'tax': 'category',
+                            'term': macthed_term.key} %}
         {% set booklet = query(_cond, args.paged, taxonomy=_tax_cond) %}
 
         {% for item in booklet.contents %}

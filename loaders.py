@@ -55,11 +55,11 @@ def load_config(app, config_name='config.py'):
                           ['index', 'error-404', 'search', 'taxonomy', 'tag'])
     app.config.setdefault('SORTABLE_FIELD_KEYS',
                           ('priority', 'date', 'creation', 'updated'))
-    app.config.setdefault('STRUCTURE_FIELD_KEYS',
+    app.config.setdefault('QUERYABLE_FIELD_KEYS',
                           ('slug', 'content_type', 'priority', 'parent',
                            'date', 'creation', 'updated',
                            'template', 'tags'))
-    app.config.setdefault('SHORT_FIELD_KEYS', {})
+    app.config.setdefault('FIELD_KEY_ALIASES', {})
 
     app.config.setdefault('IMAGE_MEDIA_EXTS',
                           ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))
