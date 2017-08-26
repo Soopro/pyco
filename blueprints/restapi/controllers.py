@@ -142,7 +142,6 @@ def search_view_contents(app_id):
         'contents': pages,
         'perpage': perpage,
         'paged': paged,
-        'count': len(results),
         'total_pages': max_pages,
         'total_count': total_count,
         'page_range': page_range,
