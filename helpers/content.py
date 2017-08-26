@@ -328,21 +328,26 @@ def helper_wrap_taxonomy(taxonomies):
 
     tax_dict = {}
 
-    def _parse_term(term, tax_slug, content_types):
-        attrs = [
-            {'type': content_types},
-            {'taxonomy.{}'.format(tax_slug): term.get('key')}
-        ]
-        term['count'] = count_by_files(attrs)
+    def _parse_term(term, is_parent=True):
+        term.setdefault('parent', u'')
+        term.setdefault('priority', 0)
+        term.setdefault('status', 1)
+        term.setdefault('meta', {})
+        term['meta'].setdefault('name', u'...')
+        term['meta'].setdefault('figure', u'')
+        if is_parent:
+            term.setdefault('nodes', [])
+            term['nodes'] = [_parse_term(child, False)
+                             for child in term['nodes']
+                             if child.get('key')]
         return term
 
     for slug, tax in taxonomies.iteritems():
-        content_types = tax.get('content_types', [])
         tax_dict[slug] = {
             'title': tax.get('title'),
-            'content_types': content_types,
-            'terms': [_parse_term(term, slug, content_types)
-                      for term in tax['terms']]
+            'content_types': tax.get('content_types', []),
+            'terms': [_parse_term(term) for term in tax['terms']
+                      if term.get('key')]
         }
     return tax_dict
 

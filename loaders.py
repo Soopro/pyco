@@ -117,7 +117,7 @@ def load_all_files(app, curr_app):
             'priority': meta.pop('priority', 0),
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
-            'taxonomy': meta.pop('taxonomy', {}),
+            'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
             'tags': meta.pop('tags', []),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
@@ -269,3 +269,17 @@ def _make_searching_words(meta):
     except Exception:
         text = u''
     return text
+
+
+def _make_taxonomy(taxonomy):
+    if isinstance(taxonomy, list):
+        return []
+    item_list = []
+    for tax in taxonomy:
+        if not isinstance(tax, dict):
+            continue
+        tax_slug = tax.get('tax')
+        term_key = tax.get('term')
+        if tax_slug and term_key:
+            item_list.push({'tax': tax_slug, 'term': term_key})
+    return [dict(term) for term in set(tuple(i.items()) for i in item_list)]

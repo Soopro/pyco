@@ -4,6 +4,9 @@ Status: 1
 Template: post
 Title: Post 2
 Description: Description text
+Taxonomy:
+- tax: 'category'
+  term: 'food'
 Featured_img:
   src: '[%uploads%]/default.jpg'
 Author: author
