@@ -11,7 +11,7 @@ from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 def query_by_files(attrs, taxonomy=None, sortby=None,
                    offset=0, limit=1, priority=True):
     # query
-    files = _query(g.files, attrs)
+    files = _query(g.files, attrs, taxonomy)
 
     # sorting
     sorting = _sorting(files, parse_sortby(sortby))
@@ -33,13 +33,13 @@ def count_by_files(attrs):
     return len(_query(g.files, attrs))
 
 
-def query_sides_by_files(pid, attrs, sortby=[], limit=1, priority=True):
+def query_sides_by_files(pid, attrs, taxonomy=None, sortby=None,
+                         limit=1, priority=True):
     # query
-    files = _query(g.files, attrs)
+    files = _query(g.files, attrs, taxonomy)
+
     # sorting
-    sort_init = [('priority', 1)] if priority else None
-    sort_keys = make_sorts_rule(sortby, sort_init)
-    sorting = _sorting(files, sort_keys)
+    sorting = _sorting(files, parse_sortby(sortby))
 
     limit = min(parse_int(limit, 1, True), 6)
 
@@ -77,22 +77,11 @@ def query_segments(app, limit=24):
     tmpls = [tmpl.replace('^', '')
              for tmpl in theme_config.get('templates', [])
              if tmpl.startswith('^')]
-    seg_files = [f for f in g.files if f['template'] in tmpls]
-
-    # sorts
-    opts = theme_config.get('options', {})
-    sorts = make_sorts_rule(opts.get('sortby'), [('priority', 1)])
-
+    segs = sortedby([f for f in g.files if f['template'] in tmpls],
+                    [('priority', 1), ('updated', 1)])
     # limit
     limit = min(parse_int(limit, 24, 1), 60)
-
-    # resulting
-    results = []
-    segments = sortedby(list(seg_files), sorts)[:limit]
-    for index, segment in enumerate(segments):
-        segment['meta']['remain'] = limit - (index + 1)
-        results.append(segment)
-    return results
+    return segs[:limit]
 
 
 # search
@@ -386,7 +375,7 @@ def helper_wrap_translates(translates, locale):
 
 
 # helpers
-def _query(files, attrs):
+def _query(files, attrs, taxonomy=None):
     FIELD_KEY_ALIASES = current_app.config.get('FIELD_KEY_ALIASES')
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
@@ -422,6 +411,23 @@ def _query(files, attrs):
                  if f['slug'] not in RESERVED_SLUGS and
                  match_cond(f, attr_key, attr_value, force, opposite)]
 
+    if taxonomy:
+        tax_slug = taxonomy.get('tax')
+        term_key = taxonomy.get('term')
+        output = []
+
+        def __match_tex_file(file):
+            for item in file['taxonomy']:
+                if item['tax'] == tax_slug and item['term'] == term_key:
+                    return file
+            return None
+
+        for file in files:
+            _f = __match_tex_file(file)
+            if _f:
+                output.append(_f)
+    else:
+        output = files
     return files
 
 
