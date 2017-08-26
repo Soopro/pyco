@@ -31,6 +31,13 @@
         "link": "/works/index"
       },
       {
+        "key": "category",
+        "meta": {},
+        "nodes": [],
+        "name": "Category",
+        "link": "/category"
+      },
+      {
         "key": "about",
         "meta": {},
         "nodes": [],
