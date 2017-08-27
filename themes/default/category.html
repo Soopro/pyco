@@ -60,10 +60,9 @@
     {% endif %}
     <div class="container prd-container">
       <div class="row">
-        {% set _cond = [{'type': 'post'}] %}
         {% set _tax_cond = {'tax': 'category',
                             'term': macthed_term.key} %}
-        {% set booklet = query(_cond, args.paged, taxonomy=_tax_cond) %}
+        {% set booklet = query('post', args.paged, taxonomy=_tax_cond) %}
 
         {% for item in booklet.contents %}
         <div class="col-md-3 col-sm-4 col-xs-6 prd">
