@@ -212,19 +212,19 @@ Global content data for whole site. some data is simulation for cloud service, i
     * `target`: **[ str ]** menu link target, such as `_blank`, `_self`.
     * `related_type`: **[ str ]** menu item related content type slug.
     * `meta`: **[ dict ]** menu item meta, put custom data as you wish.
-    * `nodes`: **[ list ]** children menu items
+    * `nodes`: **[ list:dict ]** children menu items
 
 * `taxonomies`: **[ dict ]** All taxonomy host here.
   * `< taxonomy_slug >`:
     1. `title`: **[ str ]** Taxonomy title.
     2. `content_types`: **[ list ]** list of supported content types.
-    3. `terms`: **[ list ]** terms of this taxonomy.
+    3. `terms`: **[ list:dict ]** terms of this taxonomy.
       1. `key`: **[ str ]** term key.
       2. `title`: **[ str ]** term title.
       3. `class`: **[ str ]** term sytle class.
       4. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
         * `pic`: **[ str ]** pic for term display.
-      5 `nodes`: **[ list ]** children terms here.
+      5 `nodes`: **[ list:dict ]** children terms here. Same as a term.
 
 * `meta`: Site meta
   * `title`: **[ str ]** site title, aka app title.
@@ -348,7 +348,7 @@ Some attribute will be reserved:
 * `date`: **[ str ]** Input date format with yyyy-mm-dd.
 * `priority`: **[ int ]** Priority of content, the smaller the front, default is `0`.
 * `parent`: **[ str ]** Parent content slug, default is empty str.
-* `taxonomy`: **[ dict ]** host term's slug of all supported taxonomies, such as 'cateogry: sample-term'.
+* `taxonomy`: **[ list:dict ]** host term's slug of all supported taxonomies, such as `{'tax': 'cateogry', 'term': 'some_term_key'}`.
 * `tags`: **[ list ]** A list of str for tags.
 * `redirect`: **[ str ]** Redirect url.
 * `template`: **[ str ]** Template name.
