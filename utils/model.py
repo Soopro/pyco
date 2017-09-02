@@ -60,6 +60,7 @@ class SilentlyStr(str):
 
 
 class DottedImmutableDict(ImmutableDict):
+
     def __getattr__(self, item):
         try:
             v = self.__getitem__(item)
@@ -70,3 +71,7 @@ class DottedImmutableDict(ImmutableDict):
         if isinstance(v, dict):
             v = DottedImmutableDict(v)
         return v
+
+    def __repr__(self):
+        # remove class name when repr.
+        return dict(self).__repr__()

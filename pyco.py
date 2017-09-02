@@ -15,7 +15,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '10', '0')
+__version_info__ = ('2', '10', '1')
 __version__ = '.'.join(__version_info__)
 
 
@@ -39,7 +39,7 @@ app.static_url_path = '/{}'.format(app.config.get('STATIC_PATH'))
 
 # jinja env
 app.jinja_env.autoescape = False
-app.jinja_env.finalize = lambda x: '' if hasattr(x, '__call__') else x
+app.jinja_env.finalize = lambda x: '' if callable(x) else x
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 app.jinja_env.add_extension('jinja2.ext.do')
 app.jinja_env.add_extension('jinja2.ext.with_')
