@@ -33,7 +33,7 @@ def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
 
 def filter_url(url, remove_args=False, remove_hash=False):
     if not isinstance(url, basestring):
-        return url
+        return url or u''
     if remove_args:
         url = url.split('?')[0]
     if remove_hash:
