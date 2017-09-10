@@ -48,7 +48,7 @@ def filter_url(url, remove_args=False, remove_hash=False):
 
 def filter_path(url, remove_args=True, remove_hash=True):
     if not isinstance(url, basestring):
-        return url
+        return url or u''
     if remove_args:
         url = url.split('?')[0]
     if remove_hash:
