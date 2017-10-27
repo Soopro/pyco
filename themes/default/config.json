@@ -18,6 +18,8 @@
     "error_404"
   ],
 
+  "slots": ["event"],
+
   "taxonomies": {
     "category": {
       "title":"Categories",
@@ -29,8 +31,6 @@
     "post": {"title": "Posts", "status": 1},
     "works": {"title": "Portfolio", "status": 1}
   },
-
-  "slots": {"event_widget": true},
 
   "reserves": {
     "post/index": "posts-index",
