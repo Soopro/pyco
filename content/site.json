@@ -56,6 +56,9 @@
       ]
     }
   },
+  "slots": {
+    "event": {"scripts": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
+  },
   "meta": {
     "locale": "en_US",
     "favicon": "",

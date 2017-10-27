@@ -14,7 +14,6 @@ from utils.misc import parse_int
 from helpers.app import (run_hook,
                          helper_get_statistic,
                          helper_redirect_url,
-                         helper_render_ext_slots,
                          get_theme_path)
 from helpers.content import (find_content_file,
                              query_by_files,
@@ -25,6 +24,7 @@ from helpers.content import (find_content_file,
                              helper_wrap_translates,
                              helper_wrap_menu,
                              helper_wrap_taxonomy,
+                             helper_wrap_slot,
                              read_page_metas,
                              parse_content)
 
@@ -123,11 +123,8 @@ def rendering(content_type_slug='page', file_slug='index'):
     # segments
     view_ctx['segments'] = load_segments(curr_app)
 
-    # extension slots
-    ext_slots = curr_app['slots']
-    for k, v in ext_slots.iteritems():
-        ext_slots[k] = helper_render_ext_slots(v, curr_app)
-    view_ctx['slot'] = ext_slots
+    # widget slots
+    view_ctx['slot'] = helper_wrap_slot(curr_app['slots'])
 
     # base view context
     view_ctx['app_id'] = curr_app['_id']

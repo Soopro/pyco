@@ -39,6 +39,12 @@
     {% endfor %}
   </section>
 
+  <!-- widgets -->
+  <section app-id="{{app_id}}">
+    <h4>Slot:</h4>
+    {{slot.event.scripts}}
+  </section>
+
   {% include '_footer.html'%}
 </body>
 </html>

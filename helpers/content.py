@@ -339,6 +339,19 @@ def helper_wrap_taxonomy(taxonomies):
     return tax_dict
 
 
+# slot
+def helper_wrap_slot(slots):
+    if not slots:
+        return {}
+    slots_map = {}
+    for k, v in slots.iteritems():
+        slots_map[k] = {
+            'label': v.get('label', k),
+            'scripts': v.get('scripts', u''),
+        }
+    return slots_map
+
+
 # translates
 def helper_wrap_translates(translates, locale):
     """ translates json sample

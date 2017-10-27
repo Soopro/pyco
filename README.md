@@ -226,6 +226,11 @@ Global content data for whole site. some data is simulation for cloud service, i
         * `pic`: **[ str ]** pic for term display.
       5 `nodes`: **[ list:dict ]** children terms here. Same as a term.
 
+* `slots`: **[ dict ]** All widget slots host here.
+  * `< slot_key >`:
+    1. `label`: **[ str ]** slot label.
+    2. `scripts`: **[ str ]** slot scripts.
+
 * `meta`: Site meta
   * `title`: **[ str ]** site title, aka app title.
   * `logo`: **[ str ]** media src of logo.
@@ -297,6 +302,9 @@ Global content data for whole site. some data is simulation for cloud service, i
          "meta": {"pic": "","parent": ""}, "priority": 0}
       ]
     }
+  },
+  "slots": {
+    "event": {"scripts": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
   },
   "meta": {
     "locale": "en_US",

@@ -43,15 +43,6 @@ def helper_redirect_url(url, base_url):
         return '{}/{}'.format(base_url, url.strip('/'))
 
 
-def helper_render_ext_slots(scripts, app):
-    try:
-        template = Template(scripts)
-        scripts = template.render(app_id=app['_id'])
-    except Exception as e:
-        scripts = str(e)
-    return scripts
-
-
 # statistic
 def helper_record_statistic(app_id, page_id):
     try:

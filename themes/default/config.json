@@ -30,12 +30,12 @@
     "works": {"title": "Portfolio", "status": 1}
   },
 
-  "reserved_contents": {
+  "slots": {"event_widget": true},
+
+  "reserves": {
     "post/index": "posts-index",
     "error-404": true
   },
-
-  "allowed_slots": ["comment"],
 
 	"options": {
 		"sortby": "date",

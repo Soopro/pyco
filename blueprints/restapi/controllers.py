@@ -11,8 +11,7 @@ from utils.misc import sortedby, parse_int, process_slug
 
 from helpers.app import (run_hook,
                          helper_record_statistic,
-                         helper_get_statistic,
-                         helper_render_ext_slots)
+                         helper_get_statistic)
 from helpers.content import (read_page_metas,
                              query_by_files,
                              query_sides_by_files,
@@ -24,7 +23,8 @@ from helpers.content import (read_page_metas,
                              helper_wrap_translates,
                              helper_wrap_socials,
                              helper_wrap_menu,
-                             helper_wrap_taxonomy)
+                             helper_wrap_taxonomy,
+                             helper_wrap_slot)
 
 
 @output_json
@@ -58,10 +58,6 @@ def get_view_metas(app_id):
     translates = curr_app['translates']
     locale = curr_app['locale']
 
-    ext_slots = curr_app['slots']
-    for k, v in ext_slots.iteritems():
-        ext_slots[k] = helper_render_ext_slots(v, curr_app)
-
     context = {
         'app_id': curr_app['_id'],
         'site_meta': site_meta,
@@ -75,7 +71,7 @@ def get_view_metas(app_id):
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
         'taxonomy': helper_wrap_taxonomy(curr_app['taxonomies']),
         'content_types': curr_app['content_types'],
-        'slot': ext_slots
+        'slot': helper_wrap_slot(curr_app['slots'])
     }
     return context
 
