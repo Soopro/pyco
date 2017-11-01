@@ -61,15 +61,27 @@ def filter_path(url, remove_args=True, remove_hash=True):
     return u'/{}'.format(path.strip('/'))
 
 
-def filter_active(menu_item, path, active='active', inactive=''):
+def filter_active(menu_item, path, match_nodes=False,
+                  active='active', inactive=''):
     if not isinstance(menu_item, dict) or not isinstance(path, basestring):
         return inactive
-    if path == menu_item.get('path'):
+
+    def _check_active(item):
+        if path == item.get('path'):
+            return True
+        elif item.get('path_scope'):
+            path_scope = item.get('path_scope').strip('/')
+            if path.startswith(u'/{}/'.format(path_scope)):
+                return True
+        return False
+
+    if _check_active(menu_item):
         return active
-    elif menu_item.get('path_scope'):
-        path_scope = menu_item.get('path_scope').strip('/')
-        if path.startswith(u'/{}/'.format(path_scope)):
-            return active
+
+    if match_nodes and menu_item.get('nodes'):
+        for node in menu_item['nodes']:
+            if _check_active(node):
+                return active
     return inactive
 
 
