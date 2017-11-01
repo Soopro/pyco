@@ -15,11 +15,14 @@ def load_config(app, config_name='config.py'):
     app.config.from_pyfile(config_name)
     app.config.setdefault('DEBUG', False)
     app.config.setdefault('STATIC_PATH', 'static')
+
     app.config.setdefault('UPLOADS_DIR', 'uploads')
     app.config.setdefault('CONTENT_DIR', 'content')
     app.config.setdefault('CONTENT_FILE_EXT', '.md')
 
     app.config.setdefault('BASE_URL', '/')
+    app.config.setdefault('LIB_URL', '')
+    app.config.setdefault('UPLOADS_URL', '')
     app.config.setdefault('THEME_URL', '')
     app.config.setdefault('API_BASEURL', '')
 
@@ -188,8 +191,7 @@ def _shortcode(config, text):
     re_uploads_dir = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
     re_theme_dir = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
     # uploads
-    uploads_dir = '{}/{}'.format(config['BASE_URL'], config['UPLOADS_DIR'])
-    text = re.sub(re_uploads_dir, unicode(uploads_dir), text)
+    text = re.sub(re_uploads_dir, unicode(config['UPLOADS_URL']), text)
     # theme
     text = re.sub(re_theme_dir, unicode(config['THEME_URL']), text)
     return text

@@ -90,7 +90,7 @@ def app_before_request():
         return
 
     base_url = current_app.config.get('BASE_URL')
-    uploads_dir = current_app.config.get('UPLOADS_DIR')
+    uploads_url = current_app.config.get('UPLOADS_URL')
 
     if app.debug or not MEM['loaded']:
         MEM['curr_app'] = load_curr_app(current_app)
@@ -104,8 +104,8 @@ def app_before_request():
     g.request_path = request.path
 
     g.curr_base_url = base_url
+    g.uploads_url = uploads_url
     g.request_url = get_request_url(g.curr_base_url, g.request_path)
-    g.uploads_url = '{}/{}'.format(base_url, uploads_dir)
 
     g.query_count = 0
 

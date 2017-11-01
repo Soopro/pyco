@@ -50,12 +50,6 @@ You can modify the `config.py` to change base settings.
 
 * `STATIC_PATH`: **[ str ]** Static base path of themes. Default is `"static"`.
 
-* `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
-
-* `API_BASEURL`: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
-
-* `THEME_URL`: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
-
 * `UPLOADS_DIR`: **[ str ]** Uploads dir will be `"uploads"`.
 
 * `CONTENT_DIR`: **[ str ]** Contents dir will be `"content"`.
@@ -63,6 +57,16 @@ You can modify the `config.py` to change base settings.
 * `PLUGIN_DIR`: **[ str ]** Plugin dir will be `"plugins"`.
 
 * `THEMES_DIR`: **[ str ]** Themes dir will be `"themes"`.
+
+* `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
+
+* `API_BASEURL`: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
+
+* `THEME_URL`: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
+
+* `UPLOADS_URL`: **[ str ]** uploads url of Site. default is `BASE_URL/UPLOADS_DIR`.
+
+* `LIB_URL`: **[ str ]** lib url of Site. default is `UPLOADS_URL/lib`. Change it to online url if you need.
 
 * `LANGUAGES_DIR`: **[ str ]** The language dir in side each theme will be `"languages"`.
 

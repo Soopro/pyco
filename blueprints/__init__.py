@@ -13,6 +13,5 @@ def register_blueprints(app):
 
     # uploads
     from .uploads import blueprint as uploads_module
-    uploads_dir = app.config.get('UPLOADS_DIR')
-    uploads_prefix = '/{}'.format(uploads_dir)
+    uploads_prefix = '/{}'.format(app.config.get('UPLOADS_DIR'))
     app.register_blueprint(uploads_module, url_prefix=uploads_prefix)

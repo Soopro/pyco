@@ -9,14 +9,17 @@ PORT = 5500
 THEME_NAME = 'default'
 STATIC_PATH = 'static'
 
-BASE_URL = 'http://localhost:5500'
-API_BASEURL = 'http://localhost:5500/restapi'
-THEME_URL = '{}/{}/{}'.format(BASE_URL, STATIC_PATH, THEME_NAME)
-
 UPLOADS_DIR = 'uploads'
 CONTENT_DIR = 'content'
 PLUGIN_DIR = 'plugins'
 THEMES_DIR = 'themes'
+
+BASE_URL = 'http://localhost:5500'
+API_BASEURL = 'http://localhost:5500/restapi'
+THEME_URL = '{}/{}/{}'.format(BASE_URL, STATIC_PATH, THEME_NAME)
+UPLOADS_URL = '{}/{}'.format(BASE_URL, UPLOADS_DIR)
+LIB_URL = '{}/lib'.format(UPLOADS_URL)
+
 
 LANGUAGES_DIR = 'languages'
 

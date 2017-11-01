@@ -64,6 +64,7 @@ def get_view_metas(app_id):
         'theme_meta': theme_meta,
         'base_url': g.curr_base_url,
         'theme_url': config.get('THEME_URL', u''),
+        'lib_url': config.get('LIB_URL', u''),
         'lang': locale.split('_')[0],
         'locale': locale,
         'translates': helper_wrap_translates(translates, locale),

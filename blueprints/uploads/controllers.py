@@ -11,7 +11,7 @@ def get_uploads(filepath):
     filename = os.path.basename(filepath)
     try:
         mime_type = mimetypes.guess_type(filename)[0]
-    except:
+    except Exception:
         mime_type = 'text'
 
     uploads_dir = current_app.config.get("UPLOADS_DIR")

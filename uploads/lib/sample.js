@@ -1,0 +1,1 @@
+console.log('lib: sample.js');
