@@ -276,12 +276,14 @@ def _make_gist(meta, content):
 
 
 def _make_taxonomy(taxonomy):
-    if not isinstance(taxonomy, dict):
+    if not isinstance(taxonomy, list):
         return {}
     tax_map = {}
-    for k, v in taxonomy.iteritems():
-        if isinstance(v, basestring):
-            v = [v]
-        tax_map[k] = [term_key for term_key in v
-                      if isinstance(term_key, basestring)]
+    for item in taxonomy:
+        tax_slug = item.get('tax')
+        term_key = item.get('term')
+        if tax_map[tax_slug]:
+            tax_map[tax_slug].append(term_key)
+        else:
+            tax_map[tax_slug] = [term_key]
     return tax_map
