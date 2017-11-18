@@ -428,16 +428,9 @@ def _query(files, attrs, taxonomy=None):
         term_key = taxonomy.get('term')
         output = []
 
-        def __match_tex_file(file):
-            for item in file['taxonomy']:
-                if item['tax'] == tax_slug and item['term'] == term_key:
-                    return file
-            return None
-
         for file in files:
-            _f = __match_tex_file(file)
-            if _f:
-                output.append(_f)
+            if term_key in file['taxonomy'].get(tax_slug, []):
+                output.append(file)
     else:
         output = files
 

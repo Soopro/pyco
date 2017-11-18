@@ -360,7 +360,7 @@ Some attribute will be reserved:
 * `date`: **[ str ]** Input date format with yyyy-mm-dd.
 * `priority`: **[ int ]** Priority of content, the smaller the front, default is `0`.
 * `parent`: **[ str ]** Parent content slug, default is empty str.
-* `taxonomy`: **[ list:dict ]** host term's slug of all supported taxonomies, such as `{'tax': 'cateogry', 'term': 'some_term_key'}`.
+* `taxonomy`: **[ dict:list ]** host term's slug of taxonomy, such as `{'category': [term_key, another_term_key]}`.
 * `tags`: **[ list ]** A list of str for tags.
 * `redirect`: **[ str ]** Redirect url.
 * `template`: **[ str ]** Template name.
@@ -381,7 +381,7 @@ Date: '2014-01-01'
 Priority: 0
 Status: 1
 Taxonomy:
-   category: sample-term
+   category: [sample-term]
 Template: page
 Title: Static Page
 Featured_img:
