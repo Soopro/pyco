@@ -200,7 +200,7 @@ There is global content data for whole site is host in a json file in root of `c
 
 Global content data for whole site. some data is simulation for cloud service, if you don't know what is it, leave it alone.
 
-* `app_id`: **[ str ]** the app id, simulation an real `app_id`.
+* `app_id`: **[ str ]** simulation an `app_id` (could be encrypted).
 
 * `slug`: **[ str ]** site slug, simulation app slug.
 

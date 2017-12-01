@@ -13,6 +13,7 @@ from utils.misc import parse_int
 
 from helpers.app import (run_hook,
                          helper_get_statistic,
+                         helper_record_statistic,
                          helper_redirect_url,
                          get_theme_path)
 from helpers.content import (find_content_file,
@@ -107,6 +108,9 @@ def rendering(content_type_slug='page', file_slug='index'):
     site_meta['slug'] = curr_app['slug']
     site_meta['id'] = curr_app['_id']
     site_meta['type'] = curr_app['type']
+
+    # record
+    helper_record_statistic(curr_app['_id'], page_meta['id'])
 
     # multi-language support
     set_multi_language(view_ctx, curr_app)

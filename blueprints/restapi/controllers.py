@@ -29,7 +29,8 @@ from helpers.content import (read_page_metas,
 
 @output_json
 def app_visit(app_id, file_id=None):
-    helper_record_statistic(app_id, file_id)
+    if app_id == g.curr_app['_id']:
+        helper_record_statistic(app_id, file_id)
     return helper_get_statistic(app_id, file_id)
 
 
@@ -52,14 +53,12 @@ def get_view_metas(app_id):
     run_hook('config_loaded', config=make_dotted_dict(config))
 
     site_meta['slug'] = curr_app['slug']
-    site_meta['id'] = curr_app['_id']
     site_meta['type'] = curr_app['type']
 
     translates = curr_app['translates']
     locale = curr_app['locale']
 
     context = {
-        'app_id': curr_app['_id'],
         'site_meta': site_meta,
         'theme_meta': theme_meta,
         'base_url': g.curr_base_url,
