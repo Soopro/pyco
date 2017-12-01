@@ -362,29 +362,20 @@ def helper_wrap_slot(slots):
 
 
 # translates
-def helper_wrap_translates(translates, locale):
+def helper_wrap_translates(languages, locale):
     """ translates json sample
-    {
-       "zh_CN":{"name":"汉语","url":"http://....."},
-       "en_US":{"name":"English","url":"http://....."}
-    }
+    [
+       {"key": "zh_CN", "name": "汉语", "url": "http://....."},
+       {"key": "en_US", "name": "English","url": "http://....."}
+    ]
     """
-    if not translates:
+    if not languages:
         return []
 
     trans_list = []
     lang = locale.split('_')[0]
 
-    if isinstance(translates, list):
-        # directly append if is list
-        trans_list = [trans for trans in translates if trans.get('key')]
-
-    elif isinstance(translates, dict):
-        # change to list if is dict
-        def _make_key(k, v):
-            v.update({'key': k})
-            return v
-        trans_list = [_make_key(k, v) for k, v in translates.iteritems()]
+    trans_list = [language for language in languages if language.get('key')]
 
     for trans in trans_list:
         trans_key = trans['key'].lower()

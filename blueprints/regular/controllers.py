@@ -212,8 +212,8 @@ def set_multi_language(view_context, app):
     view_context['locale'] = locale
     view_context['lang'] = locale.split('_')[0]
     # make translates
-    trans_list = helper_wrap_translates(app['translates'], locale)
-    view_context['translates'] = make_dotted_dict(trans_list)
+    translates = helper_wrap_translates(app['languages'], locale)
+    view_context['translates'] = make_dotted_dict(translates)
 
 
 # query

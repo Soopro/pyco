@@ -171,7 +171,7 @@ def load_curr_app(app):
         'slots': site.get('slots', None),
         'meta': site_meta,
         'socials': site_meta.pop('socials', None),
-        'translates': site_meta.pop('translates', None),
+        'languages': site_meta.pop('languages', None),
         'theme_meta': theme_meta
     }
 

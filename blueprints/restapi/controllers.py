@@ -55,7 +55,7 @@ def get_view_metas(app_id):
     site_meta['slug'] = curr_app['slug']
     site_meta['type'] = curr_app['type']
 
-    translates = curr_app['translates']
+    languages = curr_app['languages']
     locale = curr_app['locale']
 
     context = {
@@ -66,7 +66,7 @@ def get_view_metas(app_id):
         'lib_url': config.get('LIB_URL', u''),
         'lang': locale.split('_')[0],
         'locale': locale,
-        'translates': helper_wrap_translates(translates, locale),
+        'translates': helper_wrap_translates(languages, locale),
         'socials': helper_wrap_socials(curr_app['socials']),
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
         'taxonomy': helper_wrap_taxonomy(curr_app['taxonomies']),
