@@ -274,38 +274,29 @@ def helper_wrap_menu(menus, base_url):
 
 # socials
 def helper_wrap_socials(socials):
-    """ socials json sample
-    {
-       'facebook':{
-           'name':'Facebook',
-           'url':'http://....',
-           'poster':'http://....',
-           'script': '....'
+    """ socials data sample
+    [
+       {
+            'key': 'facebook',
+            'name':'Facebook',
+            'url':'http://....',
+            'figure':'http://....',
+            'script': '....'
        },
-       'twitter':{
-           'name':'Twitter',
-           'url':'http://....',
-           'poster':'http://....',
-           'script': '....'
+       {
+            'key': 'twitter',
+            'name':'Twitter',
+            'url':'http://....',
+            'figure':'http://....',
+            'script': '....'
        }
-    }
+    ]
     """
-    if not socials:
+
+    if not socials or not isinstance(socials, list):
         return []
 
-    if isinstance(socials, list):
-        # directly append if is list
-        social_list = [social for social in socials if social.get('key')]
-    elif isinstance(socials, dict):
-        # change to list if is dict
-        def _make_key(k, v):
-            v.update({'key': k})
-            return v
-        social_list = [_make_key(k, v) for k, v in socials.iteritems()]
-    else:
-        social_list = []
-
-    return social_list
+    return [social for social in socials if social.get('key')]
 
 
 # taxonomy
@@ -363,19 +354,18 @@ def helper_wrap_slot(slots):
 
 # translates
 def helper_wrap_translates(languages, locale):
-    """ translates json sample
+    """ languages data sample
     [
-       {"key": "zh_CN", "name": "汉语", "url": "http://....."},
-       {"key": "en_US", "name": "English","url": "http://....."}
+       {'key': 'zh_CN', 'name': '汉语', 'url': 'http://.....'},
+       {'key': 'en_US', 'name': 'English', 'url': 'http://.....'}
     ]
     """
-    if not languages:
+
+    if not languages or not isinstance(languages, list):
         return []
 
-    trans_list = []
+    trans_list = [trans for trans in languages if trans.get('key')]
     lang = locale.split('_')[0]
-
-    trans_list = [language for language in languages if language.get('key')]
 
     for trans in trans_list:
         trans_key = trans['key'].lower()
