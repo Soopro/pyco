@@ -280,10 +280,10 @@ def _make_taxonomy(taxonomy):
         return {}
     tax_map = {}
     for item in taxonomy:
-        tax_slug = item.get('tax')
-        term_key = item.get('term')
-        if tax_map[tax_slug]:
-            tax_map[tax_slug].append(term_key)
+        if not item.get('tax') or not item.get('term'):
+            continue
+        if tax_map.get(item['tax']):
+            tax_map[item['tax']].append(item['term'])
         else:
-            tax_map[tax_slug] = [term_key]
+            tax_map[item['tax']] = [item['term']]
     return tax_map
