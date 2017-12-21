@@ -206,7 +206,7 @@ Global content data for whole site. some data is simulation for cloud service, i
 
 * `type`: **[ str ]** site type, simulation app type.
 
-* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here. `{"page": "Pages"}` etc,.
+* `content_types`: **[ dict ]** content types is define by folder name, but those folder name is always a `slug`, given a Text title for content type here. `{"page": "Pages"}` etc.
 
 * `menus`: **[ dict ]** define multiple menus. Follow `menu` structure exactly.
   1. `< menu_slug >`: **[ list ]** a menu.
