@@ -15,7 +15,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '12', '4')
+__version_info__ = ('2', '13', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -107,7 +107,7 @@ def app_before_request():
     g.uploads_url = uploads_url
     g.request_url = get_request_url(g.curr_base_url, g.request_path)
 
-    g.query_count = 0
+    g.query_map = {}
 
 
 if __name__ == '__main__':

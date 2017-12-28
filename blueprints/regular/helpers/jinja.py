@@ -251,8 +251,8 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
         for item in items[:limit]:
             if item.get(key) == value:
                 return item
-            if recursive_key:
-                node = _find(item.get(recursive_key), level + 1)
+            if recursive_key and item.get(recursive_key):
+                node = _find(item[recursive_key], level + 1)
                 if node:
                     return node
         return None

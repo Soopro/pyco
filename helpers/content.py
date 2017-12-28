@@ -300,11 +300,11 @@ def helper_wrap_socials(socials):
 
 
 # taxonomy
-def helper_wrap_taxonomy(taxonomies):
-    if not taxonomies:
+def helper_wrap_taxonomy(taxonomies, tax_slug):
+    if not taxonomies or not taxonomies.get(tax_slug):
         return {}
 
-    tax_dict = {}
+    tax = taxonomies[tax_slug]
 
     def _parse_term(term, is_parent=True):
         term.setdefault('parent', u'')
@@ -328,15 +328,14 @@ def helper_wrap_taxonomy(taxonomies):
                 terms_map[child['key']] = child.get('meta', {})
         return terms_map
 
-    for slug, tax in taxonomies.iteritems():
-        tax_dict[slug] = {
-            'title': tax.get('title'),
-            'content_types': tax.get('content_types', []),
-            'terms': [_parse_term(term) for term in tax['terms']
-                      if term.get('key')],
-            'terms_map': _parse_terms_map(tax['terms'])
-        }
-    return tax_dict
+    return {
+        'slug': tax_slug,
+        'title': tax.get('title'),
+        'content_types': tax.get('content_types', []),
+        'terms': [_parse_term(term) for term in tax['terms']
+                  if term.get('key')],
+        'terms_map': _parse_terms_map(tax['terms'])
+    }
 
 
 # slot

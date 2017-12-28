@@ -23,8 +23,8 @@ from helpers.content import (find_content_file,
                              count_by_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
-                             helper_wrap_menu,
                              helper_wrap_taxonomy,
+                             helper_wrap_menu,
                              helper_wrap_slot,
                              read_page_metas,
                              parse_content)
@@ -121,9 +121,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     # menu
     view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
 
-    # taxonomy
-    view_ctx['taxonomy'] = helper_wrap_taxonomy(curr_app['taxonomies'])
-
     # segments
     view_ctx['segments'] = load_segments(curr_app)
 
@@ -151,8 +148,9 @@ def rendering(content_type_slug='page', file_slug='index'):
     }
 
     # query contents
-    view_ctx['query'] = query_contents
-    view_ctx['query_sides'] = query_sides
+    view_ctx['query'] = _query_contents
+    view_ctx['query_sides'] = _query_sides
+    view_ctx['query_taxonomy'] = _query_taxonomy
 
     # helper functions
     view_ctx['saltshaker'] = saltshaker
@@ -217,17 +215,19 @@ def set_multi_language(view_context, app):
 
 
 # query
-def _query_limit(limit):
-    if g.query_count > limit:
+def _check_query_limit(key, limit):
+    if key not in g.query_map:
+        g.query_map[key] = 0
+    if g.query_map[key] > limit:
         raise Exception('Query Overrun')
     else:
-        g.query_count += 1
-    return limit - g.query_count
+        g.query_map[key] += 1
+    return limit - g.query_map[key]
 
 
-def query_contents(attrs=None, paged=0, perpage=0, sortby=None,
-                   taxonomy=None, priority=True):
-    remain_queries = _query_limit(3)
+def _query_contents(attrs=None, paged=0, perpage=0, sortby=None,
+                    taxonomy=None, priority=True):
+    remain_queries = _check_query_limit('_query_contents', 3)
 
     curr_id = g.curr_page_id
     theme_meta = g.curr_app['theme_meta']
@@ -282,9 +282,9 @@ def query_contents(attrs=None, paged=0, perpage=0, sortby=None,
     }
 
 
-def query_sides(pid, attrs=None, limit=0, sortby=None,
-                taxonomy=None, priority=True):
-    remain_queries = _query_limit(3)
+def _query_sides(pid, attrs=None, limit=0, sortby=None,
+                 taxonomy=None, priority=True):
+    remain_queries = _check_query_limit('_query_sides', 3)
 
     file_id = pid or g.curr_page_id
     app = g.curr_app
@@ -334,6 +334,16 @@ def query_sides(pid, attrs=None, limit=0, sortby=None,
         'entires_after': after_pages,
         '_remain_queries': remain_queries,
     }
+
+
+def _query_taxonomy(taxonomy=u'category'):
+    remain_queries = _check_query_limit('_query_taxonomy', 3)
+    tax_data = helper_wrap_taxonomy(g.curr_app['taxonomies'], taxonomy)
+    output = {
+        '_remain_queries': remain_queries
+    }
+    output.update(tax_data)
+    return output
 
 
 def load_segments(app):

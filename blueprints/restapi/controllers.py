@@ -22,8 +22,8 @@ from helpers.content import (read_page_metas,
                              parse_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
-                             helper_wrap_menu,
                              helper_wrap_taxonomy,
+                             helper_wrap_menu,
                              helper_wrap_slot)
 
 
@@ -69,11 +69,15 @@ def get_view_metas(app_id):
         'translates': helper_wrap_translates(languages, locale),
         'socials': helper_wrap_socials(curr_app['socials']),
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
-        'taxonomy': helper_wrap_taxonomy(curr_app['taxonomies']),
         'content_types': curr_app['content_types'],
         'slot': helper_wrap_slot(curr_app['slots'])
     }
     return context
+
+
+@output_json
+def get_view_taxonomy(app_id, tax_slug):
+    return helper_wrap_taxonomy(g.curr_app['taxonomies'], tax_slug)
 
 
 @output_json

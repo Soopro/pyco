@@ -9,7 +9,8 @@
 
 <body>
   {% set args = request.args %}
-  {% set macthed_term = straw(taxonomy.category.terms, args.term, 'key')
+  {% set category = query_taxonomy('category') %}
+  {% set macthed_term = straw(category.terms, args.term, 'key')
                         if args.term else {} %}
   {% if not macthed_term and args.term %}
   <script>window.location.replace('{{base_url}}/error-404')</script>
@@ -33,7 +34,7 @@
 
     <div class="container prd-container">
       <div class="row">
-        {% for term in taxonomy.category.terms %}
+        {% for term in category.terms %}
         <div class="col-md-6 prd">
           <a href="{{glue({'term': term.key})}}">
             <img style="max-width: 100px;"
