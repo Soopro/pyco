@@ -12,7 +12,6 @@ urlpatterns = [
 
     # contents
     ('/<app_id>/view/metas', get_view_metas, 'GET'),
-    ('/<app_id>/view/content', get_view_content_list, 'GET'),
     ('/<app_id>/view/content/<type_slug>', get_view_content_list, 'GET'),
     ('/<app_id>/view/content/<type_slug>/<file_slug>',
         get_view_content, 'GET'),

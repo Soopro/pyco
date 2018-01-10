@@ -247,7 +247,7 @@ def query_view_sides(app_id):
 
 
 @output_json
-def get_view_content_list(app_id, type_slug=None):
+def get_view_content_list(app_id, type_slug=u'page'):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
