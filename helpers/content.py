@@ -226,7 +226,7 @@ def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
 
 
 # menus
-def helper_wrap_menu(menus, base_url):
+def helper_wrap_menu(menus, base_url=u''):
     if not menus:
         return {}
 
