@@ -18,7 +18,6 @@ from helpers.app import (run_hook,
                          get_theme_path)
 from helpers.content import (find_content_file,
                              query_by_files,
-                             query_sides_by_files,
                              query_segments,
                              count_by_files,
                              helper_wrap_socials,
@@ -26,6 +25,7 @@ from helpers.content import (find_content_file,
                              helper_wrap_taxonomy,
                              helper_wrap_menu,
                              helper_wrap_slot,
+                             helper_pack_taxonomies,
                              read_page_metas,
                              parse_content)
 
@@ -121,11 +121,14 @@ def rendering(content_type_slug='page', file_slug='index'):
     # menu
     view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
 
+    # taxonomy
+    view_ctx['taxonomy'] = helper_pack_taxonomies(curr_app['taxonomies'])
+
+    # slots
+    view_ctx['slot'] = helper_wrap_slot(curr_app['slots'])
+
     # segments
     view_ctx['segments'] = load_segments(curr_app)
-
-    # widget slots
-    view_ctx['slot'] = helper_wrap_slot(curr_app['slots'])
 
     # base view context
     view_ctx['app_id'] = curr_app['_id']
@@ -149,7 +152,6 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # query contents
     view_ctx['query'] = _query_contents
-    view_ctx['query_sides'] = _query_sides
     view_ctx['query_taxonomy'] = _query_taxonomy
 
     # helper functions
@@ -278,60 +280,6 @@ def _query_contents(attrs=None, paged=0, perpage=0, sortby=None,
         'page_range': page_range,
         'has_prev': paged > 1,
         'has_next': paged < max_pages,
-        '_remain_queries': remain_queries,
-    }
-
-
-def _query_sides(pid, attrs=None, limit=0, sortby=None,
-                 taxonomy=None, priority=True):
-    remain_queries = _check_query_limit('_query_sides', 3)
-
-    file_id = pid or g.curr_page_id
-    app = g.curr_app
-    theme_opts = app['theme_meta'].get('options', {})
-
-    # set default params
-    if isinstance(attrs, basestring):
-        attrs = [{'type': unicode(attrs)}]
-
-    if not sortby:
-        sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, basestring):
-            sortby = [sortby]
-        elif not isinstance(sortby, list):
-            sortby = []
-
-    limit = parse_int(limit, 1, True)
-
-    # query side mongo
-    before_pages, after_pages = query_sides_by_files(pid=file_id,
-                                                     attrs=attrs,
-                                                     taxonomy=taxonomy,
-                                                     limit=limit,
-                                                     sortby=sortby,
-                                                     priority=priority)
-    before_pages = [read_page_metas(content_file, theme_opts)
-                    for content_file in before_pages]
-    after_pages = [read_page_metas(content_file, theme_opts)
-                   for content_file in after_pages]
-
-    run_hook('get_pages', pages=before_pages, current_page_id=None)
-    run_hook('get_pages', pages=after_pages, current_page_id=None)
-
-    make_dotted_dict(before_pages)
-    make_dotted_dict(after_pages)
-
-    before = before_pages[-1] if before_pages else None
-    after = after_pages[0] if after_pages else None
-
-    if current_app.debug:
-        print 'sides:', limit, len(before_pages), len(after_pages)
-
-    return {
-        'before': before,
-        'after': after,
-        'entires_before': before_pages,
-        'entires_after': after_pages,
         '_remain_queries': remain_queries,
     }
 

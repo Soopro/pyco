@@ -4,6 +4,10 @@ Status: 1
 Template: post
 Title: Post 2
 Description: Description text
+Prevpage:
+  link: '/post/post1'
+Nextpage:
+  link: '/post/post3'
 Taxonomy:
 - tax: 'category'
   term: 'food'

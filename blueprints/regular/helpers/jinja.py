@@ -257,7 +257,7 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
                     return node
         return None
 
-    return _find(raw_list)
+    return _find(raw_list, 0)
 
 
 def glue(args=None, url=None, clarify=False, unique=True):

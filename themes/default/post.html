@@ -30,23 +30,22 @@
   </section>
 
   <!-- paginator -->
-  {% set channel = query_sides(meta.id, 'post') %}
-  {% if channel.before or channel.after %}
+  {% if meta.prevpage or meta.mextpage %}
   <hr>
-  {% endif %}
   <div class="paginator">
-    {% if channel.before %}
-      <a href="{{channel.before.url or '#'}}">{{_('Next page')}}</a>
+    {% if meta.prevpage %}
+      <a href="{{meta.prevpage.link|url}}">{{_('Previous page')}}</a>
     {% endif %}
     &nbsp;/&nbsp;
-    {% if channel.after %}
-      <a href="{{channel.after.url or '#'}}">{{_('Previous page')}}</a>
+    {% if meta.nextpage %}
+      <a href="{{meta.nextpage.link|url}}">{{_('Next page')}}</a>
     {% endif %}
     </div>
   </div>
+  {% endif %}
 
   <hr>
-  <a href="{{base_url}}/post/index/">{{_('Return to post index')}}</a>
+  <a href="{{base_url}}/post/index">{{_('Return to post index')}}</a>
 
   {% include '_footer.html'%}
 </body>

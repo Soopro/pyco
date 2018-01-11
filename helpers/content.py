@@ -300,6 +300,18 @@ def helper_wrap_socials(socials):
 
 
 # taxonomy
+def helper_pack_taxonomies(taxonomies):
+    if not taxonomies:
+        return {}
+    tax_map = {}
+    for k, v in taxonomies.iteritems():
+        tax_map[k] = {
+            'title': v['title'],
+            'content_types': v['content_types']
+        }
+    return tax_map
+
+
 def helper_wrap_taxonomy(taxonomies, tax_slug):
     if not taxonomies or not taxonomies.get(tax_slug):
         return {}

@@ -4,6 +4,8 @@ Status: 1
 Template: post
 Title: Post @1
 Description: Description text
+Nextpage:
+  link: '/post/post2'
 Taxonomy:
 - tax: 'category'
   term: 'food'

@@ -39,22 +39,6 @@
     {% endfor %}
   </section>
 
-  <!-- paginator -->
-  {% set channel = query_sides(meta.id, 'works') %}
-  {% if channel.before or channel.after %}
-  <hr>
-  {% endif %}
-  <div class="paginator">
-    {% if channel.before %}
-      <a href="{{channel.before.url or '#'}}">{{_('Next page')}}</a>
-    {% endif %}
-    &nbsp;/&nbsp;
-    {% if channel.after %}
-      <a href="{{channel.after.url or '#'}}">{{_('Previous page')}}</a>
-    {% endif %}
-    </div>
-  </div>
-
   <hr>
   <a href="{{base_url}}/post/index/">{{_('Return to post index')}}</a>
 

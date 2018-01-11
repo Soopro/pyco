@@ -14,7 +14,6 @@ from helpers.app import (run_hook,
                          helper_get_statistic)
 from helpers.content import (read_page_metas,
                              query_by_files,
-                             query_sides_by_files,
                              query_segments,
                              count_by_files,
                              search_by_files,
@@ -24,7 +23,8 @@ from helpers.content import (read_page_metas,
                              helper_wrap_socials,
                              helper_wrap_taxonomy,
                              helper_wrap_menu,
-                             helper_wrap_slot)
+                             helper_wrap_slot,
+                             helper_pack_taxonomies)
 
 
 @output_json
@@ -69,6 +69,7 @@ def get_view_metas(app_id):
         'translates': helper_wrap_translates(languages, locale),
         'socials': helper_wrap_socials(curr_app['socials']),
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
+        'taxonomy': helper_pack_taxonomies(curr_app['taxonomies']),
         'content_types': curr_app['content_types'],
         'slot': helper_wrap_slot(curr_app['slots'])
     }
@@ -201,52 +202,6 @@ def query_view_contents(app_id):
 
 
 @output_json
-def query_view_sides(app_id):
-    pid = get_param('pid', unicode, True)
-    attrs = get_param('attrs', list, False, [])
-    taxonomy = get_param('taxonomy', dict, False, {})
-    sortby = get_param('sortby', list, False, [])
-    limit = get_param('perpage', int, False, 1)
-    priority = get_param('priority', bool, False, True)
-
-    theme_opts = g.curr_app['theme_meta'].get('options', {})
-
-    # set default params
-    if isinstance(attrs, basestring):
-        attrs = [{'type': unicode(attrs)}]
-
-    if not sortby:
-        sortby = theme_opts.get('sortby', 'updated')
-
-    limit = parse_int(limit, 1, True)
-
-    # query side mongo
-    before_pages, after_pages = query_sides_by_files(pid=pid,
-                                                     attrs=attrs,
-                                                     taxonomy=taxonomy,
-                                                     limit=limit,
-                                                     sortby=sortby,
-                                                     priority=priority)
-    before_pages = [read_page_metas(content_file, theme_opts)
-                    for content_file in before_pages]
-    after_pages = [read_page_metas(content_file, theme_opts)
-                   for content_file in after_pages]
-
-    run_hook('get_pages', pages=before_pages, current_page_id=None)
-    run_hook('get_pages', pages=after_pages, current_page_id=None)
-
-    before = before_pages[-1] if before_pages else None
-    after = after_pages[0] if after_pages else None
-
-    return {
-        'before': before,
-        'after': after,
-        'entires_before': before_pages,
-        'entires_after': after_pages,
-    }
-
-
-@output_json
 def get_view_content_list(app_id, type_slug=u'page'):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
@@ -304,8 +259,8 @@ def get_view_content_list(app_id, type_slug=u'page'):
 
 
 @output_json
-def get_view_content(app_id, type_slug, file_slug):
-    content_file = find_content_file(type_slug, file_slug)
+def get_view_content(app_id, type_slug, slug):
+    content_file = find_content_file(type_slug, slug)
     if not content_file:
         Exception('content file not found.')
     app = g.curr_app
