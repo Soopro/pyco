@@ -1,6 +1,7 @@
 {
   "app_id":"pyco_app",
   "slug":"pyco",
+  "locale": "en_US",
   "content_types": {
     "post": "Posts",
     "page": "Pages",
@@ -60,7 +61,6 @@
     "event": {"scripts": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
   },
   "meta": {
-    "locale": "en_US",
     "favicon": "",
     "logo": "",
     "bg": "",

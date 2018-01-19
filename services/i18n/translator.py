@@ -9,40 +9,33 @@ class Translator(object):
 
     locale = 'en'
     lang = 'en'
-    charset_utf8 = 'utf-8'
-    use_unicode = True
+    charset = 'utf-8'
     dictionary = dict()
     case_sensitive = False
 
     def __init__(self, locale, loc_dict=None,
-                 case=False, force=False, use_unicode=True):
+                 case_sensitive=False, charset=None):
         if isinstance(locale, basestring):
             self.locale = locale
             self.lang = locale.split('_')[0]
+        if charset:
+            self.charset = charset
         if loc_dict:
-            self.load(loc_dict, case, force)
+            self.load(loc_dict, case_sensitive)
 
-    def _encode(self, text):
-        if not isinstance(text, basestring):
-            text = ''
-        elif isinstance(text, (int, float, long, complex)):
-            text = unicode(text)
-
-        if not isinstance(text, unicode) and self.use_unicode:
-            text = text.decode(self.charset_utf8)
-        elif isinstance(text, unicode) and not self.use_unicode:
-            text = text.encode(self.charset_utf8)
-
+    def _unicode(self, text):
+        if isinstance(text, str):
+            text = text.decode(self.charset)
+        else:
+            try:
+                # int, float, long, complex, etc.
+                text = unicode(text)
+            except Exception:
+                text = u''
         return text
 
     def _trans_key(self, text):
         return text if self.case_sensitive else text.lower()
-
-    def _all_basestring(self, *args):
-        for arg in args:
-            if not isinstance(arg, basestring):
-                return False
-        return True
 
     def _parse_path(self, lang_folder):
         path = os.path.join(lang_folder, self.locale)
@@ -52,47 +45,37 @@ class Translator(object):
             path = None
         return path
 
-    def _load_file(self, path, force=False):
+    def _load_file(self, path):
         path = self._parse_path(path)
-        if not path and not force:
-            return {}  # set emtpy dict for translator
         try:
             with open(path) as f:
                 dictionary = json.load(f)
             assert isinstance(dictionary, list)
         except Exception as e:
-            raise IOError('i18n: Invalid dictionary file.')
+            raise IOError(u'i18n: Invalid dictionary file. {}'.format(e))
         return dictionary
 
-    def load(self, dictionary=None, case_sensitive=False, force=False):
+    def load(self, dictionary=None, case_sensitive=False):
         self.dictionary = {}  # reset dictionary
 
         if isinstance(dictionary, basestring):
-            dictionary = self._load_file(dictionary, force)
+            dictionary = self._load_file(dictionary)
 
         self.case_sensitive = bool(case_sensitive)
 
         if isinstance(dictionary, list):
             for msg in dictionary:
-                msgid = msg.get('msgid')
-                msgstr = msg.get('msgstr')
-
-                if not self._all_basestring(msgid, msgstr) or not msgid:
-                    continue
-                msgid = self._encode(msgid)
-                msgstr = self._encode(msgstr)
-
-                if msgid and isinstance(msgid, basestring) \
-                        and isinstance(msgstr, basestring):
+                msgid = self._unicode(msg.get('msgid'))
+                msgstr = self._unicode(msg.get('msgstr'))
+                if msgid:
                     self.dictionary.update({self._trans_key(msgid): msgstr})
 
         elif isinstance(dictionary, dict):
             for k, v in dictionary.iteritems():
-                if not self._all_basestring(k, v) or not k:
-                    continue
-                msgid = self._encode(k)
-                msgstr = self._encode(v)
-                self.dictionary.update({self._trans_key(msgid): msgstr})
+                msgid = self._unicode(k)
+                msgstr = self._unicode(v)
+                if msgid:
+                    self.dictionary.update({self._trans_key(msgid): msgstr})
 
         else:
             raise TypeError('i18n: Invalid dictionary type.')
@@ -101,15 +84,11 @@ class Translator(object):
         if not isinstance(text, basestring):
             return text
 
-        text = self._encode(text)
-
+        text = self._unicode(text)
         trans = self.dictionary.get(self._trans_key(text), text)
-        trans = self._encode(trans)
 
         for arg in args:
-            if not isinstance(arg, basestring):
-                continue
-            arg = self._encode(arg)
+            arg = self._unicode(arg)
             trans = trans.replace('%s', arg, 1)
 
         return trans
@@ -121,4 +100,4 @@ class Translator(object):
             trans = text_dict.get(self.locale) or text_dict.get(self.lang)
         else:
             trans = text_dict.itervalues().next()
-        return self._encode(trans)
+        return self._unicode(trans)
