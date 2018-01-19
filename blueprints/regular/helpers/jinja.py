@@ -13,7 +13,8 @@ from utils.misc import (sortedby,
                         format_date,
                         get_url_params,
                         add_url_params,
-                        match_cond)
+                        match_cond,
+                        convert_price)
 
 
 # filters
@@ -141,6 +142,10 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
     else:
         output = offset
     return output
+
+
+def filter_price(amount, use_currency=False, symbol=u'', fraction_size=2):
+    return convert_price(amount, use_currency, symbol, fraction_size)
 
 
 # jinja helpers

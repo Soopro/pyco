@@ -14,7 +14,8 @@ from .helpers.jinja import (filter_thumbnail,
                             filter_active,
                             filter_url,
                             filter_path,
-                            filter_args)
+                            filter_args,
+                            filter_price)
 from .routes import urlpatterns
 
 bp_name = 'regular'
@@ -33,6 +34,7 @@ def before_first_request():
     current_app.jinja_env.filters['date_formatted'] = filter_date_formatted
     current_app.jinja_env.filters['bg_img'] = filter_background_image
     current_app.jinja_env.filters['col_offset'] = filter_column_offset
+    current_app.jinja_env.filters['price'] = filter_price
 
 
 @blueprint.before_request

@@ -438,3 +438,13 @@ def random_choices(seq, limit=1):
         else:
             break
     return selected
+
+
+# price
+def convert_price(amount, use_currency=False, symbol=u'', fraction_size=2):
+    pattern = u'{:,.{size}f}' if use_currency else u'{:.{size}f}'
+    try:
+        price = pattern.format(int(amount) / 100.0, size=fraction_size)
+    except Exception:
+        price = None
+    return u'{}{}'.format(symbol, price)
