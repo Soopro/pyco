@@ -7,7 +7,7 @@ import math
 from utils.response import output_json
 from utils.request import get_param, get_args
 from utils.model import make_dotted_dict
-from utils.misc import sortedby, parse_int, process_slug
+from utils.misc import parse_int, process_slug
 
 from helpers.app import (run_hook,
                          helper_record_statistic,
@@ -83,24 +83,25 @@ def get_view_taxonomy(app_id, tax_slug):
 
 @output_json
 def get_view_tags(app_id, type_slug=None):
-    limit = get_args('limit', default=60)
-    limit = parse_int(limit, 60, True)
+    pass
+    # limit = get_args('limit', default=60)
+    # limit = parse_int(limit, 60, True)
 
-    if type_slug:
-        type_slug = process_slug(type_slug)
-        files = [f for f in g.files if f['content_type'] == type_slug]
-    else:
-        files = [f for f in g.files]
+    # if type_slug:
+    #     type_slug = process_slug(type_slug)
+    #     files = [f for f in g.files if f['content_type'] == type_slug]
+    # else:
+    #     files = [f for f in g.files]
 
-    tags = {}
-    for f in files:
-        for key in f['tags']:
-            tags[key] = 1 if key not in tags else tags[key] + 1
+    # tags = {}
+    # for f in files:
+    #     for key in f['tags']:
+    #         tags[key] = 1 if key not in tags else tags[key] + 1
 
-    tag_list = [{'key': k, 'count': v} for k, v in tags.iteritems()]
-    results = sortedby(tag_list, [('count', -1)])[:limit]
+    # tag_list = [{'key': k, 'count': v} for k, v in tags.iteritems()]
+    # results = sortedby(tag_list, [('count', -1)])[:limit]
 
-    return results
+    # return results
 
 
 @output_json
@@ -152,7 +153,6 @@ def query_view_contents(app_id):
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
-    priority = get_param('priority', bool, False, True)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -183,8 +183,7 @@ def query_view_contents(app_id):
                              taxonomy=taxonomy,
                              offset=offset,
                              limit=limit,
-                             sortby=sortby,
-                             priority=priority)
+                             sortby=sortby)
     pages = [read_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
@@ -240,8 +239,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
                              taxonomy=None,
                              offset=offset,
                              limit=limit,
-                             sortby=sortby,
-                             priority=priority)
+                             sortby=sortby)
     curr_index = offset
 
     pages = []

@@ -108,11 +108,11 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_SEARCH_ATTRS`: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
 
-* `SHORT_FIELD_KEYS`: **[ dict ]** Make short keyword for fields key. Default is: `{'type': 'content_type'}`
+* `FIELD_KEY_ALIASES`: **[ dict ]** Make short keyword for fields key. Default is: `{'type': 'content_type'}`
 
-* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('priority', 'date', 'creation', 'updated')`.
+* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'value', 'updated')`.
 
-* `STRUCTURE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'content_type', 'priority', 'parent', 'date', 'creation', 'updated', 'template', 'tags')`.
+* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'content_type', 'priority', 'parent', 'date', 'value', 'creation', 'updated', 'template', 'tags')`.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
 

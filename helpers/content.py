@@ -8,13 +8,12 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 
 
-def query_by_files(attrs, taxonomy=None, offset=0, limit=1,
-                   sortby=None, priority=True):
+def query_by_files(attrs, taxonomy=None, offset=0, limit=1, sortby=None):
     # query
     files = _query(g.files, attrs, taxonomy)
 
     # sorting
-    sorting = _sorting(files, parse_sortby(sortby), priority)
+    sorting = _sorting(files, parse_sortby(sortby))
 
     limit = parse_int(limit, 1, True)
     offset = parse_int(offset, 0, 0)
@@ -31,44 +30,6 @@ def query_by_files(attrs, taxonomy=None, offset=0, limit=1,
 
 def count_by_files(attrs, taxonomy=None):
     return len(_query(g.files, attrs, taxonomy))
-
-
-def query_sides_by_files(pid, attrs, taxonomy=None, limit=1,
-                         sortby=None, priority=True):
-    # query
-    files = _query(g.files, attrs, taxonomy)
-
-    # sorting
-    sorting = _sorting(files, parse_sortby(sortby), priority=True)
-
-    limit = min(parse_int(limit, 1, True), 6)
-
-    if sorting:
-        ids = [item['_id'] for item in sorting]
-    else:
-        ids = [f['_id'] for f in files]
-
-    curr_idx = None
-    for idx, entry in enumerate(sorting):
-        if str(entry['_id']) == pid:
-            curr_idx = idx
-            break
-
-    if curr_idx is not None:
-        before_ids = ids[max(curr_idx - limit, 0):curr_idx]
-        befores = [f for f in files if f['_id'] in before_ids]
-        before_order = {_id: idx for idx, _id in enumerate(before_ids)}
-        befores.sort(key=lambda x: before_order[x['_id']])
-
-        after_ids = ids[curr_idx + 1:curr_idx + 1 + limit]
-        afters = [f for f in files if f['_id'] in after_ids]
-        after_order = {_id: idx for idx, _id in enumerate(after_ids)}
-        afters.sort(key=lambda x: after_order[x['_id']])
-    else:
-        befores = []
-        afters = []
-
-    return befores, afters
 
 
 # segments
@@ -165,6 +126,7 @@ def read_page_metas(page, options, current_id=None):
     data['priority'] = page['priority']
     data['status'] = page['status']
     data['date'] = page['date']
+    data['value'] = page['value']
     data['taxonomy'] = page['taxonomy']
     data['tags'] = page['tags']
     data['updated'] = page['updated']
@@ -438,12 +400,10 @@ def _query(files, attrs, taxonomy=None):
     return output
 
 
-def _sorting(files, sort, priority=True):
+def _sorting(files, sort):
     SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
 
-    sorts = []
-    if priority:
-        sorts.append(('priority', 1))
+    sorts = [('priority', 1)]
     if isinstance(sort, tuple):
         sort_key = sort[0]
         if sort_key in SORTABLE_FIELD_KEYS:

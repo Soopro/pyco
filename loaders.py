@@ -57,10 +57,10 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('RESERVED_SLUGS',
                           ['index', 'error-404', 'search', 'taxonomy', 'tag'])
     app.config.setdefault('SORTABLE_FIELD_KEYS',
-                          ('priority', 'date', 'creation', 'updated'))
+                          ('date', 'value', 'updated'))
     app.config.setdefault('QUERYABLE_FIELD_KEYS',
                           ('slug', 'content_type', 'priority', 'parent',
-                           'date', 'creation', 'updated',
+                           'date', 'value', 'creation', 'updated',
                            'template', 'tags'))
     app.config.setdefault('FIELD_KEY_ALIASES', {})
 
@@ -119,6 +119,7 @@ def load_all_files(app, curr_app):
             'priority': meta.pop('priority', 0),
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
+            'value': meta.pop('value', 0),
             'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
             'tags': meta.pop('tags', []),
             'redirect': meta.pop('redirect', u''),

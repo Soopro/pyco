@@ -227,8 +227,7 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(attrs=None, paged=0, perpage=0, sortby=None,
-                    taxonomy=None, priority=True):
+def _query_contents(attrs=[], taxonomy=None, paged=0, perpage=0, sortby=None):
     remain_queries = _check_query_limit('_query_contents', 3)
 
     curr_id = g.curr_page_id
@@ -236,7 +235,7 @@ def _query_contents(attrs=None, paged=0, perpage=0, sortby=None,
     theme_opts = theme_meta.get('options', {})
 
     # set default params
-    if isinstance(attrs, basestring):
+    if attrs and isinstance(attrs, basestring):
         attrs = [{'type': unicode(attrs)}]
 
     if not sortby:
@@ -265,8 +264,7 @@ def _query_contents(attrs=None, paged=0, perpage=0, sortby=None,
                              taxonomy=taxonomy,
                              offset=offset,
                              limit=limit,
-                             sortby=sortby,
-                             priority=priority)
+                             sortby=sortby)
     pages = [read_page_metas(p, theme_opts, curr_id) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
