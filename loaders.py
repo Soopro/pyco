@@ -1,7 +1,7 @@
 # coding=utf8
 from __future__ import absolute_import
 
-from utils.misc import process_slug, remove_multi_space
+from utils.misc import process_slug
 
 from types import ModuleType
 import os
@@ -69,6 +69,9 @@ def load_config(app, config_name='config.py'):
 
     app.config.setdefault('MAXIMUM_QUERY', 60)
 
+    app.config.setdefault('USE_MARKDOWN', False)
+    app.config.setdefault('MARKDOWN_EXTENSIONS', [])
+
 
 def load_plugins(app):
     plugins = app.config.get('PLUGINS')
@@ -126,9 +129,8 @@ def load_all_files(app, curr_app):
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
-            'gist': _make_gist(meta, content_string),
-            'excerpt': _make_excerpt(app.config, content_string),
-            'content': content_string,
+            'participle': [],
+            'content': _convert_content(app.config, content_string),
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
         }
@@ -186,6 +188,14 @@ def _content_splitter(config, file_content):
     if m is None:
         return '', ''
     return m.group('meta'), m.group('content')
+
+
+def _convert_content(config, content_string):
+    if config['USE_MARKDOWN']:
+        markdown_exts = config['MARKDOWN_EXTENSIONS']
+        return markdown.markdown(content_string, markdown_exts)
+    else:
+        return content_string
 
 
 def _shortcode(config, text):
@@ -250,30 +260,6 @@ def _file_headers(meta_string):
     yaml_data = yaml.safe_load(meta_string)
     headers = convert_data_decode(yaml_data)
     return headers
-
-
-def _make_excerpt(config, content_string, length=600):
-    use_markdown = config.get('USE_MARKDOWN')
-    if use_markdown:
-        markdown_exts = config.get('MARKDOWN_EXTENSIONS', [])
-        content = markdown.markdown(content_string, markdown_exts)
-    else:
-        content = content_string
-    excerpt = re.sub(r'<[^>]*?>', '', content)
-    return excerpt[:length].strip()
-
-
-def _make_gist(meta, content):
-    title = meta.get('title', u'')
-    des = meta.get('description', u'')
-    if not des:
-        _excerpt = re.sub(r'<[^>]*?>', '', content)
-        des = _excerpt[:600].strip()
-    try:
-        text = remove_multi_space(u'{} {}'.format(title, des)[:600])
-    except Exception:
-        text = u''
-    return text
 
 
 def _make_taxonomy(taxonomy):

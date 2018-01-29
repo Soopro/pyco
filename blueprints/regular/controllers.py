@@ -26,8 +26,8 @@ from helpers.content import (find_content_file,
                              helper_wrap_menu,
                              helper_wrap_slot,
                              helper_pack_taxonomies,
-                             read_page_metas,
-                             parse_content)
+                             parse_page_metas,
+                             parse_page_content)
 
 from .helpers.jinja import (saltshaker,
                             glue,
@@ -81,15 +81,15 @@ def rendering(content_type_slug='page', file_slug='index'):
     run_hook('after_load_content', path=path, file=content_file)
 
     # content
-    page_content = {'content': content_file.pop('content', u'')}
-    run_hook('before_parse_content', content=page_content)
-    page_content['content'] = parse_content(page_content['content'])
-    run_hook('after_parse_content', content=page_content)
+    page_content = {'content': content_file.get('content', u'')}
+    run_hook('before_parse_page_content', content=page_content)
+    page_content['content'] = parse_page_content(page_content['content'])
+    run_hook('after_parse_page_content', content=page_content)
 
     view_ctx['content'] = page_content['content']
 
     run_hook('before_read_page_meta', headers=content_file)
-    page_meta = read_page_metas(content_file, theme_options)
+    page_meta = parse_page_metas(content_file, theme_options)
     redirect_to = {'url': None}
     run_hook('after_read_page_meta', meta=page_meta, redirect=redirect_to)
 
@@ -227,7 +227,7 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(attrs=[], taxonomy=None, paged=0, perpage=0, sortby=None):
+def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None):
     remain_queries = _check_query_limit('_query_contents', 3)
 
     curr_id = g.curr_page_id
@@ -265,7 +265,7 @@ def _query_contents(attrs=[], taxonomy=None, paged=0, perpage=0, sortby=None):
                              offset=offset,
                              limit=limit,
                              sortby=sortby)
-    pages = [read_page_metas(p, theme_opts, curr_id) for p in results]
+    pages = [parse_page_metas(p, theme_opts, curr_id) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
 
@@ -302,9 +302,9 @@ def load_segments(app):
     results = query_segments(app, use_segments)
     pages = []
     for p in results:
-        p_content = p.pop('content', u'')
-        p = read_page_metas(p, theme_opts)
-        p['content'] = parse_content(p_content)
+        p_content = p.get('content', u'')
+        p = parse_page_metas(p, theme_opts)
+        p['content'] = parse_page_content(p_content)
         pages.append(p)
 
     run_hook('get_pages', pages=pages, current_page_id=None)

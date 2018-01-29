@@ -100,9 +100,7 @@ You can modify the `config.py` to change base settings.
 
 * `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAG_SLUG]`.
 
-* `USE_MARKDOWN`: **[ bool ]** Use markdown for rendering or not. Default is `False`.
-
-* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if `USE_MARKDOWN` is opened. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
+* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if content mode is markdown. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
 
 * `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
 
@@ -151,11 +149,11 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
       2. `slug`: **[ str ]** file slug
     * `file`: **[ dict ]** a file dict. Print out to see all attributes.
 
-7. `before_parse_content(content)`: Before parse the content.
+7. `before_parse_page_content(content)`: Before parse the content.
     * `content`: **[ dict ]**
       1. `content`: raw content string.
 
-8. `after_parse_content(content)`: After content parsed.
+8. `after_parse_page_content(content)`: After content parsed.
     * `content`: **[ dict ]**
       1. `content`: parsed content string.
 

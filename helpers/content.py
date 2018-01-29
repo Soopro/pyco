@@ -1,8 +1,9 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, g
-import markdown
+from flask import current_app, Markup, g
+
+import re
 
 from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, parse_sortby
@@ -69,9 +70,7 @@ def search_by_files(keywords, content_type=None,
             keywords = []
 
         def _search_match(keyword, f):
-            if use_tags and keyword in f['tags']:
-                return True
-            if keyword in f['gist']:
+            if keyword in f['tags'] and keyword in f['participle']:
                 return True
             return False
 
@@ -103,16 +102,11 @@ def find_content_file(type_slug, file_slug):
     return None
 
 
-def parse_content(content_string):
-    use_markdown = current_app.config.get('USE_MARKDOWN')
-    if use_markdown:
-        markdown_exts = current_app.config.get('MARKDOWN_EXTENSIONS', [])
-        return markdown.markdown(content_string, markdown_exts)
-    else:
-        return content_string
+def parse_page_content(content_string):
+    return Markup(content_string)
 
 
-def read_page_metas(page, options, current_id=None):
+def parse_page_metas(page, options={}, current_id=None):
     data = dict()
     meta = page.get('meta')
     for m in meta:
@@ -134,7 +128,7 @@ def read_page_metas(page, options, current_id=None):
 
     excerpt_len = options.get('excerpt_length')
     ellipsis = options.get('excerpt_ellipsis')
-    data['excerpt'] = gen_file_excerpt(page['excerpt'], excerpt_len, ellipsis)
+    data['excerpt'] = gen_file_excerpt(page['content'], excerpt_len, ellipsis)
 
     data['description'] = meta.get('description') or data['excerpt']
     data['url'] = gen_page_url(page)
@@ -150,6 +144,16 @@ def read_page_metas(page, options, current_id=None):
         data['is_current'] = True
 
     return data
+
+
+def gen_file_excerpt(content, excerpt_length=None, ellipsis=None):
+    excerpt_length = parse_int(excerpt_length, 162, True)
+    if isinstance(ellipsis, basestring):
+        excerpt_ellipsis = ellipsis
+    else:
+        excerpt_ellipsis = u'&hellip;'
+    excerpt = re.sub(r'<.*?>', '', content).strip()
+    return u'{}{}'.format(excerpt[0:excerpt_length], excerpt_ellipsis)
 
 
 def gen_page_path(data, static_type='page', index='index'):
@@ -172,19 +176,6 @@ def gen_page_url(data, static_type='page', index='index'):
     else:
         url = u'{}/{}/{}'.format(g.curr_base_url, data['content_type'], slug)
     return url
-
-
-def gen_file_excerpt(excerpt, excerpt_length, ellipsis):
-    excerpt_length = parse_int(excerpt_length, 162, True)
-    if isinstance(ellipsis, basestring):
-        excerpt_ellipsis = ellipsis
-    else:
-        excerpt_ellipsis = u'&hellip;'
-
-    if excerpt:
-        excerpt = u' '.join(excerpt.split())  # remove empty strings.
-        excerpt = u'{}{}'.format(excerpt[0:excerpt_length], excerpt_ellipsis)
-    return excerpt
 
 
 # menus

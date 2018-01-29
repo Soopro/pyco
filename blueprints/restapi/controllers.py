@@ -12,13 +12,13 @@ from utils.misc import parse_int, process_slug
 from helpers.app import (run_hook,
                          helper_record_statistic,
                          helper_get_statistic)
-from helpers.content import (read_page_metas,
+from helpers.content import (parse_page_metas,
                              query_by_files,
                              query_segments,
                              count_by_files,
                              search_by_files,
                              find_content_file,
-                             parse_content,
+                             parse_page_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
                              helper_wrap_taxonomy,
@@ -131,7 +131,7 @@ def search_view_contents(app_id):
     page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
-    pages = [read_page_metas(p, theme_opts, None) for p in results]
+    pages = [parse_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     return {
@@ -184,7 +184,7 @@ def query_view_contents(app_id):
                              offset=offset,
                              limit=limit,
                              sortby=sortby)
-    pages = [read_page_metas(p, theme_opts, None) for p in results]
+    pages = [parse_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     return {
@@ -244,8 +244,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
 
     pages = []
     for p in results:
-        p.pop('content', u'')
-        p = read_page_metas(p, theme_opts)
+        p = parse_page_metas(p, theme_opts)
         pages.append(p)
     run_hook('get_pages', pages=pages, current_page_id=None)
 
@@ -264,13 +263,13 @@ def get_view_content(app_id, type_slug, slug):
     app = g.curr_app
     theme_opts = app['theme_meta'].get('options', {})
 
-    page_content = {'content': content_file.pop('content', u'')}
-    run_hook('before_parse_content', content=page_content)
-    page_content['content'] = parse_content(page_content['content'])
-    run_hook('after_parse_content', content=page_content)
+    page_content = {'content': content_file.get('content', u'')}
+    run_hook('before_parse_page_content', content=page_content)
+    page_content['content'] = parse_page_content(page_content['content'])
+    run_hook('after_parse_page_content', content=page_content)
 
     run_hook('before_read_page_meta', headers=content_file)
-    page_meta = read_page_metas(content_file, theme_opts)
+    page_meta = parse_page_metas(content_file, theme_opts)
     run_hook('after_read_page_meta', meta=page_meta, redirect=None)
 
     return output(page_meta, page_content['content'])
@@ -287,9 +286,9 @@ def get_view_segments(app_id):
     results = query_segments(app, use_segments)
     pages = []
     for p in results:
-        p_content = p.pop('content', u'')
-        p = read_page_metas(p, theme_opts)
-        p['content'] = parse_content(p_content)
+        p_content = p.get('content', u'')
+        p = parse_page_metas(p, theme_opts)
+        p['content'] = parse_page_content(p_content)
         pages.append(p)
 
     run_hook('get_pages', pages=pages, current_page_id=None)
