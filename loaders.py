@@ -24,7 +24,7 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('LIB_URL', '')
     app.config.setdefault('UPLOADS_URL', '')
     app.config.setdefault('THEME_URL', '')
-    app.config.setdefault('API_BASEURL', '')
+    app.config.setdefault('API_URL', '')
 
     app.config.setdefault('PLUGINS', [])
     app.config.setdefault('INVISIBLE_PAGE_LIST', [])

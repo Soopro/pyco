@@ -60,7 +60,7 @@ You can modify the `config.py` to change base settings.
 
 * `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
 
-* `API_BASEURL`: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
+* `API_URL`: **[ str ]** Site api baseurl for ajax request. Default is `"http://localhost:5500/restapi"`.
 
 * `THEME_URL`: **[ str ]** Theme url of Site. It is base on `BASE_URL/STATIC_PATH/THEME_NAME`.
 
