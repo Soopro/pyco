@@ -230,8 +230,10 @@ Global content data for whole site. some data is simulation for cloud service, i
 
 * `slots`: **[ dict ]** All widget slots host here.
   * `< slot_key >`:
-    1. `label`: **[ str ]** slot label.
-    2. `scripts`: **[ str ]** slot scripts.
+    1. `name`: **[ str ]** slot label.
+    2. `src`: **[ str ]** slot media src.
+    3. `route`: **[ str ]** slot route.
+    4. `script`: **[ str ]** slot script.
 
 * `meta`: Site meta
   * `title`: **[ str ]** site title, aka app title.
@@ -306,7 +308,7 @@ Global content data for whole site. some data is simulation for cloud service, i
     }
   },
   "slots": {
-    "event": {"scripts": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
+    "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
   },
   "meta": {
     "locale": "en_US",
