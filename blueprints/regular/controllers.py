@@ -148,8 +148,8 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # query contents
     view_ctx['query'] = _query_contents
-    view_ctx['get_taxonomy'] = _get_taxonomy
-    view_ctx['get_segments'] = _load_segments
+    view_ctx['taxonomy'] = _get_taxonomy
+    view_ctx['segments'] = _load_segments
 
     # helper functions
     view_ctx['saltshaker'] = saltshaker
