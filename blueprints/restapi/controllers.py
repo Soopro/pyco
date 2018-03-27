@@ -143,6 +143,7 @@ def query_view_contents(app_id):
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
+    with_content = get_param('with_content', bool, default=False)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -173,7 +174,13 @@ def query_view_contents(app_id):
                              offset=offset,
                              limit=limit,
                              sortby=sortby)
-    pages = [parse_page_metas(p, theme_opts, None) for p in results]
+    pages = []
+    for p in results:
+        p_content = p.get('content', u'')
+        p = parse_page_metas(p, theme_opts)
+        if with_content:
+            p['content'] = parse_page_content(p_content)
+        pages.append(p)
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     return output_result(contents=pages, perpage=perpage, paged=paged,

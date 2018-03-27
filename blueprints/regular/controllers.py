@@ -224,7 +224,8 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None):
+def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None,
+                    with_content=False):
     _check_query_limit('_query_contents', 3)
 
     curr_id = g.curr_file_id
@@ -262,7 +263,14 @@ def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None):
                              offset=offset,
                              limit=limit,
                              sortby=sortby)
-    pages = [parse_page_metas(p, theme_opts, curr_id) for p in results]
+    pages = []
+    for p in results:
+        p_content = p.get('content', u'')
+        p = parse_page_metas(p, theme_opts, curr_id)
+        if with_content:
+            p['content'] = parse_page_content(p_content)
+        pages.append(p)
+
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
     pages = make_dotted_dict(pages)
 
