@@ -9,7 +9,7 @@
 
 <body>
   {% set args = request.args %}
-  {% set category = query_taxonomy('category') %}
+  {% set category = get_taxonomy('category') %}
   {% set macthed_term = straw(category.terms, args.term, 'key')
                         if args.term else {} %}
   {% if not macthed_term and args.term %}

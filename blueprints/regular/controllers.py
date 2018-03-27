@@ -25,7 +25,6 @@ from helpers.content import (find_content_file,
                              helper_wrap_taxonomy,
                              helper_wrap_menu,
                              helper_wrap_slot,
-                             helper_pack_taxonomies,
                              parse_page_metas,
                              parse_page_content)
 
@@ -38,6 +37,9 @@ from .helpers.jinja import (saltshaker,
 def rendering(content_type_slug='page', file_slug='index'):
     config = current_app.config
     status_code = 200
+
+    g.curr_content_type = content_type_slug
+    g.curr_file_slug = file_slug
 
     base_url = g.curr_base_url
     curr_app = g.curr_app
@@ -101,7 +103,7 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     view_ctx['meta'] = page_meta
     view_ctx['content_type'] = _get_content_type(content_type_slug)
-    g.curr_page_id = page_meta['id']
+    g.curr_file_id = page_meta['id']
 
     # site_meta
     site_meta = curr_app['meta']
@@ -121,14 +123,8 @@ def rendering(content_type_slug='page', file_slug='index'):
     # menu
     view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
 
-    # taxonomy
-    view_ctx['taxonomy'] = helper_pack_taxonomies(curr_app['taxonomies'])
-
     # slots
     view_ctx['slot'] = helper_wrap_slot(curr_app['slots'])
-
-    # segments
-    view_ctx['segments'] = load_segments(curr_app)
 
     # base view context
     view_ctx['app_id'] = curr_app['_id']
@@ -152,7 +148,8 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # query contents
     view_ctx['query'] = _query_contents
-    view_ctx['query_taxonomy'] = _query_taxonomy
+    view_ctx['get_taxonomy'] = _get_taxonomy
+    view_ctx['get_segments'] = _load_segments
 
     # helper functions
     view_ctx['saltshaker'] = saltshaker
@@ -176,7 +173,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     run_hook('after_render', rendered=rendered)
 
     sa_mod = current_app.sa_mod
-    sa_mod.count_page(g.curr_page_id)
+    sa_mod.count_page(g.curr_file_id)
     sa_mod.count_app(g.request_remote_addr,
                      request.user_agent.string)
 
@@ -220,7 +217,7 @@ def set_multi_language(view_context, app):
 def _check_query_limit(key, limit):
     if key not in g.query_map:
         g.query_map[key] = 0
-    if g.query_map[key] > limit:
+    if g.query_map[key] >= limit:
         raise Exception('Query Overrun')
     else:
         g.query_map[key] += 1
@@ -228,9 +225,9 @@ def _check_query_limit(key, limit):
 
 
 def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None):
-    remain_queries = _check_query_limit('_query_contents', 3)
+    _check_query_limit('_query_contents', 3)
 
-    curr_id = g.curr_page_id
+    curr_id = g.curr_file_id
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
 
@@ -278,28 +275,25 @@ def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None):
         'page_range': page_range,
         'has_prev': paged > 1,
         'has_next': paged < max_pages,
-        '_remain_queries': remain_queries,
     }
 
 
-def _query_taxonomy(taxonomy=u'category'):
-    remain_queries = _check_query_limit('_query_taxonomy', 3)
-    tax_data = helper_wrap_taxonomy(g.curr_app['taxonomies'], taxonomy)
-    output = {
-        '_remain_queries': remain_queries
-    }
-    output.update(tax_data)
-    return output
+def _get_taxonomy(taxonomy=u'category'):
+    _check_query_limit('_get_taxonomy', 3)
+    taxonomy = helper_wrap_taxonomy(g.curr_app['taxonomies'], taxonomy)
+    return make_dotted_dict(taxonomy)
 
 
-def load_segments(app):
+def _load_segments(content_type=None, parent=None):
+    _check_query_limit('_load_segments', 1)
+    if not content_type:
+        content_type = g.curr_content_type
+    if not parent:
+        parent = g.curr_file_slug
+    app = g.curr_app
     theme_opts = app['theme_meta'].get('options', {})
-    use_segments = theme_opts.get('segments',
-                                  app['theme_meta'].get('segments'))
-    if not use_segments:
-        return []
     # get segment contents
-    results = query_segments(app, use_segments)
+    results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
         p_content = p.get('content', u'')

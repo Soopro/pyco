@@ -69,7 +69,6 @@ def get_view_metas(app_id):
         'translates': helper_wrap_translates(languages, locale),
         'socials': helper_wrap_socials(curr_app['socials']),
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
-        'taxonomy': helper_pack_taxonomies(curr_app['taxonomies']),
         'content_types': curr_app['content_types'],
         'slot': helper_wrap_slot(curr_app['slots'])
     }
@@ -128,22 +127,13 @@ def search_view_contents(app_id):
                                            limit=limit)
 
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
-    page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
     pages = [parse_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
-    return {
-        'contents': pages,
-        'perpage': perpage,
-        'paged': paged,
-        'total_pages': max_pages,
-        'total_count': total_count,
-        'page_range': page_range,
-        'has_prev': paged > 1,
-        'has_next': paged < max_pages,
-    }
+    return output_result(contents=pages, perpage=perpage, paged=paged,
+                         total_pages=max_pages, total_count=total_count)
 
 
 @output_json
@@ -172,7 +162,6 @@ def query_view_contents(app_id):
     # position
     total_count = count_by_files(attrs, taxonomy)
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
-    page_range = [p for p in range(1, max_pages + 1)]
     paged = min(max_pages, paged)
 
     limit = perpage
@@ -187,17 +176,8 @@ def query_view_contents(app_id):
     pages = [parse_page_metas(p, theme_opts, None) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
-    return {
-        'contents': pages,
-        'perpage': perpage,
-        'paged': paged,
-        'count': len(pages),
-        'total_count': total_count,
-        'total_pages': max_pages,
-        'page_range': page_range,
-        'has_prev': paged > 1,
-        'has_next': paged < max_pages
-    }
+    return output_result(contents=pages, perpage=perpage, paged=paged,
+                         total_pages=max_pages, total_count=total_count)
 
 
 @output_json
@@ -249,7 +229,12 @@ def get_view_content_list(app_id, type_slug=u'page'):
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     for p in pages:
-        _add_cursor(p, curr_index, total_count, perpage, paged, max_pages)
+        _add_cursor(content=p,
+                    index=curr_index,
+                    perpage=perpage,
+                    paged=paged,
+                    total_pages=max_pages,
+                    total_count=total_count)
         curr_index += 1
 
     return pages
@@ -272,18 +257,20 @@ def get_view_content(app_id, type_slug, slug):
     page_meta = parse_page_metas(content_file, theme_opts)
     run_hook('after_read_page_meta', meta=page_meta, redirect=None)
 
-    return output(page_meta, page_content['content'])
+    output = page_meta
+    output['content'] = page_content['content']
+    return output
 
 
 @output_json
 def get_view_segments(app_id):
+    content_type = get_args('content_type', default='page')
+    parent = get_args('parent', default='index')
+
     app = g.curr_app
     theme_opts = app['theme_meta'].get('options', {})
-    use_segments = theme_opts.get('segments',
-                                  app['theme_meta'].get('segments'))
-    if not use_segments:
-        return []
-    results = query_segments(app, use_segments)
+
+    results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
         p_content = p.get('content', u'')
@@ -297,15 +284,17 @@ def get_view_segments(app_id):
 
 
 # helpers
-def _add_cursor(content, index, total_count, perpage, paged, max_pages):
+def _add_cursor(content, index, perpage, paged, total_pages, total_count):
     content['cursor'] = {
         'num': index + 1,
         'index': index,
         'perpage': perpage,
         'paged': paged,
-        'total_pages': max_pages,
+        'page_range': [p for p in xrange(1, total_pages + 1)],
+        'total_pages': total_pages,
         'total_count': total_count,
-        'has_more': total_count - 1 > index,
+        'has_prev': paged > 1,
+        'has_next': paged < total_pages,
     }
     return content
 
@@ -318,7 +307,14 @@ def _safe_paging(perpage, paged):
 
 
 # outputs
-def output(content_file, content_body=None):
-    if content_body:
-        content_file['content'] = content_body
-    return content_file
+def output_result(contents, perpage, paged, total_pages, total_count):
+    return {
+        'contents': contents,
+        'perpage': perpage,
+        'paged': paged,
+        'total_pages': total_pages,
+        'total_count': total_count,
+        'page_range': [p for p in xrange(1, total_pages + 1)],
+        'has_prev': paged > 1,
+        'has_next': paged < total_pages,
+    }

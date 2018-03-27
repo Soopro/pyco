@@ -34,22 +34,26 @@ def count_by_files(attrs, taxonomy=None):
 
 
 # segments
-def query_segments(app, limit=24):
+def query_segments(app, type_slug, parent_slug):
     _config = app['theme_meta']
     _opts = _config.get('options', {})
-
+    sortby = parse_sortby(_opts.get('sortby', 'updated'))
     tmpls = [tmpl.replace('^', '') for tmpl in _config.get('templates', [])
              if tmpl.startswith('^')]
-    # sort
-    sortby = parse_sortby(_opts.get('sortby', 'updated'))
 
-    # query
-    segs = sortedby([f for f in g.files if f['template'] in tmpls],
-                    [('priority', 1), sortby])
-    # limit
-    limit = min(parse_int(limit, 24, 1), 60)
+    if parent_slug == current_app.config.get('DEFAULT_INDEX_SLUG'):
+        parent_slugs = ['', parent_slug]
+    else:
+        parent_slugs = [parent_slug]
 
-    return segs[:limit]
+    if tmpls:
+        segments = [f for f in g.files if f['template'] in tmpls and
+                    f['parent'] in parent_slugs and
+                    f['content_type'] == type_slug]
+        segments = sortedby(segments, [('priority', 1), sortby])[:60]
+    else:
+        segments = []
+    return segments
 
 
 # search
@@ -285,21 +289,12 @@ def helper_wrap_taxonomy(taxonomies, tax_slug):
                              if child.get('key')]
         return term
 
-    def _parse_terms_map(terms):
-        terms_map = {}
-        for term in terms:
-            terms_map[term['key']] = term.get('meta', {})
-            for child in term.get('nodes', []):
-                terms_map[child['key']] = child.get('meta', {})
-        return terms_map
-
     return {
         'slug': tax_slug,
         'title': tax.get('title'),
         'content_types': tax.get('content_types', []),
         'terms': [_parse_term(term) for term in tax['terms']
                   if term.get('key')],
-        'terms_map': _parse_terms_map(tax['terms'])
     }
 
 
