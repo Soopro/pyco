@@ -123,8 +123,9 @@ def load_all_files(app, curr_app):
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
             'value': meta.pop('value', 0),
-            'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
             'tags': meta.pop('tags', []),
+            'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
+            'shelf': _make_shelf(meta.pop('shelf', {})),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
@@ -263,7 +264,7 @@ def _file_headers(meta_string):
 
 
 def _make_taxonomy(taxonomy):
-    if not isinstance(taxonomy, list):
+    if not taxonomy or not isinstance(taxonomy, list):
         return {}
     tax_map = {}
     for item in taxonomy:
@@ -274,3 +275,22 @@ def _make_taxonomy(taxonomy):
         else:
             tax_map[item['tax']] = [item['term']]
     return tax_map
+
+
+def _make_shelf(shelf):
+    if not shelf or not isinstance(shelf, dict):
+        return {
+            'commodity_id': None,
+            'name': u'',
+            'spec': [],
+            'price': 0,
+            'customize': False,
+        }
+    shelf_map = {
+        'commodity_id': shelf.get('commodity_id', u''),
+        'name': shelf.get('name', u''),
+        'spec': shelf.get('spec', []),
+        'price': shelf.get('price', 0),
+        'customize': bool(shelf.get('customize')),
+    }
+    return shelf_map
