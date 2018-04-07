@@ -9,9 +9,11 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 
 
-def query_by_files(attrs, taxonomy=None, offset=0, limit=1, sortby=None):
+def query_by_files(content_type=None, attrs=None, taxonomy=None,
+                   offset=0, limit=1, sortby=None):
     # query
-    files = _query(g.files, attrs, taxonomy)
+    files = _query(g.files, content_type, attrs, taxonomy)
+    total_count = len(files)
 
     # sorting
     sorting = _sorting(files, parse_sortby(sortby))
@@ -26,11 +28,7 @@ def query_by_files(attrs, taxonomy=None, offset=0, limit=1, sortby=None):
         files.sort(key=lambda x: order_dict[x['_id']])
     else:
         files = files[offset:offset + limit]
-    return files
-
-
-def count_by_files(attrs, taxonomy=None):
-    return len(_query(g.files, attrs, taxonomy))
+    return files, total_count
 
 
 # segments
@@ -258,11 +256,13 @@ def helper_wrap_socials(socials):
 
 
 # taxonomy
-def helper_pack_taxonomies(taxonomies):
+def helper_pack_taxonomies(taxonomies, content_type=None):
     if not taxonomies:
         return {}
     tax_map = {}
     for k, v in taxonomies.iteritems():
+        if content_type and content_type not in v['content_types']:
+            continue
         tax_map[k] = {
             'title': v['title'],
             'content_types': v['content_types']
@@ -338,10 +338,12 @@ def helper_wrap_translates(languages, locale):
 
 
 # helpers
-def _query(files, attrs, taxonomy=None):
-    FIELD_KEY_ALIASES = current_app.config.get('FIELD_KEY_ALIASES')
+def _query(files, content_type=None, attrs=None, taxonomy=None):
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
+
+    if content_type:
+        files = [f for f in files if f['content_type'] == content_type]
 
     if isinstance(attrs, (basestring, dict)):
         attrs = [attrs]
@@ -368,7 +370,6 @@ def _query(files, attrs, taxonomy=None):
         if attr_key is None:
             continue
 
-        attr_key = FIELD_KEY_ALIASES.get(attr_key, attr_key)
         if attr_key not in QUERYABLE_FIELD_KEYS and '.' not in attr_key:
             attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files

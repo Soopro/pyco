@@ -1,21 +1,30 @@
 /*
 Priority: 1
 Status: 1
-Template: post
-Title: Post 4
+Template: works
+Title: Works 2
 Description: Description text
 Featured_img:
-  src: '[%uploads%]/default.jpg'
+  src: '[%uploads%]/preview.jpg'
 Author: author
-Date: '2016-04-06'
-Taxonomy:
-- tax: 'category'
-  term: 'food'
-Gallery:
-- src: '[%uploads%]/default.jpg'
-  title: gallery title
-  caption: gallery caption
-  link: /
+Date: '2016-04-07'
+Attachments:
+- src: '[%uploads%]/gallery_1.jpg'
+  title: Attachment 1
+  caption: Et harum quidem rerum facilis est et expedita distinctio.
+  link: #
+  target: '_self'
+  class:
+- src: '[%uploads%]/gallery_2.jpg'
+  title: Attachment 2
+  caption: Et harum quidem rerum facilis est et expedita distinctio.
+  link: #
+  target: '_self'
+  class:
+- src: '[%uploads%]/gallery_3.jpg'
+  title: Attachment 3
+  caption: Et harum quidem rerum facilis est et expedita distinctio.
+  link: #
   target: '_self'
   class:
 */

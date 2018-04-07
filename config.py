@@ -53,7 +53,6 @@ MARKDOWN_EXTENSIONS = ['gfm']
 
 MAXIMUM_QUERY = 60
 
-FIELD_KEY_ALIASES = {'type': 'content_type'}
 SORTABLE_FIELD_KEYS = ('date', 'value', 'updated')
 QUERYABLE_FIELD_KEYS = ('slug', 'content_type', 'priority', 'parent',
                         'date', 'value', 'creation', 'updated',

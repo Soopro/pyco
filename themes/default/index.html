@@ -23,7 +23,7 @@
 
   <!-- posts -->
   <section>
-    {% set posts = query('post', request.args.paged, 3) %}
+    {% set posts = query('post', paged=request.args.paged, perpage=3) %}
     {% for post in posts.contents %}
     <article>
       <header>

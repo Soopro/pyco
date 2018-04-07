@@ -62,7 +62,6 @@ def load_config(app, config_name='config.py'):
                           ('slug', 'content_type', 'priority', 'parent',
                            'date', 'value', 'creation', 'updated',
                            'template', 'tags'))
-    app.config.setdefault('FIELD_KEY_ALIASES', {})
 
     app.config.setdefault('IMAGE_MEDIA_EXTS',
                           ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))

@@ -23,7 +23,7 @@
 
   <!-- posts -->
   <section>
-    {% set posts = query('post', request.args.paged) %}
+    {% set posts = query('post', paged=request.args.paged) %}
     {% for post in posts.contents %}
     <article>
       <header>
@@ -42,15 +42,12 @@
   <!-- paginator -->
   {% if posts.total_pages > 1 %}
   <div class="paginator">
-  	{% set has_prev_page = posts.paged < posts.total_pages %}
-  	{% set has_next_page = posts.paged > 1 %}
-
-    {% if has_next_page %}
-    <a href="{{glue({'paged':posts.paged-1})}}">{{_('Next page')}}</a>
+  	{% if posts.has_prev %}
+    <a href="{{glue({'paged':posts.paged-1})}}">{{_('Previous page')}}</a>
     {% endif %}
     &nbsp;/&nbsp;
-    {% if has_prev_page %}
-    <a href="{{glue({'paged':posts.paged+1})}}">{{_('Previous page')}}</a>
+    {% if posts.has_next %}
+    <a href="{{glue({'paged':posts.paged+1})}}">{{_('Next page')}}</a>
     {% endif %}
   </div>
   {% endif %}

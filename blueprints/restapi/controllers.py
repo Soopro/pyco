@@ -7,7 +7,7 @@ import math
 from utils.response import output_json
 from utils.request import get_param, get_args
 from utils.model import make_dotted_dict
-from utils.misc import parse_int, process_slug
+from utils.misc import parse_int
 
 from helpers.app import (run_hook,
                          helper_record_statistic,
@@ -15,16 +15,15 @@ from helpers.app import (run_hook,
 from helpers.content import (parse_page_metas,
                              query_by_files,
                              query_segments,
-                             count_by_files,
                              search_by_files,
                              find_content_file,
                              parse_page_content,
                              helper_wrap_translates,
                              helper_wrap_socials,
                              helper_wrap_taxonomy,
+                             helper_pack_taxonomies,
                              helper_wrap_menu,
-                             helper_wrap_slot,
-                             helper_pack_taxonomies)
+                             helper_wrap_slot)
 
 
 @output_json
@@ -76,6 +75,12 @@ def get_view_metas(app_id):
 
 
 @output_json
+def get_view_taxonomies(app_id):
+    content_type = get_args('content_type', default='')
+    return helper_pack_taxonomies(content_type)
+
+
+@output_json
 def get_view_taxonomy(app_id, tax_slug):
     return helper_wrap_taxonomy(g.curr_app['taxonomies'], tax_slug)
 
@@ -120,7 +125,6 @@ def search_view_contents(app_id):
     limit = perpage
     offset = max(perpage * (paged - 1), 0)
 
-    content_type = process_slug(content_type)
     results, total_count = search_by_files(content_type=content_type,
                                            keywords=keywords,
                                            offset=offset,
@@ -139,6 +143,7 @@ def search_view_contents(app_id):
 @output_json
 def query_view_contents(app_id):
     attrs = get_param('attrs', list, False, [])
+    content_type = get_param('content_type', unicode, default=u'')
     taxonomy = get_param('taxonomy', dict, False, {})
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
@@ -149,9 +154,6 @@ def query_view_contents(app_id):
     theme_opts = theme_meta.get('options', {})
 
     # set default params
-    if isinstance(attrs, basestring):
-        attrs = [{'type': unicode(attrs)}]
-
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
 
@@ -161,19 +163,16 @@ def query_view_contents(app_id):
     perpage, paged = _safe_paging(perpage, paged)
 
     # position
-    total_count = count_by_files(attrs, taxonomy)
-    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
-    paged = min(max_pages, paged)
-
     limit = perpage
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs=attrs,
-                             taxonomy=taxonomy,
-                             offset=offset,
-                             limit=limit,
-                             sortby=sortby)
+    results, total_count = query_by_files(attrs=attrs,
+                                          content_type=content_type,
+                                          taxonomy=taxonomy,
+                                          offset=offset,
+                                          limit=limit,
+                                          sortby=sortby)
     pages = []
     for p in results:
         p_content = p.get('content', u'')
@@ -182,6 +181,8 @@ def query_view_contents(app_id):
             p['content'] = parse_page_content(p_content)
         pages.append(p)
     run_hook('get_pages', pages=pages, current_page_id=None)
+
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
 
     return output_result(contents=pages, perpage=perpage, paged=paged,
                          total_pages=max_pages, total_count=total_count)
@@ -198,8 +199,6 @@ def get_view_content_list(app_id, type_slug=u'page'):
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
-    # get contents
-    attrs = {'content_type': process_slug(type_slug)} if type_slug else None
     # set default params
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
@@ -214,19 +213,15 @@ def get_view_content_list(app_id, type_slug=u'page'):
     perpage, paged = _safe_paging(perpage, paged)
 
     # position
-    total_count = count_by_files(attrs)
-    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
-    paged = min(max_pages, paged)
-
     limit = perpage
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs=attrs,
-                             taxonomy=None,
-                             offset=offset,
-                             limit=limit,
-                             sortby=sortby)
+    results, total_count = query_by_files(content_type=type_slug,
+                                          taxonomy=None,
+                                          offset=offset,
+                                          limit=limit,
+                                          sortby=sortby)
     curr_index = offset
 
     pages = []
@@ -234,6 +229,8 @@ def get_view_content_list(app_id, type_slug=u'page'):
         p = parse_page_metas(p, theme_opts)
         pages.append(p)
     run_hook('get_pages', pages=pages, current_page_id=None)
+
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
 
     for p in pages:
         _add_cursor(content=p,

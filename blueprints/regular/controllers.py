@@ -19,7 +19,6 @@ from helpers.app import (run_hook,
 from helpers.content import (find_content_file,
                              query_by_files,
                              query_segments,
-                             count_by_files,
                              helper_wrap_socials,
                              helper_wrap_translates,
                              helper_wrap_taxonomy,
@@ -224,8 +223,8 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None,
-                    with_content=False):
+def _query_contents(content_type=None, attrs=[], taxonomy=None,
+                    paged=0, perpage=0, sortby=None, with_content=False):
     _check_query_limit('_query_contents', 3)
 
     curr_id = g.curr_file_id
@@ -233,9 +232,6 @@ def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None,
     theme_opts = theme_meta.get('options', {})
 
     # set default params
-    if attrs and isinstance(attrs, basestring):
-        attrs = [{'type': unicode(attrs)}]
-
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
 
@@ -249,20 +245,16 @@ def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None,
     perpage = min(perpage, max_perpage)
 
     # position
-    total_count = count_by_files(attrs, taxonomy)
-    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
-    page_range = [p for p in range(1, max_pages + 1)]
-    paged = min(max_pages, paged)
-
     limit = perpage
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results = query_by_files(attrs=attrs,
-                             taxonomy=taxonomy,
-                             offset=offset,
-                             limit=limit,
-                             sortby=sortby)
+    results, total_count = query_by_files(attrs=attrs,
+                                          content_type=content_type,
+                                          taxonomy=taxonomy,
+                                          offset=offset,
+                                          limit=limit,
+                                          sortby=sortby)
     pages = []
     for p in results:
         p_content = p.get('content', u'')
@@ -272,6 +264,10 @@ def _query_contents(attrs=[], paged=0, perpage=0, sortby=None, taxonomy=None,
         pages.append(p)
 
     run_hook('get_pages', pages=pages, current_page_id=curr_id)
+
+    max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
+    page_range = [n for n in range(1, max_pages + 1)]
+
     pages = make_dotted_dict(pages)
 
     return {

@@ -8,6 +8,9 @@ Featured_img:
   src: '[%uploads%]/default.jpg'
 Author: author
 Date: '2016-04-06'
+Taxonomy:
+- tax: 'category'
+  term: 'food'
 Gallery:
 - src: '[%uploads%]/default.jpg'
   title: gallery title

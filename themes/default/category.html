@@ -61,9 +61,8 @@
     {% endif %}
     <div class="container prd-container">
       <div class="row">
-        {% set _tax_cond = {'tax': 'category',
-                            'term': macthed_term.key} %}
-        {% set booklet = query('post', args.paged, taxonomy=_tax_cond) %}
+        {% set _t_cond = {'tax': 'category', 'term': macthed_term.key} %}
+        {% set booklet = query('post', paged=args.paged, taxonomy=_t_cond) %}
 
         {% for item in booklet.contents %}
         <div class="col-md-3 col-sm-4 col-xs-6 prd">
@@ -78,18 +77,15 @@
       {% if booklet.total_pages > 1 %}
       <ul class="pager">
         {% if booklet.has_prev %}
-        <li class="previous">
-          <a href="{{ glue({'paged':booklet.paged-1}) }}">
-            &larr; {{_('Previous Page')}}
-          </a>
-        </li>
+        <a href="{{glue({'paged':booklet.paged-1})}}">
+          {{_('Previous page')}}
+        </a>
         {% endif %}
+        &nbsp;/&nbsp;
         {% if booklet.has_next %}
-        <li class="next">
-          <a href="{{ glue({'paged':booklet.paged+1}) }}">
-            {{_('Next Page')}} &rarr;
-          </a>
-        </li>
+        <a href="{{glue({'paged':booklet.paged+1})}}">
+          {{_('Next page')}}
+        </a>
         {% endif %}
       </ul>
       {% endif %}
