@@ -125,7 +125,7 @@ def parse_page_metas(page, options={}, current_id=None):
     data['value'] = page['value']
     data['tags'] = page['tags']
     data['taxonomy'] = page['taxonomy']
-    data['shelf'] = page['shelf']
+    data['valuation'] = page['valuation']
     data['updated'] = page['updated']
     data['creation'] = page['creation']
 

@@ -124,7 +124,7 @@ def load_all_files(app, curr_app):
             'value': meta.pop('value', 0),
             'tags': meta.pop('tags', []),
             'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
-            'shelf': _make_shelf(meta.pop('shelf', {})),
+            'valuation': meta.pop('valuation', 0),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
@@ -274,22 +274,3 @@ def _make_taxonomy(taxonomy):
         else:
             tax_map[item['tax']] = [item['term']]
     return tax_map
-
-
-def _make_shelf(shelf):
-    if not shelf or not isinstance(shelf, dict):
-        return {
-            'commodity_id': None,
-            'name': u'',
-            'spec': [],
-            'price': 0,
-            'customize': False,
-        }
-    shelf_map = {
-        'commodity_id': shelf.get('commodity_id', u''),
-        'name': shelf.get('name', u''),
-        'spec': shelf.get('spec', []),
-        'price': shelf.get('price', 0),
-        'customize': bool(shelf.get('customize')),
-    }
-    return shelf_map
