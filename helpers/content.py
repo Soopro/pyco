@@ -182,7 +182,7 @@ def gen_page_url(data, static_type='page', index='index'):
 
 
 # menus
-def helper_wrap_menu(menus, base_url):
+def helper_wrap_menu(menus, base_url=u''):
     if not menus:
         return {}
 
