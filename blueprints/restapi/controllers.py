@@ -68,7 +68,7 @@ def get_view_metas(app_id):
         'translates': helper_wrap_translates(languages, locale),
         'socials': helper_wrap_socials(curr_app['socials']),
         'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
-        'content_types': curr_app['content_types'],
+        'content_type': curr_app['content_types'],
         'slot': helper_wrap_slot(curr_app['slots'])
     }
     return context
