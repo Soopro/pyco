@@ -209,6 +209,10 @@ def helper_wrap_menu(menus, base_url=u''):
                 item['url'] = u''
                 item['hash'] = u''
                 item['path'] = u''
+
+            # name
+            item['name'] = item['name'] or item['key']
+
             # nodes
             item['nodes'] = process_menu_url(item.get('nodes', []))
         return menu
