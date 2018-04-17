@@ -108,7 +108,7 @@ def parse_page_content(content_string):
     return Markup(content_string)
 
 
-def parse_page_metas(page, options={}, current_id=None):
+def parse_page_metas(page, current_id=None):
     data = dict()
     meta = page.get('meta')
     for m in meta:
@@ -128,11 +128,7 @@ def parse_page_metas(page, options={}, current_id=None):
     data['valuation'] = page['valuation']
     data['updated'] = page['updated']
     data['creation'] = page['creation']
-
-    excerpt_len = options.get('excerpt_length')
-    ellipsis = options.get('excerpt_ellipsis')
-    data['excerpt'] = gen_file_excerpt(page['content'], excerpt_len, ellipsis)
-
+    data['excerpt'] = gen_file_excerpt(page['content'])
     data['description'] = meta.get('description') or data['excerpt']
     data['url'] = gen_page_url(page)
     data['path'] = gen_page_path(page)
@@ -149,12 +145,8 @@ def parse_page_metas(page, options={}, current_id=None):
     return data
 
 
-def gen_file_excerpt(content, excerpt_length=None, ellipsis=None):
-    excerpt_length = parse_int(excerpt_length, 162, True)
-    if isinstance(ellipsis, basestring):
-        excerpt_ellipsis = ellipsis
-    else:
-        excerpt_ellipsis = u'&hellip;'
+def gen_file_excerpt(content, excerpt_length=144):
+    excerpt_ellipsis = u'&hellip;'
     excerpt = re.sub(r'<.*?>', '', content).strip()
     return u'{}{}'.format(excerpt[0:excerpt_length], excerpt_ellipsis)
 

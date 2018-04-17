@@ -133,7 +133,7 @@ def search_view_contents(app_id):
     max_pages = max(int(math.ceil(total_count / float(perpage))), 1)
     paged = min(max_pages, paged)
 
-    pages = [parse_page_metas(p, theme_opts, None) for p in results]
+    pages = [parse_page_metas(p) for p in results]
     run_hook('get_pages', pages=pages, current_page_id=None)
 
     return output_result(contents=pages, perpage=perpage, paged=paged,
@@ -176,7 +176,7 @@ def query_view_contents(app_id):
     pages = []
     for p in results:
         p_content = p.get('content', u'')
-        p = parse_page_metas(p, theme_opts)
+        p = parse_page_metas(p)
         if with_content:
             p['content'] = parse_page_content(p_content)
         pages.append(p)
@@ -226,7 +226,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
 
     pages = []
     for p in results:
-        p = parse_page_metas(p, theme_opts)
+        p = parse_page_metas(p)
         pages.append(p)
     run_hook('get_pages', pages=pages, current_page_id=None)
 
@@ -249,8 +249,6 @@ def get_view_content(app_id, type_slug, slug):
     content_file = find_content_file(type_slug, slug)
     if not content_file:
         Exception('content file not found.')
-    app = g.curr_app
-    theme_opts = app['theme_meta'].get('options', {})
 
     page_content = {'content': content_file.get('content', u'')}
     run_hook('before_parse_page_content', content=page_content)
@@ -258,7 +256,7 @@ def get_view_content(app_id, type_slug, slug):
     run_hook('after_parse_page_content', content=page_content)
 
     run_hook('before_read_page_meta', headers=content_file)
-    page_meta = parse_page_metas(content_file, theme_opts)
+    page_meta = parse_page_metas(content_file)
     run_hook('after_read_page_meta', meta=page_meta, redirect=None)
 
     output = page_meta
@@ -272,13 +270,12 @@ def get_view_segments(app_id):
     parent = get_args('parent', default='index')
 
     app = g.curr_app
-    theme_opts = app['theme_meta'].get('options', {})
 
     results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
         p_content = p.get('content', u'')
-        p = parse_page_metas(p, theme_opts)
+        p = parse_page_metas(p)
         p['content'] = parse_page_content(p_content)
         pages.append(p)
 

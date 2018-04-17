@@ -44,7 +44,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     curr_app = g.curr_app
     site_meta = curr_app['meta']
     theme_meta = curr_app['theme_meta']
-    theme_options = theme_meta.get('options', {})
 
     config['site_meta'] = site_meta
     config['theme_meta'] = theme_meta
@@ -90,7 +89,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['content'] = page_content['content']
 
     run_hook('before_read_page_meta', headers=content_file)
-    page_meta = parse_page_metas(content_file, theme_options)
+    page_meta = parse_page_metas(content_file)
     redirect_to = {'url': None}
     run_hook('after_read_page_meta', meta=page_meta, redirect=redirect_to)
 
@@ -258,7 +257,7 @@ def _query_contents(content_type=None, attrs=[], taxonomy=None,
     pages = []
     for p in results:
         p_content = p.get('content', u'')
-        p = parse_page_metas(p, theme_opts, curr_id)
+        p = parse_page_metas(p, curr_id)
         if with_content:
             p['content'] = parse_page_content(p_content)
         pages.append(p)
@@ -295,13 +294,12 @@ def _load_segments(content_type=None, parent=None):
     if not parent:
         parent = g.curr_file_slug
     app = g.curr_app
-    theme_opts = app['theme_meta'].get('options', {})
     # get segment contents
     results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
         p_content = p.get('content', u'')
-        p = parse_page_metas(p, theme_opts)
+        p = parse_page_metas(p)
         p['content'] = parse_page_content(p_content)
         pages.append(p)
 
