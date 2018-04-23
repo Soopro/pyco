@@ -124,7 +124,7 @@ def load_all_files(app, curr_app):
             'value': meta.pop('value', 0),
             'tags': meta.pop('tags', []),
             'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
-            'valuation': meta.pop('valuation', 0),
+            'price': meta.pop('price', 0),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
