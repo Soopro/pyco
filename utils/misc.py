@@ -236,7 +236,7 @@ def format_date(date, to_format, input_datefmt='%Y-%m-%d'):
             return date
 
     elif isinstance(date, int):
-        if len(str(date)) == 13:
+        if len(str(int(date))) == 13:
             date = int(date / 1000)
         try:
             date_object = datetime.fromtimestamp(date)
