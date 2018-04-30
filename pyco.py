@@ -15,7 +15,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '16', '5')
+__version_info__ = ('2', '16', '6')
 __version__ = '.'.join(__version_info__)
 
 

@@ -246,7 +246,9 @@ def format_date(date, to_format, input_datefmt='%Y-%m-%d'):
         return date
 
     try:
-        _formatted = date_object.strftime(to_format.encode('utf-8'))
+        if isinstance(to_format, unicode):
+            to_format = to_format.encode('utf-8')
+        _formatted = date_object.strftime(to_format)
         date_formatted = _formatted.decode('utf-8')
     except Exception:
         date_formatted = date
