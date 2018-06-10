@@ -224,33 +224,6 @@ def helper_wrap_menu(menus, base_url=u''):
     return menu_dict
 
 
-# socials
-def helper_wrap_socials(socials):
-    """ socials data sample
-    [
-       {
-            'key': 'facebook',
-            'name':'Facebook',
-            'url':'http://....',
-            'figure':'http://....',
-            'script': '....'
-       },
-       {
-            'key': 'twitter',
-            'name':'Twitter',
-            'url':'http://....',
-            'figure':'http://....',
-            'script': '....'
-       }
-    ]
-    """
-
-    if not socials or not isinstance(socials, list):
-        return []
-
-    return [social for social in socials if social.get('key')]
-
-
 # taxonomy
 def helper_pack_taxonomies(taxonomies, content_type=None):
     if not taxonomies:
@@ -311,7 +284,7 @@ def helper_wrap_slot(slots):
 
 
 # translates
-def helper_wrap_translates(languages, locale):
+def helper_wrap_languages(languages, locale):
     """ languages data sample
     [
        {'key': 'zh_CN', 'name': '汉语', 'url': 'http://.....'},

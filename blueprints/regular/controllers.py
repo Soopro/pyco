@@ -19,8 +19,7 @@ from helpers.app import (run_hook,
 from helpers.content import (find_content_file,
                              query_by_files,
                              query_segments,
-                             helper_wrap_socials,
-                             helper_wrap_translates,
+                             helper_wrap_languages,
                              helper_wrap_taxonomy,
                              helper_wrap_menu,
                              helper_wrap_slot,
@@ -115,9 +114,6 @@ def rendering(content_type_slug='page', file_slug='index'):
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
-    # soical media support
-    view_ctx['socials'] = helper_wrap_socials(curr_app['socials'])
-
     # menu
     view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
 
@@ -206,9 +202,9 @@ def set_multi_language(view_context, app):
     view_context['_t'] = translator.t_gettext
     view_context['locale'] = locale
     view_context['lang'] = locale.split('_')[0]
-    # make translates
-    translates = helper_wrap_translates(app['languages'], locale)
-    view_context['translates'] = make_dotted_dict(translates)
+    # make language swither
+    languages = helper_wrap_languages(app['languages'], locale)
+    view_context['languages'] = make_dotted_dict(languages)
 
 
 # query
