@@ -69,14 +69,14 @@
     "description": "...",
     "license": "MIT",
     "title": "Sample",
-    "socials":{
-      "facebook":{"name":"Facebook","url":"#","code":"facebook"},
-      "twitter":{"name":"Twitter","url":"#","code":"twitter"}
-    },
-    "translates": {
-      "en_US":{"name": "English", "url": "#" },
-      "zh_CN":{"name": "中文", "url": "#" }
-    }
+    "socials":[
+      {"key": "facebook", "name": "Facebook", "url": "#", "code": "facebook"},
+      {"key": "twitter", "name": "Twitter", "url": "#", "code": "twitter"}
+    ],
+    "languages": [
+       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
+       {"key": "en_US", "name":"English", "url":"http://....."}
+    ]
   }
 
 }

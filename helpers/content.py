@@ -239,13 +239,18 @@ def helper_pack_taxonomies(taxonomies, content_type=None):
     return tax_map
 
 
-def helper_wrap_taxonomy(taxonomies, tax_slug):
+def helper_wrap_taxonomy(taxonomies, tax_slug, included_term_keys=None):
     if not taxonomies or not taxonomies.get(tax_slug):
-        return {}
+        return {
+            'slug': None,
+            'title': None,
+            'content_types': [],
+            'terms': [],
+        }
 
     tax = taxonomies[tax_slug]
 
-    def _parse_term(term, is_parent=True):
+    def __parse_term(term, is_parent=True):
         term.setdefault('parent', u'')
         term.setdefault('priority', 0)
         term.setdefault('status', 1)
@@ -254,7 +259,7 @@ def helper_wrap_taxonomy(taxonomies, tax_slug):
         term['meta'].setdefault('figure', u'')
         if is_parent:
             term.setdefault('nodes', [])
-            term['nodes'] = [_parse_term(child, False)
+            term['nodes'] = [__parse_term(child, False)
                              for child in term['nodes']
                              if child.get('key')]
         return term
@@ -263,9 +268,43 @@ def helper_wrap_taxonomy(taxonomies, tax_slug):
         'slug': tax_slug,
         'title': tax.get('title'),
         'content_types': tax.get('content_types', []),
-        'terms': [_parse_term(term) for term in tax['terms']
-                  if term.get('key')],
+        'terms': _get_taxonomy_terms(tax.get('terms'), included_term_keys),
     }
+
+
+def _get_taxonomy_terms(terms, included_term_keys=None, nest_output=True):
+    if not terms or not isinstance(terms, list):
+        return []
+
+    def __check_term(term):
+        if not term.get('key'):
+            return False
+        elif included_term_keys and isinstance(included_term_keys, list):
+            return term['key'] in included_term_keys
+        else:
+            return True
+
+    term_list = [{
+        'key': term['key'],
+        'parent': term.get('parent', u''),
+        'meta': term.get('meta', {}),
+    } for term in terms if __check_term(term)]
+
+    if nest_output:
+        output_terms = []
+        children = []
+        for term in term_list:
+            if term['parent']:
+                children.append(term)
+            else:
+                output_terms.append(term)
+        for term in output_terms:
+            term['nodes'] = [child for child in children
+                             if child['parent'] == term['key']]
+    else:
+        output_terms = term_list
+
+    return output_terms
 
 
 # slot
@@ -283,7 +322,7 @@ def helper_wrap_slot(slots):
     return slots_map
 
 
-# translates
+# languages
 def helper_wrap_languages(languages, locale):
     """ languages data sample
     [

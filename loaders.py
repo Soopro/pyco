@@ -173,7 +173,6 @@ def load_curr_app(app):
         'menus': site.get('menus', None),
         'slots': site.get('slots', None),
         'meta': site_meta,
-        'socials': site_meta.pop('socials', None),
         'languages': site_meta.pop('languages', None),
         'theme_meta': theme_meta
     }

@@ -245,23 +245,12 @@ Global content data for whole site. some data is simulation for cloud service, i
   * `locale`: **[ str ]** language locale.
   * `seo`: **[ str ]** seo codes here.
   * `analytics`: **[ str ]** third part analytic codes here.
-  * `socials`: **[ dict/list ]** social medias if you need.
+  * `languages`: **[ list ]** languages switcher if you need.
     ```json
-    {
-      "facebook":{"name":"Facebook","url":"#","code":"facebook"},
-      "twitter":{"name":"Twitter","url":"#","code":"twitter"}
-    }
-    ```
-  * `translates`: **[ dict ]** translates if you need.
-    ```json
-    {
-       "zh_CN":{"name":"汉语","url":"http://....."},
-       "en_US":{"name":"English","url":"http://....."}
-    }
-    ```
-  * `segments`: **[ list ]** Segment content slugs. max is 24.
-    ```json
-    ['content-slug-1', 'content-slug-2']
+    [
+       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
+       {"key": "en_US", "name":"English", "url":"http://....."}
+    ]
     ```
 
 
@@ -318,14 +307,14 @@ Global content data for whole site. some data is simulation for cloud service, i
     "description": "...",
     "license": "MIT",
     "title": "Sample",
-    "socials":{
-      "facebook": {"name": "Facebook", "url": "#", "code": "facebook"},
-      "twitter": {"name": "Twitter", "url": "#", "code": "twitter"}
-    },
-    "translates": {
-      "en_US": {"name": "English", "url": "#" },
-      "zh_CN": {"name": "中文", "url": "#" }
-    }
+    "socials":[
+      {"key": "facebook", "name": "Facebook", "url": "#", "code": "facebook"},
+      {"key": "twitter", "name": "Twitter", "url": "#", "code": "twitter"}
+    ],
+    "languages": [
+       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
+       {"key": "en_US", "name":"English", "url":"http://....."}
+    ]
   }
 }
 

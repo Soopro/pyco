@@ -11,6 +11,12 @@
   {% include '_nav.html' %}
   <header>
     <h1>{{meta.title}}</h1>
+    <h4>
+      {% set category = taxonomy('category', meta.taxonomy.category) %}
+      {% for term in category.terms %}
+        {{term.meta.name}},
+      {% endfor %}
+    </h4>
     <h5>
       {{_('Posted by %s on %s', meta.author, meta.date|date_formatted)}}
     </h5>
