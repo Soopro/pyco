@@ -6,11 +6,6 @@ Title: Post @1
 Description: Description text
 Nextpage:
   link: '/post/post2'
-Taxonomy:
-- tax: 'category'
-  term: 'food'
-- tax: 'category'
-  term: 'daily'
 Featured_img:
   src: ''
 Author: author

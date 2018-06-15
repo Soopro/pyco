@@ -248,6 +248,13 @@ def helper_wrap_taxonomy(taxonomies, tax_slug, included_term_keys=None):
             'terms': [],
         }
 
+    # `included_term_keys` could be None or some other empty data.
+    # as long as this parameter is given, result terms must limited.
+    if included_term_keys is False:
+        included_term_keys = None  # reset to None for further usage.
+    elif not isinstance(included_term_keys, list):
+        included_term_keys = []
+
     tax = taxonomies[tax_slug]
 
     def __parse_term(term, is_parent=True):
@@ -279,7 +286,7 @@ def _get_taxonomy_terms(terms, included_term_keys=None, nest_output=True):
     def __check_term(term):
         if not term.get('key'):
             return False
-        elif included_term_keys and isinstance(included_term_keys, list):
+        elif isinstance(included_term_keys, list):
             return term['key'] in included_term_keys
         else:
             return True

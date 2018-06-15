@@ -277,7 +277,7 @@ def _query_contents(content_type=None, attrs=[], taxonomy=None,
     }
 
 
-def _get_taxonomy(taxonomy=u'category', term_keys=None):
+def _get_taxonomy(taxonomy=u'category', term_keys=False):
     _check_query_limit('_get_taxonomy', 3)
     taxonomy = helper_wrap_taxonomy(g.curr_app['taxonomies'],
                                     taxonomy, term_keys)

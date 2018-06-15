@@ -80,7 +80,7 @@ def get_view_taxonomies(app_id):
 
 @output_json
 def get_view_taxonomy(app_id, tax_slug):
-    term_keys = get_args('term_keys', multiple=True)
+    term_keys = get_args('term_keys', default=False, multiple=True)
     return helper_wrap_taxonomy(g.curr_app['taxonomies'], tax_slug, term_keys)
 
 
