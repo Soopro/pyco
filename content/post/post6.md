@@ -14,6 +14,7 @@ Nextpage:
   link: '/post/post7'
 Terms:
 - 'food'
+- 'daily'
 Gallery:
 - src: '[%uploads%]/default.jpg'
   title: gallery title

@@ -242,20 +242,6 @@ def helper_wrap_category(app, included_term_keys=None):
 
     category = app['categories']
 
-    def __parse_term(term, is_parent=True):
-        term.setdefault('parent', u'')
-        term.setdefault('priority', 0)
-        term.setdefault('status', 1)
-        term.setdefault('meta', {})
-        term['meta'].setdefault('name', u'...')
-        term['meta'].setdefault('figure', u'')
-        if is_parent:
-            term.setdefault('nodes', [])
-            term['nodes'] = [__parse_term(child, False)
-                             for child in term['nodes']
-                             if child.get('key')]
-        return term
-
     return {
         'name': category.get('name'),
         'content_types': category.get('content_types', []),
@@ -268,7 +254,7 @@ def _get_category_terms(category, included_term_keys=None, nest_output=True):
         return []
 
     def __check_term(term):
-        if not term.get('key'):
+        if not term.get('key') or term.get('status') == 0:
             return False
         elif isinstance(included_term_keys, list):
             return term['key'] in included_term_keys
@@ -290,8 +276,23 @@ def _get_category_terms(category, included_term_keys=None, nest_output=True):
             else:
                 output_terms.append(term)
         for term in output_terms:
-            term['nodes'] = [child for child in children
-                             if child['parent'] == term['key']]
+            _rest_children = []
+            for child in children:
+                if child['parent'] == term['key']:
+                    if term.get('nodes'):
+                        term['nodes'].append(child)
+                    else:
+                        term['nodes'] = [child]
+                else:
+                    _rest_children.append(child)
+            children = _rest_children
+        if children:
+            # incase there is more children left
+            output_terms += [{
+                'key': child['key'],
+                'parent': u'',  # clear parent
+                'meta': child['meta']
+            } for child in children]
     else:
         output_terms = term_list
 
@@ -342,7 +343,10 @@ def _query(files, content_type=None, attrs=None, term=None):
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
     if content_type:
-        files = [f for f in files if f['content_type'] == content_type]
+        files = [f for f in files if f['content_type'] == content_type and
+                 f['slug'] not in RESERVED_SLUGS]
+    else:
+        files = [f for f in files if f['slug'] not in RESERVED_SLUGS]
 
     if isinstance(attrs, (basestring, dict)):
         attrs = [attrs]
@@ -372,8 +376,7 @@ def _query(files, content_type=None, attrs=None, term=None):
         if attr_key not in QUERYABLE_FIELD_KEYS and '.' not in attr_key:
             attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files
-                 if f['slug'] not in RESERVED_SLUGS and
-                 match_cond(f, attr_key, attr_value, force, opposite)]
+                 if match_cond(f, attr_key, attr_value, force, opposite)]
 
     if term:
         output = []

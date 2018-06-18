@@ -219,11 +219,11 @@ Global content data for whole site. some data is simulation for cloud service, i
   2. `content_types`: **[ list ]** list of supported content types.
   3. `terms`: **[ list:dict ]** terms of this category.
     1. `key`: **[ str ]** term key.
-    2. `title`: **[ str ]** term title.
-    3. `class`: **[ str ]** term sytle class.
+    2. `name`: **[ str ]** term name.
     4. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
+      * `class`: **[ str ]** term sytle class.
       * `pic`: **[ str ]** pic for term display.
-    5 `nodes`: **[ list:dict ]** children terms here. Same as a term.
+    5 `parent`: **[ str ]** mark parent term key.
 
 * `slots`: **[ dict ]** All widget slots host here.
   * `< slot_key >`:
@@ -286,7 +286,9 @@ Global content data for whole site. some data is simulation for cloud service, i
     "content_types": ["post"],
     "terms": [
       {"key": "daily", "meta":{"name": "Daily"}},
-      {"key": "food", "meta":{"name": "Food"}}
+      {"key": "food", "meta":{"name": "Food"}},
+      {"key":"daily-2", "meta":{"name": "Daily"}, "parent":"daily"},
+      {"key":"food-2", "meta":{"name": "Food"}, "parent":"food"}
     ]
   },
   "slots": {

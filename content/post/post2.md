@@ -9,8 +9,7 @@ Prevpage:
 Nextpage:
   link: '/post/post3'
 Terms:
-- 'food'
-- 'daily'
+- 'daily-2'
 Featured_img:
   src: ''
 Author: author

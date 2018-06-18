@@ -55,9 +55,8 @@ MARKDOWN_EXTENSIONS = ['gfm']
 MAXIMUM_QUERY = 60
 
 SORTABLE_FIELD_KEYS = ('date', 'price', 'updated')
-QUERYABLE_FIELD_KEYS = ('slug', 'content_type', 'priority', 'parent',
-                        'date', 'value', 'creation', 'updated',
-                        'template', 'tags')
+QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template', 'tags',
+                        'date', 'price', 'updated', 'creation')
 IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
 
 # plugins
