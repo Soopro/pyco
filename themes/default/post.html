@@ -12,7 +12,7 @@
   <header>
     <h1>{{meta.title}}</h1>
     <h4>
-      {% set category = taxonomy('category', meta.taxonomy.category) %}
+      {% set category = categorize(meta.terms) %}
       {% for term in category.terms %}
         {{term.meta.name}},
       {% endfor %}

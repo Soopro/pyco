@@ -9,10 +9,14 @@ from utils.validators import url_validator
 from utils.misc import parse_int, match_cond, sortedby, parse_sortby
 
 
-def query_by_files(content_type=None, attrs=None, taxonomy=None,
+def query_by_files(content_type=None, attrs=None, term=None,
                    offset=0, limit=1, sortby=None):
     # query
-    files = _query(g.files, content_type, attrs, taxonomy)
+    files = _query(files=g.files,
+                   content_type=content_type,
+                   attrs=attrs,
+                   term=term)
+
     total_count = len(files)
 
     # sorting
@@ -124,7 +128,7 @@ def parse_page_metas(page, current_id=None):
     data['date'] = page['date']
     data['value'] = page['value']
     data['tags'] = page['tags']
-    data['taxonomy'] = page['taxonomy']
+    data['terms'] = page['terms']
     data['price'] = page['price']
     data['updated'] = page['updated']
     data['creation'] = page['creation']
@@ -174,8 +178,8 @@ def gen_page_url(data, static_type='page', index='index'):
 
 
 # menus
-def helper_wrap_menu(menus, base_url=u''):
-    if not menus:
+def helper_wrap_menu(app, base_url=u''):
+    if not app['menus']:
         return {}
 
     def process_menu_url(menu):
@@ -218,35 +222,16 @@ def helper_wrap_menu(menus, base_url=u''):
         return menu
 
     menu_dict = {}
-    for slug, nodes in menus.iteritems():
+    for slug, nodes in app['menus'].iteritems():
         nodes = process_menu_url(nodes)
         menu_dict[slug] = nodes
     return menu_dict
 
 
-# taxonomy
-def helper_pack_taxonomies(taxonomies, content_type=None):
-    if not taxonomies:
-        return {}
-    tax_map = {}
-    for k, v in taxonomies.iteritems():
-        if content_type and content_type not in v['content_types']:
-            continue
-        tax_map[k] = {
-            'title': v['title'],
-            'content_types': v['content_types']
-        }
-    return tax_map
-
-
-def helper_wrap_taxonomy(taxonomies, tax_slug, included_term_keys=None):
-    if not taxonomies or not taxonomies.get(tax_slug):
-        return {
-            'slug': None,
-            'title': None,
-            'content_types': [],
-            'terms': [],
-        }
+# category
+def helper_wrap_category(app, included_term_keys=None):
+    if not app['categories'] or not isinstance(app['categories'], dict):
+        return None
 
     # `included_term_keys` could be None or some other empty data.
     # as long as this parameter is given, result terms must limited.
@@ -255,7 +240,7 @@ def helper_wrap_taxonomy(taxonomies, tax_slug, included_term_keys=None):
     elif not isinstance(included_term_keys, list):
         included_term_keys = []
 
-    tax = taxonomies[tax_slug]
+    category = app['categories']
 
     def __parse_term(term, is_parent=True):
         term.setdefault('parent', u'')
@@ -272,15 +257,14 @@ def helper_wrap_taxonomy(taxonomies, tax_slug, included_term_keys=None):
         return term
 
     return {
-        'slug': tax_slug,
-        'title': tax.get('title'),
-        'content_types': tax.get('content_types', []),
-        'terms': _get_taxonomy_terms(tax.get('terms'), included_term_keys),
+        'name': category.get('name'),
+        'content_types': category.get('content_types', []),
+        'terms': _get_category_terms(category, included_term_keys),
     }
 
 
-def _get_taxonomy_terms(terms, included_term_keys=None, nest_output=True):
-    if not terms or not isinstance(terms, list):
+def _get_category_terms(category, included_term_keys=None, nest_output=True):
+    if not category['terms'] or not isinstance(category['terms'], list):
         return []
 
     def __check_term(term):
@@ -295,7 +279,7 @@ def _get_taxonomy_terms(terms, included_term_keys=None, nest_output=True):
         'key': term['key'],
         'parent': term.get('parent', u''),
         'meta': term.get('meta', {}),
-    } for term in terms if __check_term(term)]
+    } for term in category['terms'] if __check_term(term)]
 
     if nest_output:
         output_terms = []
@@ -315,11 +299,11 @@ def _get_taxonomy_terms(terms, included_term_keys=None, nest_output=True):
 
 
 # slot
-def helper_wrap_slot(slots):
-    if not slots:
+def helper_wrap_slot(app):
+    if not app['slots']:
         return {}
     slots_map = {}
-    for k, v in slots.iteritems():
+    for k, v in app['slots'].iteritems():
         slots_map[k] = {
             'name': v.get('src', u''),
             'src': v.get('src', u''),
@@ -353,7 +337,7 @@ def helper_wrap_languages(languages, locale):
 
 
 # helpers
-def _query(files, content_type=None, attrs=None, taxonomy=None):
+def _query(files, content_type=None, attrs=None, term=None):
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
@@ -391,13 +375,10 @@ def _query(files, content_type=None, attrs=None, taxonomy=None):
                  if f['slug'] not in RESERVED_SLUGS and
                  match_cond(f, attr_key, attr_value, force, opposite)]
 
-    if taxonomy:
-        tax_slug = taxonomy.get('tax')
-        term_key = taxonomy.get('term')
+    if term:
         output = []
-
         for file in files:
-            if term_key in file['taxonomy'].get(tax_slug, []):
+            if term in file['terms']:
                 output.append(file)
     else:
         output = files

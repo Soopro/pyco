@@ -9,7 +9,7 @@
 
 <body>
   {% set args = request.args %}
-  {% set category = taxonomy('category') %}
+  {% set category = categorize() %}
   {% set macthed_term = straw(category.terms, args.term, 'key')
                         if args.term else {} %}
   {% if not macthed_term and args.term %}
@@ -32,16 +32,17 @@
   <!-- category -->
   {% if not macthed_term %}
 
-    <div class="container prd-container">
+    <div class="container">
       <div class="row">
         {% for term in category.terms %}
-        <div class="col-md-6 prd">
-          <a href="{{glue({'term': term.key})}}">
+        <div class="col-md-6">
+          <a href="{{glue({'term': term.key})}}"
+             style="display:block; background: #eee;">
             <img style="max-width: 100px;"
                  src="{{term.meta.figure or g.default_img}}"
                  alt="{{term.meta.name}}"/>
+            <h4 class="text-nowrap">{{term.meta.name}}</h4>
           </a>
-          <h4 class="text-nowrap">{{term.meta.name}}</h4>
         </div>
         {% endfor %}
       </div>
@@ -49,28 +50,32 @@
 
   {% else %}
     {% if macthed_term.meta.figure %}
-    <div class="container">
+    <div class="container"
+         style="border: 1px solid #333;">
       <img src="{{macthed_term.meta.figure or g.default_img}}"
            class="img-responsive center-block"
            alt="{{macthed_term.meta.name}}"/>
     </div>
     {% else %}
     <div class="container">
-      <h3>{{macthed_term.meta.name}}</h3>
+      <h2>{{macthed_term.meta.name}}</h2>
     </div>
     {% endif %}
     <div class="container prd-container">
       <div class="row">
-        {% set _t_cond = {'tax': 'category', 'term': macthed_term.key} %}
-        {% set booklet = query('post', paged=args.paged, taxonomy=_t_cond) %}
+        {% set booklet = query('post',
+                               paged=args.paged,
+                               term=macthed_term.key) %}
 
         {% for item in booklet.contents %}
-        <div class="col-md-3 col-sm-4 col-xs-6 prd">
+        <div class="col-md-3 col-sm-4 col-xs-6"
+             style="border: 1px solid #333; margin: 16px; padding:16px;">
           <a href="{{item.url}}">
             <img src="{{(item.featured_img.src or g.default_img)|thumbnail}}"
+                 style="max-width: 200px;"
                  alt="{{item.title}}" />
           </a>
-          <h5 class="text-nowrap">{{item.title}}</h5>
+          <h3 class="text-nowrap">{{item.title}}</h3>
         </div>
         {% endfor %}
       </div>

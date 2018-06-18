@@ -94,7 +94,7 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_SEARCH_SLUG`: **[ str ]** Search page slug default as `"search"`.
 
-* `DEFAULT_TAXONOMY_SLUG`: **[ str ]** Taxonomy page slug. In fact there are many kind of taxonomy, but we only use `category` here. Default as `"category"`.
+* `DEFAULT_CATEGORY_SLUG`: **[ str ]** Category page slug. default as `"category"`.
 
 * `DEFAULT_TAG_SLUG`: **[ str ]** Tags page slug default as `"tag"`.
 
@@ -214,17 +214,16 @@ Global content data for whole site. some data is simulation for cloud service, i
     * `meta`: **[ dict ]** menu item meta, put custom data as you wish.
     * `nodes`: **[ list:dict ]** children menu items
 
-* `taxonomies`: **[ dict ]** All taxonomy host here.
-  * `< taxonomy_slug >`:
-    1. `title`: **[ str ]** Taxonomy title.
-    2. `content_types`: **[ list ]** list of supported content types.
-    3. `terms`: **[ list:dict ]** terms of this taxonomy.
-      1. `key`: **[ str ]** term key.
-      2. `title`: **[ str ]** term title.
-      3. `class`: **[ str ]** term sytle class.
-      4. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
-        * `pic`: **[ str ]** pic for term display.
-      5 `nodes`: **[ list:dict ]** children terms here. Same as a term.
+* `categories`: **[ dict ]** All categories host here.
+  1. `name`: **[ str ]** Category name.
+  2. `content_types`: **[ list ]** list of supported content types.
+  3. `terms`: **[ list:dict ]** terms of this category.
+    1. `key`: **[ str ]** term key.
+    2. `title`: **[ str ]** term title.
+    3. `class`: **[ str ]** term sytle class.
+    4. `meta`: **[ dict ]** term data in meta. leave it empty if you don really need it.
+      * `pic`: **[ str ]** pic for term display.
+    5 `nodes`: **[ list:dict ]** children terms here. Same as a term.
 
 * `slots`: **[ dict ]** All widget slots host here.
   * `< slot_key >`:
@@ -282,17 +281,13 @@ Global content data for whole site. some data is simulation for cloud service, i
       }
     ]
   },
-  "taxonomies": {
-    "category": {
-      "title": "Category",
-      "content_types": ["post"],
-      "terms": [
-        {"slug": "food", "title": "Food",
-         "meta": {"pic": "","parent": ""}, "priority": 0},
-        {"slug": "book", "title": "Book",
-         "meta": {"pic": "","parent": ""}, "priority": 0}
-      ]
-    }
+  "categories": {
+    "name": "Category",
+    "content_types": ["post"],
+    "terms": [
+      {"key": "daily", "meta":{"name": "Daily"}},
+      {"key": "food", "meta":{"name": "Food"}}
+    ]
   },
   "slots": {
     "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
@@ -347,7 +342,7 @@ Some attribute will be reserved:
 * `date`: **[ str ]** Input date format with yyyy-mm-dd.
 * `priority`: **[ int ]** Priority of content, the smaller the front, default is `0`.
 * `parent`: **[ str ]** Parent content slug, default is empty str.
-* `taxonomy`: **[ list:dict ]** host term's slug of taxonomy, such as `{'tax': 'category', 'term': 'some_term_key'}`.
+* `category`: **[ list:str ]** host term's key of category, such as `['term-key-1', 'term-key-2']`.
 * `tags`: **[ list ]** A list of str for tags.
 * `redirect`: **[ str ]** Redirect url.
 * `template`: **[ str ]** Template name.
@@ -367,10 +362,10 @@ After `/* ... */` is Content, must be simple HTML with inline styles or markdown
 Date: '2014-01-01'
 Priority: 0
 Status: 1
-Taxonomy:
-   - {tax: category term: term_key_1}
-   - {tax: category term: term_key_2}
-   - {tax: product term: some_key}
+Terms:
+- term-key-1
+- term-key-2
+- some-key
 Template: page
 Title: Static Page
 Featured_img:

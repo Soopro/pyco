@@ -20,7 +20,7 @@ from helpers.content import (find_content_file,
                              query_by_files,
                              query_segments,
                              helper_wrap_languages,
-                             helper_wrap_taxonomy,
+                             helper_wrap_category,
                              helper_wrap_menu,
                              helper_wrap_slot,
                              parse_page_metas,
@@ -115,10 +115,10 @@ def rendering(content_type_slug='page', file_slug='index'):
     set_multi_language(view_ctx, curr_app)
 
     # menu
-    view_ctx['menu'] = helper_wrap_menu(curr_app['menus'], base_url)
+    view_ctx['menu'] = helper_wrap_menu(curr_app, base_url)
 
     # slots
-    view_ctx['slot'] = helper_wrap_slot(curr_app['slots'])
+    view_ctx['slot'] = helper_wrap_slot(curr_app)
 
     # base view context
     view_ctx['app_id'] = curr_app['_id']
@@ -142,8 +142,8 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # query contents
     view_ctx['query'] = _query_contents
-    view_ctx['taxonomy'] = _get_taxonomy
-    view_ctx['segments'] = _load_segments
+    view_ctx['categorize'] = _get_category
+    view_ctx['segment'] = _get_segments
 
     # helper functions
     view_ctx['saltshaker'] = saltshaker
@@ -218,7 +218,7 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(content_type=None, attrs=[], taxonomy=None,
+def _query_contents(content_type=None, attrs=[], term=None,
                     paged=0, perpage=0, sortby=None, with_content=False):
     _check_query_limit('_query_contents', 3)
 
@@ -246,7 +246,7 @@ def _query_contents(content_type=None, attrs=[], taxonomy=None,
     # query content files
     results, total_count = query_by_files(attrs=attrs,
                                           content_type=content_type,
-                                          taxonomy=taxonomy,
+                                          term=term,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)
@@ -277,15 +277,14 @@ def _query_contents(content_type=None, attrs=[], taxonomy=None,
     }
 
 
-def _get_taxonomy(taxonomy=u'category', term_keys=False):
-    _check_query_limit('_get_taxonomy', 3)
-    taxonomy = helper_wrap_taxonomy(g.curr_app['taxonomies'],
-                                    taxonomy, term_keys)
-    return make_dotted_dict(taxonomy)
+def _get_category(term_keys=False):
+    _check_query_limit('_get_category', 1)
+    category = helper_wrap_category(g.curr_app, term_keys)
+    return make_dotted_dict(category)
 
 
-def _load_segments(content_type=None, parent=None):
-    _check_query_limit('_load_segments', 1)
+def _get_segments(content_type=None, parent=None):
+    _check_query_limit('_get_segments', 1)
     if not content_type:
         content_type = g.curr_content_type
     if not parent:

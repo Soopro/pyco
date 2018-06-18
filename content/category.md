@@ -2,7 +2,7 @@
 Priority: 1
 Status: 1
 Template: category
-Title: Taxonomy
+Title: Category
 Description: You can write description here.
 Background:
   src: '[%uploads%]/default.jpg'

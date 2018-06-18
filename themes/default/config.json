@@ -20,11 +20,9 @@
 
   "slots": ["event"],
 
-  "taxonomies": {
-    "category": {
-      "title":"Categories",
-      "content_types":["post"]
-    }
+  "category": {
+    "name":"Categories",
+    "content_types":["post"]
   },
 
   "content_types": {

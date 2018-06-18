@@ -19,8 +19,7 @@ from helpers.content import (parse_page_metas,
                              find_content_file,
                              parse_page_content,
                              helper_wrap_languages,
-                             helper_wrap_taxonomy,
-                             helper_pack_taxonomies,
+                             helper_wrap_category,
                              helper_wrap_menu,
                              helper_wrap_slot)
 
@@ -65,23 +64,19 @@ def get_view_metas(app_id):
         'lang': locale.split('_')[0],
         'locale': locale,
         'languages': helper_wrap_languages(languages, locale),
-        'menu': helper_wrap_menu(curr_app['menus'], g.curr_base_url),
+        'menu': helper_wrap_menu(curr_app, g.curr_base_url),
         'content_type': curr_app['content_types'],
-        'slot': helper_wrap_slot(curr_app['slots'])
+        'slot': helper_wrap_slot(curr_app)
     }
     return context
 
 
 @output_json
-def get_view_taxonomies(app_id):
-    content_type = get_args('content_type', default='')
-    return helper_pack_taxonomies(content_type)
-
-
-@output_json
-def get_view_taxonomy(app_id, tax_slug):
+def get_view_category(app_id):
     term_keys = get_args('term_keys', default=False, multiple=True)
-    return helper_wrap_taxonomy(g.curr_app['taxonomies'], tax_slug, term_keys)
+    return {
+        'category': helper_wrap_category(g.curr_app, term_keys)
+    }
 
 
 @output_json
@@ -143,11 +138,11 @@ def search_view_contents(app_id):
 def query_view_contents(app_id):
     attrs = get_param('attrs', list, False, [])
     content_type = get_param('content_type', unicode, default=u'')
-    taxonomy = get_param('taxonomy', dict, False, {})
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
     with_content = get_param('with_content', bool, default=False)
+    term = get_param('term', dict)
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -168,7 +163,7 @@ def query_view_contents(app_id):
     # query content files
     results, total_count = query_by_files(attrs=attrs,
                                           content_type=content_type,
-                                          taxonomy=taxonomy,
+                                          term=term,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)
@@ -193,6 +188,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
     priority = get_args('priority', default=True)
+    term = get_args('term')
 
     priority = bool(priority)
 
@@ -217,7 +213,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
 
     # query content files
     results, total_count = query_by_files(content_type=type_slug,
-                                          taxonomy=None,
+                                          term=term,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)

@@ -47,15 +47,13 @@
       }
     ]
   },
-  "taxonomies": {
-    "category": {
-      "title":"Categories",
-      "content_types":["works"],
-      "terms": [
-        {"key":"daily", "meta":{"name": "Daily"}},
-        {"key":"food", "meta":{"name": "Food"}}
-      ]
-    }
+  "categories": {
+    "name": "Categories",
+    "content_types":["works"],
+    "terms": [
+      {"key":"daily", "meta":{"name": "Daily"}},
+      {"key":"food", "meta":{"name": "Food"}}
+    ]
   },
   "slots": {
     "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}

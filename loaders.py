@@ -51,11 +51,11 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('DEFAULT_INDEX_SLUG', 'index')
     app.config.setdefault('DEFAULT_404_SLUG', 'error-404')
     app.config.setdefault('DEFAULT_SEARCH_SLUG', 'search')
-    app.config.setdefault('DEFAULT_TAXONOMY_SLUG', 'category')
+    app.config.setdefault('DEFAULT_CATEGORY_SLUG', 'category')
     app.config.setdefault('DEFAULT_TAG_SLUG', 'tag')
 
     app.config.setdefault('RESERVED_SLUGS',
-                          ['index', 'error-404', 'search', 'taxonomy', 'tag'])
+                          ['index', 'search', 'category', 'tag'])
     app.config.setdefault('SORTABLE_FIELD_KEYS',
                           ('date', 'value', 'updated'))
     app.config.setdefault('QUERYABLE_FIELD_KEYS',
@@ -123,7 +123,7 @@ def load_all_files(app, curr_app):
             'date': meta.pop('date', u''),
             'value': meta.pop('value', 0),
             'tags': meta.pop('tags', []),
-            'taxonomy': _make_taxonomy(meta.pop('taxonomy', [])),
+            'terms': meta.pop('terms', []),
             'price': meta.pop('price', 0),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
@@ -169,7 +169,7 @@ def load_curr_app(app):
         'type': site.get('type', 'ws'),
         'locale': site.get('locale', 'en_US'),
         'content_types': site.get('content_types', {'page': 'Pages'}),
-        'taxonomies': site.get('taxonomies', None),
+        'categories': site.get('categories', None),
         'menus': site.get('menus', None),
         'slots': site.get('slots', None),
         'meta': site_meta,
@@ -259,17 +259,3 @@ def _file_headers(meta_string):
     yaml_data = yaml.safe_load(meta_string)
     headers = convert_data_decode(yaml_data)
     return headers
-
-
-def _make_taxonomy(taxonomy):
-    if not taxonomy or not isinstance(taxonomy, list):
-        return {}
-    tax_map = {}
-    for item in taxonomy:
-        if not item.get('tax') or not item.get('term'):
-            continue
-        if tax_map.get(item['tax']):
-            tax_map[item['tax']].append(item['term'])
-        else:
-            tax_map[item['tax']] = [item['term']]
-    return tax_map
