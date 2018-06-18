@@ -342,7 +342,7 @@ Some attribute will be reserved:
 * `date`: **[ str ]** Input date format with yyyy-mm-dd.
 * `priority`: **[ int ]** Priority of content, the smaller the front, default is `0`.
 * `parent`: **[ str ]** Parent content slug, default is empty str.
-* `category`: **[ list:str ]** host term's key of category, such as `['term-key-1', 'term-key-2']`.
+* `terms`: **[ list:str ]** host term's key of category, such as `['term-key-1', 'term-key-2']`.
 * `tags`: **[ list ]** A list of str for tags.
 * `redirect`: **[ str ]** Redirect url.
 * `template`: **[ str ]** Template name.
