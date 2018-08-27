@@ -15,7 +15,7 @@ from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '17', '1')
+__version_info__ = ('2', '17', '2')
 __version__ = '.'.join(__version_info__)
 
 
@@ -111,6 +111,7 @@ def app_before_request():
 
 
 if __name__ == '__main__':
+
     host = app.config.get('HOST')
     port = app.config.get('PORT')
 
@@ -122,4 +123,4 @@ if __name__ == '__main__':
         print('Pyco is running in DEBUG mode !!!')
         print('Jinja2 template folder is about to reload.')
 
-    app.run(host=host, port=port, debug=True, threaded=True)
+    app.run(host=str(host), port=int(port), debug=True, threaded=True)
