@@ -89,14 +89,14 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     run_hook('before_read_page_meta', headers=content_file)
     page_meta = parse_page_metas(content_file)
-    redirect_to = {'url': None}
+    redirect_to = {'url': content_file.get('redirect')}
     run_hook('after_read_page_meta', meta=page_meta, redirect=redirect_to)
 
     # page redirect
     if redirect_to['url']:
-        redirect_to = helper_redirect_url(redirect_to['url'], base_url)
-        if redirect_to and request.url != redirect_to:
-            return redirect(redirect_to['url'], code=302)
+        redirect_to_url = helper_redirect_url(redirect_to['url'], base_url)
+        if redirect_to_url and request.url != redirect_to_url:
+            return redirect(redirect_to_url, code=302)
 
     view_ctx['meta'] = page_meta
     view_ctx['content_type'] = _get_content_type(content_type_slug)
