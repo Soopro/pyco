@@ -6,7 +6,11 @@ from flask import current_app, Markup, g
 import re
 
 from utils.validators import url_validator
-from utils.misc import parse_int, match_cond, sortedby, parse_sortby
+from utils.misc import (parse_int,
+                        match_cond,
+                        sortedby,
+                        parse_sortby,
+                        slug_uuid_suffix)
 
 
 def query_by_files(content_type=None, attrs=None, term=None,
@@ -203,12 +207,11 @@ def helper_wrap_menu(app, base_url=u''):
                 else:
                     item['path'] = link
                 # hash
-                if not url_validator(link):
-                    _relpath = link.strip('/')
-                    _hashtag = '' if _relpath.startswith('#') else '#'
-                    item['hash'] = u'{}{}'.format(_hashtag, _relpath)
-                else:
+                if url_validator(link):
                     item['hash'] = u''
+                else:
+                    _relpath = re.sub(r'^\#*', u'', link).strip()
+                    item['hash'] = u'#{}'.format(slug_uuid_suffix(_relpath))
             else:
                 item['url'] = u''
                 item['hash'] = u''
