@@ -10,7 +10,7 @@ from utils.misc import (parse_int,
                         match_cond,
                         sortedby,
                         parse_sortby,
-                        slug_uuid_suffix)
+                        process_slug)
 
 
 def query_by_files(content_type=None, attrs=None, term=None,
@@ -211,7 +211,7 @@ def helper_wrap_menu(app, base_url=u''):
                     item['hash'] = u''
                 else:
                     _relpath = re.sub(r'^\#*', u'', link).strip()
-                    item['hash'] = u'#{}'.format(slug_uuid_suffix(_relpath))
+                    item['hash'] = u'#{}'.format(process_slug(_relpath))
             else:
                 item['url'] = u''
                 item['hash'] = u''
