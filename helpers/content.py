@@ -9,8 +9,7 @@ from utils.validators import url_validator
 from utils.misc import (parse_int,
                         match_cond,
                         sortedby,
-                        parse_sortby,
-                        process_slug)
+                        parse_sortby)
 
 
 def query_by_files(content_type=None, attrs=None, term=None,
@@ -211,7 +210,7 @@ def helper_wrap_menu(app, base_url=u''):
                     item['hash'] = u''
                 else:
                     _relpath = re.sub(r'^\#*', u'', link).strip()
-                    item['hash'] = u'#{}'.format(process_slug(_relpath))
+                    item['hash'] = u'#{}'.format(_relpath)
             else:
                 item['url'] = u''
                 item['hash'] = u''
