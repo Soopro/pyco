@@ -209,7 +209,7 @@ def helper_wrap_menu(app, base_url=u''):
                 if url_validator(link):
                     item['hash'] = u''
                 else:
-                    _relpath = re.sub(r'^\#*', u'', link).strip()
+                    _relpath = re.sub(r'^[/#]*', u'', link).strip()
                     item['hash'] = u'#{}'.format(_relpath)
             else:
                 item['url'] = u''
