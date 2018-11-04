@@ -320,23 +320,29 @@ def helper_wrap_slot(app):
 def helper_wrap_languages(languages, locale):
     """ languages data sample
     [
-       {'key': 'zh_CN', 'name': '汉语', 'url': 'http://.....'},
-       {'key': 'en_US', 'name': 'English', 'url': 'http://.....'}
+        {'key': 'zh_CN', 'name': '汉语', 'url': 'http://.....'},
+        {'key': 'en_US', 'name': 'English', 'url': 'http://.....'}
     ]
     """
 
     if not languages or not isinstance(languages, list):
         return []
 
-    trans_list = [trans for trans in languages if trans.get('key')]
+    lang_list = []
     lang = locale.split('_')[0]
+    matched_pairs = (locale.lower(), lang.lower())
 
-    for trans in trans_list:
-        trans_key = trans['key'].lower()
-        if trans_key == locale.lower() or trans_key == lang.lower():
-            trans['active'] = True
+    for lang in languages:
+        if not lang.get('key'):
+            continue
+        lang_list.append({
+            'key': lang['key'],
+            'name': lang.get('name'),
+            'url': lang.get('url'),
+            'active': lang['key'].lower() in matched_pairs
+        })
 
-    return trans_list
+    return lang_list
 
 
 # helpers
