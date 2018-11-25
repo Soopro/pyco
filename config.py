@@ -19,7 +19,7 @@ API_URL = 'http://localhost:5500/restapi'
 THEME_URL = '{}/{}/{}'.format(BASE_URL, STATIC_PATH, THEME_NAME)
 UPLOADS_URL = '{}/{}'.format(BASE_URL, UPLOADS_DIR)
 LIB_URL = '{}/lib'.format(UPLOADS_URL)
-
+FONT_URL = '{}/font'.format(UPLOADS_URL)
 
 LANGUAGES_DIR = 'languages'
 

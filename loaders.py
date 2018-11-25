@@ -22,6 +22,7 @@ def load_config(app, config_name='config.py'):
 
     app.config.setdefault('BASE_URL', '/')
     app.config.setdefault('LIB_URL', '')
+    app.config.setdefault('FONT_URL', '')
     app.config.setdefault('UPLOADS_URL', '')
     app.config.setdefault('THEME_URL', '')
     app.config.setdefault('API_URL', '')

@@ -127,6 +127,7 @@ def rendering(content_type_slug='page', file_slug='index'):
     view_ctx['api_url'] = config.get('API_URL', u'')
     view_ctx['theme_url'] = config.get('THEME_URL', u'')
     view_ctx['lib_url'] = config.get('LIB_URL', u'')
+    view_ctx['font_url'] = config.get('FONT_URL', u'')
     view_ctx['base_url'] = base_url
 
     # visit

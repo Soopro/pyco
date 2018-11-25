@@ -68,6 +68,8 @@ You can modify the `config.py` to change base settings.
 
 * `LIB_URL`: **[ str ]** lib url of Site. default is `UPLOADS_URL/lib`. Change it to online url if you need.
 
+* `FONT_URL`: **[ str ]** font url of Site. default is `UPLOADS_URL/font`. Change it to online url if you need.
+
 * `LANGUAGES_DIR`: **[ str ]** The language dir in side each theme will be `"languages"`.
 
 * `CHARSET`: **[ str ]** Site date files charset. Default is `"utf8"`.
