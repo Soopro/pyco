@@ -134,7 +134,7 @@ def load_all_files(app, curr_app):
             'creation': _auto_file_creation(f),
         }
         # attach keywords for search
-        file_data['keywords'] = [file_data['slug'] + file_data['tags']]
+        file_data['keywords'] = [file_data['slug']] + file_data['tags']
         data_list.append(file_data)
 
     return data_list
