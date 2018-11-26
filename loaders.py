@@ -58,11 +58,10 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('RESERVED_SLUGS',
                           ['index', 'search', 'category', 'tag'])
     app.config.setdefault('SORTABLE_FIELD_KEYS',
-                          ('date', 'value', 'updated'))
+                          ('date', 'price', 'updated'))
     app.config.setdefault('QUERYABLE_FIELD_KEYS',
-                          ('slug', 'content_type', 'priority', 'parent',
-                           'date', 'value', 'creation', 'updated',
-                           'template', 'tags'))
+                          ('slug', 'parent', 'priority', 'template', 'tags',
+                           'date', 'price', 'updated', 'creation'))
 
     app.config.setdefault('IMAGE_MEDIA_EXTS',
                           ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))
@@ -122,7 +121,7 @@ def load_all_files(app, curr_app):
             'priority': meta.pop('priority', 0),
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
-            'value': meta.pop('value', 0),
+            'price': meta.pop('price', 0),
             'tags': meta.pop('tags', []),
             'terms': meta.pop('terms', []),
             'price': meta.pop('price', 0),
@@ -130,11 +129,12 @@ def load_all_files(app, curr_app):
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
-            'participle': [],
             'content': _convert_content(app.config, content_string),
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
         }
+        # attach keywords for search
+        file_data['keywords'] = [file_data['slug'] + file_data['tags']]
         data_list.append(file_data)
 
     return data_list

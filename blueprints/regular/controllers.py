@@ -17,6 +17,7 @@ from helpers.app import (run_hook,
                          helper_redirect_url,
                          get_theme_path)
 from helpers.content import (find_content_file,
+                             find_404_content_file,
                              query_by_files,
                              query_segments,
                              helper_wrap_languages,
@@ -51,9 +52,7 @@ def rendering(content_type_slug='page', file_slug='index'):
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
-        redirect_url = helper_redirect_url(config.get('DEFAULT_404_SLUG'),
-                                           base_url)
-        return redirect(redirect_url, code=302)
+        content_type_slug = None
 
     run_hook('request_url', request=request)
 
@@ -67,15 +66,8 @@ def rendering(content_type_slug='page', file_slug='index'):
     # if not found
     if content_file is None:
         status_code = 404
-        path = {'slug': config.get('DEFAULT_404_SLUG')}
-        run_hook('before_404_load_content', path=path)
-        content_file = find_content_file(None, path['slug'])
-        if not content_file:
-            abort(404)  # without not found 404 file
-            return
-
-    if status_code == 404:
-        run_hook('after_404_load_content', path=path, file=content_file)
+        path = None
+        content_file = find_404_content_file()
 
     run_hook('after_load_content', path=path, file=content_file)
 
@@ -161,10 +153,15 @@ def rendering(content_type_slug='page', file_slug='index'):
     # make dotted able
     for k, v in view_ctx.iteritems():
         view_ctx[k] = make_dotted_dict(v)
-
-    rendered = {
-        'output': render_template(template_file_path, **view_ctx)
-    }
+    try:
+        rendered = {
+            'output': render_template(template_file_path, **view_ctx)
+        }
+    except Exception as e:
+        if status_code == 404:
+            abort(404)
+        else:
+            raise e
     run_hook('after_render', rendered=rendered)
 
     sa_mod = current_app.sa_mod

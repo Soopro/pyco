@@ -100,7 +100,7 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_TAG_SLUG`: **[ str ]** Tags page slug default as `"tag"`.
 
-* `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_404_SLUG, DEFAULT_SEARCH_SLUG, DEFAULT_TAG_SLUG]`.
+* `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_TAG_SLUG, DEFAULT_CATEGORY_SLUG, DEFAULT_SEARCH_SLUG,]`.
 
 * `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if content mode is markdown. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
 
@@ -108,9 +108,9 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_SEARCH_ATTRS`: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
 
-* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'value', 'updated')`.
+* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'price', 'updated')`.
 
-* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'content_type', 'priority', 'parent', 'date', 'value', 'creation', 'updated', 'template', 'tags')`.
+* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'parent', 'priority', 'template', 'tags', 'date', 'price', 'updated', 'creation')`.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
 
@@ -133,42 +133,31 @@ Pyco supported plugins. Plugins use several hooked functions, and order by the r
       2. `slug`: **[ str ]** file slug
 
 4. `after_load_content(path, file)`: After content loaded.
-    * `path`: **[ dict ]**
+    * `path`: **[ dict ]** or `None` for error 404.
       1. `content_type`: **[ str ]** content type slug.
       2. `slug`: **[ str ]** file slug
     * `file`: **[ dict ]** a file dict. Print out to see all attributes.
 
-5. `before_404_load_content(path)`: Before load the 404 page.
-    * `path`: **[ dict ]**
-      1. `content_type`: **[ str ]** content type slug.
-      2. `slug`: **[ str ]** file slug
-
-6. `after_404_load_content(path, file)`: After 404 page loaded.
-    * `path`: **[ dict ]**
-      1. `content_type`: **[ str ]** content type slug.
-      2. `slug`: **[ str ]** file slug
-    * `file`: **[ dict ]** a file dict. Print out to see all attributes.
-
-7. `before_parse_page_content(content)`: Before parse the content.
+5. `before_parse_page_content(content)`: Before parse the content.
     * `content`: **[ dict ]**
       1. `content`: raw content string.
 
-8. `after_parse_page_content(content)`: After content parsed.
+6. `after_parse_page_content(content)`: After content parsed.
     * `content`: **[ dict ]**
       1. `content`: parsed content string.
 
-9. `before_read_page_meta(headers)`: Before read page meta.
+7. `before_read_page_meta(headers)`: Before read page meta.
     * `headers`: **[ dict ]** Print out to see all attributes.
 
-10. `after_read_page_meta(page_meta, redirect)`: After read page meta.
+8. `after_read_page_meta(page_meta, redirect)`: After read page meta.
     * `page_meta`: **[ dict ]** All page readed attrbiutes.
     * `redirect`: **[ dict ]** or **[ None ]** redirect information. for rest api this param will be None, because there is no way to redirect.
       1. `url`: **[ str ]** redirect url, default is `None`.
 
-11. `get_pages(pages, current_page_id)`: While query contents.
+9. `get_pages(pages, current_page_id)`: While query contents.
     * `pages`: all contents. Print out for attributes.
 
-12. `before_render(var, template)`: Before render (not support restapi).
+10. `before_render(var, template)`: Before render (not support restapi).
     * `var`: **[ dict ]** context for the rendering.
     * `template`: **[ dict ]** template information.
       1. `name`: **[ str ]** template name.

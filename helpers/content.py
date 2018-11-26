@@ -9,7 +9,8 @@ from utils.validators import url_validator
 from utils.misc import (parse_int,
                         match_cond,
                         sortedby,
-                        parse_sortby)
+                        parse_sortby,
+                        now)
 
 
 def query_by_files(content_type=None, attrs=None, term=None,
@@ -79,7 +80,7 @@ def search_by_files(keywords, content_type=None,
             keywords = []
 
         def _search_match(keyword, f):
-            if keyword in f['tags'] and keyword in f['participle']:
+            if keyword in f['keywords']:
                 return True
             return False
 
@@ -111,6 +112,27 @@ def find_content_file(type_slug, file_slug):
     return None
 
 
+def find_404_content_file():
+    return {
+        '_id': '.id-error-404',
+        'app_id': g.curr_app['_id'],
+        'slug': current_app.config.get('DEFAULT_404_SLUG'),
+        'template': current_app.config.get('DEFAULT_404_SLUG'),
+        'content_type': '.h',
+        'meta': {},
+        'parent': u'',
+        'priority': 0,
+        'date': u'',
+        'content': u'',
+        'price': 0,
+        'tags': [],
+        'terms': [],
+        'updated': now(),
+        'creation': now(),
+        'status': 1,
+    }
+
+
 def parse_page_content(content_string):
     return Markup(content_string)
 
@@ -129,10 +151,9 @@ def parse_page_metas(page, current_id=None):
     data['priority'] = page['priority']
     data['status'] = page['status']
     data['date'] = page['date']
-    data['value'] = page['value']
+    data['price'] = page['price']
     data['tags'] = page['tags']
     data['terms'] = page['terms']
-    data['price'] = page['price']
     data['updated'] = page['updated']
     data['creation'] = page['creation']
     data['excerpt'] = gen_file_excerpt(page['content'])

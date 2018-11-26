@@ -22,16 +22,6 @@ def after_load_content(path, file):
     return
 
 
-def before_404_load_content(path):
-    print "before 404 load content"
-    return
-
-
-def after_404_load_content(path, file):
-    print "after 404 load content"
-    return
-
-
 def before_parse_content(content):
     print "before parse content"
     return
