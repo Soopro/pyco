@@ -210,26 +210,27 @@ def helper_wrap_menu(app, base_url=u''):
         for item in menu:
             link = item.get('link', '')
             if link:
-                # url
                 if url_validator(link):
+                    # url
                     item['url'] = link
-                else:
-                    item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
-                # path
-                if url_validator(link):
+
+                    # path
                     if link.startswith(base_url):
-                        _path = link.replace(base_url, '')
+                        _path = link.replace(base_url, '').strip('/')
                         item['path'] = u'/{}'.format(_path)
                     else:
                         item['path'] = u''
-                elif not link.startswith('/'):
-                    item['path'] = u'/{}'.format(link)
-                else:
-                    item['path'] = link
-                # hash
-                if url_validator(link):
+
+                    # hash
                     item['hash'] = u''
                 else:
+                    # url
+                    item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
+
+                    # path
+                    item['path'] = u'/{}'.format(link.strip('/'))
+
+                    # hash
                     _relpath = re.sub(r'^[/#]*', u'', link).strip()
                     item['hash'] = u'#{}'.format(_relpath)
             else:
