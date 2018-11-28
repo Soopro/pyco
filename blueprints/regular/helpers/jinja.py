@@ -14,7 +14,8 @@ from utils.misc import (sortedby,
                         get_url_params,
                         add_url_params,
                         match_cond,
-                        convert_price)
+                        convert_price,
+                        chunks)
 
 
 # filters
@@ -267,7 +268,7 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
 
 def glue(args=None, url=None, clarify=False, unique=True):
     """return a url with added args.
-    relative_path_args = glue(\{'key': 'value'\})
+    relative_path_args = glue({'key': 'value'})
     """
     if not url:
         url = g.request_url or request.url
@@ -276,10 +277,10 @@ def glue(args=None, url=None, clarify=False, unique=True):
     return add_url_params(url, args, unique=unique)
 
 
-def timemachine(raw_list, filed='date', precision='month',
+def timemachine(raw_list, field='date', precision='month',
                 time_format='%Y-%m-%d', reverse=True):
     """return list of pages grouped by datetime.
-    sorted_pages = timemachine(pages, filed='date', precision='month',
+    sorted_pages = timemachine(pages, field='date', precision='month',
                                time_format='%Y-%m-%d',reverse=True)
     """
     get_group_key = {
@@ -305,8 +306,8 @@ def timemachine(raw_list, filed='date', precision='month',
         except Exception:
             raise ValueError('invalid precision, precision must be str.')
 
-    pages = sorted(filter(lambda x: x.get(filed), raw_list),
-                   key=lambda x: x[filed],
+    pages = sorted(filter(lambda x: x.get(field), raw_list),
+                   key=lambda x: x[field],
                    reverse=reverse)
 
     # iterator version
@@ -314,8 +315,15 @@ def timemachine(raw_list, filed='date', precision='month',
 
     # list version
     ret = []
-    raw_group = groupby(pages, key=lambda x: parse_datetime(x.get(filed)))
+    raw_group = groupby(pages, key=lambda x: parse_datetime(x.get(field)))
     for date, group in raw_group:
-        ret.append((date, [x for x in group]))
+        ret.append({
+            'date': date,
+            'contents': [x for x in group]
+        })
 
     return ret
+
+
+def stapler(raw_list, group_size=12):
+    return list(chunks(raw_list, group_size=12))

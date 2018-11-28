@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from werkzeug.datastructures import ImmutableDict
 from werkzeug.utils import secure_filename
 from slugify import slugify
 from datetime import datetime
@@ -450,3 +449,9 @@ def convert_price(amount, use_currency=False, symbol=u'', fraction_size=2):
     except Exception:
         price = None
     return u'{}{}'.format(symbol, price)
+
+
+# chunks
+def chunks(raw_list, group_size=12):
+    for i in range(0, len(raw_list), max(group_size, 1)):
+        yield raw_list[i:i + group_size]
