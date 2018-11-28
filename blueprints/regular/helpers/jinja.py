@@ -325,5 +325,10 @@ def timemachine(raw_list, field='date', precision='month',
     return ret
 
 
-def stapler(raw_list, group_size=12):
-    return list(chunks(raw_list, group_size=12))
+def stapler(raw_list, group_size=12, fill_up=False):
+    groups = list(chunks(raw_list, group_size))
+    if fill_up:
+        empty_count = group_size - len(groups[-1])
+        if empty_count > 0:
+            groups[-1] += [None for x in range(empty_count)]
+    return groups
