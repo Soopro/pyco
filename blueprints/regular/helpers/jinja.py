@@ -19,7 +19,7 @@ from utils.misc import (sortedby,
 
 
 # filters
-def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
+def filter_thumbnail(pic_url, preset_name=u'default'):
     if not isinstance(pic_url, basestring) or \
        not pic_url.startswith(g.uploads_url):
         return pic_url
@@ -30,7 +30,7 @@ def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
         'favicon',
         'icon')
 
-    suffix = preset_name if preset_name in presets else presets[0]
+    preset = preset_name if preset_name in presets else presets[0]
 
     try:
         _ext = os.path.splitext(pic_url.split('?', 1)[0])[1][1:].lower()
@@ -38,7 +38,7 @@ def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
         _ext = None
     if _ext in current_app.config['IMAGE_MEDIA_EXTS']:
         pair = '&' if '?' in pic_url else '?'
-        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
+        pic_url = '{}{}thumbnail={}'.format(pic_url, pair, preset)
     return pic_url
 
 
