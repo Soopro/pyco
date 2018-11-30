@@ -23,13 +23,22 @@ def filter_thumbnail(pic_url, preset_name=u'thumbnail'):
     if not isinstance(pic_url, basestring) or \
        not pic_url.startswith(g.uploads_url):
         return pic_url
+
+    presets = (
+        'default',
+        'retina',
+        'favicon',
+        'icon')
+
+    suffix = preset_name if preset_name in presets else presets[0]
+
     try:
         _ext = os.path.splitext(pic_url.split('?', 1)[0])[1][1:].lower()
     except Exception:
         _ext = None
     if _ext in current_app.config['IMAGE_MEDIA_EXTS']:
         pair = '&' if '?' in pic_url else '?'
-        pic_url = '{}{}{}'.format(pic_url, pair, preset_name)
+        pic_url = '{}{}{}'.format(pic_url, pair, suffix)
     return pic_url
 
 
