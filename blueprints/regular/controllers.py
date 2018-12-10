@@ -218,7 +218,7 @@ def _check_query_limit(key, limit):
     return limit - g.query_map[key]
 
 
-def _query_contents(content_type=None, attrs=[], term=None,
+def _query_contents(content_type=None, attrs=[], term=None, tag=None,
                     paged=0, perpage=0, sortby=None, with_content=False):
     _check_query_limit('_query_contents', 3)
 
@@ -247,6 +247,7 @@ def _query_contents(content_type=None, attrs=[], term=None,
     results, total_count = query_by_files(attrs=attrs,
                                           content_type=content_type,
                                           term=term,
+                                          tag=tag,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)

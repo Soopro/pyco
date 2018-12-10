@@ -143,7 +143,8 @@ def query_view_contents(app_id):
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
     with_content = get_param('with_content', bool, default=False)
-    term = get_param('term', dict)
+    term = get_param('term')
+    tag = get_param('tag')
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -165,6 +166,7 @@ def query_view_contents(app_id):
     results, total_count = query_by_files(attrs=attrs,
                                           content_type=content_type,
                                           term=term,
+                                          tag=tag,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)
@@ -190,6 +192,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
     sortby = get_args('sortby', default='', multiple=True)
     priority = get_args('priority', default=True)
     term = get_args('term')
+    tag = get_args('tag')
 
     priority = bool(priority)
 
@@ -215,6 +218,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
     # query content files
     results, total_count = query_by_files(content_type=type_slug,
                                           term=term,
+                                          tag=tag,
                                           offset=offset,
                                           limit=limit,
                                           sortby=sortby)

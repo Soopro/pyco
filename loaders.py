@@ -113,7 +113,7 @@ def load_all_files(app, curr_app):
         except Exception as e:
             e.current_file = f
             raise e
-        file_data = {
+        data = {
             '_id': _auto_id(app.config, f),
             'app_id': curr_app['_id'],
             'slug': _auto_page_slug(app.config, f),
@@ -122,7 +122,8 @@ def load_all_files(app, curr_app):
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
             'price': meta.pop('price', 0),
-            'tags': meta.pop('tags', []),
+            'tags': [tag for tag in meta.pop('tags', [])
+                     if isinstance(tag, basestring)],
             'terms': meta.pop('terms', []),
             'price': meta.pop('price', 0),
             'redirect': meta.pop('redirect', u''),
@@ -133,9 +134,11 @@ def load_all_files(app, curr_app):
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
         }
+        # attach tags for query
+        data['_tags'] = [tag.strip().lower() for tag in data['tags']]
         # attach keywords for search
-        file_data['keywords'] = [file_data['slug']] + file_data['tags']
-        data_list.append(file_data)
+        data['_keywords'] = [data['slug']] + data['_tags']
+        data_list.append(data)
 
     return data_list
 

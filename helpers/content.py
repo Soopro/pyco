@@ -13,13 +13,14 @@ from utils.misc import (parse_int,
                         now)
 
 
-def query_by_files(content_type=None, attrs=None, term=None,
+def query_by_files(content_type=None, attrs=None, term=None, tag=None,
                    offset=0, limit=1, sortby=None):
     # query
     files = _query(files=g.files,
                    content_type=content_type,
                    attrs=attrs,
-                   term=term)
+                   term=term,
+                   tag=tag)
 
     total_count = len(files)
 
@@ -80,7 +81,7 @@ def search_by_files(keywords, content_type=None,
             keywords = []
 
         def _search_match(keyword, f):
-            if keyword in f['keywords']:
+            if keyword in f['_keywords']:
                 return True
             return False
 
@@ -368,7 +369,7 @@ def helper_wrap_languages(languages, locale):
 
 
 # helpers
-def _query(files, content_type=None, attrs=None, term=None):
+def _query(files, content_type=None, attrs=None, term=None, tag=None):
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
@@ -409,14 +410,12 @@ def _query(files, content_type=None, attrs=None, term=None):
                  if match_cond(f, attr_key, attr_value, force, opposite)]
 
     if term:
-        output = []
-        for file in files:
-            if term in file['terms']:
-                output.append(file)
-    else:
-        output = files
+        files = [file for file in files if term in file['terms']]
 
-    return output
+    if tag:
+        files = [file for file in files if tag in file['_tags']]
+
+    return files
 
 
 def _sorting(files, sort):
