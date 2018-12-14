@@ -15,7 +15,8 @@ from utils.misc import (sortedby,
                         add_url_params,
                         match_cond,
                         convert_price,
-                        chunks)
+                        chunks,
+                        now)
 
 
 # filters
@@ -40,6 +41,12 @@ def filter_thumbnail(pic_url, preset_name=u'default'):
         pair = '&' if '?' in pic_url else '?'
         pic_url = '{}{}thumbnail={}'.format(pic_url, pair, preset)
     return pic_url
+
+
+def filter_timestamp(url, updated=None, key=u't'):
+    if updated is None:
+        updated = now()
+    return add_url_params(url, {key: updated}, unique=True)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):

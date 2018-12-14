@@ -71,9 +71,57 @@ def now(dig=10):
         return time.time()
 
 
+def add_url_params(url, input_params, concat=True, unique=True):
+    if isinstance(input_params, dict):
+        add_params = []
+        for k, v in input_params.iteritems():
+            if isinstance(v, list):
+                for i in v:
+                    add_params.append((k, i))
+            else:
+                add_params.append((k, v))
+    elif isinstance(input_params, basestring):
+        add_params = [(input_params, input_params)]
+    else:
+        return u''
+
+    def _safe_out(input):
+        if isinstance(input, unicode):
+            return input.encode('utf-8')
+        else:
+            return input
+
+    add_params = [(_safe_out(p[0]), _safe_out(p[1])) for p in add_params]
+
+    result = urlparse.urlparse(url)
+    params = urlparse.parse_qsl(result.query)
+
+    if concat:
+        params = params + add_params
+    else:
+        params = add_params
+
+    if unique:
+        params = dict(params)
+
+    result = list(result)
+    result[4] = urllib.urlencode(params)
+
+    return urlparse.urlunparse(result)
+
+
 def get_url_params(url, unique=True):
-    url_parts = list(urlparse.urlparse(url))
-    url_params = urlparse.parse_qsl(url_parts[4])
+    result = urlparse.urlparse(url)
+    url_params = urlparse.parse_qsl(result.query)
+
+    def _safe_in(input):
+        if isinstance(input, str):
+            return input.decode('utf-8')
+        else:
+            return input
+
+    url_params = [(_safe_in(p[0]), _safe_in(p[1])) for p in url_params]
+
     if unique:
         params = dict(url_params)
     else:
@@ -88,36 +136,6 @@ def get_url_params(url, unique=True):
             else:
                 params[k] = v
     return params
-
-
-def add_url_params(url, new_params, concat=True, unique=True):
-    def _dict2params(param_dict):
-        out_params = []
-        for k, v in param_dict.iteritems():
-            if isinstance(v, list):
-                for i in v:
-                    out_params.append((k, i))
-            else:
-                out_params.append((k, v))
-        return out_params
-
-    if isinstance(new_params, dict):
-        new_params = _dict2params(new_params)
-    elif isinstance(new_params, basestring):
-        new_params = [(new_params, new_params)]
-    elif not isinstance(new_params, list):
-        return None
-
-    url_parts = list(urlparse.urlparse(url))
-    params = urlparse.parse_qsl(url_parts[4])
-    params = new_params if not concat else params + new_params
-
-    if unique:
-        params = dict(params)
-
-    url_parts[4] = urllib.urlencode(params)
-
-    return urlparse.urlunparse(url_parts)
 
 
 def safe_regex_str(val):

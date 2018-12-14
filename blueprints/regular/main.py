@@ -8,6 +8,7 @@ import os
 from utils.misc import route_inject
 
 from .helpers.jinja import (filter_thumbnail,
+                            filter_timestamp,
                             filter_date_formatted,
                             filter_background_image,
                             filter_column_offset,
@@ -27,6 +28,7 @@ route_inject(blueprint, urlpatterns)
 @blueprint.before_app_first_request
 def before_first_request():
     current_app.jinja_env.filters['thumbnail'] = filter_thumbnail
+    current_app.jinja_env.filters['t'] = filter_timestamp
     current_app.jinja_env.filters['url'] = filter_url
     current_app.jinja_env.filters['path'] = filter_path
     current_app.jinja_env.filters['active'] = filter_active
