@@ -71,70 +71,63 @@ def now(dig=10):
         return time.time()
 
 
-def add_url_params(url, input_params, concat=True, unique=True):
+def add_url_params(url, input_params, unique=True, concat=True):
+    if isinstance(url, str):
+        url = url.decode('utf-8')
+
     if isinstance(input_params, dict):
-        add_params = []
-        for k, v in input_params.iteritems():
-            if isinstance(v, list):
-                for i in v:
-                    add_params.append((k, i))
-            else:
-                add_params.append((k, v))
+        # make sure all value as list
+        input_params = {k: v if isinstance(v, list) else [v]
+                        for k, v in input_params.iteritems()}
     elif isinstance(input_params, basestring):
-        add_params = [(input_params, input_params)]
+        input_params = {input_params: [u'']}
     else:
         return u''
 
-    def _safe_out(input):
-        if isinstance(input, unicode):
-            return input.encode('utf-8')
-        else:
-            return input
-
-    add_params = [(_safe_out(p[0]), _safe_out(p[1])) for p in add_params]
-
     result = urlparse.urlparse(url)
-    params = urlparse.parse_qsl(result.query)
+    params = urlparse.parse_qs(result.query, keep_blank_values=True)
 
     if concat:
-        params = params + add_params
+        for k, v in input_params.iteritems():
+            if k in params:
+                if isinstance(params[k], list):
+                    params[k] += v
+                else:
+                    params[k] = [params[k]] + v
+            else:
+                params[k] = v
     else:
-        params = add_params
+        params = input_params
 
     if unique:
-        params = dict(params)
+        params = {k: v[-1] if unique else v for k, v in params.iteritems()}
+
+    for k, v in params.iteritems():
+        if isinstance(v, unicode):
+            v = v.encode('utf-8')
+        elif isinstance(v, list):
+            v = [i.encode('utf-8') if isinstance(i, unicode) else i
+                 for i in v]
+        params[k] = v
 
     result = list(result)
-    result[4] = urllib.urlencode(params)
+    try:
+        params_str = urllib.urlencode(params, True)
+        result[4] = params_str.replace('=&', '&').strip('=')
+    except Exception as e:
+        result[4] = str(e)
 
     return urlparse.urlunparse(result)
 
 
 def get_url_params(url, unique=True):
+    if isinstance(url, str):
+        url = url.decode('utf-8')
+
     result = urlparse.urlparse(url)
-    url_params = urlparse.parse_qsl(result.query)
-
-    def _safe_in(input):
-        if isinstance(input, str):
-            return input.decode('utf-8')
-        else:
-            return input
-
-    url_params = [(_safe_in(p[0]), _safe_in(p[1])) for p in url_params]
-
+    params = urlparse.parse_qs(result.query, keep_blank_values=True)
     if unique:
-        params = dict(url_params)
-    else:
-        params = {}
-        for param in url_params:
-            k = param[0]
-            v = param[1]
-            if k in params:
-                if not isinstance(params[k], list):
-                    params[k] = [params[k]]
-                params[k].append(v)
-            else:
-                params[k] = v
+        params = {k: v[-1] for k, v in params.iteritems()}
     return params
 
 
