@@ -1,0 +1,8 @@
+@media screen {
+  @font-face {
+    font-family: "SampleFont";
+    src: url("SampleFont.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+  }
+}

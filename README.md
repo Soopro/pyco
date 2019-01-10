@@ -66,9 +66,7 @@ You can modify the `config.py` to change base settings.
 
 * `UPLOADS_URL`: **[ str ]** uploads url of Site. default is `BASE_URL/UPLOADS_DIR`.
 
-* `LIB_URL`: **[ str ]** lib url of Site. default is `UPLOADS_URL/lib`. Change it to online url if you need.
-
-* `FONT_URL`: **[ str ]** font url of Site. default is `UPLOADS_URL/font`. Change it to online url if you need.
+* `RES_URL`: **[ str ]** res url of Site. default is `UPLOADS_URL/res`. Change it to online url if you need.
 
 * `LANGUAGES_DIR`: **[ str ]** The language dir in side each theme will be `"languages"`.
 
