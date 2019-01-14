@@ -92,6 +92,7 @@ def parse_filepath(filepath):
         else:
             paged = None
 
+    if filepath:
         path_pairs = filepath.split('/')
         if len(path_pairs) > 2:
             return {}
