@@ -5,6 +5,7 @@ from flask import current_app, request, g
 from itertools import groupby
 import os
 import datetime
+import urlparse
 
 from utils.validators import url_validator
 from utils.model import make_dotted_dict
@@ -285,12 +286,32 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
 def glue(args=None, url=None, clarify=False, unique=True):
     """return a url with added args.
     relative_path_args = glue({'key': 'value'})
+    `category` and `page` is reserved, those args will process as paths.
     """
+    term = args.pop('category', None)
+    paged = args.pop('page', None)
+
     if not url:
-        url = g.request_url or request.url
-    if clarify:
-        url = url.split('?')[0].split('#')[0]
-    return add_url_params(url, args, unique=unique)
+        url = g.curr_base_url if term else (g.request_url or request.url)
+
+    if term:
+        url = u'{}/category/{}'.format(url, term)
+
+    result = urlparse.urlparse(url)
+    url = u'{r.scheme}://{r.netloc}{r.path}'.format(r=result).strip('/')
+    url_query = u'?{r.query}'.format(r=result) if result.query else u''
+    url_hash = u'#{r.fragment}'.format(r=result) if result.fragment else u''
+
+    if paged:
+        url = u'{}/page/{}'.format(url, parse_int(paged, 1, 1))
+
+    if not clarify:
+        url = u'{}{}{}'.format(url, url_query, url_hash)
+
+    if args:
+        return add_url_params(url, args, unique=unique)
+    else:
+        return url
 
 
 def timemachine(raw_list, field='date', precision='month',

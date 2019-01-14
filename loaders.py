@@ -70,6 +70,8 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('USE_MARKDOWN', False)
     app.config.setdefault('MARKDOWN_EXTENSIONS', [])
 
+    app.config.setdefault('SYS_ICON_LIST', [])
+
 
 def load_plugins(app):
     plugins = app.config.get('PLUGINS')

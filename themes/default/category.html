@@ -36,7 +36,7 @@
       <div class="row">
         {% for term in category.terms %}
         <div class="col-md-6">
-          <a href="{{glue({'term': term.key})}}"
+          <a href="{{glue({'category': term.key})}}"
              style="display:block; background: #eee;">
             <img style="max-width: 100px;"
                  src="{{term.meta.figure or g.default_img}}"
@@ -82,13 +82,13 @@
       {% if booklet.total_pages > 1 %}
       <ul class="pager">
         {% if booklet.has_prev %}
-        <a href="{{glue({'paged':booklet.paged-1})}}">
+        <a href="{{glue({'category':args.term, 'page':booklet.paged-1})}}">
           {{_('Previous page')}}
         </a>
         {% endif %}
         &nbsp;/&nbsp;
         {% if booklet.has_next %}
-        <a href="{{glue({'paged':booklet.paged+1})}}">
+        <a href="{{glue({'category':args.term, 'page':booklet.paged+1})}}">
           {{_('Next page')}}
         </a>
         {% endif %}

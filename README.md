@@ -88,6 +88,8 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_EXCERPT_ELLIPSIS`: **[ str ]** Excerpt ellipsis will be `"&hellip;"` aka `...`.
 
+* `DEFAULT_CONTENT_TYPE`: **[ str ]** default content type as `"page"`.
+
 * `DEFAULT_INDEX_SLUG`: **[ str ]** Index page slug default as `"index"`.
 
 * `DEFAULT_404_SLUG`: **[ str ]** 404 page slug default as `"error-404"`.
@@ -104,13 +106,13 @@ You can modify the `config.py` to change base settings.
 
 * `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
 
-* `DEFAULT_SEARCH_ATTRS`: **[ list ]** Define default search attributes, if given the attribute key is not exist in major fields, it will switch into `meta` to do the searching. Default is `['title']`.
-
 * `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'price', 'updated')`.
 
 * `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'parent', 'priority', 'template', 'date', 'price', 'updated', 'creation')`.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
+
+* `SYS_ICON_LIST`: **[ set ]** Define system icon list `('favicon.ico', 'apple-touch-icon-precomposed.png', 'apple-touch-icon.png')`.
 
 * `PLUGINS`: **[ list ]** all plugins packpage name here.
 
