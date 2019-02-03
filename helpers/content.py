@@ -373,9 +373,10 @@ def _query(files, content_type=None, attrs=None, term=None, tag=None):
 
     if content_type:
         files = [f for f in files if f['content_type'] == content_type and
-                 f['slug'] not in RESERVED_SLUGS]
+                 f['slug'] not in RESERVED_SLUGS and f['status']]
     else:
-        files = [f for f in files if f['slug'] not in RESERVED_SLUGS]
+        files = [f for f in files if f['slug'] not in RESERVED_SLUGS and
+                 f['status']]
 
     if isinstance(attrs, (basestring, dict)):
         attrs = [attrs]

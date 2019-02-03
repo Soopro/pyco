@@ -84,9 +84,7 @@ You can modify the `config.py` to change base settings.
 
 * `DEFAULT_DATE_FORMAT`: **[ str ]** Default input date format is `"%Y-%m-%d"`. This format will not effect while output Date format.
 
-* `DEFAULT_EXCERPT_LENGTH`: **[ str ]** Excerpt length will be `162`.
-
-* `DEFAULT_EXCERPT_ELLIPSIS`: **[ str ]** Excerpt ellipsis will be `"&hellip;"` aka `...`.
+* `DEFAULT_EXCERPT_LENGTH`: **[ str ]** Excerpt length will be `600`.
 
 * `DEFAULT_CONTENT_TYPE`: **[ str ]** default content type as `"page"`.
 
