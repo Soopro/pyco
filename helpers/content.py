@@ -56,7 +56,7 @@ def query_segments(app, type_slug, parent_slug):
 
     if tmpls:
         segments = [f for f in g.files if f['template'] in tmpls and
-                    f['parent'] in parent_slugs and
+                    f['parent'] in parent_slugs and f['status'] and
                     f['content_type'] == type_slug]
         segments = sortedby(segments, [('priority', 1), sortby])[:60]
     else:
@@ -82,7 +82,7 @@ def search_by_files(keywords, content_type=None,
             keywords = []
 
         def _search_match(keyword, f):
-            if keyword in f['_keywords']:
+            if keyword in f['_keywords'] and f['status']:
                 return True
             return False
 
