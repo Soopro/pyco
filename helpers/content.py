@@ -10,6 +10,7 @@ from utils.misc import (parse_int,
                         match_cond,
                         sortedby,
                         parse_sortby,
+                        gen_excerpt,
                         now)
 
 
@@ -125,7 +126,7 @@ def find_404_content_file():
         'priority': 0,
         'date': u'',
         'content': u'',
-        'price': 0,
+        'excerpt': u'',
         'tags': [],
         'terms': [],
         'updated': now(),
@@ -152,13 +153,12 @@ def parse_page_metas(page, current_id=None):
     data['priority'] = page['priority']
     data['status'] = page['status']
     data['date'] = page['date']
-    data['price'] = page['price']
     data['tags'] = page['tags']
     data['terms'] = page['terms']
     data['updated'] = page['updated']
     data['creation'] = page['creation']
-    data['excerpt'] = gen_file_excerpt(page['content'])
-    data['description'] = meta.get('description') or data['excerpt']
+    data['excerpt'] = page['excerpt']
+    data['description'] = meta.get('description', u'')
     data['url'] = gen_page_url(page)
     data['path'] = gen_page_path(page)
 
@@ -174,10 +174,8 @@ def parse_page_metas(page, current_id=None):
     return data
 
 
-def gen_file_excerpt(content, excerpt_length=144):
-    excerpt_ellipsis = u'&hellip;'
-    excerpt = re.sub(r'<.*?>', '', content).strip()
-    return u'{}{}'.format(excerpt[0:excerpt_length], excerpt_ellipsis)
+def gen_file_excerpt(content, excerpt_length=600):
+    return gen_excerpt(content, excerpt_length)
 
 
 def gen_page_path(data, static_type='page', index='index'):

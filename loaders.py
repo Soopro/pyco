@@ -1,7 +1,7 @@
 # coding=utf8
 from __future__ import absolute_import
 
-from utils.misc import process_slug
+from utils.misc import process_slug, gen_excerpt
 
 from types import ModuleType
 import os
@@ -45,7 +45,7 @@ def load_config(app, config_name='config.py'):
 
     app.config.setdefault('DEFAULT_TEMPLATE', 'index')
     app.config.setdefault('DEFAULT_DATE_FORMAT', '%Y-%m-%d')
-    app.config.setdefault('DEFAULT_EXCERPT_LENGTH', 162)
+    app.config.setdefault('DEFAULT_EXCERPT_LENGTH', 600)
     app.config.setdefault('DEFAULT_EXCERPT_ELLIPSIS', '&hellip;')
 
     app.config.setdefault('DEFAULT_INDEX_SLUG', 'index')
@@ -57,10 +57,10 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('RESERVED_SLUGS',
                           ['index', 'search', 'category', 'tag'])
     app.config.setdefault('SORTABLE_FIELD_KEYS',
-                          ('date', 'price', 'updated'))
+                          ('date', 'updated'))
     app.config.setdefault('QUERYABLE_FIELD_KEYS',
                           ('slug', 'parent', 'priority', 'template', 'tags',
-                           'date', 'price', 'updated', 'creation'))
+                           'date', 'updated', 'creation'))
 
     app.config.setdefault('IMAGE_MEDIA_EXTS',
                           ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))
@@ -122,11 +122,9 @@ def load_all_files(app, curr_app):
             'priority': meta.pop('priority', 0),
             'parent': meta.pop('parent', u''),
             'date': meta.pop('date', u''),
-            'price': meta.pop('price', 0),
             'tags': [tag for tag in meta.pop('tags', [])
                      if isinstance(tag, basestring)],
             'terms': meta.pop('terms', []),
-            'price': meta.pop('price', 0),
             'redirect': meta.pop('redirect', u''),
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
@@ -135,6 +133,8 @@ def load_all_files(app, curr_app):
             'updated': _auto_file_updated(f),
             'creation': _auto_file_creation(f),
         }
+        # attach excerpt
+        data['excerpt'] = _convert_excerpt(app.config, data['content'])
         # attach tags for query
         data['_tags'] = [tag.strip().lower() for tag in data['tags']]
         # attach keywords for search
@@ -200,6 +200,10 @@ def _convert_content(config, content_string):
         return markdown.markdown(content_string, markdown_exts)
     else:
         return content_string
+
+
+def _convert_excerpt(config, content):
+    return gen_excerpt(content, config['DEFAULT_EXCERPT_LENGTH'])
 
 
 def _shortcode(config, text):

@@ -131,6 +131,12 @@ def get_url_params(url, unique=True):
     return params
 
 
+def gen_excerpt(raw_text, excerpt_length, ellipsis_mark=u'&hellip;'):
+    excerpt = re.sub(r'<.*?>', '', raw_text).strip()
+    excerpt_ellipsis = ellipsis_mark if len(excerpt) > excerpt_length else u''
+    return u'{}{}'.format(excerpt[:excerpt_length], excerpt_ellipsis)
+
+
 def safe_regex_str(val):
     if isinstance(val, str):
         val = val.decode('utf-8')
@@ -236,7 +242,7 @@ def hmac_sha(key, msg, digestmod=None, output=True):
         return sha
 
 
-def format_date(date, to_format, input_datefmt='%Y-%m-%d'):
+def parse_dateformat(date, to_format, input_datefmt='%Y-%m-%d'):
     if not to_format:
         return date
     if isinstance(date, basestring):
@@ -372,24 +378,6 @@ def match_cond(target, cond_key, cond_value, force=True, opposite=False):
             matched = cond_value == target_value
 
     return matched != opposite
-
-
-def format_tags(tags, limit=60, upper=False):
-    def _styl(text):
-        if upper:
-            return text.upper()
-        else:
-            return text.lower()
-    tag_list = []
-    tag_set = set()
-    for tag in tags[:limit]:
-        if not isinstance(tag, basestring):
-            continue
-        _tag = _styl(tag)
-        if _tag not in tag_set:
-            tag_set.add(_tag)
-            tag_list.append(_tag)
-    return tag_list
 
 
 # mimetypes

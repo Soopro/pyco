@@ -3,7 +3,7 @@ Priority: 1
 Status: 1
 Template: post
 Title: Post @1
-Description: Description text
+Description: ''
 Nextpage:
   link: '/post/post2'
 Featured_img:

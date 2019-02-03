@@ -11,7 +11,7 @@ from utils.validators import url_validator
 from utils.model import make_dotted_dict
 from utils.misc import (sortedby,
                         parse_int,
-                        format_date,
+                        parse_dateformat,
                         get_url_params,
                         add_url_params,
                         match_cond,
@@ -131,7 +131,7 @@ def filter_date_formatted(date, to_format=None):
         lang = None
 
     to_format = to_format or formats.get(locale) or formats.get(lang)
-    return format_date(date, to_format)
+    return parse_dateformat(date, to_format)
 
 
 def filter_background_image(src):

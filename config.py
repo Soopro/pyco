@@ -31,7 +31,7 @@ THEME_CONF_FILE = 'config.json'
 DEFAULT_TEMPLATE = 'index'
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 
-DEFAULT_EXCERPT_LENGTH = 162
+DEFAULT_EXCERPT_LENGTH = 600
 DEFAULT_EXCERPT_ELLIPSIS = '&hellip;'
 
 DEFAULT_CONTENT_TYPE = 'page'
@@ -54,9 +54,9 @@ MARKDOWN_EXTENSIONS = ['gfm']
 
 MAXIMUM_QUERY = 60
 
-SORTABLE_FIELD_KEYS = ('date', 'price', 'updated')
+SORTABLE_FIELD_KEYS = ('date', 'updated')
 QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
-                        'date', 'price', 'updated', 'creation')
+                        'date', 'updated', 'creation')
 IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
 
 SYS_ICON_LIST = (

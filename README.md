@@ -106,9 +106,9 @@ You can modify the `config.py` to change base settings.
 
 * `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
 
-* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'price', 'updated')`.
+* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'updated')`.
 
-* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'parent', 'priority', 'template', 'date', 'price', 'updated', 'creation')`.
+* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'parent', 'priority', 'template', 'date', 'updated', 'creation')`.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
 
