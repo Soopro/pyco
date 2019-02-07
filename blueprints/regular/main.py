@@ -57,16 +57,11 @@ def before_request():
         # for browser default icons
         return make_response('', 204)
 
-    # view path
-    filepath = request.view_args.pop('filepath', None)
-    path = parse_filepath(filepath)
-    if not path:
-        abort(404)
-        return
-
-    request.view_args.setdefault('content_type_slug', path['content_type'])
-    request.view_args.setdefault('file_slug', path['slug'])
-    request.view_args.setdefault('args', path['args'])
+    # view args
+    request.view_args.setdefault('content_type_slug',
+                                 current_app.config['DEFAULT_CONTENT_TYPE'])
+    request.view_args.setdefault('file_slug',
+                                 current_app.config['DEFAULT_INDEX_SLUG'])
 
 
 @blueprint.errorhandler(Exception)
@@ -75,51 +70,3 @@ def errorhandler(err):
     err_html_msg = '<h1>{}</h1><p>{}</p>'.format(repr(err), str(err))
     current_app.logger.error(err_msg)
     return make_response(err_html_msg, 579)
-
-
-# helpers
-def parse_filepath(filepath):
-    default_content_type = current_app.config['DEFAULT_CONTENT_TYPE']
-    default_file_slug = current_app.config['DEFAULT_INDEX_SLUG']
-    category_slug = current_app.config['DEFAULT_CATEGORY_SLUG']
-
-    if filepath:
-        pattern = r'(?:^page|\/page)\/(\d)$'
-        matched = re.search(pattern, filepath, flags=re.I)
-        if matched:
-            paged = parse_int(matched.group(1))
-            filepath = re.sub(pattern, u'', filepath, flags=re.I)
-        else:
-            paged = None
-
-    if filepath:
-        path_pairs = filepath.split('/')
-        if len(path_pairs) > 2:
-            return {}
-        elif len(path_pairs) == 1:
-            content_type_slug = default_content_type
-            file_slug = path_pairs[0]
-        else:
-            content_type_slug = path_pairs[0]
-            file_slug = path_pairs[1]
-    else:
-        content_type_slug = default_content_type
-        file_slug = default_file_slug
-        paged = None
-
-    # category as path
-    if content_type_slug == category_slug:
-        cate_term = file_slug
-        content_type_slug = default_content_type
-        file_slug = category_slug
-    else:
-        cate_term = None
-
-    return {
-        'content_type': content_type_slug,
-        'slug': file_slug,
-        'args': {
-            'paged': paged,
-            'term': cate_term
-        }
-    }

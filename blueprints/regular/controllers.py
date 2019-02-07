@@ -34,7 +34,7 @@ from .helpers.jinja import (saltshaker,
                             stapler)
 
 
-def rendering(content_type_slug, file_slug, args={}):
+def rendering(content_type_slug, file_slug):
     config = current_app.config
     status_code = 200
 
@@ -126,12 +126,11 @@ def rendering(content_type_slug, file_slug, args={}):
     view_ctx['visit'] = helper_get_statistic(curr_app['_id'],
                                              content_file['_id'])
     # request
-    args.update(parse_args())
     view_ctx['request'] = {
         'remote_addr': g.request_remote_addr,
         'path': g.request_path,
         'url': g.request_url,
-        'args': args,
+        'args': parse_args(),
     }
 
     # query contents

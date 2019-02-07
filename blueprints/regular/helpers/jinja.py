@@ -286,32 +286,29 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
 def glue(args=None, url=None, clarify=False, unique=True):
     """return a url with added args.
     relative_path_args = glue({'key': 'value'})
-    `category` and `page` is reserved, those args will process as paths.
+    `category` is alias for term.
+    `page` is alias for paged.
     """
-    term = args.pop('category', None)
-    paged = args.pop('page', None)
+    if isinstance(args, dict):
+        args['term'] = args.pop('category', args.get('term', None))
+        args['paged'] = args.pop('page', args.get('paged', None))
+    else:
+        args = {}
+
+    args = {k: v for k, v in args.iteritems() if v is not None}
 
     if not url:
-        url = g.curr_base_url if term else (g.request_url or request.url)
-
-    if term:
-        url = u'{}/category/{}'.format(url, term)
+        url = g.request_url
 
     result = urlparse.urlparse(url)
     url = u'{r.scheme}://{r.netloc}{r.path}'.format(r=result).strip('/')
     url_query = u'?{r.query}'.format(r=result) if result.query else u''
     url_hash = u'#{r.fragment}'.format(r=result) if result.fragment else u''
 
-    if paged:
-        url = u'{}/page/{}'.format(url, parse_int(paged, 1, 1))
-
     if not clarify:
         url = u'{}{}{}'.format(url, url_query, url_hash)
 
-    if args:
-        return add_url_params(url, args, unique=unique)
-    else:
-        return url
+    return add_url_params(url, args, unique=unique)
 
 
 def timemachine(raw_list, field='date', precision='month',
