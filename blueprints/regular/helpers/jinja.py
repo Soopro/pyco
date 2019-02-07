@@ -300,13 +300,9 @@ def glue(args=None, url=None, clarify=False, unique=True):
     if not url:
         url = g.request_url
 
-    result = urlparse.urlparse(url)
-    url = u'{r.scheme}://{r.netloc}{r.path}'.format(r=result).strip('/')
-    url_query = u'?{r.query}'.format(r=result) if result.query else u''
-    url_hash = u'#{r.fragment}'.format(r=result) if result.fragment else u''
-
-    if not clarify:
-        url = u'{}{}{}'.format(url, url_query, url_hash)
+    if clarify:
+        result = urlparse.urlparse(url)
+        url = u'{r.scheme}://{r.netloc}{r.path}'.format(r=result)
 
     return add_url_params(url, args, unique=unique)
 
