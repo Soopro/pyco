@@ -290,8 +290,9 @@ def glue(args=None, url=None, clarify=False, unique=True):
     `page` is alias for paged.
     """
     if isinstance(args, dict):
-        args['term'] = args.pop('category', args.get('term', None))
-        args['paged'] = args.pop('page', args.get('paged', None))
+        args['term'] = args.pop('category', args.get('term')) or None
+        args['paged'] = args.pop('page', args.get('paged')) or None
+        args = {k: v for k, v in args.iteritems() if v is not None}
     else:
         args = {}
 
