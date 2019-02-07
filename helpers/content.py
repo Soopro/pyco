@@ -231,7 +231,10 @@ def helper_wrap_menu(app, base_url=u''):
 
                     # hash
                     _relpath = re.sub(r'^[/#]*', u'', link).strip()
-                    item['hash'] = u'#{}'.format(_relpath)
+                    if '#' in _relpath or item.get('fixed'):
+                        item['hash'] = u''
+                    else:
+                        item['hash'] = u'#{}'.format(_relpath)
             else:
                 item['url'] = u''
                 item['hash'] = u''
