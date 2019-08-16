@@ -336,6 +336,7 @@ def helper_wrap_slot(app):
             'src': v.get('src', u''),
             'route': v.get('route', u''),
             'scripts': v.get('scripts', u''),
+            'status': v.get('status', True),
         }
     return slots_map
 
