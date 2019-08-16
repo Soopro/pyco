@@ -266,19 +266,6 @@ def helper_wrap_category(app, included_term_keys=None):
     elif not isinstance(included_term_keys, list):
         included_term_keys = []
 
-    category = app['categories']
-
-    return {
-        'name': category.get('name'),
-        'content_types': category.get('content_types', []),
-        'terms': _get_category_terms(category, included_term_keys),
-    }
-
-
-def _get_category_terms(category, included_term_keys=None, nest_output=True):
-    if not category['terms'] or not isinstance(category['terms'], list):
-        return []
-
     def __check_term(term):
         if not term.get('key') or term.get('status') == 0:
             return False
@@ -287,11 +274,29 @@ def _get_category_terms(category, included_term_keys=None, nest_output=True):
         else:
             return True
 
+    category = app['categories']
+    raw_terms = [term for term in category.get('terms', [])
+                 if __check_term(term)]
+    terms = _sort_terms(raw_terms, True)
+    terms_dict = {term['key']: term for term in _sort_terms(raw_terms)}
+
+    return {
+        'name': category.get('name'),
+        'content_types': category.get('content_types', []),
+        'terms': terms,
+        'terms_dict': terms_dict,
+    }
+
+
+def _sort_terms(terms, included_term_keys=None, nest_output=True):
+    if not terms or not isinstance(terms, list):
+        return []
+
     term_list = [{
         'key': term['key'],
         'parent': term.get('parent', u''),
         'meta': term.get('meta', {}),
-    } for term in category['terms'] if __check_term(term)]
+    } for term in terms]
 
     if nest_output:
         output_terms = []
