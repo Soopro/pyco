@@ -286,15 +286,17 @@ def get_view_segments(app_id):
 # helpers
 def _add_cursor(content, index, perpage, paged, total_pages, total_count):
     content['cursor'] = {
-        'num': index + 1,
-        'index': index,
-        'perpage': perpage,
-        'paged': paged,
-        'page_range': [p for p in xrange(1, total_pages + 1)],
-        'total_pages': total_pages,
-        'total_count': total_count,
-        'has_prev': paged > 1,
-        'has_next': paged < total_pages,
+        '_num': index + 1,
+        '_index': index,
+        '_perpage': perpage,
+        '_paged': paged,
+        '_page_range': [p for p in xrange(1, total_pages + 1)],
+        '_total_pages': total_pages,
+        '_total_count': total_count,
+        '_has_prev': paged > 1,
+        '_has_next': paged < total_pages,
+        '_more': paged < total_pages,
+        '_count': total_count,
     }
     return content
 
