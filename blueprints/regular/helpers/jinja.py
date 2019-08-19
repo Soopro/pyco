@@ -89,8 +89,8 @@ def filter_active(menu_item, path, match_nodes=False,
         if path == item.get('path'):
             return True
         elif item.get('path_scope'):
-            path_scope = item.get('path_scope').strip('/')
-            if path.startswith(u'/{}/'.format(path_scope)):
+            path_scope = item.get('path_scope').lstrip('/')
+            if path.startswith(u'/{}'.format(path_scope)):
                 return True
         return False
 
