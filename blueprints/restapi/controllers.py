@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import current_app, g
 import math
@@ -9,9 +8,7 @@ from utils.request import get_param, get_args
 from utils.model import make_dotted_dict
 from utils.misc import parse_int
 
-from helpers.app import (run_hook,
-                         helper_record_statistic,
-                         helper_get_statistic)
+from helpers.app import run_hook
 from helpers.content import (parse_page_metas,
                              query_by_files,
                              query_segments,
@@ -22,18 +19,6 @@ from helpers.content import (parse_page_metas,
                              helper_wrap_category,
                              helper_wrap_menu,
                              helper_wrap_slot)
-
-
-@output_json
-def app_visit(app_id, file_id=None):
-    if app_id == g.curr_app['_id']:
-        helper_record_statistic(app_id, file_id)
-    return helper_get_statistic(app_id, file_id)
-
-
-@output_json
-def app_visit_status(app_id, file_id):
-    return helper_get_statistic(app_id, file_id)
 
 
 @output_json
@@ -59,8 +44,8 @@ def get_view_metas(app_id):
         'site_meta': site_meta,
         'theme_meta': theme_meta,
         'base_url': g.curr_base_url,
-        'theme_url': config.get('THEME_URL', u''),
-        'res_url': config.get('RES_URL', u''),
+        'theme_url': config.get('THEME_URL', ''),
+        'res_url': config.get('RES_URL', ''),
         'lang': locale.split('_')[0],
         'locale': locale,
         'languages': helper_wrap_languages(languages, locale),
@@ -105,7 +90,7 @@ def get_view_tags(app_id, type_slug=None):
 @output_json
 def search_view_contents(app_id):
     keywords = get_param('keywords', list, default=[])
-    content_type = get_param('content_type', unicode, default=None)
+    content_type = get_param('content_type', str, default=None)
     perpage = get_param('perpage', int, default=0)
     paged = get_param('paged', int, default=0)
 
@@ -137,7 +122,7 @@ def search_view_contents(app_id):
 @output_json
 def query_view_contents(app_id):
     attrs = get_param('attrs', list, False, [])
-    content_type = get_param('content_type', unicode, default=u'')
+    content_type = get_param('content_type', str, default='')
     sortby = get_param('sortby', list, False, [])
     perpage = get_param('perpage', int, False, 1)
     paged = get_param('paged', int, False, 0)
@@ -171,7 +156,7 @@ def query_view_contents(app_id):
                                           sortby=sortby)
     pages = []
     for p in results:
-        p_content = p.get('content', u'')
+        p_content = p.get('content', '')
         p = parse_page_metas(p)
         if with_content:
             p['content'] = parse_page_content(p_content)
@@ -185,7 +170,7 @@ def query_view_contents(app_id):
 
 
 @output_json
-def get_view_content_list(app_id, type_slug=u'page'):
+def get_view_content_list(app_id, type_slug='page'):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
@@ -200,7 +185,7 @@ def get_view_content_list(app_id, type_slug=u'page'):
     # set default params
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, basestring):
+        if isinstance(sortby, str):
             sortby = [sortby]
         elif not isinstance(sortby, list):
             sortby = []
@@ -249,7 +234,7 @@ def get_view_content(app_id, type_slug, slug):
     if not content_file:
         Exception('content file not found.')
 
-    page_content = {'content': content_file.get('content', u'')}
+    page_content = {'content': content_file.get('content', '')}
     run_hook('before_parse_page_content', content=page_content)
     page_content['content'] = parse_page_content(page_content['content'])
     run_hook('after_parse_page_content', content=page_content)
@@ -273,7 +258,7 @@ def get_view_segments(app_id):
     results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
-        p_content = p.get('content', u'')
+        p_content = p.get('content', '')
         p = parse_page_metas(p)
         p['content'] = parse_page_content(p_content)
         pages.append(p)
@@ -290,7 +275,7 @@ def _add_cursor(content, index, perpage, paged, total_pages, total_count):
         '_index': index,
         '_perpage': perpage,
         '_paged': paged,
-        '_page_range': [p for p in xrange(1, total_pages + 1)],
+        '_page_range': [p for p in range(1, total_pages + 1)],
         '_total_pages': total_pages,
         '_total_count': total_count,
         '_has_prev': paged > 1,
@@ -316,7 +301,7 @@ def output_result(contents, perpage, paged, total_pages, total_count):
         'paged': paged,
         'total_pages': total_pages,
         'total_count': total_count,
-        'page_range': [p for p in xrange(1, total_pages + 1)],
+        'page_range': [p for p in range(1, total_pages + 1)],
         'has_prev': paged > 1,
         'has_next': paged < total_pages,
     }

@@ -1,15 +1,8 @@
 # coding=utf8
-from __future__ import absolute_import
 
 from .controllers import *
 
 urlpatterns = [
-    # analytics
-    ('/<app_id>/visit', app_visit, 'PUT'),
-    ('/<app_id>/visit/<file_id>', app_visit, 'PUT'),
-    ('/<app_id>/visit', app_visit_status, 'GET'),
-    ('/<app_id>/visit/<file_id>', app_visit_status, 'GET'),
-
     # contents
     ('/<app_id>/view/metas', get_view_metas, 'GET'),
     ('/<app_id>/view/segments', get_view_segments, 'GET'),

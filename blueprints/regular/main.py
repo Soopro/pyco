@@ -1,12 +1,11 @@
 # coding=utf-8
-from __future__ import absolute_import
 
-from flask import Blueprint, current_app, make_response, request, abort
+from flask import Blueprint, current_app, make_response, request
 from jinja2 import FileSystemLoader
 import traceback
 import os
-import re
-from utils.misc import route_inject, parse_int
+
+from utils.misc import route_inject
 
 from .helpers.jinja import (filter_thumbnail,
                             filter_timestamp,

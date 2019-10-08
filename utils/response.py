@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import make_response
 from functools import wraps

@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import current_app, request, abort, render_template, redirect, g
 import os
@@ -12,8 +11,6 @@ from utils.model import make_dotted_dict
 from utils.misc import parse_int
 
 from helpers.app import (run_hook,
-                         helper_get_statistic,
-                         helper_record_statistic,
                          helper_redirect_url,
                          get_theme_path)
 from helpers.content import (find_content_file,
@@ -73,7 +70,7 @@ def rendering(content_type_slug, file_slug):
     run_hook('after_load_content', path=path, file=content_file)
 
     # content
-    page_content = {'content': content_file.get('content', u'')}
+    page_content = {'content': content_file.get('content', '')}
     run_hook('before_parse_page_content', content=page_content)
     page_content['content'] = parse_page_content(page_content['content'])
     run_hook('after_parse_page_content', content=page_content)
@@ -101,9 +98,6 @@ def rendering(content_type_slug, file_slug):
     site_meta['id'] = curr_app['_id']
     site_meta['type'] = curr_app['type']
 
-    # record
-    helper_record_statistic(curr_app['_id'], page_meta['id'])
-
     # multi-language support
     set_multi_language(view_ctx, curr_app)
 
@@ -117,14 +111,11 @@ def rendering(content_type_slug, file_slug):
     view_ctx['app_id'] = curr_app['_id']
     view_ctx['site_meta'] = site_meta
     view_ctx['theme_meta'] = theme_meta
-    view_ctx['api_url'] = config.get('API_URL', u'')
-    view_ctx['theme_url'] = config.get('THEME_URL', u'')
-    view_ctx['res_url'] = config.get('RES_URL', u'')
+    view_ctx['api_url'] = config.get('API_URL', '')
+    view_ctx['theme_url'] = config.get('THEME_URL', '')
+    view_ctx['res_url'] = config.get('RES_URL', '')
     view_ctx['base_url'] = base_url
 
-    # visit
-    view_ctx['visit'] = helper_get_statistic(curr_app['_id'],
-                                             content_file['_id'])
     # request
     view_ctx['request'] = {
         'remote_addr': g.request_remote_addr,
@@ -152,7 +143,7 @@ def rendering(content_type_slug, file_slug):
     template_file_path = get_theme_path(template['name'])
 
     # make dotted able
-    for k, v in view_ctx.iteritems():
+    for k, v in view_ctx.items():
         view_ctx[k] = make_dotted_dict(v)
     try:
         rendered = {
@@ -164,11 +155,6 @@ def rendering(content_type_slug, file_slug):
         else:
             raise e
     run_hook('after_render', rendered=rendered)
-
-    sa_mod = current_app.sa_mod
-    sa_mod.count_page(g.curr_file_id)
-    sa_mod.count_app(g.request_remote_addr,
-                     request.user_agent.string)
 
     return make_content_response(rendered['output'], status_code)
 
@@ -252,7 +238,7 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
                                           sortby=sortby)
     pages = []
     for p in results:
-        p_content = p.get('content', u'')
+        p_content = p.get('content', '')
         p = parse_page_metas(p, curr_id)
         if with_content:
             p['content'] = parse_page_content(p_content)
@@ -294,7 +280,7 @@ def _get_segments(content_type=None, parent=None):
     results = query_segments(app, content_type, parent)
     pages = []
     for p in results:
-        p_content = p.get('content', u'')
+        p_content = p.get('content', '')
         p = parse_page_metas(p)
         p['content'] = parse_page_content(p_content)
         pages.append(p)

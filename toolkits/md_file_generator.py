@@ -38,7 +38,7 @@ def gen(file):
     f = open(os.path.join(OUTPUT_DIR, filename+'.md'), 'w')
     f.write(t % (filename, filename, filename_with_ext))
     f.close()
-    print file
+    print(file)
 
 
 def walkfiles(source):

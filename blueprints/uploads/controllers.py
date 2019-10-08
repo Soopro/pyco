@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import current_app, make_response, send_from_directory
 from utils.response import make_cors_headers

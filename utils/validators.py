@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 import re
 
@@ -54,7 +53,7 @@ def ensure_absurl(src, url_base):
 
 
 def _url_validator(val):
-    if not val or not isinstance(val, basestring):
+    if not val or not isinstance(val, str):
         return False
     try:
         # re.match(r'^(?:http|ftp)s?://', val)

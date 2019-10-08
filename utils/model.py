@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from werkzeug.datastructures import ImmutableDict
 
@@ -18,11 +17,11 @@ class DottedDict(dict):
         super(DottedDict, self).__init__(*args, **kwargs)
         for arg in args:
             if isinstance(arg, dict):
-                for k, v in arg.iteritems():
+                for k, v in arg.items():
                     self[k] = v
 
         if kwargs:
-            for k, v in kwargs.iteritems():
+            for k, v in kwargs.items():
                 self[k] = v
 
     def __getattr__(self, item):

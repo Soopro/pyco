@@ -1,11 +1,10 @@
 # coding=utf-8
-from __future__ import absolute_import
 
-from flask import current_app, request, g
+from flask import current_app, g
 from itertools import groupby
 import os
 import datetime
-import urlparse
+import urllib
 
 from utils.validators import url_validator
 from utils.model import make_dotted_dict
@@ -21,8 +20,8 @@ from utils.misc import (sortedby,
 
 
 # filters
-def filter_thumbnail(pic_url, preset_name=u'default'):
-    if not isinstance(pic_url, basestring) or \
+def filter_thumbnail(pic_url, preset_name='default'):
+    if not isinstance(pic_url, str) or \
        not pic_url.startswith(g.uploads_url):
         return pic_url
 
@@ -44,15 +43,15 @@ def filter_thumbnail(pic_url, preset_name=u'default'):
     return pic_url
 
 
-def filter_timestamp(url, updated=None, key=u't'):
+def filter_timestamp(url, updated=None, key='t'):
     if updated is None:
         updated = now()
     return add_url_params(url, {key: updated}, unique=True)
 
 
 def filter_url(url, remove_args=False, remove_hash=False):
-    if not isinstance(url, basestring):
-        return url or u''
+    if not isinstance(url, str):
+        return url or ''
     if remove_args:
         url = url.split('?')[0]
     if remove_hash:
@@ -60,14 +59,14 @@ def filter_url(url, remove_args=False, remove_hash=False):
     if not url or url_validator(url):
         return url
     elif url.startswith('/'):
-        return u'{}/{}'.format(g.curr_base_url, url.strip('/'))
+        return '{}/{}'.format(g.curr_base_url, url.strip('/'))
     else:
         return url.rstrip('/')
 
 
 def filter_path(url, remove_args=True, remove_hash=True):
-    if not isinstance(url, basestring):
-        return url or u''
+    if not isinstance(url, str):
+        return url or ''
     if remove_args:
         url = url.split('?')[0]
     if remove_hash:
@@ -77,12 +76,12 @@ def filter_path(url, remove_args=True, remove_hash=True):
     except Exception:
         path = url
 
-    return u'/{}'.format(path.strip('/'))
+    return '/{}'.format(path.strip('/'))
 
 
 def filter_active(menu_item, path, match_nodes=False,
                   active='active', inactive=''):
-    if not isinstance(menu_item, dict) or not isinstance(path, basestring):
+    if not isinstance(menu_item, dict) or not isinstance(path, str):
         return inactive
 
     def _check_active(item):
@@ -90,7 +89,7 @@ def filter_active(menu_item, path, match_nodes=False,
             return True
         elif item.get('path_scope'):
             path_scope = item.get('path_scope').lstrip('/')
-            if path.startswith(u'/{}'.format(path_scope)):
+            if path.startswith('/{}'.format(path_scope)):
                 return True
         return False
 
@@ -105,7 +104,7 @@ def filter_active(menu_item, path, match_nodes=False,
 
 
 def filter_args(url, unique=True):
-    if not isinstance(url, basestring):
+    if not isinstance(url, str):
         args = {}
     else:
         args = get_url_params(url, unique)
@@ -115,12 +114,12 @@ def filter_args(url, unique=True):
 def filter_date_formatted(date, to_format=None):
     if not date:
         return ''
-    if not isinstance(to_format, basestring):
+    if not isinstance(to_format, str):
         to_format = None
 
     formats = {
-        'en': u'%B %d, %Y',
-        'zh': u'%Y年 %m月 %d日',
+        'en': '%B %d, %Y',
+        'zh': '%Y年 %m月 %d日',
     }
 
     try:
@@ -136,15 +135,15 @@ def filter_date_formatted(date, to_format=None):
 
 def filter_background_image(src):
     if not src:
-        return u''
-    return u'background-image:url({});'.format(src)
+        return ''
+    return 'background-image:url({});'.format(src)
 
 
 def filter_column_offset(data, pattern=None, column=4, row_columns=12):
     row_columns = parse_int(row_columns, 12, 0)
     column = parse_int(column, 4, True)
 
-    if isinstance(pattern, basestring):
+    if isinstance(pattern, str):
         if '{}' not in pattern:
             pattern += '{}'
     else:
@@ -162,7 +161,7 @@ def filter_column_offset(data, pattern=None, column=4, row_columns=12):
     return output
 
 
-def filter_price(amount, use_currency=False, symbol=u'', fraction_size=2):
+def filter_price(amount, use_currency=False, symbol='', fraction_size=2):
     return convert_price(amount, use_currency, symbol, fraction_size)
 
 
@@ -177,13 +176,13 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
         return []
     elif isinstance(raw_salts, dict):
         salts = []
-        for k, v in raw_salts.iteritems():
+        for k, v in raw_salts.items():
             v['_saltkey'] = k
             salts.append(v)
     else:
         salts = raw_salts
 
-    if not isinstance(conditions, (basestring, dict)):
+    if not isinstance(conditions, (str, dict)):
         conditions = [conditions]
     elif not isinstance(conditions, list):
         conditions = []
@@ -195,13 +194,13 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
         force = False
         cond_key = None
         cond_value = ''
-        if isinstance(cond, (basestring)):
+        if isinstance(cond, (str)):
             cond_key = cond.lower()
         elif isinstance(cond, dict):
             opposite = bool(cond.pop('not', False))
             force = bool(cond.pop('force', False))
             if cond:
-                cond_key = cond.keys()[0]
+                cond_key = list(cond.keys())[0]
                 cond_value = cond[cond_key]
             else:
                 continue
@@ -261,9 +260,9 @@ def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
     some_page = straw(pages, some_id, key='id',
                       recursive_key='nodes', limit=600)
     """
-    if not isinstance(key, basestring):
+    if not isinstance(key, str):
         key = 'id'
-    if not isinstance(recursive_key, basestring):
+    if not isinstance(recursive_key, str):
         recursive_key = None
 
     limit = min(parse_int(limit), 600)
@@ -292,18 +291,18 @@ def glue(args=None, url=None, clarify=False, unique=True):
     if isinstance(args, dict):
         args['term'] = args.pop('category', args.get('term')) or None
         args['paged'] = args.pop('page', args.get('paged')) or None
-        args = {k: v for k, v in args.iteritems() if v is not None}
+        args = {k: v for k, v in args.items() if v is not None}
     else:
         args = {}
 
-    args = {k: v for k, v in args.iteritems() if v is not None}
+    args = {k: v for k, v in args.items() if v is not None}
 
     if not url:
         url = g.request_url
 
     if clarify:
-        result = urlparse.urlparse(url)
-        url = u'{r.scheme}://{r.netloc}{r.path}'.format(r=result)
+        result = urllib.parse.urlparse(url)
+        url = '{r.scheme}://{r.netloc}{r.path}'.format(r=result)
 
     return add_url_params(url, args, unique=unique)
 
@@ -324,7 +323,7 @@ def timemachine(raw_list, field='date', precision='month',
     }
 
     def parse_datetime(date):
-        if isinstance(date, basestring):
+        if isinstance(date, str):
             date = datetime.datetime.strptime(date, time_format)
         elif isinstance(date, int):
             date = datetime.datetime.fromtimestamp(date)
@@ -337,7 +336,7 @@ def timemachine(raw_list, field='date', precision='month',
         except Exception:
             raise ValueError('invalid precision, precision must be str.')
 
-    pages = sorted(filter(lambda x: x.get(field), raw_list),
+    pages = sorted([x for x in raw_list if x.get(field)],
                    key=lambda x: x[field],
                    reverse=reverse)
 

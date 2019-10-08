@@ -33,15 +33,15 @@ def generate_thumbnail(filename):
         except IOError as e:
             raise e
     else:
-        print filename
+        print(filename)
 
 
 def walkfiles(source):
-    print '== illegal files =='
+    print('== illegal files ==')
     for f in os.listdir(source):
         if os.path.isfile(f):
             generate_thumbnail(f)
-    print "== done =="
+    print("== done ==")
 
 if __name__ == '__main__':
     os.chdir(os.path.join('..', UPLOADS_DIR))

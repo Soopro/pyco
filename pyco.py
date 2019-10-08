@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 import os
 import sys
@@ -11,11 +10,10 @@ from utils.request import get_remote_addr, get_request_url
 from utils.response import make_cors_headers
 
 from loaders import load_config, load_plugins, load_all_files, load_curr_app
-from analyzer import SimpleAnalyzer
 from blueprints import register_blueprints
 
 
-__version_info__ = ('2', '22', '2')
+__version_info__ = ('3', '0', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -49,8 +47,6 @@ app.json_encoder = JSONEncoder
 
 # plugins
 load_plugins(app)
-# analyzer
-app.sa_mod = SimpleAnalyzer()
 
 # register blueprints
 register_blueprints(app)
@@ -115,9 +111,9 @@ if __name__ == '__main__':
     host = app.config.get('HOST')
     port = app.config.get('PORT')
 
-    print "-------------------------------------------------------"
-    print 'Pyco: {}'.format(app.version)
-    print "-------------------------------------------------------"
+    print("-------------------------------------------------------")
+    print('Pyco: {}'.format(app.version))
+    print("-------------------------------------------------------")
 
     if app.debug:
         print('Pyco is running in DEBUG mode !!!')

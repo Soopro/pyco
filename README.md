@@ -14,7 +14,7 @@ This project NEVER testing on Windows, if you are use windows only, We are sorry
 
 ## Installation
 
-1. Make sure you have `python 2.7` and `pip`.
+1. Make sure you have `python 3.7` or later and `pip`.
 2. Clone this github repo [http://github.com/soopro/pyco](http://github.com/soopro/pyco).
 3. Make sure current branch is `master`.
 4. Get the project root folder, run `pip install -r requirements.txt`. (you might need `sudo`).
@@ -100,7 +100,7 @@ You can modify the `config.py` to change base settings.
 
 * `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_TAG_SLUG, DEFAULT_CATEGORY_SLUG, DEFAULT_SEARCH_SLUG,]`.
 
-* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if content mode is markdown. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `['gfm']`.
+* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if content mode is markdown. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `[]`.
 
 * `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
 

@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 DEBUG = True
 
@@ -49,7 +48,7 @@ RESERVED_SLUGS = [
 ]
 
 USE_MARKDOWN = False
-MARKDOWN_EXTENSIONS = ['gfm']
+MARKDOWN_EXTENSIONS = []
 
 MAXIMUM_QUERY = 60
 

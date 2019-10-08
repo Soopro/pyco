@@ -1,5 +1,4 @@
 # coding=utf8
-from __future__ import absolute_import
 
 from utils.misc import process_slug, gen_excerpt
 
@@ -78,7 +77,7 @@ def load_plugins(app):
     for module_or_module_name in plugins:
         if type(module_or_module_name) is ModuleType:
             loaded_plugins.append(module_or_module_name)
-        elif isinstance(module_or_module_name, basestring):
+        elif isinstance(module_or_module_name, str):
             try:
                 module = __import__(module_or_module_name)
             except ImportError as err:
@@ -95,7 +94,7 @@ def load_all_files(app, curr_app):
     for root, directory, files in os.walk(content_dir):
         file_full_paths = [
             os.path.join(root, f)
-            for f in filter(lambda x: x.endswith(content_ext), files)
+            for f in [x for x in files if x.endswith(content_ext)]
         ]
         all_files.extend(file_full_paths)
 
@@ -106,7 +105,7 @@ def load_all_files(app, curr_app):
             continue
 
         with open(f, 'r') as fh:
-            readed = fh.read().decode('utf-8')
+            readed = fh.read()
         meta_string, content_string = _content_splitter(app.config, readed)
         try:
             meta = _file_headers(meta_string)
@@ -119,12 +118,12 @@ def load_all_files(app, curr_app):
             'slug': _auto_page_slug(app.config, f),
             'content_type': _auto_content_type(f),
             'priority': meta.pop('priority', 0),
-            'parent': meta.pop('parent', u''),
-            'date': meta.pop('date', u''),
+            'parent': meta.pop('parent', ''),
+            'date': meta.pop('date', ''),
             'tags': [tag for tag in meta.pop('tags', [])
-                     if isinstance(tag, basestring)],
+                     if isinstance(tag, str)],
             'terms': meta.pop('terms', []),
-            'redirect': meta.pop('redirect', u''),
+            'redirect': meta.pop('redirect', ''),
             'template': meta.pop('template', _auto_content_type(f)),
             'status': meta.pop('status', 1),
             'meta': meta,
@@ -159,7 +158,7 @@ def load_curr_app(app):
 
     try:
         with open(site_file) as site_data:
-            site_json_str = site_data.read().decode('utf-8')
+            site_json_str = site_data.read()
             site = json.loads(_shortcode(app.config, site_json_str))
     except Exception as e:
         err_msg = 'Load Site Meta failed: {}'.format(str(e))
@@ -209,9 +208,9 @@ def _shortcode(config, text):
     re_uploads_dir = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
     re_theme_dir = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
     # uploads
-    text = re.sub(re_uploads_dir, unicode(config['UPLOADS_URL']), text)
+    text = re.sub(re_uploads_dir, str(config['UPLOADS_URL']), text)
     # theme
-    text = re.sub(re_theme_dir, unicode(config['THEME_URL']), text)
+    text = re.sub(re_theme_dir, str(config['THEME_URL']), text)
     return text
 
 
@@ -223,7 +222,7 @@ def _auto_file_creation(file_path):
     return int(os.path.getctime(file_path))
 
 
-def _auto_content_type(file_path, default_type=u'page'):
+def _auto_content_type(file_path, default_type='page'):
     path_parts = file_path.split('/')
     if len(path_parts) > 2:
         content_type = path_parts[1].lower()
@@ -250,18 +249,16 @@ def _file_headers(meta_string):
     def convert_data_decode(x):
         if isinstance(x, dict):
             return dict((k.lower(), convert_data_decode(v))
-                        for k, v in x.iteritems())
+                        for k, v in x.items())
         elif isinstance(x, list):
             return list([convert_data_decode(i) for i in x])
-        elif isinstance(x, str):
-            return x.decode('utf-8')
-        elif isinstance(x, (unicode, int, float, bool)) or x is None:
+        elif isinstance(x, (str, int, float, bool)) or x is None:
             return x
         else:
             try:
-                x = str(x).decode('utf-8')
+                x = str(x)
             except Exception as e:
-                print e
+                print(e)
                 pass
         return x
     yaml_data = yaml.safe_load(meta_string)

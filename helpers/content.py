@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import current_app, Markup, g
 
@@ -76,7 +75,7 @@ def search_by_files(keywords, content_type=None,
         results = files
     else:
         results = []
-        if isinstance(keywords, basestring):
+        if isinstance(keywords, str):
             keywords = keywords.split()
         elif not isinstance(keywords, list):
             keywords = []
@@ -122,11 +121,11 @@ def find_404_content_file():
         'template': current_app.config.get('DEFAULT_404_SLUG'),
         'content_type': '.h',
         'meta': {},
-        'parent': u'',
+        'parent': '',
         'priority': 0,
-        'date': u'',
-        'content': u'',
-        'excerpt': u'',
+        'date': '',
+        'content': '',
+        'excerpt': '',
         'tags': [],
         'terms': [],
         'updated': now(),
@@ -144,8 +143,8 @@ def parse_page_metas(page, current_id=None):
     meta = page.get('meta')
     for m in meta:
         data[m] = meta[m]
-    data['id'] = unicode(page['_id'])
-    data['app_id'] = unicode(page['app_id'])
+    data['id'] = str(page['_id'])
+    data['app_id'] = str(page['app_id'])
     data['slug'] = page['slug']
     data['type'] = data['content_type'] = page['content_type']
     data['template'] = page['template']
@@ -158,7 +157,7 @@ def parse_page_metas(page, current_id=None):
     data['updated'] = page['updated']
     data['creation'] = page['creation']
     data['excerpt'] = page['excerpt']
-    data['description'] = meta.get('description', u'')
+    data['description'] = meta.get('description', '')
     data['url'] = gen_page_url(page)
     data['path'] = gen_page_path(page)
 
@@ -168,7 +167,7 @@ def parse_page_metas(page, current_id=None):
         data['is_front'] = True
     if data['slug'] == config.get('DEFAULT_404_SLUG'):
         data['is_404'] = True
-    if unicode(data['id']) == unicode(current_id):
+    if str(data['id']) == str(current_id):
         data['is_current'] = True
 
     return data
@@ -183,9 +182,9 @@ def gen_page_path(data, static_type='page', index='index'):
     if data['content_type'] == static_type:
         if slug == index:
             slug = ''
-        path = u'/{}'.format(slug)
+        path = '/{}'.format(slug)
     else:
-        path = u'/{}/{}'.format(data['content_type'], slug)
+        path = '/{}/{}'.format(data['content_type'], slug)
     return path
 
 
@@ -194,14 +193,14 @@ def gen_page_url(data, static_type='page', index='index'):
     if data.get('content_type') == static_type:
         if slug == index:
             slug = ''
-        url = u'{}/{}'.format(g.curr_base_url, slug)
+        url = '{}/{}'.format(g.curr_base_url, slug)
     else:
-        url = u'{}/{}/{}'.format(g.curr_base_url, data['content_type'], slug)
+        url = '{}/{}/{}'.format(g.curr_base_url, data['content_type'], slug)
     return url
 
 
 # menus
-def helper_wrap_menu(app, base_url=u''):
+def helper_wrap_menu(app, base_url=''):
     if not app['menus']:
         return {}
 
@@ -216,29 +215,29 @@ def helper_wrap_menu(app, base_url=u''):
                     # path
                     if link.startswith(base_url):
                         _path = link.replace(base_url, '').strip('/')
-                        item['path'] = u'/{}'.format(_path)
+                        item['path'] = '/{}'.format(_path)
                     else:
-                        item['path'] = u''
+                        item['path'] = ''
 
                     # hash
-                    item['hash'] = u''
+                    item['hash'] = ''
                 else:
                     # url
-                    item['url'] = u'{}/{}'.format(base_url, link.strip('/'))
+                    item['url'] = '{}/{}'.format(base_url, link.strip('/'))
 
                     # path
-                    item['path'] = u'/{}'.format(link.strip('/'))
+                    item['path'] = '/{}'.format(link.strip('/'))
 
                     # hash
-                    _relpath = re.sub(r'^[/#]*', u'', link).strip()
+                    _relpath = re.sub(r'^[/#]*', '', link).strip()
                     if '#' in _relpath or item.get('fixed'):
-                        item['hash'] = u''
+                        item['hash'] = ''
                     else:
-                        item['hash'] = u'#{}'.format(_relpath)
+                        item['hash'] = '#{}'.format(_relpath)
             else:
-                item['url'] = u''
-                item['hash'] = u''
-                item['path'] = u''
+                item['url'] = ''
+                item['hash'] = ''
+                item['path'] = ''
 
             # name
             item['name'] = item['name'] or item['key']
@@ -248,7 +247,7 @@ def helper_wrap_menu(app, base_url=u''):
         return menu
 
     menu_dict = {}
-    for slug, nodes in app['menus'].iteritems():
+    for slug, nodes in app['menus'].items():
         nodes = process_menu_url(nodes)
         menu_dict[slug] = nodes
     return menu_dict
@@ -294,7 +293,7 @@ def _sort_terms(terms, included_term_keys=None, nest_output=True):
 
     term_list = [{
         'key': term['key'],
-        'parent': term.get('parent', u''),
+        'parent': term.get('parent', ''),
         'meta': term.get('meta', {}),
     } for term in terms]
 
@@ -321,7 +320,7 @@ def _sort_terms(terms, included_term_keys=None, nest_output=True):
             # incase there is more children left
             output_terms += [{
                 'key': child['key'],
-                'parent': u'',  # clear parent
+                'parent': '',  # clear parent
                 'meta': child['meta']
             } for child in children]
     else:
@@ -335,12 +334,12 @@ def helper_wrap_slot(app):
     if not app['slots']:
         return {}
     slots_map = {}
-    for k, v in app['slots'].iteritems():
+    for k, v in app['slots'].items():
         slots_map[k] = {
-            'name': v.get('src', u''),
-            'src': v.get('src', u''),
-            'route': v.get('route', u''),
-            'scripts': v.get('scripts', u''),
+            'name': v.get('src', ''),
+            'src': v.get('src', ''),
+            'route': v.get('route', ''),
+            'scripts': v.get('scripts', ''),
             'status': v.get('status', True),
         }
     return slots_map
@@ -387,7 +386,7 @@ def _query(files, content_type=None, attrs=None, term=None, tag=None):
         files = [f for f in files if f['slug'] not in RESERVED_SLUGS and
                  f['status']]
 
-    if isinstance(attrs, (basestring, dict)):
+    if isinstance(attrs, (str, dict)):
         attrs = [attrs]
     elif not isinstance(attrs, list):
         attrs = []
@@ -398,13 +397,13 @@ def _query(files, content_type=None, attrs=None, term=None, tag=None):
         attr_key = None
         attr_value = ''
 
-        if isinstance(attr, basestring):
+        if isinstance(attr, str):
             attr_key = attr.lower()
         elif isinstance(attr, dict):
             opposite = bool(attr.pop('not', False))
             force = bool(attr.pop('force', False))
             if attr:
-                attr_key = attr.keys()[0]
+                attr_key = list(attr.keys())[0]
                 attr_value = attr[attr_key]
             else:
                 continue

@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from werkzeug.utils import secure_filename
 from slugify import slugify
@@ -13,7 +12,6 @@ import random
 import hashlib
 import hmac
 import urllib
-import urlparse
 import mimetypes
 
 
@@ -28,28 +26,28 @@ def route_inject(app_or_blueprint, url_patterns):
 
 def _slug_not_startswith_num(slug):
     if slug[:1] and slug[:1].isdigit():
-        slug = u's-{}'.format(slug)
+        slug = 's-{}'.format(slug)
     return slug
 
 
 def process_slug(value, autofill=True):
     try:
-        slug = unicode(slugify(value))
+        slug = str(slugify(value))
     except Exception:
-        slug = u''
+        slug = ''
     if not slug and autofill:
-        slug = unicode(uuid.uuid4().hex[:6])
+        slug = str(uuid.uuid4().hex[:6])
     return _slug_not_startswith_num(slug)
 
 
 def slug_uuid_suffix(slug, dig=6):
     if not slug:
         return _slug_not_startswith_num(uuid.uuid4().hex[:dig])
-    return u'{}-{}'.format(slug, uuid.uuid4().hex[:dig])
+    return '{}-{}'.format(slug, uuid.uuid4().hex[:dig])
 
 
 def uuid4_hex(dig=32):
-    return unicode(uuid.uuid4().hex[:dig])
+    return str(uuid.uuid4().hex[:dig])
 
 
 def now(dig=10):
@@ -72,23 +70,20 @@ def now(dig=10):
 
 
 def add_url_params(url, input_params, unique=True, concat=True):
-    if isinstance(url, str):
-        url = url.decode('utf-8')
-
     if isinstance(input_params, dict):
         # make sure all value as list
         input_params = {k: v if isinstance(v, list) else [v]
-                        for k, v in input_params.iteritems()}
-    elif isinstance(input_params, basestring):
-        input_params = {input_params: [u'']}
+                        for k, v in input_params.items()}
+    elif isinstance(input_params, str):
+        input_params = {input_params: ['']}
     else:
-        return u''
+        return ''
 
-    result = urlparse.urlparse(url)
-    params = urlparse.parse_qs(result.query, keep_blank_values=True)
+    result = urllib.parse.urlparse(url)
+    params = urllib.parse.parse_qs(result.query, keep_blank_values=True)
 
     if concat:
-        for k, v in input_params.iteritems():
+        for k, v in input_params.items():
             if k in params:
                 if isinstance(params[k], list):
                     params[k] += v
@@ -100,63 +95,56 @@ def add_url_params(url, input_params, unique=True, concat=True):
         params = input_params
 
     if unique:
-        params = {k: v[-1] if unique else v for k, v in params.iteritems()}
+        params = {k: v[-1] if unique else v for k, v in params.items()}
 
-    for k, v in params.iteritems():
-        if isinstance(v, unicode):
+    for k, v in params.items():
+        if isinstance(v, str):
             v = v.encode('utf-8')
         elif isinstance(v, list):
-            v = [i.encode('utf-8') if isinstance(i, unicode) else i
+            v = [i.encode('utf-8') if isinstance(i, str) else i
                  for i in v]
         params[k] = v
 
     result = list(result)
     try:
-        params_str = urllib.urlencode(params, True)
+        params_str = urllib.parse.urlencode(params, True)
         result[4] = params_str.replace('=&', '&').strip('=')
     except Exception as e:
         result[4] = str(e)
 
-    return urlparse.urlunparse(result)
+    return urllib.parse.urlunparse(result)
 
 
 def get_url_params(url, unique=True):
-    if isinstance(url, str):
-        url = url.decode('utf-8')
-
-    result = urlparse.urlparse(url)
-    params = urlparse.parse_qs(result.query, keep_blank_values=True)
+    result = urllib.parse.urlparse(url)
+    params = urllib.parse.parse_qs(result.query, keep_blank_values=True)
     if unique:
-        params = {k: v[-1] for k, v in params.iteritems()}
+        params = {k: v[-1] for k, v in params.items()}
     return params
 
 
-def gen_excerpt(raw_text, excerpt_length, ellipsis_mark=u'&hellip;'):
+def gen_excerpt(raw_text, excerpt_length, ellipsis_mark='&hellip;'):
     excerpt = re.sub(r'<.*?>', '', raw_text).strip()
-    excerpt_ellipsis = ellipsis_mark if len(excerpt) > excerpt_length else u''
-    return u'{}{}'.format(excerpt[:excerpt_length], excerpt_ellipsis)
+    excerpt_ellipsis = ellipsis_mark if len(excerpt) > excerpt_length else ''
+    return '{}{}'.format(excerpt[:excerpt_length], excerpt_ellipsis)
 
 
 def safe_regex_str(val):
-    if isinstance(val, str):
-        val = val.decode('utf-8')
-    elif not isinstance(val, unicode):
-        return u''
+    if not isinstance(val, str):
+        return ''
     return re.sub(r'[\/\\*\.\[\]\(\)\^\|\{\}\?\$\!\@\#]', '', val)
 
 
 def remove_multi_space(text):
-    if isinstance(text, str):
-        text = text.decode('utf-8')
-    elif not isinstance(text, unicode):
-        return u''
+    if not isinstance(text, str):
+        return ''
     return re.sub(r'\s+', ' ', text).replace('\n', ' ').replace('\b', ' ')
 
 
 def parse_sortby(sort_by):
     key = None
     direction = None
-    if isinstance(sort_by, basestring):
+    if isinstance(sort_by, str):
         if sort_by.startswith('+'):
             key = sort_by.lstrip('+')
             direction = 1
@@ -172,7 +160,7 @@ def parse_sortby(sort_by):
 
 
 def sortedby(source, sort_keys, reverse=False):
-    if isinstance(sort_keys, (basestring, tuple)):
+    if isinstance(sort_keys, (str, tuple)):
         sort_keys = [sort_keys]
     elif not isinstance(sort_keys, list):
         sort_keys = []
@@ -224,12 +212,12 @@ def safe_filename(filename, mimetype=None):
     name, ext = os.path.splitext(filename)
     if not name:
         time_now = int(time.time())
-        name = u'unknow_filename_{}'.format(time_now)
+        name = 'unknow_filename_{}'.format(time_now)
     if not ext and mimetype:
         ext = mimetypes.guess_extension(mimetype)
         ext = ext if ext else '.{}'.format(mimetypes.split('/')[-1])
-    filename = u'{}{}'.format(name, ext)
-    return u'{}{}'.format(_starts.group(), filename)
+    filename = '{}{}'.format(name, ext)
+    return '{}{}'.format(_starts.group(), filename)
 
 
 def hmac_sha(key, msg, digestmod=None, output=True):
@@ -245,7 +233,7 @@ def hmac_sha(key, msg, digestmod=None, output=True):
 def parse_dateformat(date, to_format, input_datefmt='%Y-%m-%d'):
     if not to_format:
         return date
-    if isinstance(date, basestring):
+    if isinstance(date, str):
         try:
             date_object = datetime.strptime(date, input_datefmt)
         except Exception:
@@ -262,17 +250,14 @@ def parse_dateformat(date, to_format, input_datefmt='%Y-%m-%d'):
         return date
 
     try:
-        if isinstance(to_format, unicode):
-            to_format = to_format.encode('utf-8')
-        _formatted = date_object.strftime(to_format)
-        date_formatted = _formatted.decode('utf-8')
+        date_formatted = date_object.strftime(to_format)
     except Exception:
         date_formatted = date
     return date_formatted
 
 
 def to_timestamp(date, input_datefmt='%Y-%m-%d'):
-    if isinstance(date, basestring):
+    if isinstance(date, str):
         try:
             date = datetime.strptime(date, input_datefmt)
         except Exception:
@@ -285,7 +270,7 @@ def to_timestamp(date, input_datefmt='%Y-%m-%d'):
 def time_age(date, gap=None, input_datefmt='%Y-%m-%d'):
     if not isinstance(gap, int):
         gap = 3600 * 24 * 365
-    if isinstance(date, basestring):
+    if isinstance(date, str):
         try:
             dt = datetime.strptime(date, input_datefmt)
             dt_stamp = (dt - datetime(1970, 1, 1)).total_seconds()
@@ -304,18 +289,6 @@ def time_age(date, gap=None, input_datefmt='%Y-%m-%d'):
     except Exception:
         return None
     return age
-
-
-def str2unicode(text):
-    if isinstance(text, str):
-        return text.decode('utf-8')
-    return text
-
-
-def unicode2str(text):
-    if isinstance(text, unicode):
-        return text.encode('utf-8')
-    return text
 
 
 def match_cond(target, cond_key, cond_value, force=True, opposite=False):
@@ -431,7 +404,7 @@ def random_choices(seq, limit=1):
         seq.remove(rand)
         return rand
 
-    for i in xrange(limit):
+    for i in range(limit):
         rand = _random_item(seq)
         if rand is not None:
             selected.append(rand)
@@ -441,13 +414,13 @@ def random_choices(seq, limit=1):
 
 
 # price
-def convert_price(amount, use_currency=False, symbol=u'', fraction_size=2):
-    pattern = u'{:,.{size}f}' if use_currency else u'{:.{size}f}'
+def convert_price(amount, use_currency=False, symbol='', fraction_size=2):
+    pattern = '{:,.{size}f}' if use_currency else '{:.{size}f}'
     try:
         price = pattern.format(int(amount) / 100.0, size=fraction_size)
     except Exception:
         price = None
-    return u'{}{}'.format(symbol, price)
+    return '{}{}'.format(symbol, price)
 
 
 # chunks
