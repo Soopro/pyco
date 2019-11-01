@@ -99,7 +99,7 @@ def load_single_file(app, content_type, slug):
     else:
         file_path = os.path.join(content_dir, content_type, filename)
 
-    return _read_file(file_path)
+    return _read_file(app, file_path)
 
 
 def load_files(app, content_type):
@@ -114,7 +114,7 @@ def load_files(app, content_type):
 
     file_paths = [os.path.join(files_dir, f) for f in os.listdir(files_dir)
                   if f.endswith(content_ext) and not f.startswith('_')]
-    return [_read_file(f) for f in file_paths[:max_storage]]
+    return [_read_file(app, f) for f in file_paths[:max_storage]]
 
 
 def load_metas(app):

@@ -122,7 +122,6 @@ def parse_page_metas(page, current_id=None):
     for m in meta:
         data[m] = meta[m]
     data['id'] = str(page['_id'])
-    data['app_id'] = str(page['app_id'])
     data['slug'] = page['slug']
     data['type'] = data['content_type'] = page['content_type']
     data['template'] = page['template']
