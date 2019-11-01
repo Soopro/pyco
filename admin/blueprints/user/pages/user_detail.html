@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+{% set page_title = 'User' %}
+{% set active_nav = 'user' %}
+
+{% block body %}
+<section class="container">
+  <a class="btn btn-default"
+     href="{{url_for('.deleted') if user.deleted else url_for('.index')}}">
+    <span class="glyphicon glyphicon-menu-left"></span>
+    Back
+  </a>
+  <hr>
+  <div class="row">
+    <!-- profile -->
+    <form class="col-md-6"
+          action="{{url_for('.update', user_id=user._id)
+                    if user._id else url_for('.create')}}"
+          method="POST">
+      <h3>Profile</h3>
+      <br>
+      <div>
+        <h5>Login:</h5>
+        <p>{{user.login}}</p>
+      </div>
+      <div>
+        <h5>Gender:</h5>
+        <p>
+          {% if user.meta.gender == 1 %}
+          Male
+          {% elif user.meta.gender == 0 %}
+          Femail
+          {% else %}
+          Unknow
+          {% endif %}
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>UCoin ({{user.credit or 0}})</label>
+        <input class="form-control"
+               type="text"
+               name="credit"
+               value="{{user.credit}}" />
+      </div>
+      <div class="form-group">
+        <h5>Status</h5>
+        {% for st in allowed_status %}
+        <div class="radio-inline">
+          <label>
+            <input type="radio"
+                   name="status"
+                   value="{{st.key}}"
+                   {{'checked' if user.status == st.key}}> {{st.text}}
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if user.creation %}
+      <div>
+        <h5>Registered at:</h5>
+        <p>
+         {{user.creation|dateformat}}
+        </p>
+      </div>
+      {% endif %}
+
+      <hr>
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-disk"></span>
+            Save
+          </button>
+        </div>
+        {% if user._id %}
+        <div class="col-md-6">
+          <a class="btn btn-danger"
+             href="{{url_for('.remove', user_id=user._id)}}">
+            <span class="glyphicon glyphicon-trash"></span>
+            Delete
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+    </form>
+
+    <!-- record -->
+    <div class="col-md-5 col-md-offset-1">
+      <h3>Volumes ({{volumes|length}})</h3>
+      <br>
+      {% for vol in volumes %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {% if vol.status == 0 %}
+          <div class="alert alert-warning">Pending: {{vol.renter}}</div>
+          {% elif vol.status == 2 %}
+          <div class="alert {{'alert-danger' if vol.overtime else 'alert-success'}}">{{vol.renter}}</div>
+          {% endif %}
+          <div class="row">
+            <div class="col-md-4">
+              <div class="qr-code"
+               qr-text="{{vol.scope}}/{{vol.code}}"></div>
+            </div>
+            <div class="col-md-8">
+              <h5>{{vol.scope|upper}}</h5>
+              <h5>{{vol.code}}</h5>
+            </div>
+          </div>
+          <div>
+            <a class="btn btn-primary"
+               target="_blank"
+               href="{{url_for('book.detail', book_id=vol.book_id)}}">
+              Go Book
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+  <br><br>
+  <hr>
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1">
+      <h3>Records ({{records|length}})</h3>
+      <br>
+      {% for record in records %}
+      <div class="panel {{'panel-primary' if record.status}}">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            {{'Checkout' if record.status == 1 else 'Checkin'}}
+          </h3>
+        </div>
+        <div class="panel-body">
+          <p>{{record.renter or '-'}}</p>
+          <p>{{record.volume or '-'}}</p>
+          <p>{{record.updated|dateformat}}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

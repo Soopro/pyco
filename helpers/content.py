@@ -4,6 +4,7 @@ from flask import current_app, Markup, g
 
 import re
 
+from loaders import load_files, load_single_file
 from utils.validators import url_validator
 from utils.misc import (parse_int,
                         match_cond,
@@ -16,8 +17,7 @@ from utils.misc import (parse_int,
 def query_by_files(content_type=None, attrs=None, term=None, tag=None,
                    offset=0, limit=1, sortby=None):
     # query
-    files = _query(files=g.files,
-                   content_type=content_type,
+    files = _query(content_type=content_type,
                    attrs=attrs,
                    term=term,
                    tag=tag)
@@ -48,15 +48,10 @@ def query_segments(app, type_slug, parent_slug):
     tmpls = [tmpl.replace('^', '') for tmpl in _config.get('templates', [])
              if tmpl.startswith('^')]
 
-    if parent_slug == current_app.config.get('DEFAULT_INDEX_SLUG'):
-        parent_slugs = ['', parent_slug]
-    else:
-        parent_slugs = [parent_slug]
-
     if tmpls:
-        segments = [f for f in g.files if f['template'] in tmpls and
-                    f['parent'] in parent_slugs and f['status'] and
-                    f['content_type'] == type_slug]
+        files = load_files(current_app, type_slug)
+        segments = [f for f in files if f['template'] in tmpls and
+                    f['parent'] == parent_slug and f['status']]
         segments = sortedby(segments, [('priority', 1), sortby])[:60]
     else:
         segments = []
@@ -64,12 +59,9 @@ def query_segments(app, type_slug, parent_slug):
 
 
 # search
-def search_by_files(keywords, content_type=None,
+def search_by_files(keywords, content_type,
                     offset=0, limit=0, use_tags=True):
-    if content_type:
-        files = [f for f in g.files if f['content_type'] == content_type]
-    else:
-        files = g.files
+    files = load_files(current_app, content_type)
 
     if not keywords:
         results = files
@@ -95,22 +87,8 @@ def search_by_files(keywords, content_type=None,
     return results[offset:offset + limit], len(results)
 
 
-def find_content_file_by_id(file_id):
-    if not file_id:
-        return None
-    for f in g.files:
-        if f['_id'] == file_id:
-            return f
-    return None
-
-
 def find_content_file(type_slug, file_slug):
-    if not type_slug:
-        type_slug = 'page'
-    for f in g.files:
-        if f['slug'] == file_slug and f['content_type'] == type_slug:
-            return f
-    return None
+    return load_single_file(current_app, type_slug, file_slug)
 
 
 def find_404_content_file():
@@ -375,16 +353,12 @@ def helper_wrap_languages(languages, locale):
 
 
 # helpers
-def _query(files, content_type=None, attrs=None, term=None, tag=None):
+def _query(content_type, attrs=None, term=None, tag=None):
     QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
     RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
 
-    if content_type:
-        files = [f for f in files if f['content_type'] == content_type and
-                 f['slug'] not in RESERVED_SLUGS and f['status']]
-    else:
-        files = [f for f in files if f['slug'] not in RESERVED_SLUGS and
-                 f['status']]
+    files = [f for f in load_files(current_app, content_type)
+             if f['slug'] not in RESERVED_SLUGS and f['status']]
 
     if isinstance(attrs, (str, dict)):
         attrs = [attrs]

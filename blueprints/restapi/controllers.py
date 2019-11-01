@@ -67,30 +67,12 @@ def get_view_category(app_id):
 @output_json
 def get_view_tags(app_id, type_slug=None):
     pass
-    # limit = get_args('limit', default=60)
-    # limit = parse_int(limit, 60, True)
-
-    # if type_slug:
-    #     type_slug = process_slug(type_slug)
-    #     files = [f for f in g.files if f['content_type'] == type_slug]
-    # else:
-    #     files = [f for f in g.files]
-
-    # tags = {}
-    # for f in files:
-    #     for key in f['tags']:
-    #         tags[key] = 1 if key not in tags else tags[key] + 1
-
-    # tag_list = [{'key': k, 'count': v} for k, v in tags.iteritems()]
-    # results = sortedby(tag_list, [('count', -1)])[:limit]
-
-    # return results
 
 
 @output_json
 def search_view_contents(app_id):
+    content_type = get_param('content_type', str, True)
     keywords = get_param('keywords', list, default=[])
-    content_type = get_param('content_type', str, default=None)
     perpage = get_param('perpage', int, default=0)
     paged = get_param('paged', int, default=0)
 
@@ -134,6 +116,9 @@ def query_view_contents(app_id):
     theme_opts = theme_meta.get('options', {})
 
     # set default params
+    if not content_type:
+        content_type = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
+
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
 
@@ -170,7 +155,7 @@ def query_view_contents(app_id):
 
 
 @output_json
-def get_view_content_list(app_id, type_slug='page'):
+def get_view_content_list(app_id, type_slug=None):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
@@ -192,6 +177,9 @@ def get_view_content_list(app_id, type_slug='page'):
 
     if not perpage:
         perpage = theme_opts.get('perpage')
+
+    if not type_slug:
+        type_slug = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
 
     perpage, paged = _safe_paging(perpage, paged)
 

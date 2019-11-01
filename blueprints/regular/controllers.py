@@ -212,6 +212,9 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
     theme_opts = theme_meta.get('options', {})
 
     # set default params
+    if not content_type:
+        content_type = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
+
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
 
@@ -229,8 +232,8 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
     offset = max(perpage * (paged - 1), 0)
 
     # query content files
-    results, total_count = query_by_files(attrs=attrs,
-                                          content_type=content_type,
+    results, total_count = query_by_files(content_type=content_type,
+                                          attrs=attrs,
                                           term=term,
                                           tag=tag,
                                           offset=offset,
@@ -269,7 +272,7 @@ def _get_category(term_keys=False):
     return make_dotted_dict(category)
 
 
-def _get_segments(content_type=None, parent=None):
+def _get_segments(content_type=None, parent='index'):
     _check_query_limit('_get_segments', 1)
     if not content_type:
         content_type = g.curr_content_type

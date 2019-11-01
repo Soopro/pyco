@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block nav %}{% endblock %}
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<section class="container">
+  <div class="row">
+    <form class="col-md-4"
+          method="post">
+      <fieldset class="form-group">
+        <input class="form-control"
+               type="password"
+               placeholder="Passcode"
+               name="passcode">
+      </fieldset>
+      <div>
+        <button class="btn btn-primary">Sign in</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

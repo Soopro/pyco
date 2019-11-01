@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% set active_nav = 'book' %}
+
+{% block title %}Print Book Volumes{% endblock %}
+
+{% block body %}
+
+<section class="container">
+  <div>
+    <a class="btn btn-default"
+       href="{{url_for('.index')}}">
+      <span class="glyphicon glyphicon-menu-left"></span>
+      Back
+    </a>
+    <a class="btn btn-primary pull-right print-area"
+       href="#">
+      <span class="glyphicon glyphicon-print"></span>
+      Print
+    </a>
+  </div>
+</section>
+
+<section class="container">
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <div id="PRINT-AREA">
+    {% for vol in volumes %}
+    <div style="border: 1px dotted #eee;
+                padding-top: 12px; padding-bottom:12px;
+                height:180px; width:160px; position: relative;
+                padding: 6px; float:left;">
+      <div style="position: relative; top:50%;
+                  transform: translateY(-50%);
+                  font-family: sans-serif;
+                  font-size: 9px; text-align: center;">
+        {{vol.scope|upper}}
+        <div class="qr-code"
+             qr-text="{{vol.scope}}/{{vol.code}}"></div>
+        {{vol.code}}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</section>
+{% endblock %}
+
+
+{% block custom_scripts %}
+<script src="{{url_for('.static', filename='scripts/functions.js')}}">
+</script>
+
+<div class="modal fade" id="CREATE-BOOK-MODAL" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create Book</h4>
+      </div>
+      <div class="modal-body">
+        <!-- modal-form -->
+        <form action="{{url_for('.create')}}" method="POST">
+          <div class="form-group">
+            <label class="control-label">Slug</label>
+            <input name="slug" type="text" class="form-control">
+          </div>
+        </form>
+        <!-- .modal-form -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}

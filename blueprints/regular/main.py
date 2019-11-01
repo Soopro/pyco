@@ -51,8 +51,7 @@ def before_request():
         tpl_folder = current_app.template_folder
         current_app.jinja_loader = FileSystemLoader(tpl_folder)
 
-    sys_icon_list = current_app.config.get('SYS_ICON_LIST', [])
-    if request.path.strip('/') in sys_icon_list:
+    if request.path.strip('/') in current_app.config.get('SYS_ICONS', []):
         # for browser default icons
         return make_response('', 204)
 

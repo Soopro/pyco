@@ -9,7 +9,7 @@ from flask.json import JSONEncoder
 from utils.request import get_remote_addr, get_request_url
 from utils.response import make_cors_headers
 
-from loaders import load_config, load_plugins, load_all_files, load_curr_app
+from loaders import load_config, load_plugins, load_metas
 from blueprints import register_blueprints
 
 
@@ -28,7 +28,6 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, app.config.get('PLUGIN_DIR')))
 
 # init app
-app.debug = app.config.get('DEBUG', True)
 app.template_folder = os.path.join(app.config.get('THEMES_DIR'),
                                    app.config.get('THEME_NAME'))
 
@@ -59,18 +58,6 @@ app.add_url_rule(
 )
 
 
-SYS_ICON_LIST = ['favicon.ico',
-                 'apple-touch-icon-precomposed.png',
-                 'apple-touch-icon.png']
-
-# memory stack
-MEM = {
-    'curr_app': None,
-    'files': None,
-    'loaded': False
-}
-
-
 @app.before_request
 def app_before_request():
     # cors response
@@ -79,22 +66,15 @@ def app_before_request():
         cors_headers = make_cors_headers()
         resp.headers.extend(cors_headers)
         return resp
-    elif request.path.strip('/') in SYS_ICON_LIST:
+    elif request.path.strip('/') in current_app.config.get('SYS_ICONS', []):
         return make_response('', 204)  # for browser default icons
-
     if request.endpoint == 'uploads.get_uploads':
         return
 
     base_url = current_app.config.get('BASE_URL')
     uploads_url = current_app.config.get('UPLOADS_URL')
 
-    if app.debug or not MEM['loaded']:
-        MEM['curr_app'] = load_curr_app(current_app)
-        MEM['files'] = load_all_files(current_app, MEM['curr_app'])
-        MEM['loaded'] = True
-
-    g.curr_app = MEM['curr_app']
-    g.files = MEM['files']
+    g.curr_app = load_metas(current_app)
 
     g.request_remote_addr = get_remote_addr()
     g.request_path = request.path

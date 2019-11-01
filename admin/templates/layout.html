@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% if g.configure.meta %}
+  <title>{{g.configure.meta.title or 'Totoro System'}}</title>
+  <link rel="shortcut icon"
+        href="{{g.configure.meta.favicon or
+                url_for('static', filename='favicon.png')}}">
+  {% endif %}
+  <link rel="stylesheet" type="text/css"
+        href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+  <link rel="stylesheet" type="text/css"
+        href="{{url_for('static', filename='css/style.css')}}">
+</head>
+
+{%
+  set navs = [
+    {'key': 'dashboard', 'url': '/', 'name': 'Dashboard'},
+    {'key': 'user', 'url': url_for('user.index'), 'name': 'Users'},
+    {'key': 'book', 'url': url_for('book.index'), 'name': 'Books'},
+    {'key': 'media', 'url': url_for('media.index'), 'name': 'Media Files'},
+    {'key': 'configuration', 'url': url_for('configuration.index'), 'name': 'Configuration'},
+    {'key': 'logout', 'url': url_for('gate.logout'), 'name': 'Logout'},
+  ]
+%}
+
+<body>
+  {% block nav %}
+  <nav class="container">
+    <ul class="nav nav-tabs">
+      {% for nav in navs %}
+      <li class="{{'active' if active_nav == nav.key}}">
+        <a href="{{nav.url}}">{{nav.name}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endblock %}
+
+  {% block header %}
+  <header class="container">
+    <h1>{% block title %}{% endblock %}</h1>
+  </header>
+  {% endblock %}
+
+  <section class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for status, message in messages %}
+        {% set _cls = 'success' if status == 'message' else status %}
+        <div class="alert alert-{{_cls}}" role="alert">
+          {{message}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </section>
+
+  {% block body %}
+  {% endblock %}
+
+{% block common_scripts %}
+<script src="{{url_for('static', filename='scripts/jquery.min.js')}}">
+</script>
+<script src="{{url_for('static', filename='scripts/bootstrap.min.js')}}">
+</script>
+<script src="{{url_for('static', filename='scripts/qrcode.js')}}">
+</script>
+<script src="{{url_for('static', filename='scripts/functions.js')}}">
+</script>
+{% endblock %}
+{% block custom_scripts %}
+{% endblock %}
+
+</body>

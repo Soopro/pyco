@@ -1,0 +1,57 @@
+nav,
+section {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.padding {
+  padding: 15px;
+}
+.margin {
+  margin: 15px;
+}
+
+td {
+  word-break: break-all !important;
+}
+
+.media-uploader {
+  padding-top: 30px;
+}
+.media-previews img {
+  max-width: 120px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+}
+.media-preview[src="#"] {
+  display: none;
+}
+
+.text-nowrap {
+  min-width: 0;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+.text-break,
+.text-break * {
+  word-break: break-all !important;
+}
+
+.text-upper {
+  text-transform: uppercase !important;
+}
+.text-lower {
+  text-transform: lowercase !important;
+}
+.text-capital {
+  text-transform: capitalize !important;
+}
+.text-strike {
+  text-decoration: line-through !important;
+}
+
+.t50 {
+  opacity: 0.5;
+}

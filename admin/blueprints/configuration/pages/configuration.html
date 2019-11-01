@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% set active_nav = 'configuration' %}
+
+{% block title %}Configuration{% endblock %}
+
+{% block body %}
+<section class="container">
+  <div class="row">
+    <!-- configure -->
+    <form class="col-md-6"
+          action="{{url_for('.update')}}"
+          method="POST">
+
+      <div class="form-group">
+        <label>System Title</label>
+        <input class="form-control"
+               type="text"
+               name="title"
+               value="{{configure.meta.title}}" />
+      </div>
+
+      <div class="form-group">
+        <label>Weclome Message</label>
+        <textarea class="form-control"
+                  name="welcome_msg"
+                  rows="6">{{configure.meta.welcome_msg}}</textarea>
+        <div class="help-block">After register but not vip.</div>
+      </div>
+      <div class="form-group">
+        <label>Register Message</label>
+        <textarea class="form-control"
+                  name="register_msg"
+                  rows="6">{{configure.meta.register_msg}}</textarea>
+        <div class="help-block">Before register.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Rental Time Limit</label>
+        <input class="form-control"
+               type="text"
+               name="rental_time_limit"
+               value="{{configure.rental_time_limit}}" />
+      </div>
+
+      <div class="form-group">
+        <label>App ID</label>
+        <input class="form-control"
+               type="text"
+               name="mina_app_id"
+               value="{{configure.mina_app_id}}" />
+      </div>
+
+      <div class="form-group">
+        <label>App Secrect</label>
+        <input class="form-control"
+               type="text"
+               name="mina_app_secret"
+               value="{{configure.mina_app_secret}}" />
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-primary">
+            <span class="glyphicon glyphicon-disk"></span>
+            Save
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- passcode -->
+    <form class="col-md-4 col-md-offset-1"
+          action="{{url_for('.change_passcode')}}"
+          method="POST">
+
+      <div class="form-group">
+        <label>Old Passcode</label>
+        <input class="form-control"
+               type="password"
+               name="old_passcode" />
+      </div>
+
+      <div class="form-group">
+        <label>New Passcode</label>
+        <input class="form-control"
+               type="text"
+               name="passcode" />
+      </div>
+      <div class="form-group">
+        <label>Confirm Passcode</label>
+        <input class="form-control"
+               type="text"
+               name="passcode2" />
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <button class="btn btn-default">
+            Change passcode
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+  <br><br>
+
+</section>
+
+{% endblock %}

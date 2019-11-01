@@ -110,7 +110,7 @@ You can modify the `config.py` to change base settings.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
 
-* `SYS_ICON_LIST`: **[ set ]** Define system icon list `('favicon.ico', 'apple-touch-icon-precomposed.png', 'apple-touch-icon.png')`.
+* `SYS_ICONS`: **[ set ]** Define system icon list `('favicon.ico', 'apple-touch-icon-precomposed.png', 'apple-touch-icon.png')`.
 
 * `PLUGINS`: **[ list ]** all plugins packpage name here.
 

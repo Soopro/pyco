@@ -1,0 +1,294 @@
+{% extends "layout.html" %}
+{% set active_nav = 'book' %}
+
+{% block title %}Book Detail{% endblock %}
+
+{% block body %}
+<section class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <a class="btn btn-default"
+         href="{{url_for('.index')}}">
+        <span class="glyphicon glyphicon-menu-left"></span>
+        Back
+      </a>
+    </div>
+    <form class="upload-img col-sm-4"
+          action="{{url_for('.attach_cover', book_id=book._id)}}"
+          accept="image/*"
+          method="POST"
+          enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Upload Cover</label>
+        <input type="file" name="cover" />
+      </div>
+    </form>
+<!--     <form class="upload-img col-sm-4"
+          action="{{url_for('.attach_preview', book_id=book._id)}}"
+          accept="image/*"
+          method="POST"
+          enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Upload Preview</label>
+        <input type="file" name="previews" multiple />
+      </div>
+    </form> -->
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <!-- profile -->
+    <div class="col-md-7">
+      <form action="{{url_for('.update', book_id=book._id)}}"
+            method="POST">
+        <h3>Profile</h3>
+        <br>
+
+        <div class="form-group">
+          <label>Title</label>
+          <input class="form-control"
+                 type="text"
+                 name="title"
+                 value="{{book.meta.title}}" />
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input class="form-control"
+                 type="text"
+                 name="author"
+                 value="{{book.meta.author}}" />
+        </div>
+        <div class="form-group">
+          <label>Publisher</label>
+          <input class="form-control"
+                 type="text"
+                 name="publisher"
+                 value="{{book.meta.publisher}}" />
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control"
+                    name="description">{{book.meta.description}}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tags</label>
+          <input class="form-control"
+                 type="text"
+                 name="tags"
+                 value="{{book.tags|join('|')}}" />
+          <span class="help-block">Split with '|'.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-control"
+                  name="terms"
+                  multiple>
+            <option value="">&lt;Empty&gt;</option>
+            {% for term in terms %}
+            <option value="{{term.key}}"
+                    {{'selected' if term.key in book.terms}}>
+              {{term.meta.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Cover</label>
+          <input class="form-control"
+                 type="text"
+                 name="figure"
+                 value="{{book.meta.figure}}" />
+          <span class="help-block">A uploaded image url.</span>
+          {% if book.meta.figure %}
+          <img width="120" height="120" src="{{book.meta.figure}}" />
+          {% else %}
+
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label>UCoin</label>
+          <input class="form-control"
+                 type="number"
+                 name="credit"
+                 value="{{book.credit}}" />
+          <span class="help-block">How many credit to spend.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Value</label>
+          <input class="form-control"
+                 type="text"
+                 name="value"
+                 value="{{book.value}}" />
+          <span class="help-block">the cost of the book, should text.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Rating</label>
+          <input class="form-control"
+                 type="number"
+                 name="rating"
+                 value="{{book.rating}}" />
+          <span class="help-block">higher rating goes first.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Memo</label>
+          <textarea class="form-control"
+                    name="memo">{{book.memo}}</textarea>
+          <span class="help-block">for administrators only.</span>
+        </div>
+
+        <div class="form-group">
+          <h5>Status</h5>
+          {% for st in allowed_status %}
+          <div class="radio-inline">
+            <label>
+              <input type="radio"
+                     name="status"
+                     value="{{st.key}}"
+                     {{'checked' if book.status == st.key}}> {{st.text}}
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div>
+          <h5>Created at:  {{book.creation|dateformat}}</h5>
+          <h5>Last updated at:  {{book.updated|dateformat}}</h5>
+        </div>
+
+        <hr>
+        <div class="form-group">
+          <label>Slug</label>
+          <input class="form-control"
+                 type="text"
+                 name="slug"
+                 value="{{book.slug}}" />
+          <span class="help-block">
+            Don't modify unless you know what you are doing
+          </span>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-primary">
+              <span class="glyphicon glyphicon-disk"></span>
+              Save
+            </button>
+          </div>
+          <div class="col-md-6 text-right">
+            <a class="btn btn-danger {{'disabled' if volumes}}"
+               href="{{url_for('.remove', book_id=book._id)}}">
+              <span class="glyphicon glyphicon-trash"></span>
+              Delete
+            </a>
+            <span class="help-block">you must remove all volumes before delelet the book.</span>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- volumes -->
+    <div class="col-md-4 col-md-offset-1">
+      <h4>Volumes</h4>
+      <br>
+      {% for vol in volumes %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {% if vol.status == 0 %}
+          <div class="alert alert-warning">Pending: {{vol.renter}}</div>
+          {% elif vol.status == 1 %}
+          <div class="alert alert-info">in Stock</div>
+          {% elif vol.status == 2 %}
+          <div class="alert {{'alert-danger' if vol.overtime else 'alert-success'}}">{{vol.renter}}</div>
+          {% endif %}
+          <div class="row">
+            <div class="col-md-4">
+              <div class="qr-code"
+               qr-text="{{vol.scope}}/{{vol.code}}"></div>
+            </div>
+            <div class="col-md-8">
+              <h5>{{vol.scope|upper}}</h5>
+              <h5>{{vol.code}}</h5>
+            </div>
+          </div>
+          <div>
+            {% if vol.status == 0 %}
+            <a href="{{url_for('.confirm_volume', book_id=book._id, vol_id=vol._id)}}">Confirm</a>
+            {% elif vol.status == 2 %}
+            <a href="{{url_for('.checkin_volume', book_id=book._id, vol_id=vol._id)}}">Recede</a>
+            {% else %}
+            <form action="{{url_for('.checkout_volume', book_id=book._id,
+                            vol_id=vol._id)}}" method="POST">
+              <div class="form-group">
+                <input type="text" name="login" placeholder="User Login" />
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <button type="submit">Checkout</button>
+                </div>
+                <div class="col-md-6 text-right">
+                  <a href="{{url_for('.remove_volume', book_id=book._id,
+                                     vol_id=vol._id)}}">Remove</a>
+                </div>
+              </div>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      <hr>
+      <form action="{{url_for('.create_volume', book_id=book._id)}}"
+            method="POST">
+        <div class="form-group">
+          <label>Volume Code (Optional)</label>
+          <input class="form-control" type="text" name="code"
+                 placeholder="Leave it blank for auto generate" />
+        </div>
+        <button class="btn btn-primary">Add Volume</button>
+      </form>
+    </div>
+  </div>
+  <br><br>
+  <hr>
+  <div>
+    <h3>Records ({{records|length}})</h3>
+    <br>
+    <div class="row">
+    {% for record in records %}
+    <div class="col-md-4">
+      <div class="panel {{'panel-primary' if record.status else 'panel-default'}}">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            {{'Checkout' if record.status == 1 else 'Checkin'}}
+          </h3>
+        </div>
+        <div class="panel-body">
+          <p>Customer: {{record.customer or '-'}}</p>
+          <p>Volume: {{record.volume or '-'}}</p>
+          <p>Date: {{record.updated|dateformat}}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+
+
+</section>
+
+{% endblock %}
+
+{% block custom_scripts %}
+<script src="{{url_for('.static', filename='scripts/functions.js')}}">
+</script>
+{% endblock %}

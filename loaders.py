@@ -32,7 +32,9 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('PORT', 5500)
     app.config.setdefault('SITE', {})
     app.config.setdefault('THEME_META', {})
-    app.config.setdefault('SYS_ICON_LIST', [])
+    app.config.setdefault('SYS_ICONS', ['favicon.ico',
+                                        'apple-touch-icon-precomposed.png',
+                                        'apple-touch-icon.png'])
 
     app.config.setdefault('PLUGIN_DIR', 'plugins')
     app.config.setdefault('THEMES_DIR', 'themes')
@@ -64,11 +66,12 @@ def load_config(app, config_name='config.py'):
                           ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))
 
     app.config.setdefault('MAXIMUM_QUERY', 60)
+    app.config.setdefault('MAXIMUM_STORAGE', 360)
 
     app.config.setdefault('USE_MARKDOWN', False)
     app.config.setdefault('MARKDOWN_EXTENSIONS', [])
 
-    app.config.setdefault('SYS_ICON_LIST', [])
+    app.debug = app.config.get('DEBUG', True)
 
 
 def load_plugins(app):
@@ -86,63 +89,35 @@ def load_plugins(app):
     app.plugins = loaded_plugins
 
 
-def load_all_files(app, curr_app):
-    content_dir = app.config.get('CONTENT_DIR')
-    content_ext = app.config.get('CONTENT_FILE_EXT')
+def load_single_file(app, content_type, slug):
+    content_dir = app.config.get('CONTENT_DIR', 'content')
+    content_ext = app.config.get('CONTENT_FILE_EXT', '.md')
 
-    all_files = []
-    for root, directory, files in os.walk(content_dir):
-        file_full_paths = [
-            os.path.join(root, f)
-            for f in [x for x in files if x.endswith(content_ext)]
-        ]
-        all_files.extend(file_full_paths)
+    filename = '{}{}'.format(slug, content_ext)
+    if content_type == app.config.get('DEFAULT_CONTENT_TYPE', 'page'):
+        file_path = os.path.join(content_dir, filename)
+    else:
+        file_path = os.path.join(content_dir, content_type, filename)
 
-    data_list = []
-    for f in all_files:
-        relative_path = f.split(content_dir + '/', 1)[1]
-        if relative_path.startswith('_'):
-            continue
-
-        with open(f, 'r') as fh:
-            readed = fh.read()
-        meta_string, content_string = _content_splitter(app.config, readed)
-        try:
-            meta = _file_headers(meta_string)
-        except Exception as e:
-            e.current_file = f
-            raise e
-        data = {
-            '_id': _auto_id(app.config, f),
-            'app_id': curr_app['_id'],
-            'slug': _auto_page_slug(app.config, f),
-            'content_type': _auto_content_type(f),
-            'priority': meta.pop('priority', 0),
-            'parent': meta.pop('parent', ''),
-            'date': meta.pop('date', ''),
-            'tags': [tag for tag in meta.pop('tags', [])
-                     if isinstance(tag, str)],
-            'terms': meta.pop('terms', []),
-            'redirect': meta.pop('redirect', ''),
-            'template': meta.pop('template', _auto_content_type(f)),
-            'status': meta.pop('status', 1),
-            'meta': meta,
-            'content': _convert_content(app.config, content_string),
-            'updated': _auto_file_updated(f),
-            'creation': _auto_file_creation(f),
-        }
-        # attach excerpt
-        data['excerpt'] = _convert_excerpt(app.config, data['content'])
-        # attach tags for query
-        data['_tags'] = [tag.strip().lower() for tag in data['tags']]
-        # attach keywords for search
-        data['_keywords'] = [data['slug']] + data['_tags']
-        data_list.append(data)
-
-    return data_list
+    return _read_file(file_path)
 
 
-def load_curr_app(app):
+def load_files(app, content_type):
+    content_dir = app.config.get('CONTENT_DIR', 'content')
+    content_ext = app.config.get('CONTENT_FILE_EXT', '.md')
+    max_storage = app.config.get('MAXIMUM_STORAGE', 360)
+
+    if content_type == app.config.get('DEFAULT_CONTENT_TYPE', 'page'):
+        files_dir = content_dir
+    else:
+        files_dir = os.path.join(content_dir, content_type)
+
+    file_paths = [os.path.join(files_dir, f) for f in os.listdir(files_dir)
+                  if f.endswith(content_ext) and not f.startswith('_')]
+    return [_read_file(f) for f in file_paths[:max_storage]]
+
+
+def load_metas(app):
     theme_meta_file = os.path.join(app.config.get('THEMES_DIR'),
                                    app.config.get('THEME_NAME'),
                                    app.config.get('THEME_CONF_FILE'))
@@ -182,6 +157,42 @@ def load_curr_app(app):
 
 
 # helpers
+def _read_file(app, file_path):
+    with open(file_path, 'r') as fh:
+        readed = fh.read()
+    meta_string, content_string = _content_splitter(app.config, readed)
+    try:
+        meta = _file_headers(meta_string)
+    except Exception as e:
+        e.current_file = file_path
+        raise e
+
+    slug = _auto_page_slug(app.config, file_path)
+    content_type = _auto_content_type(file_path)
+    content = _convert_content(app.config, content_string)
+    tags = [tag for tag in meta.pop('tags', []) if isinstance(tag, str)]
+
+    return {
+        '_id': _auto_id(app.config, file_path),
+        '_keywords': [slug] + tags,
+        'slug': slug,
+        'content_type': content_type,
+        'priority': meta.pop('priority', 0),
+        'parent': meta.pop('parent', ''),
+        'date': meta.pop('date', ''),
+        'tags': [tag.strip().lower() for tag in tags],
+        'terms': meta.pop('terms', []),
+        'redirect': meta.pop('redirect', ''),
+        'template': meta.pop('template', content_type),
+        'status': meta.pop('status', 1),
+        'meta': meta,
+        'content': content,
+        'excerpt': _convert_excerpt(app.config, content),
+        'updated': _auto_file_updated(file_path),
+        'creation': _auto_file_creation(file_path),
+    }
+
+
 def _content_splitter(config, file_content):
     file_content = _shortcode(config, file_content)
     pattern = r'(\n)*/\*(\n)*(?P<meta>(.*\n)*)\*/(?P<content>(.*(\n)?)*)'
@@ -232,8 +243,8 @@ def _auto_content_type(file_path, default_type='page'):
 
 
 def _auto_id(config, file_path):
-    content_dir = config.get('CONTENT_DIR')
-    page_id = file_path.replace(content_dir + '/', '', 1).lstrip('/')
+    content_dir = os.path.join(config.get('CONTENT_DIR'), '')
+    page_id = file_path.replace(content_dir, '', 1).strip('/')
     return page_id
 
 

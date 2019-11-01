@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% set active_nav = 'book' %}
+
+{% block title %}Book Detail{% endblock %}
+
+{% block body %}
+<section class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <a class="btn btn-default"
+         href="{{url_for('.category')}}">
+        <span class="glyphicon glyphicon-menu-left"></span>
+        Back to category
+      </a>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <!-- profile -->
+    <div class="col-md-7">
+      <form action="{{url_for('.update_term', term_id=term._id)}}"
+            method="POST">
+
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-control"
+                 type="text"
+                 name="name"
+                 value="{{term.meta.name}}" />
+        </div>
+
+        <div>
+          <h5>Created at:  {{term.creation|dateformat}}</h5>
+          <h5>Last updated at:  {{term.updated|dateformat}}</h5>
+        </div>
+
+        <hr>
+        <div class="form-group">
+          <label>Key</label>
+          <input class="form-control"
+                 type="text"
+                 name="key"
+                 value="{{term.key}}" />
+          <span class="help-block">
+            Don't modify unless you know what you are doing
+          </span>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-primary">
+              <span class="glyphicon glyphicon-disk"></span>
+              Save
+            </button>
+          </div>
+          <div class="col-md-6 text-right">
+            <a class="btn btn-danger"
+               href="{{url_for('.remove_term', term_id=term._id)}}">
+              <span class="glyphicon glyphicon-trash"></span>
+              Delete
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <br><br>
+  <hr>
+
+</section>
+
+{% endblock %}
+
+{% block custom_scripts %}
+<script src="{{url_for('.static', filename='scripts/functions.js')}}">
+</script>
+{% endblock %}

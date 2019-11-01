@@ -51,17 +51,19 @@ USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = []
 
 MAXIMUM_QUERY = 60
+MAXIMUM_STORAGE = 360
 
 SORTABLE_FIELD_KEYS = ('date', 'updated')
 QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
                         'date', 'updated', 'creation')
 IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
 
-SYS_ICON_LIST = (
+SYS_ICONS = [
     'favicon.ico',
     'apple-touch-icon-precomposed.png',
     'apple-touch-icon.png'
-)
+]
+
 
 # plugins
 PLUGINS = []
