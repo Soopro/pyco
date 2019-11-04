@@ -223,6 +223,10 @@ class Document(FlatFile):
         DEFAULT_SEARCH_SLUG,
     ]
 
+    SORTABLE_FIELD_KEYS = ('date', 'updated')
+    QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
+                            'date', 'updated', 'creation')
+
     path = ''
     data = {}
     _updated = None
