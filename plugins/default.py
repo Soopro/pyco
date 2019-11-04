@@ -2,12 +2,11 @@
 
 import re
 
-loaded_config = None
+plugin_data = {}
 
 
 def config_loaded(config):
-    loaded_config = config
-    return loaded_config
+    plugin_data['config'] = config
 
 
 def request_url(request):
@@ -15,15 +14,15 @@ def request_url(request):
 
 
 def get_page_content(content):
-    content['content'] = shortcode(loaded_config, content['text'])
+    content['content'] = shortcode(plugin_data['config'], content['content'])
 
 
-def get_page_meta(page_meta, redirect):
-    shortcode(page_meta)
+def get_page_meta(meta, redirect):
+    shortcode(plugin_data['config'], meta)
 
 
 def get_pages(pages, current_page_id):
-    shortcode(pages)
+    shortcode(plugin_data['config'], pages)
 
 
 def before_render(context, template):
@@ -35,21 +34,23 @@ def after_render(rendered):
 
 
 # shortcode
-re_uploads_dir = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
-re_theme_dir = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
+RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
+RE_THEME = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
 
 
 def _process_shortcode(config, text):
-    text = re.sub(re_uploads_dir, str(config['UPLOADS_URL']), text)
-    text = re.sub(re_theme_dir, str(config['THEME_URL']), text)
+    print(text)
+    print('---------------------------')
+    text = re.sub(RE_UPLOADS, str(config['UPLOADS_URL']), text)
+    text = re.sub(RE_THEME, str(config['THEME_URL']), text)
 
 
 def shortcode(config, data):
     if isinstance(data, str):
-        _process_shortcode(data)
+        _process_shortcode(config, data)
     elif isinstance(data, list):
         for item in data:
-            _process_shortcode(item)
+            shortcode(config, item)
     elif isinstance(data, dict):
-        for k, v in data:
-            _process_shortcode(v)
+        for k, v in data.items():
+            shortcode(config, v)

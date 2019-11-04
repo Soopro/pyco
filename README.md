@@ -74,8 +74,8 @@ You can modify the `config.py` to change base settings.
 
 Pyco supported plugins. Plugins use several hooked functions, and order by the request work flow. Some data could be customlize, you have to print out to understand attributes. Hooks such as:
 
-1. `config_loaded(metas)`: While config, site date, theme_meta loaded.
-    * `metas`: **[ dict ]** read-only. include `config`, `theme_meta` and `site_meta`.
+1. `config_loaded(config)`: While config, site date, theme_meta loaded.
+    * `config`: **[ dict ]** read-only. include `config`, `theme_meta` and `site_meta`.
 
 2. `request_url(request)`: While the request is confirmed.
     * `request`: **[ dict ]** a flask request object.

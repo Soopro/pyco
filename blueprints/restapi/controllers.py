@@ -32,7 +32,7 @@ def get_view_metas(app_id):
     config['site_meta'] = site_meta
     config['theme_meta'] = theme_meta
 
-    run_hook('config_loaded', config=make_dotted_dict(config))
+    run_hook('config_loaded', config=_hook_config())
 
     site_meta['slug'] = curr_app['slug']
     site_meta['type'] = curr_app['type']
@@ -76,6 +76,8 @@ def search_view_contents(app_id):
     perpage = get_param('perpage', int, default=0)
     paged = get_param('paged', int, default=0)
 
+    run_hook('config_loaded', config=_hook_config())
+
     theme_opts = g.curr_app['theme_meta'].get('options', {})
 
     if not perpage:
@@ -111,6 +113,8 @@ def query_view_contents(app_id):
     with_content = get_param('with_content', bool, default=False)
     term = get_param('term')
     tag = get_param('tag')
+
+    run_hook('config_loaded', config=_hook_config())
 
     theme_meta = g.curr_app['theme_meta']
     theme_opts = theme_meta.get('options', {})
@@ -163,9 +167,10 @@ def get_view_content_list(app_id, type_slug=None):
     term = get_args('term')
     tag = get_args('tag')
 
-    priority = bool(priority)
+    run_hook('config_loaded', config=_hook_config())
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
+    priority = bool(priority)
 
     # set default params
     if not sortby:
@@ -222,6 +227,8 @@ def get_view_content(app_id, type_slug, slug):
     if not content_file:
         Exception('content file not found.')
 
+    run_hook('config_loaded', config=_hook_config())
+
     page_content = {'content': content_file.get('content', '')}
     page_content['content'] = parse_page_content(page_content['content'])
     run_hook('get_page_content', content=page_content)
@@ -242,6 +249,8 @@ def get_view_segments(app_id):
     parent = get_args('parent', default='index')
 
     app = g.curr_app
+
+    run_hook('config_loaded', config=_hook_config())
 
     results = query_segments(app, content_type, parent)
     pages = []
@@ -279,6 +288,13 @@ def _safe_paging(perpage, paged):
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
     return min(perpage, max_perpage), paged
+
+
+def _hook_config():
+    config = current_app.config
+    config['site_meta'] = g.curr_app['meta']
+    config['theme_meta'] = g.curr_app['theme_meta']
+    return make_dotted_dict(config)
 
 
 # outputs

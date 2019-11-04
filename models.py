@@ -51,7 +51,7 @@ class FlatFile:
         else:
             self.data[key] = value
 
-    def get(self, key, default):
+    def get(self, key, default=None):
         return self.data.get(key, default)
 
     def save(self):
@@ -264,7 +264,6 @@ class Document(FlatFile):
             fields = {}
             content = ''
         else:
-            print(m.group('fields'))
             fields = yaml.safe_load(m.group('fields'))
             content = m.group('content')
 
