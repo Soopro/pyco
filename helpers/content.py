@@ -3,6 +3,7 @@
 from flask import current_app, Markup, g
 
 import re
+import markdown
 
 from loaders import load_files, load_single_file
 from utils.validators import url_validator
@@ -113,6 +114,9 @@ def find_404_content_file():
 
 
 def parse_page_content(content_string):
+    if current_app.config['USE_MARKDOWN']:
+        markdown_exts = current_app.config['MARKDOWN_EXTENSIONS']
+        content_string = markdown.markdown(content_string, markdown_exts)
     return Markup(content_string)
 
 
@@ -139,10 +143,9 @@ def parse_page_metas(page, current_id=None):
     data['path'] = gen_page_path(page)
 
     # content marks
-    config = current_app.config
-    if data['slug'] == config.get('DEFAULT_INDEX_SLUG'):
+    if data['slug'] == current_app.model.Document.DEFAULT_INDEX_SLUG:
         data['is_front'] = True
-    if data['slug'] == config.get('DEFAULT_404_SLUG'):
+    if data['slug'] == current_app.model.Document.DEFAULT_404_SLUG:
         data['is_404'] = True
     if str(data['id']) == str(current_id):
         data['is_current'] = True
@@ -353,8 +356,8 @@ def helper_wrap_languages(languages, locale):
 
 # helpers
 def _query(content_type, attrs=None, term=None, tag=None):
-    QUERYABLE_FIELD_KEYS = current_app.config.get('QUERYABLE_FIELD_KEYS')
-    RESERVED_SLUGS = current_app.config.get('RESERVED_SLUGS')
+    QUERYABLE_FIELD_KEYS = current_app.model.Document.QUERYABLE_FIELD_KEYS
+    RESERVED_SLUGS = current_app.model.Document.RESERVED_SLUGS
 
     files = [f for f in load_files(current_app, content_type)
              if f['slug'] not in RESERVED_SLUGS and f['status']]
@@ -399,7 +402,7 @@ def _query(content_type, attrs=None, term=None, tag=None):
 
 
 def _sorting(files, sort):
-    SORTABLE_FIELD_KEYS = current_app.config.get('SORTABLE_FIELD_KEYS')
+    SORTABLE_FIELD_KEYS = current_app.model.Document.SORTABLE_FIELD_KEYS
 
     sorts = [('priority', 1)]
     if isinstance(sort, tuple):

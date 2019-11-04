@@ -25,9 +25,8 @@ def generate_etag(content_file_full_path):
     return sha1(base).hexdigest()
 
 
-def get_theme_path(tmpl_name):
-    return '{}{}'.format(tmpl_name,
-                         current_app.config.get('TEMPLATE_FILE_EXT'))
+def get_theme_path(tmpl_name, ext='.html'):
+    return '{}{}'.format(tmpl_name, ext)
 
 
 def helper_redirect_url(url, base_url):

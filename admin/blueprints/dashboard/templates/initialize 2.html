@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{assets_url}}/modules/jquery-selectric/selectric.css">
+{% endblock %}
+
+{% block layout %}
+<section class="section">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+        <div class="login-brand">
+          <img src="{{assets_url}}/pyco.png" alt="logo" width="100" class="shadow-light rounded-circle bg-white">
+        </div>
+
+        <div class="card card-primary">
+          <div class="card-header"><h4>Initialize</h4></div>
+
+          <div class="card-body">
+            <form method="POST" action="#" class="needs-validation" novalidate="">
+              <div class="form-group">
+                <label for="passcode">Setup Passcode</label>
+                <input id="passcode"
+                       class="form-control pwstrength"
+                       name="passcode"
+                       data-indicator="pwindicator"
+                       minlength="6"
+                       maxlength="360"
+                       type="text">
+                  <div id="pwindicator" class="pwindicator">
+                    <div class="bar"></div>
+                    <div class="label"></div>
+                  </div>
+
+                <div class="invalid-feedback">
+                  Invalid Passcode, length between 6-360.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
+                  Initialize
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+
+        <div class="simple-footer">
+          {{copyright}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
+<script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
+<script src="{{assets_url}}/js/page/auth-register.js"></script>
+{% endblock %}

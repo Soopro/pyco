@@ -5,13 +5,12 @@ DEBUG = True
 HOST = '0.0.0.0'
 PORT = 5500
 
+THEMES_DIR = 'themes'
 THEME_NAME = 'default'
 STATIC_PATH = 'static'
 
 UPLOADS_DIR = 'uploads'
-CONTENT_DIR = 'content'
-PLUGIN_DIR = 'plugins'
-THEMES_DIR = 'themes'
+
 
 BASE_URL = 'http://localhost:5500'
 API_URL = 'http://localhost:5500/restapi'
@@ -21,41 +20,6 @@ RES_URL = '{}/res'.format(UPLOADS_URL)
 
 LANGUAGES_DIR = 'languages'
 
-CONTENT_FILE_EXT = '.md'
-TEMPLATE_FILE_EXT = '.html'
-
-SITE_DATA_FILE = 'site.json'
-THEME_CONF_FILE = 'config.json'
-
-DEFAULT_TEMPLATE = 'index'
-DEFAULT_DATE_FORMAT = '%Y-%m-%d'
-
-DEFAULT_EXCERPT_LENGTH = 600
-
-DEFAULT_CONTENT_TYPE = 'page'
-
-DEFAULT_INDEX_SLUG = 'index'
-DEFAULT_SEARCH_SLUG = 'search'
-DEFAULT_CATEGORY_SLUG = 'category'
-DEFAULT_TAG_SLUG = 'tag'
-DEFAULT_404_SLUG = 'error-404'
-
-RESERVED_SLUGS = [
-    DEFAULT_INDEX_SLUG,
-    DEFAULT_TAG_SLUG,
-    DEFAULT_CATEGORY_SLUG,
-    DEFAULT_SEARCH_SLUG,
-]
-
-USE_MARKDOWN = False
-MARKDOWN_EXTENSIONS = []
-
-MAXIMUM_QUERY = 60
-MAXIMUM_STORAGE = 360
-
-SORTABLE_FIELD_KEYS = ('date', 'updated')
-QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
-                        'date', 'updated', 'creation')
 IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
 
 SYS_ICONS = [
@@ -64,6 +28,16 @@ SYS_ICONS = [
     'apple-touch-icon.png'
 ]
 
+# markdown
+USE_MARKDOWN = False
+MARKDOWN_EXTENSIONS = []
+
 
 # plugins
-PLUGINS = []
+PLUGINS = ['default']
+
+
+# admin
+ADMIN_PORT = 5510
+ADMIN_BASE_URL = 'http://localhost:5510'
+SECRET_KEY = ':~IO#]`lYS)$jx?)O2ON%$G&3w8GA%'

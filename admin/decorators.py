@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from functools import wraps
 from flask import current_app, session, redirect, url_for, g
@@ -15,6 +14,6 @@ def login_required(f):
         if not configure or not session.get('admin') or \
            session['admin'] != hmac_sha(hmac_key, configure['passcode_hash']):
             session.clear()
-            return redirect(url_for('gate.login'))
+            return redirect(url_for('dashboard.login'))
         return f(*args, **kwargs)
     return wrapper

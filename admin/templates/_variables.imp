@@ -1,0 +1,10 @@
+{%
+  set navs = [
+    {'key': 'dashboard', 'url': '/', 'name': 'Dashboard'},
+    {'key': 'configuration', 'url': url_for('configuration.index'), 'name': 'Configuration'}
+  ]
+%}
+
+{% set copyright %}
+Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://github.com/soopro/pyco">Pyco</a>
+{% endset %}

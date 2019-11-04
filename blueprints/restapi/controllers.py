@@ -117,7 +117,7 @@ def query_view_contents(app_id):
 
     # set default params
     if not content_type:
-        content_type = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
+        content_type = current_app.model.Document.DEFAULT_CONTENT_TYPE
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
@@ -179,7 +179,7 @@ def get_view_content_list(app_id, type_slug=None):
         perpage = theme_opts.get('perpage')
 
     if not type_slug:
-        type_slug = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
+        type_slug = current_app.model.Document.DEFAULT_CONTENT_TYPE
 
     perpage, paged = _safe_paging(perpage, paged)
 
@@ -223,17 +223,17 @@ def get_view_content(app_id, type_slug, slug):
         Exception('content file not found.')
 
     page_content = {'content': content_file.get('content', '')}
-    run_hook('before_parse_page_content', content=page_content)
     page_content['content'] = parse_page_content(page_content['content'])
-    run_hook('after_parse_page_content', content=page_content)
+    run_hook('get_page_content', content=page_content)
 
-    run_hook('before_read_page_meta', headers=content_file)
     page_meta = parse_page_metas(content_file)
-    run_hook('after_read_page_meta', meta=page_meta, redirect=None)
+    run_hook('get_page_meta', meta=page_meta, redirect=None)
 
-    output = page_meta
-    output['content'] = page_content['content']
-    return output
+    return {
+        'id': content_file['_id'],
+        'meta': page_meta,
+        'content': page_content['content']
+    }
 
 
 @output_json
@@ -275,7 +275,7 @@ def _add_cursor(content, index, perpage, paged, total_pages, total_count):
 
 
 def _safe_paging(perpage, paged):
-    max_perpage = current_app.config.get('MAXIMUM_QUERY', 60)
+    max_perpage = current_app.model.Document.MAXIMUM_QUERY
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
     return min(perpage, max_perpage), paged

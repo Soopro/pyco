@@ -9,7 +9,7 @@ from flask.json import JSONEncoder
 from utils.request import get_remote_addr, get_request_url
 from utils.response import make_cors_headers
 
-from loaders import load_config, load_plugins, load_metas
+from loaders import load_config, load_plugins
 from blueprints import register_blueprints
 
 
@@ -58,6 +58,7 @@ app.add_url_rule(
 )
 
 
+# inject before request handlers
 @app.before_request
 def app_before_request():
     # cors response

@@ -1,7 +1,6 @@
 # coding=utf-8
 
 
-
 def register_blueprints(app):
     # register regular
     from .regular import blueprint as regular_module

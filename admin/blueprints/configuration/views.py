@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import absolute_import
 
 from flask import (Blueprint,
                    current_app,
@@ -11,7 +10,7 @@ from flask import (Blueprint,
                    render_template,
                    g)
 
-from utils.auth import generate_hashed_password, check_hashed_password
+from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
 from utils.misc import hmac_sha, parse_int
 
@@ -49,7 +48,6 @@ def update():
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)
     configure.save()
-    print configure['meta']
     flash('Saved.')
     return_url = url_for('.index')
     return redirect(return_url)
@@ -63,12 +61,12 @@ def change_passcode():
     passcode2 = request.form.get('passcode2')
 
     configure = g.configure
-    if not check_hashed_password(configure['passcode_hash'], old_passcode):
+    if not check_password_hash(configure['passcode_hash'], old_passcode):
         raise Exception('Old passcode is wrong ...')
     elif passcode != passcode2:
         raise Exception('New passcode is not match ...')
     else:
-        configure['passcode_hash'] = generate_hashed_password(passcode)
+        configure['passcode_hash'] = generate_password_hash(passcode)
         hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         configure.save()

@@ -32,6 +32,9 @@ from .helpers.jinja import (saltshaker,
 
 
 def rendering(content_type_slug, file_slug):
+
+    run_hook('request_url', request=request)
+
     config = current_app.config
     status_code = 200
 
@@ -52,13 +55,10 @@ def rendering(content_type_slug, file_slug):
     if _check_theme_hidden_types(theme_meta, content_type_slug):
         content_type_slug = None
 
-    run_hook('request_url', request=request)
-
     view_ctx = dict()
 
     # load file content
     path = {'content_type': content_type_slug, 'slug': file_slug}
-    run_hook('before_load_content', path=path)
     content_file = find_content_file(path['content_type'], path['slug'])
 
     # if not found
@@ -67,20 +67,16 @@ def rendering(content_type_slug, file_slug):
         path = None
         content_file = find_404_content_file()
 
-    run_hook('after_load_content', path=path, file=content_file)
-
     # content
     page_content = {'content': content_file.get('content', '')}
-    run_hook('before_parse_page_content', content=page_content)
     page_content['content'] = parse_page_content(page_content['content'])
-    run_hook('after_parse_page_content', content=page_content)
+    run_hook('get_page_content', content=page_content)
 
     view_ctx['content'] = page_content['content']
 
-    run_hook('before_read_page_meta', headers=content_file)
     page_meta = parse_page_metas(content_file)
     redirect_to = {'url': content_file.get('redirect')}
-    run_hook('after_read_page_meta', meta=page_meta, redirect=redirect_to)
+    run_hook('get_page_meta', meta=page_meta, redirect=redirect_to)
 
     # page redirect
     if redirect_to['url']:
@@ -138,7 +134,7 @@ def rendering(content_type_slug, file_slug):
 
     # template
     template = {'name': page_meta.get('template')}
-    run_hook('before_render', var=view_ctx, template=template)
+    run_hook('before_render', context=view_ctx, template=template)
 
     template_file_path = get_theme_path(template['name'])
 
@@ -177,10 +173,9 @@ def _get_content_type(content_type_slug):
     return content_type
 
 
-def set_multi_language(view_context, app):
+def set_multi_language(view_context, app, lang_dir='languages'):
     locale = app['locale']
     # make i18n support
-    lang_dir = current_app.config.get('LANGUAGES_DIR', 'languages')
     lang_path = os.path.join(current_app.template_folder, lang_dir)
     translator = Translator(locale, lang_path)
     view_context['_'] = translator.gettext
@@ -213,7 +208,7 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
 
     # set default params
     if not content_type:
-        content_type = current_app.config.get('DEFAULT_CONTENT_TYPE', 'page')
+        content_type = current_app.model.Document.DEFAULT_CONTENT_TYPE
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')

@@ -46,17 +46,12 @@ You can modify the `config.py` to change base settings.
 
 * `PORT`: **[ int ]** Host port. Default is `5500`.
 
+* `THEMES_DIR`: **[ str ]** Themes dir will be `"themes"`.
 * `THEME_NAME`: **[ str ]** Theme name slug. Default is `"default"`.
-
-* `STATIC_PATH`: **[ str ]** Static base path of themes. Default is `"static"`.
 
 * `UPLOADS_DIR`: **[ str ]** Uploads dir will be `"uploads"`.
 
-* `CONTENT_DIR`: **[ str ]** Contents dir will be `"content"`.
-
 * `PLUGIN_DIR`: **[ str ]** Plugin dir will be `"plugins"`.
-
-* `THEMES_DIR`: **[ str ]** Themes dir will be `"themes"`.
 
 * `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
 
@@ -67,46 +62,6 @@ You can modify the `config.py` to change base settings.
 * `UPLOADS_URL`: **[ str ]** uploads url of Site. default is `BASE_URL/UPLOADS_DIR`.
 
 * `RES_URL`: **[ str ]** res url of Site. default is `UPLOADS_URL/res`. Change it to online url if you need.
-
-* `LANGUAGES_DIR`: **[ str ]** The language dir in side each theme will be `"languages"`.
-
-* `CHARSET`: **[ str ]** Site date files charset. Default is `"utf8"`.
-
-* `CONTENT_FILE_EXT`: **[ str ]** content file ext will be `".md"`.
-
-* `TEMPLATE_FILE_EXT`: **[ str ]** template file ext will be `".html"`.
-
-* `SITE_DATA_FILE`: **[ str ]** Site date is general data of the site, Default is "site.json".
-
-* `THEME_CONF_FILE`: **[ str ]** Theme config file is `"config.json"`.
-
-* `DEFAULT_TEMPLATE`: **[ str ]** Default template name is `"index"`.
-
-* `DEFAULT_DATE_FORMAT`: **[ str ]** Default input date format is `"%Y-%m-%d"`. This format will not effect while output Date format.
-
-* `DEFAULT_EXCERPT_LENGTH`: **[ str ]** Excerpt length will be `600`.
-
-* `DEFAULT_CONTENT_TYPE`: **[ str ]** default content type as `"page"`.
-
-* `DEFAULT_INDEX_SLUG`: **[ str ]** Index page slug default as `"index"`.
-
-* `DEFAULT_404_SLUG`: **[ str ]** 404 page slug default as `"error-404"`.
-
-* `DEFAULT_SEARCH_SLUG`: **[ str ]** Search page slug default as `"search"`.
-
-* `DEFAULT_CATEGORY_SLUG`: **[ str ]** Category page slug. default as `"category"`.
-
-* `DEFAULT_TAG_SLUG`: **[ str ]** Tags page slug default as `"tag"`.
-
-* `RESERVED_SLUGS`: **[ list ]** Define some content slug (lower case of file name) will not showing up in query list. Default is `[DEFAULT_INDEX_SLUG, DEFAULT_TAG_SLUG, DEFAULT_CATEGORY_SLUG, DEFAULT_SEARCH_SLUG,]`.
-
-* `MARKDOWN_EXTENSIONS`: **[ list ]** Use markdown extensions if content mode is markdown. Remember you have to install by your self before use it, and it IS NOT a Plugin. default is `[]`.
-
-* `MAXIMUM_QUERY`: **[ int ]** A number of maximum returns of each content query method. A very large number could cost really slow rendering. Default is `60`.
-
-* `SORTABLE_FIELD_KEYS`: **[ set ]** Define which major fields in raw files data can be sorting. Default is `('date', 'updated')`.
-
-* `QUERYABLE_FIELD_KEYS`: **[ set ]** Define content fileds which can be query, those keys will load as major fields for the raw files data, others will host in `meta` field in raw file data as custom fields, but remember all fields will reform after rendering. Default is `('slug', 'parent', 'priority', 'template', 'date', 'updated', 'creation')`.
 
 * `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
 
@@ -119,49 +74,31 @@ You can modify the `config.py` to change base settings.
 
 Pyco supported plugins. Plugins use several hooked functions, and order by the request work flow. Some data could be customlize, you have to print out to understand attributes. Hooks such as:
 
-1. `config_loaded(config)`: While site date, config, theme_meta loaded.
-    * `config`: **[ dict ]** read-only. include `config settings`, `theme_meta` and `site_meta`.
+1. `config_loaded(metas)`: While config, site date, theme_meta loaded.
+    * `metas`: **[ dict ]** read-only. include `config`, `theme_meta` and `site_meta`.
 
 2. `request_url(request)`: While the request is confirmed.
     * `request`: **[ dict ]** a flask request object.
 
-3. `before_load_content(path)`: Before load the page.
-    * `path`: **[ dict ]**
-      1. `content_type`: **[ str ]** content type slug.
-      2. `slug`: **[ str ]** file slug
-
-4. `after_load_content(path, file)`: After content loaded.
-    * `path`: **[ dict ]** or `None` for error 404.
-      1. `content_type`: **[ str ]** content type slug.
-      2. `slug`: **[ str ]** file slug
-    * `file`: **[ dict ]** a file dict. Print out to see all attributes.
-
-5. `before_parse_page_content(content)`: Before parse the content.
-    * `content`: **[ dict ]**
-      1. `content`: raw content string.
-
-6. `after_parse_page_content(content)`: After content parsed.
+3. `get_page_content(content)`: After content parsed.
     * `content`: **[ dict ]**
       1. `content`: parsed content string.
 
-7. `before_read_page_meta(headers)`: Before read page meta.
-    * `headers`: **[ dict ]** Print out to see all attributes.
-
-8. `after_read_page_meta(page_meta, redirect)`: After read page meta.
+4. `get_page_meta(page_meta, redirect)`: After read page meta.
     * `page_meta`: **[ dict ]** All page readed attrbiutes.
     * `redirect`: **[ dict ]** or **[ None ]** redirect information. for rest api this param will be None, because there is no way to redirect.
       1. `url`: **[ str ]** redirect url, default is `None`.
 
-9. `get_pages(pages, current_page_id)`: While query contents.
+5. `get_pages(pages, current_page_id)`: While query contents.
     * `pages`: all contents. Print out for attributes.
 
-10. `before_render(var, template)`: Before render (not support restapi).
-    * `var`: **[ dict ]** context for the rendering.
+6. `before_render(context, template)`: Before render (not support restapi).
+    * `context`: **[ dict ]** context for the rendering.
     * `template`: **[ dict ]** template information.
       1. `name`: **[ str ]** template name.
 
 
-13. `after_render(rendered)`: After render (not support restapi).
+7. `after_render(rendered)`: After render (not support restapi).
     * `rendered`: **[ dict ]** rendered output.
       1. `output`: **[ str ]** the content return to browser.
 

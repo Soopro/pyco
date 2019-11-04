@@ -56,10 +56,11 @@ def before_request():
         return make_response('', 204)
 
     # view args
+    model = current_app.model
     request.view_args.setdefault('content_type_slug',
-                                 current_app.config['DEFAULT_CONTENT_TYPE'])
+                                 model.Document.DEFAULT_CONTENT_TYPE)
     request.view_args.setdefault('file_slug',
-                                 current_app.config['DEFAULT_INDEX_SLUG'])
+                                 model.Document.DEFAULT_INDEX_SLUG)
 
 
 @blueprint.errorhandler(Exception)
