@@ -49,7 +49,7 @@ def query_segments(app, type_slug, parent_slug):
              if tmpl.startswith('^')]
 
     if tmpls:
-        files = current_app.model.Document.find(type_slug)
+        files = current_app.db.Document.find(type_slug)
         segments = [f for f in files if f['template'] in tmpls and
                     f['parent'] == parent_slug and f['status']]
         segments = sortedby(segments, [('priority', 1), sortby])[:60]
@@ -61,7 +61,7 @@ def query_segments(app, type_slug, parent_slug):
 # search
 def search_by_files(keywords, content_type,
                     offset=0, limit=0, use_tags=True):
-    files = current_app.model.Document.find(content_type)
+    files = current_app.db.Document.find(content_type)
 
     if not keywords:
         results = files
@@ -88,7 +88,7 @@ def search_by_files(keywords, content_type,
 
 
 def find_content_file(type_slug, file_slug):
-    return current_app.model.Document.find_one(file_slug, type_slug)
+    return current_app.db.Document.find_one(file_slug, type_slug)
 
 
 def find_404_content_file():
@@ -142,9 +142,9 @@ def parse_page_metas(page, current_id=None):
     data['path'] = gen_page_path(page)
 
     # content marks
-    if data['slug'] == current_app.model.Document.DEFAULT_INDEX_SLUG:
+    if data['slug'] == current_app.db.Document.DEFAULT_INDEX_SLUG:
         data['is_front'] = True
-    if data['slug'] == current_app.model.Document.DEFAULT_404_SLUG:
+    if data['slug'] == current_app.db.Document.DEFAULT_404_SLUG:
         data['is_404'] = True
     if str(data['id']) == str(current_id):
         data['is_current'] = True
@@ -355,10 +355,10 @@ def helper_wrap_languages(languages, locale):
 
 # helpers
 def _query(content_type, attrs=None, term=None, tag=None):
-    QUERYABLE_FIELD_KEYS = current_app.model.Document.QUERYABLE_FIELD_KEYS
-    RESERVED_SLUGS = current_app.model.Document.RESERVED_SLUGS
+    QUERYABLE_FIELD_KEYS = current_app.db.Document.QUERYABLE_FIELD_KEYS
+    RESERVED_SLUGS = current_app.db.Document.RESERVED_SLUGS
 
-    files = [f for f in current_app.model.Document.find(content_type)
+    files = [f for f in current_app.db.Document.find(content_type)
              if f['slug'] not in RESERVED_SLUGS and f['status']]
 
     if isinstance(attrs, (str, dict)):
@@ -401,7 +401,7 @@ def _query(content_type, attrs=None, term=None, tag=None):
 
 
 def _sorting(files, sort):
-    SORTABLE_FIELD_KEYS = current_app.model.Document.SORTABLE_FIELD_KEYS
+    SORTABLE_FIELD_KEYS = current_app.db.Document.SORTABLE_FIELD_KEYS
 
     sorts = [('priority', 1)]
     if isinstance(sort, tuple):

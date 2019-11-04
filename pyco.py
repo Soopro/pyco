@@ -9,8 +9,10 @@ from flask.json import JSONEncoder
 from utils.request import get_remote_addr, get_request_url
 from utils.response import make_cors_headers
 
-from loaders import load_config, load_plugins
+from loaders import load_config, load_plugins, load_metas
 from blueprints import register_blueprints
+
+from models import DBConnection, Configure, Document, Site, Theme
 
 
 __version_info__ = ('3', '0', '0')
@@ -22,6 +24,9 @@ app = Flask(__name__)
 app.version = __version__
 
 load_config(app)
+
+app.db = DBConnection()
+app.db.register([Configure, Document, Site, Theme])
 
 # make importable for plugin folder
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))

@@ -22,8 +22,8 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = '{}\n{}'.format(repr(err), traceback.format_exc())
-    current_app.logger.error(err_msg)
+    err_log = '{}\n{}'.format(repr(err), traceback.format_exc())
+    current_app.logger.error(err_log)
     err = {
         'errmsg': repr(err)
     }

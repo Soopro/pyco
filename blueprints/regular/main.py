@@ -65,7 +65,10 @@ def before_request():
 
 @blueprint.errorhandler(Exception)
 def errorhandler(err):
-    err_msg = '{}\n{}'.format(repr(err), traceback.format_exc())
-    err_html_msg = '<h1>{}</h1><p>{}</p>'.format(repr(err), str(err))
-    current_app.logger.error(err_msg)
-    return make_response(err_html_msg, 579)
+    err_log = '{}\n{}'.format(repr(err), traceback.format_exc())
+    err_title = '<h1>{}</h1>'.format(type(err).__name__)
+    err_msg = '<h2>{}</h2>'.format(str(err))
+    err_tb = '<p><small>{}</small></p>'.format(err_log)
+    err_html = '{}{}{}'.format(err_title, err_msg, err_tb)
+    current_app.logger.error(err_log)
+    return make_response(err_html, 500)

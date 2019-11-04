@@ -117,7 +117,7 @@ def query_view_contents(app_id):
 
     # set default params
     if not content_type:
-        content_type = current_app.model.Document.DEFAULT_CONTENT_TYPE
+        content_type = current_app.db.Document.DEFAULT_CONTENT_TYPE
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
@@ -179,7 +179,7 @@ def get_view_content_list(app_id, type_slug=None):
         perpage = theme_opts.get('perpage')
 
     if not type_slug:
-        type_slug = current_app.model.Document.DEFAULT_CONTENT_TYPE
+        type_slug = current_app.db.Document.DEFAULT_CONTENT_TYPE
 
     perpage, paged = _safe_paging(perpage, paged)
 
@@ -275,7 +275,7 @@ def _add_cursor(content, index, perpage, paged, total_pages, total_count):
 
 
 def _safe_paging(perpage, paged):
-    max_perpage = current_app.model.Document.MAXIMUM_QUERY
+    max_perpage = current_app.db.Document.MAXIMUM_QUERY
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
     return min(perpage, max_perpage), paged

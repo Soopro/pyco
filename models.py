@@ -9,6 +9,21 @@ import urllib
 from utils.misc import process_slug, gen_excerpt
 
 
+class DBConnection:
+    models = dict()
+
+    def register(self, models):
+        for model in models:
+            self.models[model.__name__] = model
+
+    def __getattr__(self, name):
+        try:
+            attr = self.models[name]
+        except Exception:
+            raise Exception('Model `{}` not registerd.'.format(name))
+        return attr
+
+
 # base
 class FlatFile:
     _id = None
@@ -23,11 +38,6 @@ class FlatFile:
         if isinstance(path, str):
             self.path = path
         self._load_raw()
-
-    def __setattr__(self, key, value):
-        if key in self.RESERVED_ATTRS:
-            raise Exception('This key is reserved.')
-        return super(FlatFile, self).__setattr__(key, value)
 
     def __getitem__(self, key):
         if key == '_id':
@@ -103,11 +113,9 @@ class Configure(FlatFile):
 
     def __init__(self):
         super(Configure, self).__init__(self.path)
-        fields = yaml.safe_load(self.raw)
-        self.data = self._parse_field(fields)
-
-    def has_conf(self):
-        return bool(self.raw and self.data)
+        if self.raw:
+            fields = yaml.safe_load(self.raw)
+            self.data = self._parse_field(fields)
 
     def save(self):
         self.raw = yaml.safe_dump(self._prepare_field(self.data),
@@ -116,6 +124,14 @@ class Configure(FlatFile):
                                   indent=2,
                                   encoding=None)
         return super(Configure, self).save()
+
+    # query methods
+    @classmethod
+    def get_conf(cls):
+        if os.path.isfile(cls.path):
+            return cls.__init__(cls.path)
+        else:
+            return None
 
 
 class Theme(FlatFile):
@@ -156,8 +172,8 @@ class Site(FlatFile):
     data = {}
 
     def __init__(self):
-        super(Configure, self).__init__(self.path)
-        self._ensure(self.path)
+        super(Site, self).__init__(self.path)
+        self._ensure()
 
     def _ensure(self):
         if self.raw is None:

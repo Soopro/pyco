@@ -1,13 +1,7 @@
 # coding=utf8
 
-from utils.misc import process_slug,
-
 from types import ModuleType
 import os
-import yaml
-import re
-import json
-import markdown
 
 
 def load_config(app, config_name='config.py'):
@@ -61,10 +55,10 @@ def load_plugins(app):
 
 
 def load_metas(app):
-    site = app.model.Site()
+    site = app.db.Site()
     theme_path = os.path.join(app.config.get('THEMES_DIR'),
                               app.config.get('THEME_NAME'))
-    theme_meta = app.model.Theme(theme_path)
+    theme_meta = app.db.Theme(theme_path)
 
     return {
         '_id': site.get('app_id', 'pyco_app'),

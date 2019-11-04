@@ -2,11 +2,11 @@
 
 from flask import Flask, make_response, g
 
-from loaders import load_config, load_admin_conf
+from loaders import load_config
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
-
+from models import DBConnection, Configure, Document, Site, Theme
 import traceback
 
 
@@ -17,6 +17,8 @@ app = Flask(__name__,
 
 load_config(app)
 
+app.db = DBConnection()
+app.db.register([Configure, Document, Site, Theme])
 
 # register blueprints
 register_admin_blueprints(app)
@@ -30,7 +32,8 @@ def dateformat(t, to_format='%Y-%m-%d'):
 # inject before request handlers
 @app.before_request
 def app_before_request():
-    g.configure = load_admin_conf(app)
+    g.configure = app.db.Configure()
+    print(g.configure)
 
 
 # inject context
@@ -46,11 +49,10 @@ def inject_global_variable():
 # errors
 @app.errorhandler(Exception)
 def errorhandler(err):
-    err_detail = traceback.format_exc()
-    err_detail = '<br />'.join(err_detail.split('\n'))
-    err_msg = '<h1>{}</h1><br/>{}'.format(repr(err), err_detail)
-    app.logger.error(err)
-    return make_response(err_msg, 579)
+    err_log = '{}\n{}'.format(repr(err), traceback.format_exc())
+    err_msg = '<h1>{}</h1><p>{}</p>'.format(repr(err), err_log)
+    app.logger.error(err_log)
+    return make_response(err_msg, 500)
 
 
 if __name__ == '__main__':
