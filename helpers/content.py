@@ -5,7 +5,6 @@ from flask import current_app, Markup, g
 import re
 import markdown
 
-from loaders import load_files, load_single_file
 from utils.validators import url_validator
 from utils.misc import (parse_int,
                         match_cond,
@@ -50,7 +49,7 @@ def query_segments(app, type_slug, parent_slug):
              if tmpl.startswith('^')]
 
     if tmpls:
-        files = load_files(current_app, type_slug)
+        files = current_app.model.Document.find(type_slug)
         segments = [f for f in files if f['template'] in tmpls and
                     f['parent'] == parent_slug and f['status']]
         segments = sortedby(segments, [('priority', 1), sortby])[:60]
@@ -62,7 +61,7 @@ def query_segments(app, type_slug, parent_slug):
 # search
 def search_by_files(keywords, content_type,
                     offset=0, limit=0, use_tags=True):
-    files = load_files(current_app, content_type)
+    files = current_app.model.Document.find(content_type)
 
     if not keywords:
         results = files
@@ -89,7 +88,7 @@ def search_by_files(keywords, content_type,
 
 
 def find_content_file(type_slug, file_slug):
-    return load_single_file(current_app, type_slug, file_slug)
+    return current_app.model.Document.find_one(file_slug, type_slug)
 
 
 def find_404_content_file():
@@ -359,7 +358,7 @@ def _query(content_type, attrs=None, term=None, tag=None):
     QUERYABLE_FIELD_KEYS = current_app.model.Document.QUERYABLE_FIELD_KEYS
     RESERVED_SLUGS = current_app.model.Document.RESERVED_SLUGS
 
-    files = [f for f in load_files(current_app, content_type)
+    files = [f for f in current_app.model.Document.find(content_type)
              if f['slug'] not in RESERVED_SLUGS and f['status']]
 
     if isinstance(attrs, (str, dict)):
