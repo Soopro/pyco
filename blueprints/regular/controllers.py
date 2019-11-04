@@ -70,7 +70,7 @@ def rendering(content_type_slug, file_slug):
     # content
     page_content = {'content': content_file.get('content', '')}
     page_content['content'] = parse_page_content(page_content['content'])
-    run_hook('get_page_content', content=page_content)
+    run_hook('get_page_content', pack=page_content)
 
     view_ctx['content'] = page_content['content']
 

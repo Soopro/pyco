@@ -231,7 +231,7 @@ def get_view_content(app_id, type_slug, slug):
 
     page_content = {'content': content_file.get('content', '')}
     page_content['content'] = parse_page_content(page_content['content'])
-    run_hook('get_page_content', content=page_content)
+    run_hook('get_page_content', pack=page_content)
 
     page_meta = parse_page_metas(content_file)
     run_hook('get_page_meta', meta=page_meta, redirect=None)

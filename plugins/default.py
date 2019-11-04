@@ -13,16 +13,19 @@ def request_url(request):
     pass
 
 
-def get_page_content(content):
-    content['content'] = shortcode(plugin_data['config'], content['content'])
+def get_page_content(pack):
+    pack.update({
+        'content': shortcode(plugin_data['config'], pack['content'])
+    })
 
 
 def get_page_meta(meta, redirect):
-    shortcode(plugin_data['config'], meta)
+    meta.update(shortcode(plugin_data['config'], meta))
 
 
 def get_pages(pages, current_page_id):
-    shortcode(plugin_data['config'], pages)
+    for p in pages:
+        p.update(shortcode(plugin_data['config'], p))
 
 
 def before_render(context, template):
@@ -39,18 +42,17 @@ RE_THEME = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
 
 
 def _process_shortcode(config, text):
-    print(text)
-    print('---------------------------')
     text = re.sub(RE_UPLOADS, str(config['UPLOADS_URL']), text)
     text = re.sub(RE_THEME, str(config['THEME_URL']), text)
+    return text
 
 
 def shortcode(config, data):
     if isinstance(data, str):
-        _process_shortcode(config, data)
+        return _process_shortcode(config, data)
     elif isinstance(data, list):
-        for item in data:
-            shortcode(config, item)
+        return [shortcode(config, item) for item in data]
     elif isinstance(data, dict):
-        for k, v in data.items():
-            shortcode(config, v)
+        return {k: shortcode(config, v) for k, v in data.items()}
+    else:
+        return data

@@ -31,8 +31,6 @@ class FlatFile:
     data = dict()
     raw = None
 
-    RESERVED_ATTRS = ('path', 'data', 'raw', '_id')
-
     def __init__(self, path):
         self._id = path
         if isinstance(path, str):
@@ -55,8 +53,6 @@ class FlatFile:
         return self.data.get(key, default)
 
     def save(self):
-        # if os.path.isfile(self.path):
-        #     os.remove(self.path)
         with open(self.path, 'w') as f:
             f.write(self.raw, '')
         return self._id
