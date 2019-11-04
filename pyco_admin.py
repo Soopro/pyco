@@ -33,7 +33,6 @@ def dateformat(t, to_format='%Y-%m-%d'):
 @app.before_request
 def app_before_request():
     g.configure = app.db.Configure()
-    print(g.configure)
 
 
 # inject context

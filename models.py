@@ -51,8 +51,8 @@ class FlatFile:
         else:
             self.data[key] = value
 
-    def get(self, key):
-        return self.data.get(key)
+    def get(self, key, default):
+        return self.data.get(key, default)
 
     def save(self):
         # if os.path.isfile(self.path):
@@ -125,13 +125,8 @@ class Configure(FlatFile):
                                   encoding=None)
         return super(Configure, self).save()
 
-    # query methods
-    @classmethod
-    def get_conf(cls):
-        if os.path.isfile(cls.path):
-            return cls.__init__(cls.path)
-        else:
-            return None
+    def exists(self):
+        return self.raw and self.data
 
 
 class Theme(FlatFile):
@@ -188,7 +183,7 @@ class Site(FlatFile):
     def parse(self):
         site = json.loads(self.raw)
         site_meta = site.pop('meta')
-        languages = site_meta.pop(site_meta)
+        languages = site_meta.pop('languages')
         self._id = site.get('app_id', self._id)
         self.data = {
             '_id': self._id,
@@ -269,8 +264,9 @@ class Document(FlatFile):
             fields = {}
             content = ''
         else:
-            fields = yaml.safe_load(m.group('fields', ''))
-            content = m.group('content', '')
+            print(m.group('fields'))
+            fields = yaml.safe_load(m.group('fields'))
+            content = m.group('content')
 
         self._parse_structure(self._parse_field(fields), content)
 
@@ -336,7 +332,7 @@ class Document(FlatFile):
             rel_path = os.path.join(cls.CONTENT_DIR, content_type, slug)
         path = '{}{}'.format(rel_path, cls.CONTENT_FILE_EXT)
         if os.path.isfile(path):
-            return cls.__init__(path)
+            return cls(path)
         else:
             return None
 
@@ -349,4 +345,4 @@ class Document(FlatFile):
         file_paths = [os.path.join(f_dir, f) for f in os.listdir(f_dir)
                       if f.endswith(cls.CONTENT_FILE_EXT) and
                       not f.startswith('_')]
-        return [cls.__init__(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+        return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]

@@ -11,7 +11,7 @@ def login_required(f):
     def wrapper(*args, **kwargs):
         hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
         configure = g.configure
-        if not configure or not session.get('admin') or \
+        if not configure.exists() or not session.get('admin') or \
            session['admin'] != hmac_sha(hmac_key, configure['passcode_hash']):
             session.clear()
             return redirect(url_for('dashboard.login'))

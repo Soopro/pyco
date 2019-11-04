@@ -32,7 +32,7 @@ def index():
 @blueprint.route('/login')
 def login():
     configure = g.configure
-    if not configure:
+    if not configure.exists():
         return redirect(url_for('.initialize'))
     elif session.get('admin'):
         return redirect('/')
@@ -57,7 +57,7 @@ def exec_login():
 @blueprint.route('/initialize')
 def initialize():
     configure = g.configure
-    if configure:
+    if configure.exists():
         return redirect(url_for('.login'))
     return render_template('initialize.html')
 
