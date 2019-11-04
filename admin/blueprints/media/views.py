@@ -39,9 +39,9 @@ def index():
     mediafiles = list(mediafiles)
 
     for media in mediafiles:
-        media['src'] = u'{}/{}/{}'.format(uploads_url,
-                                          media['scope'],
-                                          media['key'])
+        media['src'] = '{}/{}/{}'.format(uploads_url,
+                                         media['scope'],
+                                         media['key'])
 
     prev_url = url_for(request.endpoint,
                        paged=p.previous_page)
@@ -75,13 +75,13 @@ def upload():
 
         if media:  # rename file if exists.
             fname, ext = os.path.splitext(filename)
-            key = filename = u'{}-{}{}'.format(fname, uuid4_hex(), ext)
+            key = filename = '{}-{}{}'.format(fname, uuid4_hex(), ext)
 
         media = current_app.mongodb.Media()
         media['scope'] = scope
         media['filename'] = filename
         media['key'] = key
-        media['mimetype'] = unicode(file.mimetype)
+        media['mimetype'] = file.mimetype
         media['size'] = parse_int(file.content_length)
         media.save()
 

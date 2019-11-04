@@ -54,7 +54,6 @@ class SilentlyStr(str):
 
     __getattr__ = return_new
     __call__ = return_new
-    __unicode__ = silently
     __str__ = silently
 
 

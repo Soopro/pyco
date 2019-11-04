@@ -32,8 +32,8 @@ def index():
 @login_required
 def update():
     title = request.form.get('title')
-    welcome_msg = request.form.get('welcome_msg', u'')
-    register_msg = request.form.get('register_msg', u'')
+    welcome_msg = request.form.get('welcome_msg', '')
+    register_msg = request.form.get('register_msg', '')
     rental_time_limit = request.form.get('rental_time_limit')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
@@ -67,7 +67,7 @@ def change_passcode():
         raise Exception('New passcode is not match ...')
     else:
         configure['passcode_hash'] = generate_password_hash(passcode)
-        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
+        hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         configure.save()
     flash('Saved.')

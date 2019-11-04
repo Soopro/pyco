@@ -9,7 +9,7 @@ from utils.misc import hmac_sha
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
+        hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         configure = g.configure
         if not configure.exists() or not session.get('admin') or \
            session['admin'] != hmac_sha(hmac_key, configure['passcode_hash']):

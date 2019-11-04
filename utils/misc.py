@@ -222,8 +222,10 @@ def safe_filename(filename, mimetype=None):
 
 def hmac_sha(key, msg, digestmod=None, output=True):
     if digestmod is None:
-        digestmod = hashlib.sha1
-    sha = hmac.new(str(key), str(msg), digestmod=digestmod)
+        digestmod = hashlib.sha256
+    sha = hmac.new(bytes(key, 'utf-8'),
+                   bytes(msg, 'utf-8'),
+                   digestmod=digestmod)
     if output:
         return sha.hexdigest()
     else:

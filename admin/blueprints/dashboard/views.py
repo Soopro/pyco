@@ -46,7 +46,7 @@ def exec_login():
     if not configure:
         return redirect(url_for('.initialize'))
     elif check_password_hash(configure['passcode_hash'], passcode):
-        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
+        hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         return redirect('/')
     else:
@@ -64,9 +64,16 @@ def initialize():
 
 @blueprint.route('/initialize', methods=['POST'])
 def exec_initialize():
+    configure = g.configure
     passcode = request.form['passcode']
-
-    return redirect(url_for('.login'))
+    passcode2 = request.form['passcode2']
+    if passcode != passcode2:
+        flash('Setup passcode is not match!', 'danger')
+        return redirect(url_for('.initialize'))
+    else:
+        configure['passcode_hash'] = generate_password_hash(passcode)
+        configure.save()
+        return redirect(url_for('.login'))
 
 
 @blueprint.route('/logout')

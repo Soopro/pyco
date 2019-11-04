@@ -38,7 +38,7 @@ blueprint = Blueprint('book',
 @login_required
 def index():
     paged = parse_int(request.args.get('paged'), 1, True)
-    search_key = request.args.get('search_key', u'')
+    search_key = request.args.get('search_key', '')
     if search_key:
         books = current_app.mongodb.Book.search(search_key.split())
     else:
@@ -99,18 +99,18 @@ def detail(book_id):
 @login_required
 def update(book_id):
     slug = request.form.get('slug')
-    title = request.form.get('title', u'')
-    author = request.form.get('author', u'')
-    publisher = request.form.get('publisher', u'')
-    description = request.form.get('description', u'')
-    tags = request.form.get('tags', u'')
+    title = request.form.get('title', '')
+    author = request.form.get('author', '')
+    publisher = request.form.get('publisher', '')
+    description = request.form.get('description', '')
+    tags = request.form.get('tags', '')
     terms = request.form.getlist('terms') or []
     credit = request.form.get('credit', 0)
-    value = request.form.get('value', u'')
-    figure = request.form.get('figure', u'')
-    previews = request.form.get('previews', u'')
+    value = request.form.get('value', '')
+    figure = request.form.get('figure', '')
+    previews = request.form.get('previews', '')
     rating = request.form.get('rating', 0)
-    memo = request.form.get('memo', u'')
+    memo = request.form.get('memo', '')
     status = request.form.get('status')
 
     book = _find_book(book_id)
@@ -210,9 +210,9 @@ def attach_cover(book_id):
     media = _upload_img(file)
 
     uploads_url = current_app.config.get('UPLOADS_URL')
-    book['meta']['figure'] = u'{}/{}/{}'.format(uploads_url,
-                                                media['scope'],
-                                                media['key'])
+    book['meta']['figure'] = '{}/{}/{}'.format(uploads_url,
+                                               media['scope'],
+                                               media['key'])
     book.save()
     return redirect(request.referrer)
 
@@ -229,13 +229,13 @@ def attach_preview(book_id):
         try:
             media_list.append(_upload_img(file))
         except Exception as e:
-            flash(unicode(e), 'warning')
+            flash(e, 'warning')
 
     uploads_url = current_app.config.get('UPLOADS_URL')
     for media in media_list:
-        preview_src = u'{}/{}/{}'.format(uploads_url,
-                                         media['scope'],
-                                         media['key'])
+        preview_src = '{}/{}/{}'.format(uploads_url,
+                                        media['scope'],
+                                        media['key'])
         book['meta']['previews'].append(preview_src)
     book.save()
 
@@ -251,7 +251,7 @@ def checkin_volume(book_id, vol_id):
     status_list = [BookVolume.STATUS_LEND, BookVolume.STATUS_PENDING]
     if volume and volume['status'] in status_list:
         volume['user_id'] = None
-        volume['renter'] = u''
+        volume['renter'] = ''
         volume['rental_time'] = 0
         volume['status'] = BookVolume.STATUS_STOCK
         volume.save()
@@ -330,8 +330,8 @@ def term_detail(term_id):
 @login_required
 def update_term(term_id):
     key = request.form.get('key')
-    name = request.form.get('name', u'')
-    figure = request.form.get('figure', u'')
+    name = request.form.get('name', '')
+    figure = request.form.get('figure', '')
 
     term = _find_term(term_id)
     if key:
@@ -399,14 +399,14 @@ def download():
         for fkey in fieldnames:
             if '.' in fkey:
                 _k = fkey.split('.')[-1]
-                _field[fkey] = book['meta'].get(_k) or u'-'
+                _field[fkey] = book['meta'].get(_k) or '-'
             else:
-                _field[fkey] = book.get(fkey) or u'-'
+                _field[fkey] = book.get(fkey) or '-'
             if isinstance(_field[fkey], basestring):
-                _field[fkey] = _field[fkey].replace('|', u';')
+                _field[fkey] = _field[fkey].replace('|', ';')
                 _field[fkey] = _field[fkey].encode('utf-8')
             elif isinstance(_field[fkey], list):
-                _field[fkey] = u'; '.join(_field[fkey]).encode('utf-8')
+                _field[fkey] = '; '.join(_field[fkey]).encode('utf-8')
             else:
                 _field[fkey] = str(_field[fkey])
             try:
@@ -473,11 +473,11 @@ def _uniqueify_term_key(key, term=None):
 
 def _gen_book_code(book, code=None):
     if not code:
-        code = unicode(encode_short_url())
+        code = encode_short_url()
     _book = current_app.mongodb.\
         BookVolume.find_one_by_bookid_code(book['_id'], code)
     if _book is not None:
-        code = _gen_book_code(book, unicode(encode_short_url(12)))
+        code = _gen_book_code(book, encode_short_url(12))
     return code
 
 
@@ -499,13 +499,13 @@ def _upload_img(file):
 
     if media:  # rename file if exists.
         fname, ext = os.path.splitext(filename)
-        key = filename = u'{}-{}{}'.format(fname, uuid4_hex(), ext)
+        key = filename = '{}-{}{}'.format(fname, uuid4_hex(), ext)
 
     media = current_app.mongodb.Media()
     media['scope'] = scope
     media['filename'] = filename
     media['key'] = key
-    media['mimetype'] = unicode(file.mimetype)
+    media['mimetype'] = file.mimetype
     media['size'] = parse_int(file.content_length)
     media.save()
 

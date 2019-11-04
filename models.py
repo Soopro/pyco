@@ -54,7 +54,7 @@ class FlatFile:
 
     def save(self):
         with open(self.path, 'w') as f:
-            f.write(self.raw, '')
+            f.write(self.raw or '')
         return self._id
 
     def delete(self):
@@ -76,12 +76,12 @@ class FlatFile:
         elif isinstance(x, list):
             return list([self._prepare_field(i) for i in x])
         elif isinstance(x, str):
-            return urllib.unquote(x)
+            return urllib.parse.unquote(x)
         elif isinstance(x, (int, float, bool)) or x is None:
             return x
         else:
             try:
-                x = urllib.unquote(str(x))
+                x = urllib.parse.unquote(str(x))
             except Exception as e:
                 x = str(e)
         return x
