@@ -220,13 +220,13 @@ def safe_filename(filename, mimetype=None):
     return '{}{}'.format(_starts.group(), filename)
 
 
-def hmac_sha(key, msg, digestmod=None, output=True):
+def hmac_sha(key, msg, digestmod=None, use_hexdigest=True):
     if digestmod is None:
         digestmod = hashlib.sha256
     sha = hmac.new(bytes(key, 'utf-8'),
                    bytes(msg, 'utf-8'),
                    digestmod=digestmod)
-    if output:
+    if use_hexdigest:
         return sha.hexdigest()
     else:
         return sha
