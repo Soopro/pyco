@@ -18,7 +18,7 @@
         </div>
 
         <div class="card card-primary">
-          <div class="card-header"><h4>Initialize</h4></div>
+          <div class="card-header"><h4>{{_('Initialize')}}</h4></div>
 
           <div class="card-body">
             <form class="needs-validation"
@@ -26,7 +26,7 @@
                   method="POST"
                   novalidate="">
               <div class="form-group">
-                <label for="passcode">Setup Passcode</label>
+                <label for="passcode">{{_('Setup Passcode')}}</label>
                 <input id="passcode"
                        class="form-control pwstrength"
                        name="passcode"
@@ -40,21 +40,18 @@
                   </div>
 
                 <div class="invalid-feedback">
-                  Invalid Passcode, length between 6-360.
+                  {{_('Invalid Passcode, length between 6-360.')}}
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="passcode2">Confirm Passcode</label>
+                <label for="passcode2">{{_('Confirm Passcode')}}</label>
                 <input id="passcode2"
                        class="form-control"
                        name="passcode2"
                        minlength="6"
                        maxlength="360"
                        type="text">
-                <div class="invalid-feedback">
-                  Invalid Passcode, length between 6-360.
-                </div>
               </div>
 
               <div class="form-group">

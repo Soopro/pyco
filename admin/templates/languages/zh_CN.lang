@@ -11,5 +11,69 @@
   {
     "msgid": "Dashboard",
     "msgstr": "仪表板"
+  },
+  {
+    "msgid": "Content",
+    "msgstr": "内容"
+  },
+  {
+    "msgid": "Page",
+    "msgstr": "页面"
+  },
+  {
+    "msgid": "Storage",
+    "msgstr": "存储"
+  },
+  {
+    "msgid": "Media",
+    "msgstr": "媒体"
+  },
+  {
+    "msgid": "Archives",
+    "msgstr": "档案"
+  },
+  {
+    "msgid": "Preference",
+    "msgstr": "偏好设置"
+  },
+  {
+    "msgid": "Site Settings",
+    "msgstr": "站点设置"
+  },
+  {
+    "msgid": "Configure",
+    "msgstr": "配置"
+  },
+  {
+    "msgid": "Appearance",
+    "msgstr": "外观"
+  },
+  {
+    "msgid": "Backup",
+    "msgstr": "备份"
+  },
+  {
+    "msgid": "Initialize",
+    "msgstr": "初始化"
+  },
+  {
+    "msgid": "Setup Passcode",
+    "msgstr": "设置口令"
+  },
+  {
+    "msgid": "Confirm Passcode",
+    "msgstr": "确认口令"
+  },
+  {
+    "msgid": "Invalid Passcode, length between 6-360.",
+    "msgstr": "密码无效，长度要在6至360之间。"
+  },
+  {
+    "msgid": "Passcode",
+    "msgstr": "口令"
+  },
+  {
+    "msgid": "Login",
+    "msgstr": "登录"
   }
 ]
