@@ -1,5 +1,7 @@
 # coding=utf8
 
+from utils.files import ensure_dirs
+
 from types import ModuleType
 import os
 
@@ -10,7 +12,8 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('STATIC_PATH', 'static')
 
     app.config.setdefault('UPLOADS_DIR', 'uploads')
-    app.config.setdefault('PLUGIN_DIR', 'plugins')
+    app.config.setdefault('BACKUPS_DIR', 'backups')
+    app.config.setdefault('PLUGINS_DIR', 'plugins')
 
     app.config.setdefault('THEMES_DIR', 'themes')
     app.config.setdefault('THEME_NAME', 'default')
@@ -37,6 +40,11 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('ADMIN_BASE_URL', ':5510/')
 
     app.debug = app.config['DEBUG']
+    ensure_dirs(
+        app.config['UPLOADS_DIR'],
+        app.config['BACKUPS_DIR'],
+        app.config['PLUGINS_DIR'],
+    )
 
 
 def load_plugins(app):

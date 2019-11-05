@@ -50,8 +50,8 @@ You can modify the `config.py` to change base settings.
 * `THEME_NAME`: **[ str ]** Theme name slug. Default is `"default"`.
 
 * `UPLOADS_DIR`: **[ str ]** Uploads dir will be `"uploads"`.
-
-* `PLUGIN_DIR`: **[ str ]** Plugin dir will be `"plugins"`.
+* `BACKUPS_DIR`: **[ str ]** Backups dir will be `"backups"`.
+* `PLUGINS_DIR`: **[ str ]** Plugin dir will be `"plugins"`.
 
 * `BASE_URL`: **[ str ]** Site base url. Default is `"http://localhost:5500"`.
 

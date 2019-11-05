@@ -119,5 +119,29 @@
   {
     "msgid": "Security",
     "msgstr": "安全"
+  },
+  {
+    "msgid": "Download Backup Package",
+    "msgstr": "下载备份包"
+  },
+  {
+    "msgid": "Download",
+    "msgstr": "下载"
+  },
+  {
+    "msgid": "Download a zip file for all content of the website. All data will be stored as `.md` and `.json` files.",
+    "msgstr": "下载一个包含了整个网站内容数据的Zip文件。所有的数据文件将以`.md`文件和`.json`文件的形式存储。"
+  },
+  {
+    "msgid": "Restore Backup Package",
+    "msgstr": "恢复备份包"
+  },
+  {
+    "msgid": "Upload",
+    "msgstr": "上传"
+  },
+  {
+    "msgid": "Upload a Zip file that contains the entire site content data. All data files must conform to system rules.",
+    "msgstr": "上传一个包含了整个网站内容数据的Zip文件。所有的数据文件必须符合系统设定规则。"
   }
 ]

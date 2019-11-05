@@ -190,7 +190,7 @@ class Site(FlatFile):
     def parse(self):
         site = json.loads(self.raw)
         site_meta = site.pop('meta')
-        languages = site_meta.pop('languages')
+        languages = site_meta.pop('languages', None)
         self._id = site.get('app_id', self._id)
         self.data = {
             '_id': self._id,

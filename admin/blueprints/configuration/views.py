@@ -8,11 +8,15 @@ from flask import (Blueprint,
                    url_for,
                    redirect,
                    render_template,
+                   send_from_directory,
                    g)
+
+import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
-from utils.misc import hmac_sha, parse_int
+from utils.misc import hmac_sha, parse_int, now
+from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
 
@@ -70,4 +74,28 @@ def change_passcode():
         configure.save()
     flash('Saved.')
     return_url = url_for('.configuration')
+    return redirect(return_url)
+
+
+@blueprint.route('/backup/download')
+@login_required
+def backup_download():
+    backups_dir = current_app.config['BACKUPS_DIR']
+    content_dir = current_app.db.Document.CONTENT_DIR
+    temp_zip_file = '{}.zip'.format(now())
+    zipdir(os.path.join(backups_dir, temp_zip_file), content_dir)
+    return send_from_directory(backups_dir, temp_zip_file,
+                               as_attachment=True, cache_timeout=1)
+
+
+@blueprint.route('/backup/restore', methods=['POST'])
+@login_required
+def backup_restore():
+    f = request.files['file']
+    content_dir = current_app.db.Document.CONTENT_DIR
+    # cleanup
+    clean_dirs(content_dir)
+    # unpack files
+    unzip(f, content_dir)
+    return_url = url_for('.index')
     return redirect(return_url)

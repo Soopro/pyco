@@ -31,7 +31,7 @@ app.db.register([Configure, Document, Site, Theme])
 
 # make importable for plugin folder
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(BASE_DIR, app.config.get('PLUGIN_DIR')))
+sys.path.insert(0, os.path.join(BASE_DIR, app.config.get('PLUGINS_DIR')))
 
 # init app
 app.template_folder = os.path.join(app.config.get('THEMES_DIR'),
