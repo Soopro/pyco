@@ -32,7 +32,6 @@ from .helpers.jinja import (saltshaker,
 
 
 def rendering(content_type_slug, file_slug):
-
     run_hook('request_url', request=request)
 
     config = current_app.config

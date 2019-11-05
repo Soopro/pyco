@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 
 from flask import Flask, current_app, request, make_response, g
 from flask.json import JSONEncoder
@@ -66,6 +67,9 @@ app.add_url_rule(
 # inject before request handlers
 @app.before_request
 def app_before_request():
+    if current_app.debug:
+        g._request_time_start = time.time()
+
     # cors response
     if request.method == 'OPTIONS':
         resp = current_app.make_default_options_response()
@@ -90,6 +94,12 @@ def app_before_request():
     g.request_url = get_request_url(g.curr_base_url, g.request_path)
 
     g.query_map = {}
+
+
+@app.teardown_request
+def app_teardown_request(exception=None):
+    if current_app.debug:
+        print('Request Time:', time.time() - g._request_time_start)
 
 
 if __name__ == '__main__':

@@ -27,7 +27,7 @@
     {% for post in posts.contents %}
     <article>
       <header>
-        <h4>{{post.title}}</h4>
+        <h4>{{loop.index}}. {{post.title}}</h4>
         <h5>
           {{_('Posted by %s on %s', meta.author, meta.date|date_formatted)}}
         </h5>

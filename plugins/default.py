@@ -2,11 +2,11 @@
 
 import re
 
-plugin_data = {}
+CONTEXT = {}
 
 
 def config_loaded(config):
-    plugin_data['config'] = config
+    CONTEXT['config'] = config
 
 
 def request_url(request):
@@ -15,17 +15,17 @@ def request_url(request):
 
 def get_page_content(pack):
     pack.update({
-        'content': shortcode(plugin_data['config'], pack['content'])
+        'content': shortcode(CONTEXT['config'], pack['content'])
     })
 
 
 def get_page_meta(meta, redirect):
-    meta.update(shortcode(plugin_data['config'], meta))
+    meta.update(shortcode(CONTEXT['config'], meta))
 
 
 def get_pages(pages, current_page_id):
     for p in pages:
-        p.update(shortcode(plugin_data['config'], p))
+        p.update(shortcode(CONTEXT['config'], p))
 
 
 def before_render(context, template):
