@@ -76,7 +76,7 @@
           <li>
             <a class="nav-link nav-link-lg"
                data-toggle="modal"
-               data-target="#EXIT-MODAL"
+               data-target="#MODAL-EXIT"
                href="#" >
               <i class="fas fa-power-off"></i>
             </a>
@@ -171,7 +171,7 @@
   </div>
 
 
-  <div id="EXIT-MODAL"
+  <div id="MODAL-EXIT"
        class="modal fade"
        tabindex="-1"
        role="dialog"
@@ -202,6 +202,9 @@
       </div>
     </div>
   </div>
+
+  {% block page_models %}
+  {% endblock %}
 
   <!-- General JS Scripts -->
   <script src="{{assets_url}}/modules/jquery.min.js"></script>

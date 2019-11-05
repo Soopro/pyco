@@ -113,15 +113,138 @@
           <div class="section-title mt-0">
             {{_('Primary Menu')}}
           </div>
-          <div class="form-group">
-            <textarea class="form-control"
-                      name="head_metadata">{{site.meta.head_metadata}}</textarea>
-            <small class="form-text text-muted">
-              {{_('* This is usually used in the <head> of the HTML.')}}
-            </small>
+          <div>
+            {% if site.menus.primary %}
+            {% for item in site.menus.primary %}
+            <button class="btn btn-outline-primary w-100 m-1"
+                    type="button"
+                    data-toggle="modal"
+                    data-target="#MODAL-MENU-ITEM"
+                    data-name="{{item.name}}"
+                    data-link="{{item.link}}"
+                    data-window="{{item.target}}"
+                    data-fixed="{{item.fixed}}"
+                    data-path-scope="{{item.path_scope}}"
+                    data-pos="{{loop.index}}"
+                    data-parent=""
+                    data-action-url="{{url_for('.update_site_menu')}}">
+              {{item.name}}
+            </button>
+            {% endfor %}
+            {% endif %}
           </div>
+
+          {% for k, v in theme.menus if k != 'primary' %}
+          <div class="section-title">
+            {{v.title}}
+          </div>
+          <div>
+            {% if site.menus[k] %}
+            {% for item in site.menus[k] %}
+            <button class="btn btn-outline-primary w-100 m-1"
+                    type="button"
+                    data-toggle="modal"
+                    data-target="#MENU-ITEM-MODAL">
+              {{item.name}}
+            </button>
+            {% endfor %}
+            {% endif %}
+          </div>
+          {% endfor %}
         </div>
       </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_models %}
+<div id="MODAL-MENU-ITEM"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="{{_('Menu Item')}}"
+     aria-hidden="true">
+  <div class="modal-dialog" role="exit">
+    <div class="modal-content">
+      <form action=""
+            method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">{{_('Menu Item')}}</h5>
+          <button class="close"
+                  type="button"
+                  data-dismiss="modal"
+                  aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{{url_for('.update_site_menu')}}"
+                method="POST">
+            <div class="form-group">
+              <label>{{_('Name')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="name"
+                     value="">
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-8">
+                <label>{{_('Link')}}</label>
+                <input class="form-control"
+                       type="text"
+                       name="link"
+                       value="">
+              </div>
+              <div class="form-group col-md-4">
+                <label>{{_('Target Window')}}</label>
+                <input class="form-control"
+                       type="text"
+                       name="target"
+                       placeholder="_self"
+                       value="">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>{{_('Path Starts With')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="path_scope"
+                     value="">
+            </div>
+
+            <div class="form-group">
+              <div class="control-label">
+                {{_('Fixed Link (No HASH generation)')}}
+              </div>
+              <label class="custom-switch mt-2">
+                <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">{{_('Fixed')}}</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label>{{_('Position')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="_index"
+                     value="">
+            </div>
+
+            <input type="hidden" name="parent" value="">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal">{{_('Dismiss')}}</button>
+          <a class="btn btn-primary"
+             href="{{url_for('dashboard.logout')}}">
+            {{_('Save')}}
+          </a>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -130,12 +253,29 @@
 <script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
 <script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
 <script>
-  $(".pwstrength").pwstrength();
-  $('#file-uploader input[type="file"]').on('change', function(e){
-    target = e.currentTarget || e.target;
-    if (target && target.value) {
-      $('#file-uploader').submit();
-    }
-  });
+$('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
+  var btn = $(e.relatedTarget);
+  var modal = $(e.currentTarget);
+
+  var action_url = btn.data('action-url');
+
+  var item_name = btn.data('name');
+  var item_link = btn.data('link');
+  var item_target = btn.data('window');
+  var item_fixed = btn.data('fixed');
+  var item_path_scope = btn.data('path-scope');
+  var item_parent = btn.data('parent');
+
+  var pos = btn.data('pos');
+
+  modal.find('input[name="name"]').val(item_name);
+  modal.find('input[name="link"]').val(item_link);
+  modal.find('input[name="target"]').val(item_target);
+  modal.find('input[name="fixed"]').val(item_fixed);
+  modal.find('input[name="path_scope"]').val(item_path_scope);
+  modal.find('input[name="parent"]').val(item_parent);
+  modal.find('input[name="_index"]').val(pos);
+
+});
 </script>
 {% endblock %}

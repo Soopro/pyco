@@ -27,6 +27,7 @@ blueprint = Blueprint('preference', __name__, template_folder='pages')
 @blueprint.route('/site')
 @login_required
 def site():
+
     return render_template('site.html')
 
 
@@ -41,6 +42,14 @@ def update_site():
 @blueprint.route('/site/adv', methods=['POST'])
 @login_required
 def update_site_adv():
+    flash('SAVED')
+    return_url = url_for('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/menu', methods=['POST'])
+@login_required
+def update_site_menu():
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)

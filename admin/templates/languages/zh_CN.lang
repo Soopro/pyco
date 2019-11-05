@@ -184,7 +184,14 @@
     "msgid": "Social Media",
     "msgstr": "社交媒体"
   },
-
+  {
+    "msgid": "Menu",
+    "msgstr": "菜单"
+  },
+  {
+    "msgid": "Primary Menu",
+    "msgstr": "主菜单"
+  },
 
   {
     "msgid": "* This setting is work for site only.",
@@ -201,6 +208,10 @@
   {
     "msgid": "* For expert only, must use JSON format.",
     "msgstr": "* 这是专家选项，仅支持JSON格式数据。"
+  },
+  {
+    "msgid": "* Type `_blank` for open in new window.",
+    "msgstr": "* 键入`_blank`表示打开自新窗口。"
   },
 
 
