@@ -105,13 +105,16 @@ class FlatFile:
 class Configure(FlatFile):
 
     path = 'configure.yaml'
-    data = {}
+    data = {
+        'passcode_hash': '',
+        'locale': 'en_US'
+    }
 
     def __init__(self):
         super(Configure, self).__init__(self.path)
         if self.raw:
             fields = yaml.safe_load(self.raw)
-            self.data = self._parse_field(fields)
+            self.update(self._parse_field(fields))
 
     def save(self):
         self.raw = yaml.safe_dump(self._prepare_field(self.data),
@@ -122,7 +125,11 @@ class Configure(FlatFile):
         return super(Configure, self).save()
 
     def exists(self):
-        return self.raw and self.data
+        return self.raw and self.data['passcode_hash']
+
+    def update(self, conf):
+        for key in self.data:
+            self.data[key] = conf.get(key)
 
 
 class Theme(FlatFile):

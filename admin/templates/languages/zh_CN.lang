@@ -1,0 +1,15 @@
+[
+	{"language":"zh_CN"},
+	{
+		"msgid": "Title",
+		"msgstr": "标题"
+	},
+	{
+		"msgid": "Cardinal",
+		"msgstr": "基本"
+	},
+  {
+    "msgid": "Dashboard",
+    "msgstr": "仪表板"
+  }
+]

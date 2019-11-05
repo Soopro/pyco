@@ -1,12 +1,16 @@
 # coding=utf-8
 
 from flask import Flask, make_response, g
+import os
 
 from loaders import load_config
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
 from models import DBConnection, Configure, Document, Site, Theme
+
+from services.i18n import Translator
+
 import traceback
 
 
@@ -38,10 +42,19 @@ def app_before_request():
 # inject context
 @app.context_processor
 def inject_global_variable():
+    configure = g.configure
+    # make i18n support
+    locale = configure['locale']
+    lang_path = os.path.join(app.template_folder, 'languages')
+    translator = Translator(configure['locale'], lang_path)
     return {
         'assets_url': app.static_url_path,
         'base_url': app.config['ADMIN_BASE_URL'],
-        'configure': g.configure
+        'configure': g.configure,
+        'locale': locale,
+        'lang': locale.split('_')[0],
+        '_': translator.gettext,
+        '_t': translator.t_gettext
     }
 
 

@@ -21,16 +21,18 @@ class Translator(object):
     def _trans_key(self, text):
         return text if self.case_sensitive else text.lower()
 
-    def _parse_path(self, lang_folder):
-        path = os.path.join(lang_folder, self.locale)
+    def _parse_path(self, lang_dir):
+        path = os.path.join(lang_dir, '{}.lang'.format(self.locale))
         if not os.path.isfile(path):
-            path = os.path.join(lang_folder, '{}.lang'.format(self.lang))
+            path = os.path.join(lang_dir, '{}.lang'.format(self.lang))
         if not os.path.isfile(path):
             path = None
         return path
 
-    def _load_file(self, path):
-        path = self._parse_path(path)
+    def _load_file(self, lang_dir):
+        path = self._parse_path(lang_dir)
+        if not path:
+            return {}
         try:
             with open(path) as f:
                 dictionary = json.load(f)
