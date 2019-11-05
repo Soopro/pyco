@@ -4,6 +4,10 @@
 		"msgid": "Title",
 		"msgstr": "标题"
 	},
+  {
+    "msgid": "Description",
+    "msgstr": "描述"
+  },
 	{
 		"msgid": "Cardinal",
 		"msgstr": "基本"
@@ -45,8 +49,12 @@
     "msgstr": "偏好设置"
   },
   {
-    "msgid": "Site Settings",
+    "msgid": "Site",
     "msgstr": "站点"
+  },
+  {
+    "msgid": "Site Settings",
+    "msgstr": "站点设定"
   },
   {
     "msgid": "Configure",
@@ -61,6 +69,10 @@
     "msgstr": "外观"
   },
   {
+    "msgid": "Save",
+    "msgstr": "保存"
+  },
+  {
     "msgid": "Backup",
     "msgstr": "备份"
   },
@@ -69,8 +81,12 @@
     "msgstr": "初始化"
   },
   {
-    "msgid": "Setup Passcode",
-    "msgstr": "设置口令"
+    "msgid": "Old Passcode",
+    "msgstr": "旧口令"
+  },
+  {
+    "msgid": "New Passcode",
+    "msgstr": "新口令"
   },
   {
     "msgid": "Confirm Passcode",
@@ -103,10 +119,6 @@
   {
     "msgid": "Are you sure want exit the system?",
     "msgstr": "你确定是要退出本系统吗？"
-  },
-  {
-    "msgid": "This setting is work for admin panel only.",
-    "msgstr": "这项设置仅在管理界面生效。"
   },
   {
     "msgid": "Basic Configuration",
@@ -143,5 +155,70 @@
   {
     "msgid": "Upload a Zip file that contains the entire site content data. All data files must conform to system rules.",
     "msgstr": "上传一个包含了整个网站内容数据的Zip文件。所有的数据文件必须符合系统设定规则。"
+  },
+  {
+    "msgid": "Site Locale",
+    "msgstr": "站点语言"
+  },
+  {
+    "msgid": "Copyright",
+    "msgstr": "版权"
+  },
+  {
+    "msgid": "License",
+    "msgstr": "许可证"
+  },
+  {
+    "msgid": "Advanced Options",
+    "msgstr": "高级选项"
+  },
+  {
+    "msgid": "Head Metadata",
+    "msgstr": "页头元数据"
+  },
+  {
+    "msgid": "Languages",
+    "msgstr": "多语言"
+  },
+  {
+    "msgid": "Social Media",
+    "msgstr": "社交媒体"
+  },
+
+
+  {
+    "msgid": "* This setting is work for site only.",
+    "msgstr": "* 这项设置仅在站点生效。"
+  },
+  {
+    "msgid": "* This setting is work for admin panel only.",
+    "msgstr": "* 这项设置仅在管理界面生效。"
+  },
+  {
+    "msgid": "* This is usually used in the <head> of the HTML.",
+    "msgstr": "* 这通常是被用在网页HTML的<head>内。"
+  },
+  {
+    "msgid": "* For expert only, must use JSON format.",
+    "msgstr": "* 这是专家选项，仅支持JSON格式数据。"
+  },
+
+
+
+  {
+    "msgid": "SAVED",
+    "msgstr": "已保存。"
+  },
+  {
+    "msgid": "RESTORED",
+    "msgstr": "已恢复。"
+  },
+  {
+    "msgid": "WRONG_PASSCODE",
+    "msgstr": "错误的口令。。。"
+  },
+  {
+    "msgid": "CONFIRM_PASSCODE_NOT_MATCH",
+    "msgstr": "确认口令不匹配。。。"
   }
 ]

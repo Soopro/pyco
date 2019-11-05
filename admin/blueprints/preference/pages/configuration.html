@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<h1>{{_('Configuration')}}</h1>
+{% endblock %}
+
+{% block main %}
+<div class="section-body">
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <form action="{{url_for('.update_configure')}}"
+              method="POST">
+          <div class="card-header">
+            <h4>{{_('Basic Configuration')}}</h4>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>{{_('Admin Panel Locale')}}</label>
+              <select class="form-control"
+                      name="locale">
+                {% for loc in configure.LOCALES %}
+                <option value="{{loc.key}}"
+                        {{'selected' if locale==loc.key}}>
+                  {{loc.name}}
+                </option>
+                {% endfor %}
+              </select>
+              <small class="form-text text-muted">
+                {{_('* This setting is work for admin panel only.')}}
+              </small>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button class="btn btn-primary">{{_('Save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <form action="{{url_for('.change_passcode')}}"
+              method="POST">
+          <div class="card-header">
+            <h4>{{_('Security')}}</h4>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>{{_('Old Passcode')}}</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                  </div>
+                </div>
+                <input class="form-control"
+                       type="password"
+                       name="old_passcode" >
+              </div>
+            </div>
+            <div class="form-group">
+              <label>{{_('New Passcode')}}</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="fas fa-unlock-alt"></i>
+                  </div>
+                </div>
+                <input class="form-control pwstrength"
+                       data-indicator="pwindicator"
+                       name="passcode"
+                       type="text" >
+              </div>
+              <div id="pwindicator" class="pwindicator">
+                <div class="bar"></div>
+                <div class="label"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>{{_('Confirm Passcode')}}</label>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <i class="fas fa-unlock-alt"></i>
+                  </div>
+                </div>
+                <input class="form-control"
+                       type="text"
+                       name="passcode2">
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button class="btn btn-primary">{{_('Save')}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Backup')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="section-title mt-0">
+            {{_('Download Backup Package')}}
+          </div>
+          <div>
+            <p>
+              {{_('Download a zip file for all content of the website. '+
+                  'All data will be stored as `.md` and `.json` files.')}}
+            </p>
+          </div>
+          <div class="mt-4">
+            <a class="btn btn-primary btn-lg"
+               href="{{url_for('.backup_download')}}">
+              <i class="fas fa-cloud-download-alt"></i>
+              <span>{{_('Download')}}</span>
+            </a>
+          </div>
+          <hr>
+          <div class="section-title">
+            {{_('Restore Backup Package')}}
+          </div>
+          <div>
+            <p>
+              {{_('Upload a Zip file that contains the entire site content '+
+                  'data. All data files must conform to system rules.')}}
+            </p>
+          </div>
+          <div class="mt-4">
+            <form id="file-uploader"
+                  action="{{url_for('.backup_restore')}}"
+                  enctype=multipart/form-data
+                  method="POST">
+              <label class="btn btn-info btn-lg">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>{{_('Upload')}}</span>
+                <input class="d-none"
+                       type="file"
+                       name="file"
+                       accept="application/zip">
+              </label>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
+<script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
+<script>
+  $(".pwstrength").pwstrength();
+  $('#file-uploader input[type="file"]').on('change', function(e){
+    target = e.currentTarget || e.target;
+    if (target && target.value) {
+      $('#file-uploader').submit();
+    }
+  });
+</script>
+{% endblock %}

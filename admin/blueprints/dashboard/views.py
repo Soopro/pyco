@@ -25,7 +25,6 @@ blueprint = Blueprint('dashboard', __name__, template_folder='templates')
 @blueprint.route('/')
 @login_required
 def index():
-    configure = g.configure
     return render_template('dashboard.html')
 
 
@@ -50,7 +49,7 @@ def exec_login():
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         return redirect('/')
     else:
-        flash('Wrong passcode!', 'danger')
+        flash('WRONG_PASSCODE', 'danger')
         return redirect(url_for('.login'))
 
 
@@ -68,7 +67,7 @@ def exec_initialize():
     passcode = request.form['passcode']
     passcode2 = request.form['passcode2']
     if passcode != passcode2:
-        flash('Setup passcode is not match!', 'danger')
+        flash('CONFIRM_PASSCODE_NOT_MATCH', 'danger')
         return redirect(url_for('.initialize'))
     else:
         configure['passcode_hash'] = generate_password_hash(passcode)

@@ -1,3 +1,19 @@
 [
-	{"language":"en_US"}
+	{"language":"en_US"},
+  {
+    "msgid": "SAVED",
+    "msgstr": "Saved."
+  },
+  {
+    "msgid": "RESTORED",
+    "msgstr": "Restored."
+  },
+  {
+    "msgid": "WRONG_PASSCODE",
+    "msgstr": "Passcode is wrong..."
+  },
+  {
+    "msgid": "CONFIRM_PASSCODE_NOT_MATCH",
+    "msgstr": "Confirm passcode is not match..."
+  }
 ]

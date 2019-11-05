@@ -40,6 +40,7 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('ADMIN_BASE_URL', ':5510/')
 
     app.debug = app.config['DEBUG']
+
     ensure_dirs(
         app.config['UPLOADS_DIR'],
         app.config['BACKUPS_DIR'],

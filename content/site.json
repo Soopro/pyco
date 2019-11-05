@@ -25,13 +25,6 @@
         "link": "/post/index"
       },
       {
-        "key": "works",
-        "meta": {},
-        "nodes": [],
-        "name": "Portfolio",
-        "link": "/works/index"
-      },
-      {
         "key": "category",
         "meta": {},
         "nodes": [],
@@ -63,20 +56,17 @@
   "meta": {
     "favicon": "",
     "logo": "",
-    "bg": "",
-    "contact": "redy",
+    "head_metadata": "",
     "copyright": "2015 Made by Pyco.",
     "description": "...",
     "license": "MIT",
     "title": "Sample",
-    "socials":[
-      {"key": "facebook", "name": "Facebook", "url": "#", "code": "facebook"},
-      {"key": "twitter", "name": "Twitter", "url": "#", "code": "twitter"}
-    ],
+    "socials":[],
     "languages": [
-       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
-       {"key": "en_US", "name":"English", "url":"http://....."}
-    ]
+      {"key": "en_US", "name":"English", "url":"http://....."},
+      {"key": "zh_CN", "name":"汉语", "url":"http://....."}
+    ],
+    "custom": {}
   }
 
 }

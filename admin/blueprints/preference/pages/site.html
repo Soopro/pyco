@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<h1>{{_('Site')}}</h1>
+{% endblock %}
+
+{% block main %}
+<div class="section-body">
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <form action="{{url_for('.update_site')}}"
+              method="POST">
+          <div class="card-header">
+            <h4>{{_('Site Settings')}}</h4>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>{{_('Site Locale')}}</label>
+              <select class="form-control"
+                      name="locale">
+                {% for lang in site.languages %}
+                <option value="{{lang.key}}"
+                        {{'selected' if site.locale==lang.key}}>
+                  {{lang.name}}
+                </option>
+                {% endfor %}
+              </select>
+              <small class="form-text text-muted">
+                {{_('* This setting is work for site only.')}}
+              </small>
+            </div>
+            <div class="form-group">
+              <label>{{_('Title')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="title"
+                     value="{{site.meta.title}}">
+            </div>
+            <div class="form-group">
+              <label>{{_('Description')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="description"
+                     value="{{site.meta.description}}">
+            </div>
+
+            <div class="form-group">
+              <label>{{_('Copyright')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="copyright"
+                     value="{{site.meta.copyright}}">
+            </div>
+
+            <div class="form-group">
+              <label>{{_('License')}}</label>
+              <textarea class="form-control"
+                        name="license">{{site.meta.license}}</textarea>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button class="btn btn-primary">{{_('Save')}}</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <form action="{{url_for('.update_site_adv')}}"
+              method="POST">
+          <div class="card-header">
+            <h4>{{_('Advanced Options')}}</h4>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>{{_('Head Metadata')}}</label>
+              <textarea class="form-control"
+                        name="head_metadata">{{site.meta.head_metadata}}</textarea>
+              <small class="form-text text-muted">
+                {{_('* This is usually used in the <head> of the HTML.')}}
+              </small>
+            </div>
+            <div class="form-group">
+              <label>{{_('Social Media')}}</label>
+              <textarea class="form-control"
+                        name="socials"
+                        placeholder="[{'figure': 'http://youruploads.com/figure.jpg', 'key': 'github', 'name': 'Github', 'scirpt': '...script', 'url': 'http://yoursocial.com'}]">{{site.meta.socials or ''}}</textarea>
+              <small class="form-text text-muted">
+                {{_('* For expert only, must use JSON format.')}}
+              </small>
+            </div>
+            <div class="form-group">
+              <label>{{_('Languages')}}</label>
+              <textarea class="form-control"
+                        name="languages"
+                        placeholder="[{'key': 'en_US', 'name': 'English', 'url': 'http://en.yoursite.com'}]">{{site.meta.languages or ''}}</textarea>
+              <small class="form-text text-muted">
+                {{_('* For expert only, must use JSON format.')}}
+              </small>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <button class="btn btn-primary">{{_('Save')}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Menu')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="section-title mt-0">
+            {{_('Primary Menu')}}
+          </div>
+          <div class="form-group">
+            <textarea class="form-control"
+                      name="head_metadata">{{site.meta.head_metadata}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* This is usually used in the <head> of the HTML.')}}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
+<script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
+<script>
+  $(".pwstrength").pwstrength();
+  $('#file-uploader input[type="file"]').on('change', function(e){
+    target = e.currentTarget || e.target;
+    if (target && target.value) {
+      $('#file-uploader').submit();
+    }
+  });
+</script>
+{% endblock %}

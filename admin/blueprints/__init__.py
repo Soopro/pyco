@@ -10,5 +10,5 @@ def register_admin_blueprints(app):
     # from admin.blueprints.media import blueprint as media_module
     # app.register_blueprint(media_module, url_prefix='/media')
 
-    from admin.blueprints.configuration import blueprint as conf_module
-    app.register_blueprint(conf_module, url_prefix='/configuration')
+    from admin.blueprints.preference import blueprint as preference_module
+    app.register_blueprint(preference_module, url_prefix='/preference')
