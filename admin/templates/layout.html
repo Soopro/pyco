@@ -1,7 +1,7 @@
 {% import "_variables.imp" as v with context %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{lang}}">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,13 +12,14 @@
       href="{{configure.meta.favicon or assets_url+'/favicon.png'}}">
 {% else %}
 <title>Pyco</title>
-<link rel="shortcut icon"
-      href="{{assets_url+'/favicon.png'}}">
+<link rel="shortcut icon" href="{{assets_url+'/favicon.png'}}">
 {% endif %}
 
 <!-- General CSS Files -->
-<link rel="stylesheet" href="{{assets_url}}/modules/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="{{assets_url}}/modules/fontawesome/css/all.min.css">
+<link rel="stylesheet"
+      href="{{assets_url}}/modules/bootstrap/bootstrap.min.css">
+<link rel="stylesheet"
+      href="{{assets_url}}/modules/fontawesome/all.min.css">
 
 <!-- CSS Libraries -->
 {% block page_css %}
@@ -27,6 +28,7 @@
 <!-- Template CSS -->
 <link rel="stylesheet" href="{{assets_url}}/css/style.css">
 <link rel="stylesheet" href="{{assets_url}}/css/components.css">
+<link rel="stylesheet" href="{{assets_url}}/css/custom.css">
 
 </head>
 
@@ -69,7 +71,14 @@
           </ul>
         </div>
         <ul class="navbar-nav navbar-right">
-          <li><a href="{{url_for('dashboard.logout')}}" class="nav-link nav-link-lg"><i class="fas fa-power-off"></i></a></li>
+          <li>
+            <a class="nav-link nav-link-lg"
+               data-toggle="modal"
+               data-target="#EXIT-MODAL"
+               href="#" >
+              <i class="fas fa-power-off"></i>
+            </a>
+          </li>
         </ul>
       </nav>
       {% block aside %}
@@ -130,7 +139,7 @@
       <div class="main-content">
         <section class="section">
           <div class="section-header">
-            <h1>{% block title %}{% endblock %}</h1>
+            {% block header %}{% endblock %}
           </div>
 
           <div class="section-body">
@@ -153,13 +162,45 @@
 
   </div>
 
+
+  <div id="EXIT-MODAL"
+       class="modal fade"
+       tabindex="-1"
+       role="dialog"
+       aria-labelledby="{{_('Exit')}}"
+       aria-hidden="true">
+    <div class="modal-dialog" role="exit">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{_('Exit')}}</h5>
+          <button class="close"
+                  type="button"
+                  data-dismiss="modal"
+                  aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{_('Are you sure want exit the system?')}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal">{{_('Dismiss')}}</button>
+          <a class="btn btn-primary"
+             href="{{url_for('dashboard.logout')}}">
+            {{_('Yes, Exit!')}}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- General JS Scripts -->
   <script src="{{assets_url}}/modules/jquery.min.js"></script>
   <script src="{{assets_url}}/modules/popper.js"></script>
   <script src="{{assets_url}}/modules/tooltip.js"></script>
-  <script src="{{assets_url}}/modules/bootstrap/js/bootstrap.min.js"></script>
+  <script src="{{assets_url}}/modules/bootstrap/bootstrap.min.js"></script>
   <script src="{{assets_url}}/modules/nicescroll/jquery.nicescroll.min.js"></script>
-  <script src="{{assets_url}}/modules/moment.min.js"></script>
   <script src="{{assets_url}}/js/stisla.js"></script>
 
   <!-- Page Specific JS File -->

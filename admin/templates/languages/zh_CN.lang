@@ -87,5 +87,37 @@
   {
     "msgid": "Login",
     "msgstr": "登录"
+  },
+  {
+    "msgid": "Exit",
+    "msgstr": "退出"
+  },
+  {
+    "msgid": "Yes, Exit!",
+    "msgstr": "是的，退出!"
+  },
+  {
+    "msgid": "Dismiss",
+    "msgstr": "撤销"
+  },
+  {
+    "msgid": "Are you sure want exit the system?",
+    "msgstr": "你确定是要退出本系统吗？"
+  },
+  {
+    "msgid": "This setting is work for admin panel only.",
+    "msgstr": "这项设置仅在管理界面生效。"
+  },
+  {
+    "msgid": "Basic Configuration",
+    "msgstr": "基础配置"
+  },
+  {
+    "msgid": "Admin Panel Locale",
+    "msgstr": "管理界面语言"
+  },
+  {
+    "msgid": "Security",
+    "msgstr": "安全"
   }
 ]

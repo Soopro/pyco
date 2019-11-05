@@ -109,6 +109,10 @@ class Configure(FlatFile):
         'passcode_hash': '',
         'locale': 'en_US'
     }
+    LOCALES = [
+        {'key': 'en_US', 'name': 'English'},
+        {'key': 'zh_CN', 'name': '简体中文'},
+    ]
 
     def __init__(self):
         super(Configure, self).__init__(self.path)

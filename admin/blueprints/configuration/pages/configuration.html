@@ -1,7 +1,77 @@
 {% extends "layout.html" %}
 
-{% block title %}{{_('Configuration')}}{% endblock %}
+{% block header %}
+<h1>{{_('Configuration')}}</h1>
+{% endblock %}
 
 {% block main %}
+<div class="section-body">
+  <h2 class="section-title">Advanced Forms</h2>
+  <p class="section-lead">We provide advanced input fields, such as date picker, color picker, and so on.</p>
 
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Basic Configuration')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>{{_('Admin Panel Locale')}}</label>
+            <select class="form-control">
+              {% for loc in configure.LOCALES %}
+              <option value="{{loc.key}}"
+                      {{'selected' if locale}}>{{loc.name}}</option>
+              {% endfor %}
+            </select>
+            <small class="form-text text-muted">
+              {{_('This setting is work for admin panel only.')}}
+            </small>
+          </div>
+          <!-- <div class="form-group">
+            <label>Default Input Text</label>
+            <input type="text" class="form-control">
+          </div> -->
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Security')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>{{_('Passcode')}}</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+              <input type="password" class="form-control pwstrength" data-indicator="pwindicator">
+            </div>
+            <div id="pwindicator" class="pwindicator">
+              <div class="bar"></div>
+              <div class="label"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Backup')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="section-title mt-0">Downlaod Backup Files</div>
+          <div>
+            <a href="#">
+              <i class="fas fa-cloud-download-alt"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
