@@ -23,9 +23,7 @@ blueprint = Blueprint('configuration', __name__, template_folder='pages')
 @blueprint.route('/')
 @login_required
 def index():
-    configure = g.configure
-    configure['mina_app_secret'] = configure.decrypt('mina_app_secret')
-    return render_template('configuration.html', configure=configure)
+    return render_template('configuration.html')
 
 
 @blueprint.route('/', methods=['POST'])

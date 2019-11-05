@@ -95,8 +95,8 @@ def find_404_content_file():
     return {
         '_id': '.id-error-404',
         'app_id': g.curr_app['_id'],
-        'slug': current_app.config.get('DEFAULT_404_SLUG'),
-        'template': current_app.config.get('DEFAULT_404_SLUG'),
+        'slug': current_app.config.get('ERROR404_SLUG'),
+        'template': current_app.config.get('ERROR404_SLUG'),
         'content_type': '.h',
         'meta': {},
         'parent': '',
@@ -142,9 +142,9 @@ def parse_page_metas(page, current_id=None):
     data['path'] = gen_page_path(page)
 
     # content marks
-    if data['slug'] == current_app.db.Document.DEFAULT_INDEX_SLUG:
+    if data['slug'] == current_app.db.Document.INDEX_SLUG:
         data['is_front'] = True
-    if data['slug'] == current_app.db.Document.DEFAULT_404_SLUG:
+    if data['slug'] == current_app.db.Document.ERROR404_SLUG:
         data['is_404'] = True
     if str(data['id']) == str(current_id):
         data['is_current'] = True

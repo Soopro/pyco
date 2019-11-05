@@ -57,9 +57,9 @@ def before_request():
 
     # view args
     request.view_args.setdefault('content_type_slug',
-                                 current_app.db.Document.DEFAULT_CONTENT_TYPE)
+                                 current_app.db.Document.STATIC_TYPE)
     request.view_args.setdefault('file_slug',
-                                 current_app.db.Document.DEFAULT_INDEX_SLUG)
+                                 current_app.db.Document.INDEX_SLUG)
 
 
 @blueprint.errorhandler(Exception)

@@ -47,6 +47,9 @@ def inject_global_variable():
     locale = configure['locale']
     lang_path = os.path.join(app.template_folder, 'languages')
     translator = Translator(configure['locale'], lang_path)
+
+    # site data
+    site = app.db.Site()
     return {
         'assets_url': app.static_url_path,
         'base_url': app.config['ADMIN_BASE_URL'],
@@ -54,7 +57,8 @@ def inject_global_variable():
         'locale': locale,
         'lang': locale.split('_')[0],
         '_': translator.gettext,
-        '_t': translator.t_gettext
+        '_t': translator.t_gettext,
+        'site': site,
     }
 
 

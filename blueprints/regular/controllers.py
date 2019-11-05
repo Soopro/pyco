@@ -207,7 +207,7 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
 
     # set default params
     if not content_type:
-        content_type = current_app.db.Document.DEFAULT_CONTENT_TYPE
+        content_type = current_app.db.Document.STATIC_TYPE
 
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')

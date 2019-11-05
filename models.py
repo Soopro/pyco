@@ -211,19 +211,19 @@ class Document(FlatFile):
 
     EXCERPT_LENGTH = 600
 
-    DEFAULT_CONTENT_TYPE = 'page'
+    STATIC_TYPE = 'page'
 
-    DEFAULT_INDEX_SLUG = 'index'
-    DEFAULT_SEARCH_SLUG = 'search'
-    DEFAULT_CATEGORY_SLUG = 'category'
-    DEFAULT_TAG_SLUG = 'tag'
-    DEFAULT_404_SLUG = 'error-404'
+    INDEX_SLUG = 'index'
+    SEARCH_SLUG = 'search'
+    CATEGORY_SLUG = 'category'
+    TAG_SLUG = 'tag'
+    ERROR404_SLUG = 'error-404'
 
     RESERVED_SLUGS = [
-        DEFAULT_INDEX_SLUG,
-        DEFAULT_TAG_SLUG,
-        DEFAULT_CATEGORY_SLUG,
-        DEFAULT_SEARCH_SLUG,
+        INDEX_SLUG,
+        TAG_SLUG,
+        CATEGORY_SLUG,
+        SEARCH_SLUG,
     ]
 
     SORTABLE_FIELD_KEYS = ('date', 'updated')
@@ -326,13 +326,13 @@ class Document(FlatFile):
         if len(path_parts) > 2:
             content_type = path_parts[1].lower()
         else:
-            content_type = self.DEFAULT_CONTENT_TYPE
+            content_type = self.STATIC_TYPE
         return content_type
 
     # query methods
     @classmethod
     def find_one(cls, slug, content_type=None):
-        if content_type in [None, cls.DEFAULT_CONTENT_TYPE]:
+        if content_type in [None, cls.STATIC_TYPE]:
             rel_path = os.path.join(cls.CONTENT_DIR, slug)
         else:
             rel_path = os.path.join(cls.CONTENT_DIR, content_type, slug)
@@ -344,7 +344,7 @@ class Document(FlatFile):
 
     @classmethod
     def find(cls, content_type=None):
-        if content_type == cls.DEFAULT_CONTENT_TYPE:
+        if content_type == cls.STATIC_TYPE:
             f_dir = os.path.join(cls.CONTENT_DIR)
         else:
             f_dir = os.path.join(cls.CONTENT_DIR, content_type)
