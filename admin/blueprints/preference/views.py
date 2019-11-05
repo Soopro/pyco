@@ -49,7 +49,15 @@ def update_site_adv():
 
 @blueprint.route('/site/menu', methods=['POST'])
 @login_required
-def update_site_menu():
+def update_site_menu(key):
+    flash('SAVED')
+    return_url = url_for('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/menu/hardcore', methods=['POST'])
+@login_required
+def hardcore_site_menu(key):
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)
