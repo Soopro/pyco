@@ -13,6 +13,10 @@
     "msgstr": "Restored."
   },
   {
+    "msgid": "INSTALLED",
+    "msgstr": "Installed."
+  },
+  {
     "msgid": "WRONG_PASSCODE",
     "msgstr": "Passcode is wrong..."
   },

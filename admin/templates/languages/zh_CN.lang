@@ -281,6 +281,8 @@
     "msgstr": "预览"
   },
 
+
+
   {
     "msgid": "* This setting is work for site only.",
     "msgstr": "* 这项设置仅在站点生效。"
@@ -319,6 +321,10 @@
   {
     "msgid": "RESTORED",
     "msgstr": "已恢复。"
+  },
+  {
+    "msgid": "INSTALLED",
+    "msgstr": "已安装。"
   },
   {
     "msgid": "WRONG_PASSCODE",

@@ -8,8 +8,8 @@
   "type": "ws",
   "capability": 0,
   "icon": "icon.png",
-	"previews": ["preview.png"],
-	"poster": "poster.png",
+	"previews": ["preview.jpg"],
+	"poster": "poster.jpg",
 
   "templates": [
     "index",

@@ -196,8 +196,23 @@ def hardcore_site_menu(menu_key):
 @blueprint.route('/appearance')
 @login_required
 def appearance():
-
     return render_template('appearance.html')
+
+
+@blueprint.route('/appearance', methods=['POST'])
+@login_required
+def install_theme():
+    f = request.files['file']
+    theme_dir = os.path.join(current_app.config['THEMES_DIR'],
+                             current_app.config['THEME_NAME'])
+    # cleanup
+    clean_dirs(theme_dir)
+    # unpack files
+    unzip(f, theme_dir)
+
+    flash('INSTALLED')
+    return_url = url_for('.appearance')
+    return redirect(return_url)
 
 
 # configuration

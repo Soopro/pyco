@@ -9,8 +9,8 @@
   <div class="row">
     <div class="col-12 col-md-6 col-lg-6">
       <div class="card">
-        <form id="file-uploader"
-              action="{{url_for('.backup_restore')}}"
+        <form class="file-uploader"
+              action="{{url_for('.install_theme')}}"
               enctype=multipart/form-data
               method="POST">
           <div class="card-header">
@@ -72,8 +72,9 @@
           <figure class="text-center">
             <img class="mw-100" src="{{theme_url}}/{{theme.poster}}">
           </figure>
+          <hr>
           {% for preview in theme.previews %}
-          <figure>
+          <figure class="text-center">
             <img class="mw-100" src="{{theme_url}}/{{preview}}">
           </figure>
           {% endfor %}
