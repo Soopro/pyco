@@ -281,10 +281,9 @@ def _add_cursor(content, index, perpage, paged, total_pages, total_count):
 
 
 def _safe_paging(perpage, paged):
-    max_perpage = current_app.db.Document.MAXIMUM_QUERY
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
-    return min(perpage, max_perpage), paged
+    return min(perpage, current_app.db.Document.MAXIMUM_QUERY), paged
 
 
 def _hook_config():

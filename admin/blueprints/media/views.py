@@ -9,51 +9,49 @@ from flask import (Blueprint,
                    flash,
                    render_template)
 import os
+import math
 
-from utils.model import make_paginator
 from utils.misc import (parse_int,
                         safe_filename,
-                        uuid4_hex,
                         parse_dateformat,
+                        uuid4_hex,
                         now)
 
 from admin.decorators import login_required
 
 
-blueprint = Blueprint('media',
-                      __name__,
-                      static_folder='static',
-                      static_url_path='/static',
-                      template_folder='pages')
+blueprint = Blueprint('media', __name__, template_folder='templates')
 
 
 @blueprint.route('/')
 @login_required
 def index():
     paged = parse_int(request.args.get('paged'), 1, True)
-    mediafiles = current_app.mongodb.Media.find_all()
 
-    p = make_paginator(mediafiles, paged, 60)
+    files = current_app.db.Media.find()
+
+    limit = current_app.db.Media.MAXIMUM_QUERY
+    offset = max(limit * (paged - 1), 0)
+    total_count = len(files)
+
+    max_pages = max(int(math.ceil(total_count / float(limit))), 1)
+
+    has_next = paged < max_pages
+    has_previous = paged > 0
+
+    mediafiles = files[offset:offset + limit]
 
     uploads_url = current_app.config.get('UPLOADS_URL')
-    mediafiles = list(mediafiles)
-
     for media in mediafiles:
-        media['src'] = '{}/{}/{}'.format(uploads_url,
-                                         media['scope'],
-                                         media['key'])
+        media['src'] = '{}/{}'.format(uploads_url, media.filename)
 
-    prev_url = url_for(request.endpoint,
-                       paged=p.previous_page)
-    next_url = url_for(request.endpoint,
-                       paged=p.next_page)
+    prev_url = url_for(request.endpoint, paged=max(paged - 1, 1))
+    next_url = url_for(request.endpoint, paged=min(paged + 1, max_pages))
 
     paginator = {
-        'next': next_url if p.has_next else None,
-        'prev': prev_url if p.has_previous and p.previous_page else None,
-        'paged': p.current_page,
-        'start': p.start_index,
-        'end': p.end_index,
+        'next': next_url if has_next else None,
+        'prev': prev_url if has_previous else None,
+        'paged': paged,
     }
     return render_template('mediafiles.html',
                            mediafiles=mediafiles,

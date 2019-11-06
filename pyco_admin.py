@@ -7,7 +7,7 @@ from loaders import load_config
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
-from models import DBConnection, Configure, Document, Site, Theme
+from models import DBConnection, Configure, Document, Site, Theme, Media
 
 from services.i18n import Translator
 
@@ -22,7 +22,7 @@ app = Flask(__name__,
 load_config(app)
 
 app.db = DBConnection()
-app.db.register([Configure, Document, Site, Theme])
+app.db.register([Configure, Document, Site, Theme, Media])
 
 # register blueprints
 register_admin_blueprints(app)

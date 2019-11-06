@@ -11,7 +11,6 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('DEBUG', False)
     app.config.setdefault('STATIC_PATH', 'static')
 
-    app.config.setdefault('UPLOADS_DIR', 'uploads')
     app.config.setdefault('BACKUPS_DIR', 'backups')
     app.config.setdefault('PLUGINS_DIR', 'plugins')
 
@@ -33,16 +32,12 @@ def load_config(app, config_name='config.py'):
                                         'apple-touch-icon-precomposed.png',
                                         'apple-touch-icon.png'])
 
-    app.config.setdefault('IMAGE_MEDIA_EXTS',
-                          ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff'))
-
     app.config.setdefault('ADMIN_PORT', 5510)
     app.config.setdefault('ADMIN_BASE_URL', ':5510/')
 
     app.debug = app.config['DEBUG']
 
     ensure_dirs(
-        app.config['UPLOADS_DIR'],
         app.config['BACKUPS_DIR'],
         app.config['PLUGINS_DIR'],
     )

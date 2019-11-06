@@ -217,9 +217,8 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
 
     perpage = parse_int(perpage, 12, True)
     paged = parse_int(paged, 1, True)
-    max_perpage = current_app.config.get('MAXIMUM_QUERY', 60)
 
-    perpage = min(perpage, max_perpage)
+    perpage = min(perpage, current_app.db.Document.MAXIMUM_QUERY)
 
     # position
     limit = perpage

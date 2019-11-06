@@ -13,7 +13,7 @@ from utils.response import make_cors_headers
 from loaders import load_config, load_plugins, load_metas
 from blueprints import register_blueprints
 
-from models import DBConnection, Configure, Document, Site, Theme
+from models import DBConnection, Configure, Document, Site, Theme, Media
 
 
 __version_info__ = ('3', '0', '0')
@@ -27,7 +27,7 @@ app.version = __version__
 load_config(app)
 
 app.db = DBConnection()
-app.db.register([Configure, Document, Site, Theme])
+app.db.register([Configure, Document, Site, Theme, Media])
 
 # make importable for plugin folder
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))

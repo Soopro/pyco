@@ -6,7 +6,11 @@ import yaml
 import json
 import urllib
 
-from utils.misc import process_slug, gen_excerpt
+from utils.misc import (process_slug,
+                        gen_excerpt,
+                        guess_mimetype,
+                        split_file_ext)
+from utils.files import ensure_dirs
 
 
 class DBConnection:
@@ -192,7 +196,7 @@ class Site(FlatFile):
         "menus": {PRIMARY_MENU: []},
         "meta": {"title": "Pyco"}
     }
-
+    ensure_dirs(CONTENT_DIR)
     path = os.path.join(CONTENT_DIR, 'site.json')
     data = {}
 
@@ -284,6 +288,8 @@ class Document(FlatFile):
     SORTABLE_FIELD_KEYS = ('date', 'updated')
     QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
                             'date', 'updated', 'creation')
+
+    ensure_dirs(CONTENT_DIR)
 
     path = ''
     data = {}
@@ -407,3 +413,65 @@ class Document(FlatFile):
                       if f.endswith(cls.CONTENT_FILE_EXT) and
                       not f.startswith('_')]
         return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+
+
+class Media():
+
+    UPLOADS_DIR = 'uploads'
+    IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
+
+    MAXIMUM_QUERY = 60
+    MAXIMUM_STORAGE = 6000
+
+    ensure_dirs(UPLOADS_DIR)
+    filename = ''
+    path = ''
+
+    _updated = None
+    _creation = None
+
+    def __init__(self, filename):
+        self.filename = filename
+        self.path = os.path.join(self.UPLOADS_DIR, filename)
+        self._refresh_time()
+
+    def _refresh_time(self):
+        try:
+            self._updated = int(os.path.getmtime(self.path))
+            self._creation = int(os.path.getctime(self.path))
+        except Exception:
+            self._updated = None
+            self._creation = None
+
+    # query methods
+    @classmethod
+    def count(cls):
+        count_files = [f for f in os.listdir(cls.UPLOADS_DIR)
+                       if os.path.isfile(f)][:cls.MAXIMUM_STORAGE]
+        return len(count_files)
+
+    @classmethod
+    def find_one(cls, filename):
+        file_path = os.path.join(cls.UPLOADS_DIR, filename)
+        if os.path.isfile(file_path):
+            return cls(filename)
+        else:
+            return None
+
+    @classmethod
+    def find(cls):
+        file_paths = [f for f in os.listdir(cls.UPLOADS_DIR)
+                      if os.path.isfile(f)]
+        return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+
+    @property
+    def info(self):
+        return {
+            'filename': self.filename,
+            'ext': split_file_ext(self.filename),
+            'mimetype': guess_mimetype(self.filename),
+            'updated': self._updated,
+            'creation': self._creation,
+            'is_file': os.path.isfile(self.path)
+        }
+

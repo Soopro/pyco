@@ -63,8 +63,6 @@ You can modify the `config.py` to change base settings.
 
 * `RES_URL`: **[ str ]** res url of Site. default is `UPLOADS_URL/res`. Change it to online url if you need.
 
-* `IMAGE_MEDIA_EXTS`: **[ set ]** Define image type media file extensions. Default is `('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')`.
-
 * `SYS_ICONS`: **[ set ]** Define system icon list `('favicon.ico', 'apple-touch-icon-precomposed.png', 'apple-touch-icon.png')`.
 
 * `PLUGINS`: **[ list ]** all plugins packpage name here.

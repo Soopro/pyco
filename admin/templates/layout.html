@@ -118,7 +118,8 @@
             {% endfor %}
 
             <li>
-              <a class="nav-link" href="credits.html">
+              <a class="nav-link"
+                 href="{{url_for('media.index')}}">
                 <i class="fas fa-photo-video"></i>
                 <span>{{_('Media Files')}}</span>
               </a>

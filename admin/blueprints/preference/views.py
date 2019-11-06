@@ -21,7 +21,7 @@ from utils.files import unzip, zipdir, clean_dirs
 from admin.decorators import login_required
 
 
-blueprint = Blueprint('preference', __name__, template_folder='pages')
+blueprint = Blueprint('preference', __name__, template_folder='templates')
 
 
 # site

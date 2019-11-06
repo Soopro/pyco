@@ -364,18 +364,22 @@ def split_file_ext(filename):
         return None
 
 
-def guess_file_type(filename, default=None, output_mimetype=True):
+def split_file_type(filename, fail_mimetype=None):
+    mimetype = guess_mimetype(filename, fail_mimetype)
+
+    if isinstance(mimetype, str):
+        return mimetype.split('/')[0]
+    else:
+        return mimetype
+
+
+def guess_mimetype(filename, default=None):
     try:
         guessed_type = mimetypes.guess_type(filename)[0]
     except Exception:
         guessed_type = None
-
     mimetype = guessed_type or default
-
-    if not output_mimetype and mimetype:
-        return mimetype.split('/')[0]
-    else:
-        return mimetype
+    return mimetype
 
 
 # nonascii
