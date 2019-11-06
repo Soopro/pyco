@@ -181,17 +181,19 @@
                 </button>
               </div>
               {% endfor %}
-              <div class="py-1 text-right">
-                <button class="btn btn-secondary w-50"
-                        type="button"
-                        data-toggle="modal"
-                        data-target="#MODAL-MENU-NODE"
-                        data-action-url="{{url_for('.add_site_menu_node',
-                                                   menu_key=menu.key,
-                                                   parent_key=node.key)}}">
-                  <i class="fas fa-plus"></i>
-                  <span>{{_('New Submenu Item')}}</span>
-                </button>
+              <div class="row py-1">
+                <div class="col-md-4 offset-md-8">
+                  <button class="btn btn-secondary w-100"
+                          type="button"
+                          data-toggle="modal"
+                          data-target="#MODAL-MENU-NODE"
+                          data-action-url="{{url_for('.add_site_menu_node',
+                                                     menu_key=menu.key,
+                                                     parent_key=node.key)}}">
+                    <i class="fas fa-plus"></i>
+                    <span>{{_('New')}}</span>
+                  </button>
+                </div>
               </div>
               {% endif %}
             </div>
@@ -217,7 +219,7 @@
                         data-action-url="{{url_for('.hardcore_site_menu',
                                                    menu_key=menu.key)}}">
                   <i class="fas fa-flask"></i>
-                  <span>{{_('Expert Edit')}}</span>
+                  <span>{{_('Expert')}}</span>
                 </button>
               </div>
             </div>

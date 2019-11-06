@@ -201,8 +201,8 @@
     "msgstr": "主菜单"
   },
   {
-    "msgid": "Expert Edit",
-    "msgstr": "专家编辑"
+    "msgid": "Expert",
+    "msgstr": "专家"
   },
   {
     "msgid": "Menu Item",
@@ -257,8 +257,8 @@
     "msgstr": "新建菜单项"
   },
   {
-    "msgid": "New Submenu Item",
-    "msgstr": "新建子菜单项"
+    "msgid": "New",
+    "msgstr": "新建"
   },
   {
     "msgid": "Theme",
