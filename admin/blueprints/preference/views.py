@@ -15,7 +15,7 @@ import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
-from utils.misc import hmac_sha, now, str_eval
+from utils.misc import hmac_sha, now, str_eval, process_slug, parse_int
 from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
@@ -74,35 +74,116 @@ def update_site_adv():
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu/<key>/node', methods=['POST'])
+@blueprint.route('/site/menu/<menu_key>/node', methods=['POST'])
 @login_required
-def add_site_menu(key):
+def add_site_menu_node(menu_key):
+    parent_key = request.args.get('parent_key', '')
+
     name = request.form.get('name', '')
     link = request.form.get('link', '')
     target = request.form.get('target', '')
     fixed = request.form.get('fixed', '')
     path_scope = request.form.get('path_scope', '')
+    css = request.form.get('css', '')
+    pos = request.form.get('pos', 0)
 
+    _index = parse_int(pos)
+
+    new_node = {
+        'key': process_slug(name),
+        'name': name,
+        'link': link,
+        'target': target,
+        'path_scope': path_scope,
+        'fixed': fixed,
+        'class': css
+    }
+
+    site = current_app.db.Site()
+    nodes = site['menus'].get(menu_key, [])
+    if parent_key:
+        parent = _find_parent_node(nodes, parent_key)
+        parent['nodes'].insert(_index, new_node)
+    else:
+        nodes.insert(_index, new_node)
+
+    site.save()
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu/<key>/node', methods=['POST'])
+@blueprint.route('/site/menu/<menu_key>/node/update', methods=['POST'])
 @login_required
-def update_site_menu(key):
+def update_site_menu_node(menu_key):
+    parent_key = request.args.get('parent_key', '')
+    node_key = request.args.get('node_key', '')
+
+    name = request.form.get('name', '')
+    link = request.form.get('link', '')
+    target = request.form.get('target', '')
+    fixed = request.form.get('fixed', '')
+    path_scope = request.form.get('path_scope', '')
+    css = request.form.get('css', '')
+    pos = request.form.get('pos', 0)
+
+    _index = parse_int(pos)
+
+    new_node = {
+        'key': process_slug(name),
+        'name': name,
+        'link': link,
+        'target': target,
+        'path_scope': path_scope,
+        'fixed': fixed,
+        'class': css
+    }
+
+    site = current_app.db.Site()
+    nodes = site['menus'].get(menu_key, [])
+    if parent_key:
+        parent = _find_parent_node(nodes, parent_key)
+        node = _find_node(parent['nodes'], node_key)
+        parent['nodes'].insert(_index, new_node)
+        parent['nodes'].remove(node)
+    else:
+        node = _find_node(nodes, node_key)
+        nodes.remove(node)
+        nodes.insert(_index, new_node)
+    site.save()
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu/<key>', methods=['POST'])
+@blueprint.route('/site/menu/<menu_key>/node/remove')
 @login_required
-def hardcore_site_menu(key):
+def remove_site_menu_node(menu_key):
+    parent_key = request.args.get('parent_key', '')
+    node_key = request.args.get('node_key', '')
+
+    site = current_app.db.Site()
+    nodes = site['menus'].get(menu_key, [])
+    if parent_key:
+        parent = _find_parent_node(nodes, parent_key)
+        node = _find_node(parent['nodes'], node_key)
+        parent['nodes'].remove(node)
+    else:
+        node = _find_node(nodes, node_key)
+        nodes.remove(node)
+    site.save()
+    flash('REMOVED')
+    return_url = url_for('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/menu/<menu_key>', methods=['POST'])
+@login_required
+def hardcore_site_menu(menu_key):
     hardcore = request.form.get('hardcore', '')
 
     site = current_app.db.Site()
-    site['menus'][key] = str_eval(hardcore, {})
+    site['menus'][menu_key] = str_eval(hardcore, {})
     site.save()
     flash('SAVED')
     return_url = url_for('.site')
@@ -174,3 +255,20 @@ def backup_restore():
     flash('RESTORED')
     return_url = url_for('.configuration')
     return redirect(return_url)
+
+
+# helpers
+def _find_parent_node(nodes, parent_key):
+    for node in nodes:
+        if parent_key and node.get('key') == parent_key:
+            if not isinstance(node.get('nodes'), list):
+                node['nodes'] = []
+            return node
+    raise Exception('Menu item pranet is not found')
+
+
+def _find_node(nodes, node_key):
+    for node in nodes:
+        if node_key and node.get('key') == node_key:
+            return node
+    raise Exception('Menu item is not found')

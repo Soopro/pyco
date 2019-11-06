@@ -144,11 +144,14 @@
                       data-window="{{node.target}}"
                       data-fixed="{{node.fixed}}"
                       data-path-scope="{{node.path_scope}}"
-                      data-pos="{{loop.index}}"
-                      data-parent=""
-                      data-action-url="{{url_for('.update_site_menu',
-                                                 key=menu.key,
-                                                 node_key=node.key)}}">
+                      data-css="{{node.class}}"
+                      data-pos="{{loop.index0}}"
+                      data-remove-url="{{url_for('.remove_site_menu_node',
+                                                  menu_key=menu.key,
+                                                  node_key=node.key)}}"
+                      data-action-url="{{url_for('.update_site_menu_node',
+                                                menu_key=menu.key,
+                                                node_key=node.key)}}">
                 {{node.name}}
               </button>
               {% if theme.menus[menu.key] and
@@ -164,11 +167,16 @@
                         data-window="{{subnode.target}}"
                         data-fixed="{{subnode.fixed}}"
                         data-path-scope="{{subnode.path_scope}}"
-                        data-pos="{{loop.index}}"
-                        data-parent="{{node.key}}"
-                        data-key="{{subnode.key}}"
-                        data-action-url="{{url_for('.update_site_menu',
-                                                   key=menu.key)}}">
+                        data-css="{{subnode.class}}"
+                        data-pos="{{loop.index0}}"
+                        data-remove-url="{{url_for('.remove_site_menu_node',
+                                                   menu_key=menu.key,
+                                                   parent_key=node.key,
+                                                   node_key=subnode.key)}}"
+                        data-action-url="{{url_for('.update_site_menu_node',
+                                                   menu_key=menu.key,
+                                                   parent_key=node.key,
+                                                   node_key=subnode.key)}}">
                   {{subnode.name}}
                 </button>
               </div>
@@ -178,8 +186,9 @@
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-NODE"
-                        data-action-url="{{url_for('.add_site_menu',
-                                                   key=menu.key)}}">
+                        data-action-url="{{url_for('.add_site_menu_node',
+                                                   menu_key=menu.key,
+                                                   parent_key=node.key)}}">
                   <i class="fas fa-plus"></i>
                   <span>{{_('New Submenu Item')}}</span>
                 </button>
@@ -193,8 +202,8 @@
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-NODE"
-                        data-action-url="{{url_for('.add_site_menu',
-                                                   key=menu.key)}}">
+                        data-action-url="{{url_for('.add_site_menu_node',
+                                                   menu_key=menu.key)}}">
                   <i class="fas fa-plus"></i>
                   <span>{{_('New Menu Item')}}</span>
                 </button>
@@ -206,7 +215,7 @@
                         data-target="#MODAL-MENU-HARDCORE"
                         data-hardcore="{{menu.nodes or ''}}"
                         data-action-url="{{url_for('.hardcore_site_menu',
-                                                   key=menu.key)}}">
+                                                   menu_key=menu.key)}}">
                   <i class="fas fa-flask"></i>
                   <span>{{_('Expert Edit')}}</span>
                 </button>
@@ -247,7 +256,8 @@
             <input class="form-control"
                    type="text"
                    name="name"
-                   value="">
+                   value=""
+                   required>
           </div>
           <div class="form-row">
             <div class="form-group col-md-8">
@@ -268,42 +278,71 @@
           </div>
 
           <div class="form-group">
-            <label>{{_('Path Starts With')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="path_scope"
-                   value="">
-            <small class="form-text text-muted">
-              {{_('* Mark active status starts with this path as well.')}}
-            </small>
-          </div>
-
-          <div class="form-group">
-            <div class="control-label">
-              {{_('Fixed Link (No HASH generation)')}}
-            </div>
-            <label class="custom-switch mt-2">
-              <input class="custom-switch-input"
-                     type="checkbox"
-                     name="fixed">
-              <span class="custom-switch-indicator"></span>
-              <span class="custom-switch-description">{{_('Fixed')}}</span>
-            </label>
-          </div>
-
-          <div class="form-group">
             <label>{{_('Position')}}</label>
             <input class="form-control"
                    type="text"
-                   name="_index"
+                   name="pos"
                    value=""
                    placeholder="0">
+          </div>
+
+          <div class="text-right">
+            <button class="btn btn-link"
+                    data-toggle="collapse"
+                    data-target="#MODAL-MENU-NODE-ADV-FIELDS"
+                    aria-expanded="true"
+                    type="button" >
+              {{_('Toggle Advanced Options')}}
+            </button>
+          </div>
+          <div id="MODAL-MENU-NODE-ADV-FIELDS"
+               class="collapse">
+            <hr>
+
+            <div class="form-group">
+              <label>{{_('CSS Class')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="css"
+                     value="">
+            </div>
+
+            <div class="form-group">
+              <label>{{_('Path Starts With')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="path_scope"
+                     value="">
+              <small class="form-text text-muted">
+                {{_('* Mark active status starts with this path as well.')}}
+              </small>
+            </div>
+
+            <div class="form-group">
+              <div class="control-label">
+                {{_('Fixed')}}
+              </div>
+              <label class="custom-switch mt-2">
+                <input class="custom-switch-input"
+                       type="checkbox"
+                       name="fixed">
+                <span class="custom-switch-indicator"></span>
+                <span class="custom-switch-description">
+                  {{_('Fixed Link (No HASH generation)')}}
+                </span>
+              </label>
+            </div>
+
           </div>
 
           <input type="hidden" name="key" value="">
           <input type="hidden" name="parent" value="">
         </div>
         <div class="modal-footer">
+          <a class="btn btn-danger remove-node mr-auto"
+             href="#">
+            <i class="fas fa-trash"></i>
+          </a>
           <button type="button" class="btn btn-secondary"
                   data-dismiss="modal">{{_('Dismiss')}}</button>
           <button class="btn btn-primary">
@@ -365,14 +404,14 @@ $('#MODAL-MENU-NODE').on('show.bs.modal', function(e) {
   var modal = $(e.currentTarget);
 
   var action_url = btn.data('action-url');
+  var remove_url = btn.data('remove-url');
 
   var item_name = btn.data('name');
   var item_link = btn.data('link');
   var item_target = btn.data('window');
   var item_fixed = btn.data('fixed');
   var item_path_scope = btn.data('path-scope');
-  var item_key = btn.data('key');
-  var item_parent = btn.data('parent');
+  var item_css = btn.data('css')
 
   var pos = btn.data('pos');
 
@@ -382,10 +421,16 @@ $('#MODAL-MENU-NODE').on('show.bs.modal', function(e) {
   modal.find('input[name="fixed"]').val(item_fixed);
   modal.find('input[name="fixed"]').prop('checked', Boolean(item_fixed));
   modal.find('input[name="path_scope"]').val(item_path_scope);
-  modal.find('input[name="key"]').val(item_key);
-  modal.find('input[name="parent"]').val(item_parent);
-  modal.find('input[name="_index"]').val(pos);
+  modal.find('input[name="css"]').val(item_css);
+  modal.find('input[name="pos"]').val(pos);
 
+  modal.find('form').attr('action', action_url);
+
+  if(remove_url){
+    modal.find('.remove-node').attr('href', remove_url).show();
+  } else {
+    modal.find('.remove-node').hide();
+  }
 });
 
 $('#MODAL-MENU-HARDCORE').on('show.bs.modal', function(e) {

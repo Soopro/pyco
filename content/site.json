@@ -45,11 +45,14 @@
   "menus": {
     "primary": [
       {
-        "key": "index",
-        "meta": {},
-        "nodes": [],
+        "key": "home",
         "name": "Home",
-        "link": "/"
+        "link": "/",
+        "target": "",
+        "path_scope": "",
+        "fixed": "",
+        "class": "",
+        "nodes": []
       },
       {
         "key": "posts",

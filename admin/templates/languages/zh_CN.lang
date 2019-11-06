@@ -229,6 +229,10 @@
     "msgstr": "起始路径"
   },
   {
+    "msgid": "CSS Class",
+    "msgstr": "CSS样式类"
+  },
+  {
     "msgid": "Fixed",
     "msgstr": "固定"
   },
@@ -239,6 +243,10 @@
   {
     "msgid": "Fixed Link (No HASH generation)",
     "msgstr": "固定链接（不生成HASH值）"
+  },
+  {
+    "msgid": "Toggle Advanced Options",
+    "msgstr": "开关高级选项"
   },
   {
     "msgid": "Use `[%uplaods%]` as relative url of uplaods.",
@@ -286,6 +294,10 @@
   {
     "msgid": "SAVED",
     "msgstr": "已保存。"
+  },
+  {
+    "msgid": "REMOVED",
+    "msgstr": "已删除。"
   },
   {
     "msgid": "RESTORED",
