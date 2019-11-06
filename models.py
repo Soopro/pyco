@@ -189,8 +189,6 @@ class Site(FlatFile):
 
     def parse(self):
         site = json.loads(self.raw)
-        site_meta = site.pop('meta')
-        languages = site_meta.get('languages', None)
         self._id = site.get('app_id', self._id)
         self.data = {
             '_id': self._id,
@@ -200,9 +198,12 @@ class Site(FlatFile):
             'categories': site.get('categories'),
             'menus': site.get('menus', {'primary': []}),
             'slots': site.get('slots'),
-            'meta': site_meta,
-            'languages': languages
+            'meta': site.get('meta', {}),
         }
+
+    @property
+    def meta(self):
+        return {k: v for k, v in self.data.get('meta', {}).items()}
 
 
 class Document(FlatFile):

@@ -65,10 +65,11 @@ def load_plugins(app):
 
 def load_metas(app):
     site = app.db.Site()
-    theme_path = os.path.join(app.config.get('THEMES_DIR'),
-                              app.config.get('THEME_NAME'))
-    theme_meta = app.db.Theme(theme_path)
+    site_meta = site.meta
+    languages = site_meta.pop('languages', None)
 
+    theme_meta = app.db.Theme(os.path.join(app.config.get('THEMES_DIR'),
+                                           app.config.get('THEME_NAME')))
     return {
         '_id': site.get('app_id', 'pyco_app'),
         'slug': site.get('slug', 'pyco'),
@@ -78,7 +79,7 @@ def load_metas(app):
         'categories': site.get('categories', None),
         'menus': site.get('menus', None),
         'slots': site.get('slots', None),
-        'meta': site.get('meta', {}),
-        'languages': site.get('languages', {}),
+        'languages': languages,
+        'site_meta': site_meta,
         'theme_meta': theme_meta
     }

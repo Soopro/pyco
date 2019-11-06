@@ -26,17 +26,14 @@ def get_view_metas(app_id):
     config = current_app.config
     curr_app = g.curr_app
 
-    theme_meta = curr_app['theme_meta']
-    site_meta = curr_app['meta']
-
-    config['site_meta'] = site_meta
-    config['theme_meta'] = theme_meta
-
     run_hook('config_loaded', config=_hook_config())
 
+    site_meta = curr_app['site_meta']
+    site_meta['id'] = curr_app['_id']
     site_meta['slug'] = curr_app['slug']
     site_meta['type'] = curr_app['type']
 
+    theme_meta = curr_app['theme_meta']
     languages = curr_app['languages']
     locale = curr_app['locale']
 
@@ -292,7 +289,7 @@ def _safe_paging(perpage, paged):
 
 def _hook_config():
     config = current_app.config
-    config['site_meta'] = g.curr_app['meta']
+    config['site_meta'] = g.curr_app['site_meta']
     config['theme_meta'] = g.curr_app['theme_meta']
     return make_dotted_dict(config)
 

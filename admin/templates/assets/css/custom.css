@@ -4,3 +4,16 @@
  * because it will make it harder for you to update.
  *
  */
+
+.form-control::placeholder {
+  opacity: 0.6 !important;
+}
+.form-control::-moz-placeholder {
+  opacity: 0.6 !important;
+}
+.form-control:-ms-input-placeholder {
+  opacity: 0.6 !important;
+}
+.form-control::-ms-input-placeholder {
+  opacity: 0.6 !important;
+}

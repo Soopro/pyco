@@ -19,7 +19,7 @@
               <label>{{_('Site Locale')}}</label>
               <select class="form-control"
                       name="locale">
-                {% for lang in site.languages %}
+                {% for lang in site.meta.languages %}
                 <option value="{{lang.key}}"
                         {{'selected' if site.locale==lang.key}}>
                   {{lang.name}}
@@ -39,10 +39,28 @@
             </div>
             <div class="form-group">
               <label>{{_('Description')}}</label>
+              <textarea class="form-control"
+                        name="description"
+                        placeholder="...">{{site.meta.description}}</textarea>
+            </div>
+
+            <div class="form-group">
+              <label>{{_('Logo')}}</label>
               <input class="form-control"
                      type="text"
-                     name="description"
-                     value="{{site.meta.description}}">
+                     name="logo"
+                     value="{{site.meta.logo}}"
+                     placeholder="{{_('Use `[%uplaods%]` as relative url '+
+                                      'of uplaods.')}}">
+            </div>
+            <div class="form-group">
+              <label>{{_('Favicon')}}</label>
+              <input class="form-control"
+                     type="text"
+                     name="favicon"
+                     value="{{site.meta.favicon}}"
+                     placeholder="{{_('Use `[%uplaods%]` as relative url '+
+                                      'of uplaods.')}}">
             </div>
 
             <div class="form-group">
@@ -126,6 +144,7 @@
                     data-fixed="{{item.fixed}}"
                     data-path-scope="{{item.path_scope}}"
                     data-pos="{{loop.index}}"
+                    data-key="{{item.key}}"
                     data-parent=""
                     data-action-url="{{url_for('.update_site_menu',
                                                key='primary')}}">
@@ -133,15 +152,30 @@
             </button>
             {% endfor %}
             {% endif %}
-            <button class="btn btn-secondary w-100 m-1"
-                    type="button"
-                    data-toggle="modal"
-                    data-target="#MODAL-MENU-ITEM-EXPERT"
-                    data-hardcore="{{site.menus.primary or ''}}"
-                    data-action-url="{{url_for('.hardcore_site_menu',
-                                               key='primary')}}">
-              {{_('Expert Mode')}}
-            </button>
+            <div class="row">
+              <div class="col-md-8">
+                <button class="btn btn-primary w-100 m-1"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM"
+                        data-action-url="{{url_for('.add_site_menu')}}">
+                  <i class="fas fa-plus"></i>
+                  <span>{{_('New Menu Item')}}</span>
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-outline-primary w-100 m-1"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM-EXPERT"
+                        data-hardcore="{{site.menus.primary or ''}}"
+                        data-action-url="{{url_for('.hardcore_site_menu',
+                                                   key='primary')}}">
+                  <i class="fas fa-flask"></i>
+                  <span>{{_('Expert Edit')}}</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           {% for k, v in theme.menus if k != 'primary' %}
@@ -161,6 +195,7 @@
                     data-fixed="{{item.fixed}}"
                     data-path-scope="{{item.path_scope}}"
                     data-pos="{{loop.index}}"
+                    data-key="{{item.key}}"
                     data-parent=""
                     data-action-url="{{url_for('.update_site_menu',
                                                key=k)}}">
@@ -168,15 +203,30 @@
             </button>
             {% endfor %}
             {% endif %}
-            <button class="btn btn-secondary w-100 m-1"
-                    type="button"
-                    data-toggle="modal"
-                    data-target="#MODAL-MENU-ITEM-EXPERT"
-                    data-hardcore="{{site.menus[k] or ''}}"
-                    data-action-url="{{url_for('.hardcore_site_menu',
-                                               key=k)}}">
-              {{_('Expert Mode')}}
-            </button>
+            <div class="row">
+              <div class="col-md-8">
+                <button class="btn btn-secondary w-100 m-1"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM"
+                        data-action-url="{{url_for('.add_site_menu')}}">
+                  <i class="fas fa-plus"></i>
+                  <span>{{_('New Menu Item')}}</span>
+                </button>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-outline-primary w-100 m-1"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM-EXPERT"
+                        data-hardcore="{{site.menus[k] or ''}}"
+                        data-action-url="{{url_for('.hardcore_site_menu',
+                                                   key=k)}}">
+                  <i class="fas fa-flask"></i>
+                  <span>{{_('Expert Edit')}}</span>
+                </button>
+              </div>
+            </div>
           </div>
           {% endfor %}
         </div>
@@ -256,9 +306,11 @@
             <input class="form-control"
                    type="text"
                    name="_index"
-                   value="">
+                   value=""
+                   placeholder="0">
           </div>
 
+          <input type="hidden" name="key" value="">
           <input type="hidden" name="parent" value="">
         </div>
         <div class="modal-footer">
@@ -276,14 +328,14 @@
      class="modal fade"
      tabindex="-1"
      role="dialog"
-     aria-labelledby="{{_('Menu Hardcore')}}"
+     aria-labelledby="{{_('Menu')}}"
      aria-hidden="true">
   <div class="modal-dialog" role="exit">
     <div class="modal-content">
       <form action=""
             method="POST">
         <div class="modal-header">
-          <h5 class="modal-title">{{_('Menu Hardcore')}}</h5>
+          <h5 class="modal-title">{{_('Menu')}}</h5>
           <button class="close"
                   type="button"
                   data-dismiss="modal"
@@ -329,6 +381,7 @@ $('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
   var item_target = btn.data('window');
   var item_fixed = btn.data('fixed');
   var item_path_scope = btn.data('path-scope');
+  var item_key = btn.data('key');
   var item_parent = btn.data('parent');
 
   var pos = btn.data('pos');
@@ -338,6 +391,7 @@ $('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
   modal.find('input[name="target"]').val(item_target);
   modal.find('input[name="fixed"]').val(item_fixed);
   modal.find('input[name="path_scope"]').val(item_path_scope);
+  modal.find('input[name="key"]').val(item_key);
   modal.find('input[name="parent"]').val(item_parent);
   modal.find('input[name="_index"]').val(pos);
 

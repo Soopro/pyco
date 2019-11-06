@@ -12,6 +12,7 @@ from flask import (Blueprint,
                    g)
 
 import os
+import ast
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
@@ -27,13 +28,29 @@ blueprint = Blueprint('preference', __name__, template_folder='pages')
 @blueprint.route('/site')
 @login_required
 def site():
-
     return render_template('site.html')
 
 
 @blueprint.route('/site', methods=['POST'])
 @login_required
 def update_site():
+    locale = request.form.get('locale', '')
+    title = request.form.get('title', '')
+    description = request.form.get('description', '')
+    logo = request.form.get('logo', '')
+    favicon = request.form.get('favicon', '')
+    copyright = request.form.get('copyright', '')
+    license = request.form.get('license', '')
+
+    site = current_app.db.Site()
+    site['locale'] = locale
+    site['meta']['title'] = title
+    site['meta']['description'] = description
+    site['meta']['logo'] = logo
+    site['meta']['favicon'] = favicon
+    site['meta']['copyright'] = copyright
+    site['meta']['license'] = license
+    site.save()
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)
@@ -42,6 +59,24 @@ def update_site():
 @blueprint.route('/site/adv', methods=['POST'])
 @login_required
 def update_site_adv():
+    head_metadata = request.form.get('head_metadata', '')
+    socials = request.form.get('socials', [])
+    languages = request.form.get('languages', [])
+
+    site = current_app.db.Site()
+    site['meta']['socials'] = ast.literal_eval(socials)
+    site['meta']['languages'] = ast.literal_eval(languages)
+    site['meta']['head_metadata'] = head_metadata
+    site.save()
+
+    flash('SAVED')
+    return_url = url_for('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/menu/add', methods=['POST'])
+@login_required
+def add_site_menu(key):
     flash('SAVED')
     return_url = url_for('.site')
     return redirect(return_url)
@@ -73,7 +108,6 @@ def configuration():
 @login_required
 def update_configure():
     locale = request.form.get('locale', 'en_US')
-    print('-----------------------------', locale)
     configure = g.configure
     configure['locale'] = locale
     configure.save()

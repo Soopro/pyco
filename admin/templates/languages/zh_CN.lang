@@ -161,6 +161,14 @@
     "msgstr": "站点语言"
   },
   {
+    "msgid": "Logo",
+    "msgstr": "标志"
+  },
+  {
+    "msgid": "Favicon",
+    "msgstr": "网站图标"
+  },
+  {
     "msgid": "Copyright",
     "msgstr": "版权"
   },
@@ -192,6 +200,54 @@
     "msgid": "Primary Menu",
     "msgstr": "主菜单"
   },
+  {
+    "msgid": "Expert Edit",
+    "msgstr": "专家编辑"
+  },
+  {
+    "msgid": "Menu Item",
+    "msgstr": "菜单项"
+  },
+  {
+    "msgid": "Hardcore",
+    "msgstr": "硬编码"
+  },
+  {
+    "msgid": "Name",
+    "msgstr": "名称"
+  },
+  {
+    "msgid": "Link",
+    "msgstr": "链接"
+  },
+  {
+    "msgid": "Target Window",
+    "msgstr": "目标窗口"
+  },
+  {
+    "msgid": "Path Starts With",
+    "msgstr": "起始路径"
+  },
+  {
+    "msgid": "Fixed",
+    "msgstr": "固定"
+  },
+  {
+    "msgid": "Fixed Link (No HASH generation)",
+    "msgstr": "固定链接（不生成HASH值）"
+  },
+  {
+    "msgid": "Use `[%uplaods%]` as relative url of uplaods.",
+    "msgstr": "使用 `[%uplaods%]` 作为上传网址的相对路径。"
+  },
+  {
+    "msgid": "New Menu Item",
+    "msgstr": "新建菜单项"
+  },
+
+
+
+
 
   {
     "msgid": "* This setting is work for site only.",

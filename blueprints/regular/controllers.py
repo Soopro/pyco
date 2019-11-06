@@ -42,13 +42,14 @@ def rendering(content_type_slug, file_slug):
 
     base_url = g.curr_base_url
     curr_app = g.curr_app
-    site_meta = curr_app['meta']
-    theme_meta = curr_app['theme_meta']
 
-    config['site_meta'] = site_meta
-    config['theme_meta'] = theme_meta
+    config['site_meta'] = curr_app['site_meta']
+    config['theme_meta'] = curr_app['theme_meta']
 
     run_hook('config_loaded', config=make_dotted_dict(config))
+
+    site_meta = curr_app['site_meta']
+    theme_meta = curr_app['theme_meta']
 
     # hidden content types
     if _check_theme_hidden_types(theme_meta, content_type_slug):
@@ -88,7 +89,6 @@ def rendering(content_type_slug, file_slug):
     g.curr_file_id = page_meta['id']
 
     # site_meta
-    site_meta = curr_app['meta']
     site_meta['slug'] = curr_app['slug']
     site_meta['id'] = curr_app['_id']
     site_meta['type'] = curr_app['type']
