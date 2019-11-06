@@ -19,7 +19,7 @@
               <label>{{_('Site Locale')}}</label>
               <select class="form-control"
                       name="locale">
-                {% for lang in site.meta.languages %}
+                {% for lang in site.languages %}
                 <option value="{{lang.key}}"
                         {{'selected' if site.locale==lang.key}}>
                   {{lang.name}}
@@ -128,12 +128,12 @@
           <h4>{{_('Menu')}}</h4>
         </div>
         <div class="card-body">
-          <div class="section-title mt-0">
-            {{_('Primary Menu')}}
+          {% for menu in site.menus %}
+          <div class="section-title {{'mt-0' if loop.first}}">
+            {{_(theme.menus[menu.key])}}
           </div>
           <div>
-            {% if site.menus.primary %}
-            {% for item in site.menus.primary %}
+            {% for item in menu.nodes %}
             <button class="btn btn-outline-primary w-100 m-1"
                     type="button"
                     data-toggle="modal"
@@ -146,66 +146,13 @@
                     data-pos="{{loop.index}}"
                     data-key="{{item.key}}"
                     data-parent=""
-                    data-action-url="{{url_for('.update_site_menu',
-                                               key='primary')}}">
+                    data-action-url="{{url_for('.update_site_menu', key=k)}}">
               {{item.name}}
             </button>
             {% endfor %}
-            {% endif %}
             <div class="row">
               <div class="col-md-8">
                 <button class="btn btn-primary w-100 m-1"
-                        type="button"
-                        data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM"
-                        data-action-url="{{url_for('.add_site_menu')}}">
-                  <i class="fas fa-plus"></i>
-                  <span>{{_('New Menu Item')}}</span>
-                </button>
-              </div>
-              <div class="col-md-4">
-                <button class="btn btn-outline-primary w-100 m-1"
-                        type="button"
-                        data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM-EXPERT"
-                        data-hardcore="{{site.menus.primary or ''}}"
-                        data-action-url="{{url_for('.hardcore_site_menu',
-                                                   key='primary')}}">
-                  <i class="fas fa-flask"></i>
-                  <span>{{_('Expert Edit')}}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {% for k, v in theme.menus if k != 'primary' %}
-          <div class="section-title">
-            {{v.title}}
-          </div>
-          <div>
-            {% if site.menus[k] %}
-            {% for item in site.menus[k] %}
-            <button class="btn btn-outline-primary w-100 m-1"
-                    type="button"
-                    data-toggle="modal"
-                    data-target="#MODAL-MENU-ITEM"
-                    data-name="{{item.name}}"
-                    data-link="{{item.link}}"
-                    data-window="{{item.target}}"
-                    data-fixed="{{item.fixed}}"
-                    data-path-scope="{{item.path_scope}}"
-                    data-pos="{{loop.index}}"
-                    data-key="{{item.key}}"
-                    data-parent=""
-                    data-action-url="{{url_for('.update_site_menu',
-                                               key=k)}}">
-              {{item.name}}
-            </button>
-            {% endfor %}
-            {% endif %}
-            <div class="row">
-              <div class="col-md-8">
-                <button class="btn btn-secondary w-100 m-1"
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-ITEM"

@@ -101,28 +101,28 @@
             </li>
 
             <li class="menu-header">{{_('Content')}}</li>
-            <li><a class="nav-link" href="credits.html"><i class="fas fa-file"></i> <span>{{_('Static Page')}}</span></a></li>
-            {% set content_types = site.content_types %}
-            {% if content_types|length > 1 or 'page' not in content_types %}
-            <li class="dropdown">
-              <a class="nav-link has-dropdown"
-                 data-toggle="dropdown"
-                 href="#">
-                <i class="far fa-folder-open"></i>
-                <span>{{_('Content Types')}}</span></a>
-              <ul class="dropdown-menu">
-                {% for k, v in content_types.items() if k != 'page' %}
-                <li>
-                  <a class="nav-link" href="#">{{v}}</a>
-                </li>
-                {% endfor %}
-              </ul>
+            <li>
+              <a class="nav-link" href="credits.html">
+                <i class="fas fa-file"></i> <span>{{_('Static Page')}}</span>
+              </a>
             </li>
-            {% endif %}
 
-            <li class="menu-header">{{_('Storage')}}</li>
-            <li><a class="nav-link" href="credits.html"><i class="fas fa-file-image"></i> <span>{{_('Media')}}</span></a></li>
-            <li><a class="nav-link" href="credits.html"><i class="fas fa-file-download"></i> <span>{{_('Archives')}}</span></a></li>
+            {% for content_type in site.content_types
+               if content_type.key != 'page' %}
+            <li>
+              <a class="nav-link" href="credits.html">
+                <i class="far fa-file-alt"></i>
+                <span>{{content_type.title}}</span>
+              </a>
+            </li>
+            {% endfor %}
+
+            <li>
+              <a class="nav-link" href="credits.html">
+                <i class="fas fa-photo-video"></i>
+                <span>{{_('Media Files')}}</span>
+              </a>
+            </li>
 
             <li class="menu-header">{{_('Preference')}}</li>
             <li>

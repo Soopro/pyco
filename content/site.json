@@ -1,12 +1,46 @@
 {
-  "app_id":"pyco_app",
-  "slug":"pyco",
+  "_id": "content/site.json",
+  "slug": "pyco",
   "locale": "en_US",
   "content_types": {
     "post": "Posts",
     "page": "Pages",
     "work": "Works",
     "product": "Products"
+  },
+  "categories": {
+    "name": "Categories",
+    "content_types": [
+      "post"
+    ],
+    "terms": [
+      {
+        "key": "daily",
+        "meta": {
+          "name": "Daily"
+        }
+      },
+      {
+        "key": "food",
+        "meta": {
+          "name": "Food"
+        }
+      },
+      {
+        "key": "daily-2",
+        "meta": {
+          "name": "Daily2"
+        },
+        "parent": "daily"
+      },
+      {
+        "key": "food-2",
+        "meta": {
+          "name": "Food2"
+        },
+        "parent": "food"
+      }
+    ]
   },
   "menus": {
     "primary": [
@@ -40,33 +74,32 @@
       }
     ]
   },
-  "categories": {
-    "name": "Categories",
-    "content_types":["post"],
-    "terms": [
-      {"key":"daily", "meta":{"name": "Daily"}},
-      {"key":"food", "meta":{"name": "Food"}},
-      {"key":"daily-2", "meta":{"name": "Daily2"}, "parent":"daily"},
-      {"key":"food-2", "meta":{"name": "Food2"}, "parent":"food"}
-    ]
-  },
   "slots": {
-    "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
+    "event": {
+      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"
+    }
   },
   "meta": {
     "favicon": "",
     "logo": "",
     "head_metadata": "",
     "copyright": "2015 Made by Pyco.",
-    "description": "...",
+    "description": "...123213",
     "license": "MIT",
     "title": "Sample",
-    "socials":[],
+    "socials": [],
     "languages": [
-      {"key": "en_US", "name":"English", "url":"http://....."},
-      {"key": "zh_CN", "name":"汉语", "url":"http://....."}
+      {
+        "key": "zh_CN",
+        "name": "汉语",
+        "url": "http://....."
+      },
+      {
+        "key": "en_US",
+        "name": "English",
+        "url": "http://....."
+      }
     ],
     "custom": {}
   }
-
 }

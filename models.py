@@ -137,6 +137,9 @@ class Configure(FlatFile):
 
 
 class Theme(FlatFile):
+    PRIMARY_MENU = 'primary'
+    PRIMARY_MENU_NAME = 'Primary Menu'
+
     config_file_path = 'config.json'
     data = {}
 
@@ -151,23 +154,34 @@ class Theme(FlatFile):
     def delete(self):
         raise Exception('Delete is not allowed.')
 
+    @property
+    def options(self):
+        _options = self.data.get('options') or {}
+        return {k: v for k, v in _options.items()}
+
+    @property
+    def menus(self):
+        _menus = self.data.get('menus') or {}
+        menus = {k: v for k, v in _menus.items()}
+        if self.PRIMARY_MENU not in menus:
+            menus.update({self.PRIMARY_MENU: self.PRIMARY_MENU_NAME})
+        return menus
+
 
 class Site(FlatFile):
     CONTENT_DIR = 'content'
+    STATIC_TYPE = 'page'
+    STATIC_TYPE_NAME = 'Pages'
+
+    PRIMARY_MENU = 'primary'
 
     DEFUALT_SITE = {
         "app_id": "pyco_app",
         "slug": "pyco",
         "locale": "en_US",
-        "content_types": {
-            "page": "Pages",
-        },
-        "menus": {
-            "primary": []
-        },
-        "meta": {
-            "title": "Pyco",
-        }
+        "content_types": {STATIC_TYPE: STATIC_TYPE_NAME},
+        "menus": {PRIMARY_MENU: []},
+        "meta": {"title": "Pyco"}
     }
 
     path = os.path.join(CONTENT_DIR, 'site.json')
@@ -184,26 +198,53 @@ class Site(FlatFile):
         self.parse()
 
     def save(self):
-        self.raw = json.dumps(self.data)
+        self.raw = json.dumps(self.data, indent=2, ensure_ascii=False)
         return super(Site, self).save()
 
     def parse(self):
         site = json.loads(self.raw)
+        c_types = site.get('content_types', {})
+        if self.STATIC_TYPE not in c_types:
+            c_types.update({self.STATIC_TYPE: self.STATIC_TYPE_NAME})
         self._id = site.get('app_id', self._id)
         self.data = {
             '_id': self._id,
             'slug': site.get('slug'),
             'locale': site.get('locale', 'en_US'),
-            'content_types': site.get('content_types', {'page': 'Page'}),
+            'content_types': c_types,
             'categories': site.get('categories'),
-            'menus': site.get('menus', {'primary': []}),
-            'slots': site.get('slots'),
+            'menus': site.get('menus', {self.PRIMARY_MENU: []}),
+            'slots': site.get('slots', {}),
             'meta': site.get('meta', {}),
         }
 
     @property
     def meta(self):
-        return {k: v for k, v in self.data.get('meta', {}).items()}
+        _meta = self.data.get('meta') or {}
+        return {k: v for k, v in _meta.items()}
+
+    @property
+    def content_types(self):
+        _content_types = self.data.get('content_types') or {}
+        return [{'key': k, 'title': v} for k, v in _content_types.items()]
+
+    @property
+    def languages(self):
+        lang_list = self.data.get('meta', {}).get('languages') or []
+        return [lang for lang in lang_list]
+
+    @property
+    def menus(self):
+        _menus = self.data.get('menus') or {}
+        menus = [{'key': k, 'nodes': v} for k, v in _menus.items()]
+
+        def _get_index():
+            for idx, m in enumerate(menus):
+                if m['key'] == self.PRIMARY_MENU:
+                    return idx
+            return 0
+        menus.insert(0, menus.pop(_get_index()))
+        return menus
 
 
 class Document(FlatFile):
@@ -245,7 +286,7 @@ class Document(FlatFile):
         self.parse()
 
     def save(self):
-        _fields = self.data.get('meta', {})
+        _fields = self.data.get('meta') or {}
         _fields.update({
             'template': self.data.get('template', ''),
             'priority': self.data.get('priority', 0),
@@ -262,7 +303,7 @@ class Document(FlatFile):
                                 default_flow_style=False,
                                 indent=2,
                                 encoding=None)
-        content = self.data.get('content', '')
+        content = self.data.get('content') or ''
         self.raw = '/*\n{}\n*/\n{}'.format(fields, content)
         return super(Document, self).save()
 

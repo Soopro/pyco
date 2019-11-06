@@ -6,6 +6,7 @@ from datetime import datetime
 from functools import cmp_to_key
 import os
 import re
+import ast
 import uuid
 import time
 import random
@@ -429,3 +430,11 @@ def convert_price(amount, use_currency=False, symbol='', fraction_size=2):
 def chunks(raw_list, group_size=12):
     for i in range(0, len(raw_list), max(group_size, 1)):
         yield raw_list[i:i + group_size]
+
+
+# eval
+def str_eval(s, default=None):
+    try:
+        return ast.literal_eval(s)
+    except Exception:
+        return default

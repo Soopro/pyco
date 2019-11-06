@@ -12,11 +12,10 @@ from flask import (Blueprint,
                    g)
 
 import os
-import ast
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
-from utils.misc import hmac_sha, now
+from utils.misc import hmac_sha, now, str_eval
 from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
@@ -28,6 +27,7 @@ blueprint = Blueprint('preference', __name__, template_folder='pages')
 @blueprint.route('/site')
 @login_required
 def site():
+    site = current_app.db.Site()
     return render_template('site.html')
 
 
@@ -60,12 +60,12 @@ def update_site():
 @login_required
 def update_site_adv():
     head_metadata = request.form.get('head_metadata', '')
-    socials = request.form.get('socials', [])
-    languages = request.form.get('languages', [])
+    socials = request.form.get('socials', '')
+    languages = request.form.get('languages', '')
 
     site = current_app.db.Site()
-    site['meta']['socials'] = ast.literal_eval(socials)
-    site['meta']['languages'] = ast.literal_eval(languages)
+    site['meta']['socials'] = str_eval(socials, [])
+    site['meta']['languages'] = str_eval(languages, [])
     site['meta']['head_metadata'] = head_metadata
     site.save()
 
