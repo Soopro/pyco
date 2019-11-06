@@ -1,9 +1,5 @@
 {% extends "layout.html" %}
 
-{% block page_css %}
-<link rel="stylesheet" href="{{assets_url}}/modules/jquery-selectric/selectric.css">
-{% endblock %}
-
 {% block layout %}
 <section class="section">
   <div class="container mt-5">
@@ -77,7 +73,6 @@
 
 {% block page_scripts %}
 <script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
-<script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
 <script>
 $(".pwstrength").pwstrength();
 </script>
