@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<h1>{{_('Appearance')}}</h1>
+{% endblock %}
+
+{% block main %}
+<div class="section-body">
+  <div class="row">
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <form id="file-uploader"
+              action="{{url_for('.backup_restore')}}"
+              enctype=multipart/form-data
+              method="POST">
+          <div class="card-header">
+            <h4>{{_('Theme')}}</h4>
+          </div>
+          <div class="card-body">
+            <div class="section-title mt-0">
+              {{theme.title}}
+            </div>
+            <figure>
+              <img src="{{theme_url}}/{{theme.icon}}">
+            </figure>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label>{{_('Version')}}</label>
+                <p class="form-text text-muted">
+                  {{theme.version}}
+                </p>
+              </div>
+              <div class="form-group col-md-4">
+                <label>{{_('License')}}</label>
+                <p class="form-text text-muted">
+                  {{theme.license}}
+                </p>
+              </div>
+              <div class="form-group col-md-4">
+                <label>{{_('Author')}}</label>
+                <p class="form-text text-muted">
+                  {{theme.author}}
+                </p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>{{_('Description')}}</label>
+              <p class="form-text text-muted">
+                {{theme.description}}
+              </p>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <label class="btn btn-info btn-lg">
+              <i class="fas fa-upload"></i>
+              <span>{{_('Install')}}</span>
+              <input class="d-none"
+                     type="file"
+                     name="file"
+                     accept="application/zip">
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+<script>
+$('.file-uploader').each(function(){
+  var uploader = $(this);
+  uploader.find('input[type="file"]').on('change', function(e){
+    target = e.currentTarget || e.target;
+    if (target && target.value) {
+      uploader.submit();
+    }
+  });
+});
+</script>
+{% endblock %}

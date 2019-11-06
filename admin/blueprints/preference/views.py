@@ -24,10 +24,11 @@ from admin.decorators import login_required
 blueprint = Blueprint('preference', __name__, template_folder='pages')
 
 
+# site
+
 @blueprint.route('/site')
 @login_required
 def site():
-    site = current_app.db.Site()
     return render_template('site.html')
 
 
@@ -189,6 +190,17 @@ def hardcore_site_menu(menu_key):
     return_url = url_for('.site')
     return redirect(return_url)
 
+
+# appearance
+
+@blueprint.route('/appearance')
+@login_required
+def appearance():
+
+    return render_template('appearance.html')
+
+
+# configuration
 
 @blueprint.route('/configuration')
 @login_required

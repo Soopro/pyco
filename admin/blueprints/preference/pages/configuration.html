@@ -127,7 +127,7 @@
             </p>
           </div>
           <div class="mt-4">
-            <form id="file-uploader"
+            <form class="file-uploader"
                   action="{{url_for('.backup_restore')}}"
                   enctype=multipart/form-data
                   method="POST">
@@ -152,11 +152,15 @@
 <script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
 <script>
 $(".pwstrength").pwstrength();
-$('#file-uploader input[type="file"]').on('change', function(e){
-  target = e.currentTarget || e.target;
-  if (target && target.value) {
-    $('#file-uploader').submit();
-  }
+$('.file-uploader').each(function(){
+  var uploader = $(this);
+  uploader.find('input[type="file"]').on('change', function(e){
+    target = e.currentTarget || e.target;
+    if (target && target.value) {
+      uploader.submit();
+    }
+  });
 });
+
 </script>
 {% endblock %}

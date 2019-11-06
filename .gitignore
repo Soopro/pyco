@@ -42,4 +42,5 @@ conf.json
 linux-amd64/
 *.conf
 *.log
+backups/
 

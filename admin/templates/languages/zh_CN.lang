@@ -260,7 +260,22 @@
     "msgid": "New Submenu Item",
     "msgstr": "新建子菜单项"
   },
-
+  {
+    "msgid": "Theme",
+    "msgstr": "主题"
+  },
+  {
+    "msgid": "Version",
+    "msgstr": "版本"
+  },
+  {
+    "msgid": "Author",
+    "msgstr": "作者"
+  },
+  {
+    "msgid": "Install",
+    "msgstr": "上传"
+  },
 
 
 
