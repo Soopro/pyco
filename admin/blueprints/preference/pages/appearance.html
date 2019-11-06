@@ -20,37 +20,36 @@
             <div class="section-title mt-0">
               {{theme.title}}
             </div>
-            <figure>
-              <img src="{{theme_url}}/{{theme.icon}}">
-            </figure>
-            <div class="form-row">
-              <div class="form-group col-md-4">
+            <div class="form-row pt-3">
+              <div class="form-group col-md-6">
                 <label>{{_('Version')}}</label>
                 <p class="form-text text-muted">
                   {{theme.version}}
                 </p>
               </div>
-              <div class="form-group col-md-4">
+              <div class="form-group col-md-6">
                 <label>{{_('License')}}</label>
                 <p class="form-text text-muted">
                   {{theme.license}}
                 </p>
               </div>
-              <div class="form-group col-md-4">
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label>{{_('Description')}}</label>
+                <p class="form-text text-muted">
+                  {{theme.description}}
+                </p>
+              </div>
+              <div class="form-group col-md-6">
                 <label>{{_('Author')}}</label>
                 <p class="form-text text-muted">
                   {{theme.author}}
                 </p>
               </div>
             </div>
-            <div class="form-group">
-              <label>{{_('Description')}}</label>
-              <p class="form-text text-muted">
-                {{theme.description}}
-              </p>
-            </div>
           </div>
-          <div class="card-footer text-right">
+          <div class="card-footer">
             <label class="btn btn-info btn-lg">
               <i class="fas fa-upload"></i>
               <span>{{_('Install')}}</span>
@@ -63,6 +62,25 @@
         </form>
       </div>
     </div>
+
+    <div class="col-12 col-md-6 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Previews')}}</h4>
+        </div>
+        <div class="card-body">
+          <figure class="text-center">
+            <img class="mw-100" src="{{theme_url}}/{{theme.poster}}">
+          </figure>
+          {% for preview in theme.previews %}
+          <figure>
+            <img class="mw-100" src="{{theme_url}}/{{preview}}">
+          </figure>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}

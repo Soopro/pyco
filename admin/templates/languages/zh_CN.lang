@@ -276,8 +276,10 @@
     "msgid": "Install",
     "msgstr": "上传"
   },
-
-
+  {
+    "msgid": "Previews",
+    "msgstr": "预览"
+  },
 
   {
     "msgid": "* This setting is work for site only.",

@@ -56,6 +56,8 @@ def inject_global_variable():
     return {
         'assets_url': app.static_url_path,
         'base_url': app.config['ADMIN_BASE_URL'],
+        'theme_url': app.config['THEME_URL'],
+        'uploads_url': app.config['UPLOADS_URL'],
         'configure': g.configure,
         'locale': locale,
         'lang': locale.split('_')[0],
