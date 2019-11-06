@@ -1,7 +1,7 @@
 {
   "_id": "content/site.json",
   "slug": "pyco",
-  "locale": "en_US",
+  "locale": "",
   "content_types": {
     "post": "Posts",
     "page": "Pages",
@@ -83,10 +83,10 @@
     "favicon": "",
     "logo": "",
     "head_metadata": "",
-    "copyright": "2015 Made by Pyco.",
-    "description": "...123213",
-    "license": "MIT",
-    "title": "Sample",
+    "copyright": "",
+    "description": "",
+    "license": "",
+    "title": "",
     "socials": [],
     "languages": [
       {

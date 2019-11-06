@@ -276,6 +276,10 @@
     "msgid": "* Type `_blank` for open in new window.",
     "msgstr": "* 键入`_blank`表示打开自新窗口。"
   },
+  {
+    "msgid": "* Mark active status starts with this path as well.",
+    "msgstr": "* 以这个路径起头时也将被标记为激活状态。"
+  },
 
 
 

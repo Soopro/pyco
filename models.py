@@ -139,7 +139,7 @@ class Configure(FlatFile):
 class Theme(FlatFile):
     PRIMARY_MENU = 'primary'
     PRIMARY_MENU_NAME = 'Primary Menu'
-    PRIMARY_MENU_LEVEL = 1
+    PRIMARY_MENU_LEVEL = 2
 
     config_file_path = 'config.json'
     data = {}
@@ -164,8 +164,8 @@ class Theme(FlatFile):
     def menus(self):
         _menus = self.data.get('menus') or {}
         menus = {k: {
-            'title': v.get('title'),
-            'level': v.get('level'),
+            'title': v.get('title') or '',
+            'level': v.get('level') or 1,
         } for k, v in _menus.items()}
         if self.PRIMARY_MENU not in menus:
             menus.update({
@@ -222,7 +222,7 @@ class Site(FlatFile):
             'locale': site.get('locale', 'en_US'),
             'content_types': c_types,
             'categories': site.get('categories'),
-            'menus': site.get('menus', {self.PRIMARY_MENU: []}),
+            'menus': site.get('menus') or {self.PRIMARY_MENU: []},
             'slots': site.get('slots', {}),
             'meta': site.get('meta', {}),
         }

@@ -130,7 +130,7 @@
         <div class="card-body">
           {% for menu in site.menus %}
           <div class="section-title {{'mt-0' if loop.first}}">
-            {{_(theme.menus[menu.key])}}
+            {{_(theme.menus[menu.key].title)}}
           </div>
           <div>
             {% for node in menu.nodes %}
@@ -138,7 +138,7 @@
               <button class="btn btn-outline-primary w-100"
                       type="button"
                       data-toggle="modal"
-                      data-target="#MODAL-MENU-ITEM"
+                      data-target="#MODAL-MENU-NODE"
                       data-name="{{node.name}}"
                       data-link="{{node.link}}"
                       data-window="{{node.target}}"
@@ -151,13 +151,14 @@
                                                  node_key=node.key)}}">
                 {{node.name}}
               </button>
-              {% if theme.menus %}
+              {% if theme.menus[menu.key] and
+                 theme.menus[menu.key].level > 1 %}
               {% for subnode in node.nodes %}
               <div class="py-1 text-right">
                 <button class="btn btn-outline-secondary w-75"
                         type="button"
                         data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM"
+                        data-target="#MODAL-MENU-NODE"
                         data-name="{{subnode.name}}"
                         data-link="{{subnode.link}}"
                         data-window="{{subnode.target}}"
@@ -176,13 +177,14 @@
                 <button class="btn btn-secondary w-50"
                         type="button"
                         data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM"
+                        data-target="#MODAL-MENU-NODE"
                         data-action-url="{{url_for('.add_site_menu',
                                                    key=menu.key)}}">
                   <i class="fas fa-plus"></i>
                   <span>{{_('New Submenu Item')}}</span>
                 </button>
               </div>
+              {% endif %}
             </div>
             {% endfor %}
             <div class="row my-2">
@@ -190,7 +192,7 @@
                 <button class="btn btn-primary w-100"
                         type="button"
                         data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM"
+                        data-target="#MODAL-MENU-NODE"
                         data-action-url="{{url_for('.add_site_menu',
                                                    key=menu.key)}}">
                   <i class="fas fa-plus"></i>
@@ -201,7 +203,7 @@
                 <button class="btn btn-outline-primary w-100"
                         type="button"
                         data-toggle="modal"
-                        data-target="#MODAL-MENU-ITEM-EXPERT"
+                        data-target="#MODAL-MENU-HARDCORE"
                         data-hardcore="{{menu.nodes or ''}}"
                         data-action-url="{{url_for('.hardcore_site_menu',
                                                    key=menu.key)}}">
@@ -220,7 +222,7 @@
 {% endblock %}
 
 {% block page_models %}
-<div id="MODAL-MENU-ITEM"
+<div id="MODAL-MENU-NODE"
      class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -271,6 +273,9 @@
                    type="text"
                    name="path_scope"
                    value="">
+            <small class="form-text text-muted">
+              {{_('* Mark active status starts with this path as well.')}}
+            </small>
           </div>
 
           <div class="form-group">
@@ -278,7 +283,9 @@
               {{_('Fixed Link (No HASH generation)')}}
             </div>
             <label class="custom-switch mt-2">
-              <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input">
+              <input class="custom-switch-input"
+                     type="checkbox"
+                     name="fixed">
               <span class="custom-switch-indicator"></span>
               <span class="custom-switch-description">{{_('Fixed')}}</span>
             </label>
@@ -307,7 +314,7 @@
     </div>
   </div>
 </div>
-<div id="MODAL-MENU-ITEM-EXPERT"
+<div id="MODAL-MENU-HARDCORE"
      class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -353,7 +360,7 @@
 <script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
 <script src="{{assets_url}}/modules/jquery-selectric/jquery.selectric.min.js"></script>
 <script>
-$('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
+$('#MODAL-MENU-NODE').on('show.bs.modal', function(e) {
   var btn = $(e.relatedTarget);
   var modal = $(e.currentTarget);
 
@@ -373,6 +380,7 @@ $('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
   modal.find('input[name="link"]').val(item_link);
   modal.find('input[name="target"]').val(item_target);
   modal.find('input[name="fixed"]').val(item_fixed);
+  modal.find('input[name="fixed"]').prop('checked', Boolean(item_fixed));
   modal.find('input[name="path_scope"]').val(item_path_scope);
   modal.find('input[name="key"]').val(item_key);
   modal.find('input[name="parent"]').val(item_parent);
@@ -380,11 +388,13 @@ $('#MODAL-MENU-ITEM').on('show.bs.modal', function(e) {
 
 });
 
-$('#MODAL-MENU-ITEM-EXPERT').on('show.bs.modal', function(e) {
+$('#MODAL-MENU-HARDCORE').on('show.bs.modal', function(e) {
   var btn = $(e.relatedTarget);
   var modal = $(e.currentTarget);
 
+  var action_url = btn.data('action-url');
   var hardcore = btn.data('hardcore');
+  modal.find('form').attr('action', action_url);
   modal.find('textarea[name="hardcore"]').val(hardcore);
 });
 </script>
