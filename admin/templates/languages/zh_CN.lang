@@ -233,6 +233,10 @@
     "msgstr": "固定"
   },
   {
+    "msgid": "Position",
+    "msgstr": "位置"
+  },
+  {
     "msgid": "Fixed Link (No HASH generation)",
     "msgstr": "固定链接（不生成HASH值）"
   },
@@ -244,7 +248,10 @@
     "msgid": "New Menu Item",
     "msgstr": "新建菜单项"
   },
-
+  {
+    "msgid": "New Submenu Item",
+    "msgstr": "新建子菜单项"
+  },
 
 
 

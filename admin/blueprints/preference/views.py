@@ -74,7 +74,7 @@ def update_site_adv():
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu/add', methods=['POST'])
+@blueprint.route('/site/menu/<key>', methods=['POST'])
 @login_required
 def add_site_menu(key):
     flash('SAVED')
@@ -82,7 +82,7 @@ def add_site_menu(key):
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu', methods=['POST'])
+@blueprint.route('/site/menu/<key>', methods=['POST'])
 @login_required
 def update_site_menu(key):
     flash('SAVED')
@@ -90,7 +90,7 @@ def update_site_menu(key):
     return redirect(return_url)
 
 
-@blueprint.route('/site/menu/hardcore', methods=['POST'])
+@blueprint.route('/site/menu/<key>/hardcore', methods=['POST'])
 @login_required
 def hardcore_site_menu(key):
     flash('SAVED')

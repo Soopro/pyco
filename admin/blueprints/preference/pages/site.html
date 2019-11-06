@@ -133,42 +133,78 @@
             {{_(theme.menus[menu.key])}}
           </div>
           <div>
-            {% for item in menu.nodes %}
-            <button class="btn btn-outline-primary w-100 m-1"
-                    type="button"
-                    data-toggle="modal"
-                    data-target="#MODAL-MENU-ITEM"
-                    data-name="{{item.name}}"
-                    data-link="{{item.link}}"
-                    data-window="{{item.target}}"
-                    data-fixed="{{item.fixed}}"
-                    data-path-scope="{{item.path_scope}}"
-                    data-pos="{{loop.index}}"
-                    data-key="{{item.key}}"
-                    data-parent=""
-                    data-action-url="{{url_for('.update_site_menu', key=k)}}">
-              {{item.name}}
-            </button>
-            {% endfor %}
-            <div class="row">
-              <div class="col-md-8">
-                <button class="btn btn-primary w-100 m-1"
+            {% for node in menu.nodes %}
+            <div class="py-2">
+              <button class="btn btn-outline-primary w-100"
+                      type="button"
+                      data-toggle="modal"
+                      data-target="#MODAL-MENU-ITEM"
+                      data-name="{{node.name}}"
+                      data-link="{{node.link}}"
+                      data-window="{{node.target}}"
+                      data-fixed="{{node.fixed}}"
+                      data-path-scope="{{node.path_scope}}"
+                      data-pos="{{loop.index}}"
+                      data-parent=""
+                      data-action-url="{{url_for('.update_site_menu',
+                                                 key=menu.key,
+                                                 node_key=node.key)}}">
+                {{node.name}}
+              </button>
+              {% if theme.menus %}
+              {% for subnode in node.nodes %}
+              <div class="py-1 text-right">
+                <button class="btn btn-outline-secondary w-75"
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-ITEM"
-                        data-action-url="{{url_for('.add_site_menu')}}">
+                        data-name="{{subnode.name}}"
+                        data-link="{{subnode.link}}"
+                        data-window="{{subnode.target}}"
+                        data-fixed="{{subnode.fixed}}"
+                        data-path-scope="{{subnode.path_scope}}"
+                        data-pos="{{loop.index}}"
+                        data-parent="{{node.key}}"
+                        data-key="{{subnode.key}}"
+                        data-action-url="{{url_for('.update_site_menu',
+                                                   key=menu.key)}}">
+                  {{subnode.name}}
+                </button>
+              </div>
+              {% endfor %}
+              <div class="py-1 text-right">
+                <button class="btn btn-secondary w-50"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM"
+                        data-action-url="{{url_for('.add_site_menu',
+                                                   key=menu.key)}}">
+                  <i class="fas fa-plus"></i>
+                  <span>{{_('New Submenu Item')}}</span>
+                </button>
+              </div>
+            </div>
+            {% endfor %}
+            <div class="row my-2">
+              <div class="col-md-8">
+                <button class="btn btn-primary w-100"
+                        type="button"
+                        data-toggle="modal"
+                        data-target="#MODAL-MENU-ITEM"
+                        data-action-url="{{url_for('.add_site_menu',
+                                                   key=menu.key)}}">
                   <i class="fas fa-plus"></i>
                   <span>{{_('New Menu Item')}}</span>
                 </button>
               </div>
               <div class="col-md-4">
-                <button class="btn btn-outline-primary w-100 m-1"
+                <button class="btn btn-outline-primary w-100"
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-ITEM-EXPERT"
-                        data-hardcore="{{site.menus[k] or ''}}"
+                        data-hardcore="{{menu.nodes or ''}}"
                         data-action-url="{{url_for('.hardcore_site_menu',
-                                                   key=k)}}">
+                                                   key=menu.key)}}">
                   <i class="fas fa-flask"></i>
                   <span>{{_('Expert Edit')}}</span>
                 </button>
