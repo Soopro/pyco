@@ -9,7 +9,8 @@ import urllib
 from utils.misc import (process_slug,
                         gen_excerpt,
                         guess_mimetype,
-                        split_file_ext)
+                        split_file_ext,
+                        split_file_type)
 from utils.files import ensure_dirs
 
 
@@ -418,7 +419,7 @@ class Document(FlatFile):
 class Media():
 
     UPLOADS_DIR = 'uploads'
-    IMAGE_MEDIA_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
+    IMAGE_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
 
     MAXIMUM_QUERY = 60
     MAXIMUM_STORAGE = 6000
@@ -427,12 +428,14 @@ class Media():
     filename = ''
     path = ''
 
+    _id = None
     _updated = None
     _creation = None
 
     def __init__(self, filename):
         self.filename = filename
         self.path = os.path.join(self.UPLOADS_DIR, filename)
+        self._id = self.path
         self._refresh_time()
 
     def _refresh_time(self):
@@ -443,12 +446,17 @@ class Media():
             self._updated = None
             self._creation = None
 
+    def delete(self):
+        if os.path.isfile(self.path):
+            os.remove(self.path)
+        return self._id
+
     # query methods
     @classmethod
     def count(cls):
         count_files = [f for f in os.listdir(cls.UPLOADS_DIR)
-                       if os.path.isfile(f)][:cls.MAXIMUM_STORAGE]
-        return len(count_files)
+                       if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
+        return len(count_files)[:cls.MAXIMUM_STORAGE]
 
     @classmethod
     def find_one(cls, filename):
@@ -461,17 +469,20 @@ class Media():
     @classmethod
     def find(cls):
         file_paths = [f for f in os.listdir(cls.UPLOADS_DIR)
-                      if os.path.isfile(f)]
+                      if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
+        print(cls.UPLOADS_DIR)
         return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
 
     @property
     def info(self):
         return {
+            '_id': self._id,
             'filename': self.filename,
             'ext': split_file_ext(self.filename),
+            'type': split_file_type(self.filename),
             'mimetype': guess_mimetype(self.filename),
             'updated': self._updated,
             'creation': self._creation,
-            'is_file': os.path.isfile(self.path)
+            'is_file': os.path.isfile(self.path),
         }
 

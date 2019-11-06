@@ -52,7 +52,17 @@
         "path_scope": "",
         "fixed": "",
         "class": "",
-        "nodes": []
+        "nodes": [
+          {
+            "key": "s-123213",
+            "name": "123213",
+            "link": "",
+            "target": "",
+            "path_scope": "",
+            "fixed": "",
+            "class": ""
+          }
+        ]
       },
       {
         "key": "posts",

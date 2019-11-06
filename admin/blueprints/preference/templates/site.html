@@ -5,227 +5,226 @@
 {% endblock %}
 
 {% block main %}
-<div class="section-body">
-  <div class="row">
-    <div class="col-12 col-md-6 col-lg-6">
-      <div class="card">
-        <form action="{{url_for('.update_site')}}"
-              method="POST">
-          <div class="card-header">
-            <h4>{{_('Site Settings')}}</h4>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label>{{_('Site Locale')}}</label>
-              <select class="form-control"
-                      name="locale">
-                {% for lang in site.languages %}
-                <option value="{{lang.key}}"
-                        {{'selected' if site.locale==lang.key}}>
-                  {{lang.name}}
-                </option>
-                {% endfor %}
-              </select>
-              <small class="form-text text-muted">
-                {{_('* This setting is work for site only.')}}
-              </small>
-            </div>
-            <div class="form-group">
-              <label>{{_('Title')}}</label>
-              <input class="form-control"
-                     type="text"
-                     name="title"
-                     value="{{site.meta.title}}">
-            </div>
-            <div class="form-group">
-              <label>{{_('Description')}}</label>
-              <textarea class="form-control"
-                        name="description"
-                        placeholder="...">{{site.meta.description}}</textarea>
-            </div>
-
-            <div class="form-group">
-              <label>{{_('Logo')}}</label>
-              <input class="form-control"
-                     type="text"
-                     name="logo"
-                     value="{{site.meta.logo}}"
-                     placeholder="{{_('Use `[%uplaods%]` as relative url '+
-                                      'of uplaods.')}}">
-            </div>
-            <div class="form-group">
-              <label>{{_('Favicon')}}</label>
-              <input class="form-control"
-                     type="text"
-                     name="favicon"
-                     value="{{site.meta.favicon}}"
-                     placeholder="{{_('Use `[%uplaods%]` as relative url '+
-                                      'of uplaods.')}}">
-            </div>
-
-            <div class="form-group">
-              <label>{{_('Copyright')}}</label>
-              <input class="form-control"
-                     type="text"
-                     name="copyright"
-                     value="{{site.meta.copyright}}">
-            </div>
-
-            <div class="form-group">
-              <label>{{_('License')}}</label>
-              <textarea class="form-control"
-                        name="license">{{site.meta.license}}</textarea>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
-          </div>
-        </form>
-      </div>
-      <div class="card">
-        <form action="{{url_for('.update_site_adv')}}"
-              method="POST">
-          <div class="card-header">
-            <h4>{{_('Advanced Options')}}</h4>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label>{{_('Head Metadata')}}</label>
-              <textarea class="form-control"
-                        name="head_metadata">{{site.meta.head_metadata}}</textarea>
-              <small class="form-text text-muted">
-                {{_('* This is usually used in the <head> of the HTML.')}}
-              </small>
-            </div>
-            <div class="form-group">
-              <label>{{_('Social Media')}}</label>
-              <textarea class="form-control"
-                        name="socials"
-                        placeholder="[{'figure': 'http://youruploads.com/figure.jpg', 'key': 'github', 'name': 'Github', 'scirpt': '...script', 'url': 'http://yoursocial.com'}]">{{site.meta.socials or ''}}</textarea>
-              <small class="form-text text-muted">
-                {{_('* For expert only, must use JSON format.')}}
-              </small>
-            </div>
-            <div class="form-group">
-              <label>{{_('Languages')}}</label>
-              <textarea class="form-control"
-                        name="languages"
-                        placeholder="[{'key': 'en_US', 'name': 'English', 'url': 'http://en.yoursite.com'}]">{{site.meta.languages or ''}}</textarea>
-              <small class="form-text text-muted">
-                {{_('* For expert only, must use JSON format.')}}
-              </small>
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-6">
-      <div class="card">
+<div class="row">
+  <div class="col-12 col-md-6 col-lg-6">
+    <div class="card">
+      <form action="{{url_for('.update_site')}}"
+            method="POST">
         <div class="card-header">
-          <h4>{{_('Menu')}}</h4>
+          <h4>{{_('Site Settings')}}</h4>
         </div>
         <div class="card-body">
-          {% for menu in site.menus %}
-          <div class="section-title {{'mt-0' if loop.first}}">
-            {{_(theme.menus[menu.key].title)}}
+          <div class="form-group">
+            <label>{{_('Site Locale')}}</label>
+            <select class="form-control"
+                    name="locale">
+              {% for lang in site.languages %}
+              <option value="{{lang.key}}"
+                      {{'selected' if site.locale==lang.key}}>
+                {{lang.name}}
+              </option>
+              {% endfor %}
+            </select>
+            <small class="form-text text-muted">
+              {{_('* This setting is work for site only.')}}
+            </small>
           </div>
-          <div>
-            {% for node in menu.nodes %}
-            <div class="py-2">
-              <button class="btn btn-outline-primary w-100"
+          <div class="form-group">
+            <label>{{_('Title')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="title"
+                   value="{{site.meta.title}}">
+          </div>
+          <div class="form-group">
+            <label>{{_('Description')}}</label>
+            <textarea class="form-control"
+                      name="description"
+                      placeholder="...">{{site.meta.description}}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label>{{_('Logo')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="logo"
+                   value="{{site.meta.logo}}"
+                   placeholder="{{_('Use `[%uplaods%]` as relative url '+
+                                    'of uplaods.')}}">
+          </div>
+          <div class="form-group">
+            <label>{{_('Favicon')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="favicon"
+                   value="{{site.meta.favicon}}"
+                   placeholder="{{_('Use `[%uplaods%]` as relative url '+
+                                    'of uplaods.')}}">
+          </div>
+
+          <div class="form-group">
+            <label>{{_('Copyright')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="copyright"
+                   value="{{site.meta.copyright}}">
+          </div>
+
+          <div class="form-group">
+            <label>{{_('License')}}</label>
+            <textarea class="form-control"
+                      name="license">{{site.meta.license}}</textarea>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
+        </div>
+      </form>
+    </div>
+    <div class="card">
+      <form action="{{url_for('.update_site_adv')}}"
+            method="POST">
+        <div class="card-header">
+          <h4>{{_('Advanced Options')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>{{_('Head Metadata')}}</label>
+            <textarea class="form-control"
+                      name="head_metadata">{{site.meta.head_metadata}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* This is usually used in the <head> of the HTML.')}}
+            </small>
+          </div>
+          <div class="form-group">
+            <label>{{_('Social Media')}}</label>
+            <textarea class="form-control"
+                      name="socials"
+                      placeholder="[{'figure': 'http://youruploads.com/figure.jpg', 'key': 'github', 'name': 'Github', 'scirpt': '...script', 'url': 'http://yoursocial.com'}]">{{site.meta.socials or ''}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* For expert only, must use JSON format.')}}
+            </small>
+          </div>
+          <div class="form-group">
+            <label>{{_('Languages')}}</label>
+            <textarea class="form-control"
+                      name="languages"
+                      placeholder="[{'key': 'en_US', 'name': 'English', 'url': 'http://en.yoursite.com'}]">{{site.meta.languages or ''}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* For expert only, must use JSON format.')}}
+            </small>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-12 col-md-6 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Menu')}}</h4>
+      </div>
+      <div class="card-body">
+        {% for menu in site.menus %}
+        <div class="section-title {{'mt-0' if loop.first}}">
+          {{_(theme.menus[menu.key].title)}}
+        </div>
+        <div>
+          {% for node in menu.nodes %}
+          <div class="py-2">
+            <button class="btn btn-outline-primary w-100"
+                    type="button"
+                    data-toggle="modal"
+                    data-target="#MODAL-MENU-NODE"
+                    data-name="{{node.name}}"
+                    data-link="{{node.link}}"
+                    data-window="{{node.target}}"
+                    data-fixed="{{node.fixed}}"
+                    data-path-scope="{{node.path_scope}}"
+                    data-css="{{node.class}}"
+                    data-pos="{{loop.index0}}"
+                    data-remove-url="{{url_for('.remove_site_menu_node',
+                                                menu_key=menu.key,
+                                                node_key=node.key)}}"
+                    data-action-url="{{url_for('.update_site_menu_node',
+                                              menu_key=menu.key,
+                                              node_key=node.key)}}">
+              <i class="fas fa-bars"></i>
+              <span>{{node.name}}</span>
+            </button>
+            {% if theme.menus[menu.key] and
+               theme.menus[menu.key].level > 1 %}
+            {% for subnode in node.nodes %}
+            <div class="py-1">
+              <button class="btn btn-outline-secondary w-100"
                       type="button"
                       data-toggle="modal"
                       data-target="#MODAL-MENU-NODE"
-                      data-name="{{node.name}}"
-                      data-link="{{node.link}}"
-                      data-window="{{node.target}}"
-                      data-fixed="{{node.fixed}}"
-                      data-path-scope="{{node.path_scope}}"
-                      data-css="{{node.class}}"
+                      data-name="{{subnode.name}}"
+                      data-link="{{subnode.link}}"
+                      data-window="{{subnode.target}}"
+                      data-fixed="{{subnode.fixed}}"
+                      data-path-scope="{{subnode.path_scope}}"
+                      data-css="{{subnode.class}}"
                       data-pos="{{loop.index0}}"
                       data-remove-url="{{url_for('.remove_site_menu_node',
-                                                  menu_key=menu.key,
-                                                  node_key=node.key)}}"
+                                                 menu_key=menu.key,
+                                                 parent_key=node.key,
+                                                 node_key=subnode.key)}}"
                       data-action-url="{{url_for('.update_site_menu_node',
-                                                menu_key=menu.key,
-                                                node_key=node.key)}}">
-                {{node.name}}
+                                                 menu_key=menu.key,
+                                                 parent_key=node.key,
+                                                 node_key=subnode.key)}}">
+                <span>{{subnode.name}}</span>
               </button>
-              {% if theme.menus[menu.key] and
-                 theme.menus[menu.key].level > 1 %}
-              {% for subnode in node.nodes %}
-              <div class="py-1 text-right">
-                <button class="btn btn-outline-secondary w-75"
-                        type="button"
-                        data-toggle="modal"
-                        data-target="#MODAL-MENU-NODE"
-                        data-name="{{subnode.name}}"
-                        data-link="{{subnode.link}}"
-                        data-window="{{subnode.target}}"
-                        data-fixed="{{subnode.fixed}}"
-                        data-path-scope="{{subnode.path_scope}}"
-                        data-css="{{subnode.class}}"
-                        data-pos="{{loop.index0}}"
-                        data-remove-url="{{url_for('.remove_site_menu_node',
-                                                   menu_key=menu.key,
-                                                   parent_key=node.key,
-                                                   node_key=subnode.key)}}"
-                        data-action-url="{{url_for('.update_site_menu_node',
-                                                   menu_key=menu.key,
-                                                   parent_key=node.key,
-                                                   node_key=subnode.key)}}">
-                  {{subnode.name}}
-                </button>
-              </div>
-              {% endfor %}
-              <div class="row py-1">
-                <div class="col-md-4 offset-md-8">
-                  <button class="btn btn-secondary w-100"
-                          type="button"
-                          data-toggle="modal"
-                          data-target="#MODAL-MENU-NODE"
-                          data-action-url="{{url_for('.add_site_menu_node',
-                                                     menu_key=menu.key,
-                                                     parent_key=node.key)}}">
-                    <i class="fas fa-plus"></i>
-                    <span>{{_('New')}}</span>
-                  </button>
-                </div>
-              </div>
-              {% endif %}
             </div>
             {% endfor %}
-            <div class="row my-2">
-              <div class="col-md-8">
-                <button class="btn btn-primary w-100"
+            <div class="row py-1">
+              <div class="col-md-4 offset-md-8">
+                <button class="btn btn-secondary w-100"
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-NODE"
                         data-action-url="{{url_for('.add_site_menu_node',
-                                                   menu_key=menu.key)}}">
+                                                   menu_key=menu.key,
+                                                   parent_key=node.key)}}">
                   <i class="fas fa-plus"></i>
-                  <span>{{_('New Menu Item')}}</span>
-                </button>
-              </div>
-              <div class="col-md-4">
-                <button class="btn btn-outline-primary w-100"
-                        type="button"
-                        data-toggle="modal"
-                        data-target="#MODAL-MENU-HARDCORE"
-                        data-hardcore="{{menu.nodes or ''}}"
-                        data-action-url="{{url_for('.hardcore_site_menu',
-                                                   menu_key=menu.key)}}">
-                  <i class="fas fa-flask"></i>
-                  <span>{{_('Expert')}}</span>
+                  <span>{{_('New')}}</span>
                 </button>
               </div>
             </div>
+            {% endif %}
           </div>
           {% endfor %}
+          <div class="row my-2">
+            <div class="col-md-8">
+              <button class="btn btn-primary w-100"
+                      type="button"
+                      data-toggle="modal"
+                      data-target="#MODAL-MENU-NODE"
+                      data-action-url="{{url_for('.add_site_menu_node',
+                                                 menu_key=menu.key)}}">
+                <i class="fas fa-plus"></i>
+                <span>{{_('New Menu Item')}}</span>
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-outline-primary w-100"
+                      type="button"
+                      data-toggle="modal"
+                      data-target="#MODAL-MENU-HARDCORE"
+                      data-hardcore="{{menu.nodes or ''}}"
+                      data-action-url="{{url_for('.hardcore_site_menu',
+                                                 menu_key=menu.key)}}">
+                <i class="fas fa-flask"></i>
+                <span>{{_('Expert')}}</span>
+              </button>
+            </div>
+          </div>
         </div>
+        {% endfor %}
       </div>
     </div>
   </div>

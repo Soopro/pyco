@@ -37,13 +37,13 @@ def index():
     max_pages = max(int(math.ceil(total_count / float(limit))), 1)
 
     has_next = paged < max_pages
-    has_previous = paged > 0
+    has_previous = paged > 1
 
-    mediafiles = files[offset:offset + limit]
+    mediafiles = [f.info for f in files[offset:offset + limit]]
 
     uploads_url = current_app.config.get('UPLOADS_URL')
     for media in mediafiles:
-        media['src'] = '{}/{}'.format(uploads_url, media.filename)
+        media['src'] = '{}/{}'.format(uploads_url, media['filename'])
 
     prev_url = url_for(request.endpoint, paged=max(paged - 1, 1))
     next_url = url_for(request.endpoint, paged=min(paged + 1, max_pages))
@@ -53,6 +53,7 @@ def index():
         'prev': prev_url if has_previous else None,
         'paged': paged,
     }
+    print(mediafiles)
     return render_template('mediafiles.html',
                            mediafiles=mediafiles,
                            p=paginator)
@@ -63,10 +64,6 @@ def index():
 def upload():
     files = request.files.getlist('files')
     for file in files[:12]:
-        if not _allowed_file(file.filename):
-            flash('{}: file not allowed!'.format(file.filename), 'warning')
-            continue
-
         scope = parse_dateformat(now(), '%Y-%m')
         key = filename = safe_filename(file.filename)
         media = current_app.mongodb.Media.find_one_by_scope_key(scope, key)
@@ -95,28 +92,10 @@ def upload():
     return redirect(request.referrer)
 
 
-@blueprint.route('/<media_id>/remove')
+@blueprint.route('/<filename>/remove')
 @login_required
-def remove(media_id):
-    paged = parse_int(request.args.get('paged'), 1, True)
-
-    media = current_app.mongodb.Media.find_one_by_id(media_id)
-    uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
-    try:
-        os.remove(os.path.join(uplaods_dir, media['scope'], media['key']))
-    except Exception:
-        pass
-    finally:
-        media.delete()
-
-    return_url = url_for('.index', paged=paged)
-    return redirect(return_url)
-
-
-# helpers
-def _allowed_file(filename):
-    file_ext = ''
-    allowed_exts = current_app.config.get('ALLOWED_MEDIA_EXTS')
-    if '.' in filename:
-        file_ext = filename.rsplit('.', 1)[1]
-    return file_ext.lower() in allowed_exts
+def remove(filename):
+    media = current_app.db.Media.find_one(filename)
+    media.delete()
+    flash('REMOVED')
+    return redirect(request.referrer)

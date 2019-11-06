@@ -17,3 +17,16 @@
 .form-control::-ms-input-placeholder {
   opacity: 0.6 !important;
 }
+
+.list-figure {
+  width: 100px;
+  height: 100px;
+}
+
+.list-icon {
+  width: 96px;
+  height: 96px;
+  font-size: 48px;
+  line-height: 96px;
+  text-align: center;
+}

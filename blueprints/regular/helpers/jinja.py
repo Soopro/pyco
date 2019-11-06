@@ -37,7 +37,7 @@ def filter_thumbnail(pic_url, preset_name='default'):
         _ext = os.path.splitext(pic_url.split('?', 1)[0])[1][1:].lower()
     except Exception:
         _ext = None
-    if _ext in current_app.db.Media.IMAGE_MEDIA_EXTS:
+    if _ext in current_app.db.Media.IMAGE_EXTS:
         pair = '&' if '?' in pic_url else '?'
         pic_url = '{}{}thumbnail={}'.format(pic_url, pair, preset)
     return pic_url
