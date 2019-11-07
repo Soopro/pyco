@@ -142,6 +142,9 @@ class Configure(FlatFile):
 
 
 class Theme(FlatFile):
+    STATIC_TYPE = 'page'
+    STATIC_TYPE_NAME = 'Pages'
+
     PRIMARY_MENU = 'primary'
     PRIMARY_MENU_NAME = 'Primary Menu'
     PRIMARY_MENU_LEVEL = 2
@@ -166,6 +169,38 @@ class Theme(FlatFile):
         return {k: v for k, v in _options.items()}
 
     @property
+    def categories(self):
+        _category = self.data.get('category') or {}
+        if _category:
+            categories = {
+                'name': _category.get('name'),
+                'content_type': _category.get('content_type')
+            }
+        else:
+            categories = None
+        return categories
+
+    @property
+    def content_types(self):
+        _content_types = self.data.get('content_types') or {}
+        content_types = {k: {
+            'key': k,
+            'title': v.get('title') or '',
+            'cloaked': bool(v.get('cloaked')),
+            'templates': v.get('templates'),
+        } for k, v in _content_types.items()}
+        if self.STATIC_TYPE not in content_types:
+            content_types.update({
+                self.STATIC_TYPE: {
+                    'key': self.STATIC_TYPE,
+                    'title': self.STATIC_TYPE_NAME,
+                    'cloaked': False,
+                    'templates': None,
+                }
+            })
+        return content_types
+
+    @property
     def menus(self):
         _menus = self.data.get('menus') or {}
         menus = {k: {
@@ -184,6 +219,7 @@ class Theme(FlatFile):
 
 class Site(FlatFile):
     CONTENT_DIR = 'content'
+
     STATIC_TYPE = 'page'
     STATIC_TYPE_NAME = 'Pages'
 

@@ -26,8 +26,7 @@
   },
 
   "content_types": {
-    "post": {"title": "Posts", "status": 1},
-    "works": {"title": "Portfolio", "status": 1}
+    "post": {"title": "Posts", "templates": ["post"]}
   },
 
   "reserves": {

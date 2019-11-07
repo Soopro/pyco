@@ -203,14 +203,22 @@ def appearance():
 @login_required
 def install_theme():
     f = request.files['file']
-    theme_dir = os.path.join(current_app.config['THEMES_DIR'],
-                             current_app.config['THEME_NAME'])
-    # cleanup
+    theme_dir = current_app.current_theme_dir
+
     clean_dirs(theme_dir)
-    # unpack files
     unzip(f, theme_dir)
 
+    _update_site()
     flash('INSTALLED')
+    return_url = url_for('.appearance')
+    return redirect(return_url)
+
+
+@blueprint.route('/appearance/reload')
+@login_required
+def reload_theme():
+    _update_site()
+    flash('RELOADED')
     return_url = url_for('.appearance')
     return redirect(return_url)
 
@@ -299,3 +307,12 @@ def _find_node(nodes, node_key):
         if node_key and node.get('key') == node_key:
             return node
     raise Exception('Menu item is not found')
+
+
+def _update_site():
+    theme = current_app.db.Theme(current_app.current_theme_dir)
+    site = current_app.db.Site()
+    site['content_types'] = {k: v.get('title')
+                             for k, v in theme.content_types.items()}
+    site['categories'] = theme.categories
+    site.save()

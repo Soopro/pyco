@@ -102,17 +102,21 @@
 
             <li class="menu-header">{{_('Content')}}</li>
             <li>
-              <a class="nav-link" href="credits.html">
-                <i class="fas fa-file"></i> <span>{{_('Static Page')}}</span>
+              <a class="nav-link"
+                 href="{{url_for('content.index', content_type='page')}}">
+                <i class="fas fa-file"></i>
+                <span>{{_('Pages')}}</span>
               </a>
             </li>
 
             {% for content_type in site.content_types
                if content_type.key != 'page' %}
             <li>
-              <a class="nav-link" href="credits.html">
+              <a class="nav-link"
+                 href="{{url_for('content.index',
+                         content_type=content_type.key)}}">
                 <i class="far fa-file-alt"></i>
-                <span>{{content_type.title}}</span>
+                <span>{{_(content_type.title)}}</span>
               </a>
             </li>
             {% endfor %}

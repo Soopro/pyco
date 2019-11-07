@@ -17,6 +17,14 @@
     "msgstr": "Installed."
   },
   {
+    "msgid": "RELOADED",
+    "msgstr": "Reloaded."
+  },
+  {
+    "msgid": "REFRESHED",
+    "msgstr": "Refreshed."
+  },
+  {
     "msgid": "MEDIA_UPLOADED",
     "msgstr": "Media has been uploaded."
   },

@@ -4,43 +4,11 @@
   "locale": "",
   "content_types": {
     "post": "Posts",
-    "page": "Pages",
-    "work": "Works",
-    "product": "Products"
+    "page": "Pages"
   },
   "categories": {
     "name": "Categories",
-    "content_types": [
-      "post"
-    ],
-    "terms": [
-      {
-        "key": "daily",
-        "meta": {
-          "name": "Daily"
-        }
-      },
-      {
-        "key": "food",
-        "meta": {
-          "name": "Food"
-        }
-      },
-      {
-        "key": "daily-2",
-        "meta": {
-          "name": "Daily2"
-        },
-        "parent": "daily"
-      },
-      {
-        "key": "food-2",
-        "meta": {
-          "name": "Food2"
-        },
-        "parent": "food"
-      }
-    ]
+    "content_type": null
   },
   "menus": {
     "primary": [

@@ -14,6 +14,11 @@
             method="POST">
         <div class="card-header">
           <h4>{{_('Theme')}}</h4>
+          <a class="btn btn-outline-primary btn-lg ml-auto"
+             href="{{url_for('.reload_theme')}}">
+            <i class="fas fa-refresh"></i>
+            <span>{{_('Reload')}}</span>
+          </a>
         </div>
         <div class="card-body">
           <div class="section-title mt-0">

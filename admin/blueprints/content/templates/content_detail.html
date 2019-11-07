@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<a class="btn btn-secondary"
+   href="{{url_for('.index', content_type=content_type.key)}}"
+   aria-label="{{_('Back')}}">
+  <i class="fas fa-arrow-left"></i>
+</a>
+<h1 class="ml-2">{{_(content_type.title)}}</h1>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('All Files')}}</h4>
+        <small>{{_('%s files total.', count)}}</small>
+        <a class="btn btn-danger ml-auto"
+           href="{{url_for('.remove',
+                           content_type=content_type.key,
+                           slug=content.slug)}}">
+          <i class="fas fa-trash"></i>
+          <span>{{_('Delete')}}</span>
+        </a>
+      </div>
+      <div class="card-body">
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+
+{% endblock %}

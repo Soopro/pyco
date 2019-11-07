@@ -73,7 +73,7 @@ class Translator(object):
         trans = self.dictionary.get(self._trans_key(text), text)
 
         for arg in args:
-            trans = trans.replace('%s', arg, 1)
+            trans = trans.replace('%s', str(arg), 1)
 
         return trans
 

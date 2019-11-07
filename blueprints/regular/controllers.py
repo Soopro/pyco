@@ -155,11 +155,8 @@ def rendering(content_type_slug, file_slug):
 
 
 def _check_theme_hidden_types(theme_meta, curr_type):
-    if curr_type == 'page':
-        return False
-    cfg_types = theme_meta.get('content_types', {})
-    status_type = cfg_types.get(curr_type, {}).get('status', 1)
-    return status_type == 0
+    supported_types = theme_meta.get('content_types', {})
+    return bool(supported_types.get(curr_type, {}).get('cloaked'))
 
 
 def _get_content_type(content_type_slug):

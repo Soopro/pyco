@@ -25,8 +25,48 @@
     "msgstr": "页面"
   },
   {
+    "msgid": "Pages",
+    "msgstr": "页面"
+  },
+  {
     "msgid": "Static Page",
     "msgstr": "静态页面"
+  },
+  {
+    "msgid": "Static Pages",
+    "msgstr": "静态页面"
+  },
+  {
+    "msgid": "Post",
+    "msgstr": "帖子"
+  },
+  {
+    "msgid": "Posts",
+    "msgstr": "帖子"
+  },
+  {
+    "msgid": "Product",
+    "msgstr": "产品"
+  },
+  {
+    "msgid": "Products",
+    "msgstr": "产品"
+  },
+  {
+    "msgid": "Works",
+    "msgstr": "作品"
+  },
+  {
+    "msgid": "Portfolio",
+    "msgstr": "作品集"
+  },
+  {
+    "msgid": "Article",
+    "msgstr": "文章"
+  },
+  {
+    "msgid": "Articles",
+    "msgstr": "文章"
   },
   {
     "msgid": "Content Types",
@@ -71,6 +111,14 @@
   {
     "msgid": "Save",
     "msgstr": "保存"
+  },
+  {
+    "msgid": "Remove",
+    "msgstr": "移除"
+  },
+  {
+    "msgid": "Delete",
+    "msgstr": "删除"
   },
   {
     "msgid": "Backup",
@@ -303,7 +351,23 @@
   },
   {
     "msgid": "Install",
-    "msgstr": "上传"
+    "msgstr": "安装"
+  },
+  {
+    "msgid": "Reload",
+    "msgstr": "重载"
+  },
+  {
+    "msgid": "Refresh",
+    "msgstr": "刷新"
+  },
+  {
+    "msgid": "Back",
+    "msgstr": "返回"
+  },
+  {
+    "msgid": "Create New Content",
+    "msgstr": "创建新内容"
   },
   {
     "msgid": "Previews",
@@ -314,11 +378,25 @@
     "msgstr": "预览"
   },
   {
+    "msgid": "NO.",
+    "msgstr": "编号"
+  },
+  {
+    "msgid": "Slug",
+    "msgstr": "标识"
+  },
+  {
+    "msgid": "%s files total.",
+    "msgstr": "共有 %s 个文件。"
+  },
+  {
     "msgid": "Can not uploading %s files at same time!!",
     "msgstr": "不能一次上传超过 %s 个文件!!"
   },
-
-
+  {
+    "msgid": "No contents at all.",
+    "msgstr": "没有任何内容。"
+  },
 
 
   {
@@ -366,6 +444,14 @@
   {
     "msgid": "INSTALLED",
     "msgstr": "已安装。"
+  },
+  {
+    "msgid": "RELOADED",
+    "msgstr": "已重载"
+  },
+  {
+    "msgid": "REFRESHED",
+    "msgstr": "已刷新。"
   },
   {
     "msgid": "MEDIA_UPLOADED",

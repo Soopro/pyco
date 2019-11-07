@@ -51,8 +51,7 @@ def inject_global_variable():
     # site data
     site = app.db.Site()
     # theme config
-    theme = app.db.Theme(os.path.join(app.config['THEMES_DIR'],
-                                      app.config['THEME_NAME']))
+    theme = app.db.Theme(app.current_theme_dir)
     return {
         'assets_url': app.static_url_path,
         'base_url': app.config['ADMIN_BASE_URL'],

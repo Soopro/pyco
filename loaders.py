@@ -36,7 +36,8 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('ADMIN_BASE_URL', ':5510/')
 
     app.debug = app.config['DEBUG']
-
+    app.current_theme_dir = os.path.join(app.config['THEMES_DIR'],
+                                         app.config['THEME_NAME'])
     ensure_dirs(
         app.config['BACKUPS_DIR'],
         app.config['PLUGINS_DIR'],

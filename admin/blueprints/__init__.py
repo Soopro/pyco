@@ -7,6 +7,9 @@ def register_admin_blueprints(app):
     from admin.blueprints.dashboard import blueprint as dashboard_module
     app.register_blueprint(dashboard_module)
 
+    from admin.blueprints.content import blueprint as content_module
+    app.register_blueprint(content_module, url_prefix='/content')
+
     from admin.blueprints.media import blueprint as media_module
     app.register_blueprint(media_module, url_prefix='/media')
 

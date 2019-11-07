@@ -12,22 +12,22 @@
         <h4>{{_('All Files')}}</h4>
         <small>{{_('* Support image, audio, video, zip and pdf.')}}</small>
         <form class="file-uploader ml-auto"
-                action="{{url_for('.upload')}}"
-                enctype=multipart/form-data
-                method="POST">
-            <label class="btn btn-primary btn-lg">
-              <i class="fas fa-file-upload"></i>
-              <span>{{_('Upload Files')}}</span>
-              <input class="d-none"
-                     type="file"
-                     name="files"
-                     accept="image/*, audio/*, video/*,
-                             application/pdf, application/zip"
-                     maxlength="12"
-                     maxlength-error="{{_('Can not uploading %s files at same time!!', '12')}}"
-                     multiple>
-            </label>
-          </form>
+              action="{{url_for('.upload')}}"
+              enctype=multipart/form-data
+              method="POST">
+          <label class="btn btn-primary btn-lg">
+            <i class="fas fa-file-upload"></i>
+            <span>{{_('Upload Files')}}</span>
+            <input class="d-none"
+                   type="file"
+                   name="files"
+                   accept="image/*, audio/*, video/*,
+                           application/pdf, application/zip"
+                   maxlength="12"
+                   maxlength-error="{{_('Can not uploading %s files at same time!!', '12')}}"
+                   multiple>
+          </label>
+        </form>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -59,10 +59,10 @@
               <td>{{media.mimetype}}</td>
               <td>{{media.updated|dateformat}}</td>
               <td class="text-center">
-                <a href="{{url_for('.remove', filename=media.filename)}}"
-                class="btn btn-primary">
+                <a class="btn btn-danger"
+                   aria-label="{{_('Delete')}}"
+                   href="{{url_for('.remove', filename=media.filename)}}">
                   <i class="fas fa-trash"></i>
-                  <span>{{_('Delete')}}</span>
                 </a>
               </td>
             </tr>
