@@ -17,6 +17,10 @@
     "msgstr": "Installed."
   },
   {
+    "msgid": "MEDIA_UPLOADED",
+    "msgstr": "Media has been uploaded."
+  },
+  {
     "msgid": "WRONG_PASSCODE",
     "msgstr": "Passcode is wrong..."
   },

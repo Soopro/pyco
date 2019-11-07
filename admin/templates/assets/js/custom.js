@@ -8,6 +8,27 @@
 "use strict";
 
 $(document).ready(function() {
+  $('.file-uploader').each(function(){
+    var uploader = $(this);
+    uploader.find('input[name="file"]').on('change', function(e){
+      var target = e.currentTarget || e.target;
+      if (target && target.value) {
+        uploader.submit();
+      }
+    });
+    uploader.find('input[name="files"][multiple]').on('change', function(e){
+      var target = e.currentTarget || e.target;
+      if (target && target.value) {
+        var limit = parseInt($(this).attr('maxlength')) || 60;
+        if (this.files.length <= limit) {
+          uploader.submit();
+        } else {
+          alert($(this).attr('maxlength-error'));
+        }
+      }
+    });
+  });
+
   $(".media-uploader").each(function(e){
     var submit_btn = $(this).find("button[type=submit]");
     var previews = $(this).find('.media-previews');

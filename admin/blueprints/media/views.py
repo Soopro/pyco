@@ -53,7 +53,6 @@ def index():
         'prev': prev_url if has_previous else None,
         'paged': paged,
     }
-    print(mediafiles)
     return render_template('mediafiles.html',
                            mediafiles=mediafiles,
                            p=paginator)
@@ -63,32 +62,20 @@ def index():
 @login_required
 def upload():
     files = request.files.getlist('files')
-    for file in files[:12]:
-        scope = parse_dateformat(now(), '%Y-%m')
-        key = filename = safe_filename(file.filename)
-        media = current_app.mongodb.Media.find_one_by_scope_key(scope, key)
-
-        if media:  # rename file if exists.
-            fname, ext = os.path.splitext(filename)
-            key = filename = '{}-{}{}'.format(fname, uuid4_hex(), ext)
-
-        media = current_app.mongodb.Media()
-        media['scope'] = scope
-        media['filename'] = filename
-        media['key'] = key
-        media['mimetype'] = file.mimetype
-        media['size'] = parse_int(file.content_length)
-        media.save()
-
-        uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
-        uploads_folder = os.path.join(uplaods_dir, scope)
-        if not os.path.isdir(uploads_folder):
-            try:
-                os.makedirs(uploads_folder)
-            except Exception:
-                pass
-        file.save(os.path.join(uploads_folder, key))
-
+    uploads_dir = current_app.db.Media.UPLOADS_DIR
+    uploaded_files = []
+    upload_fails = []
+    for file in files[:60]:
+        file_path = os.path.join(uploads_dir, file.filename)
+        if os.path.isfile(file_path):
+            upload_fails.append(file.filename)
+        else:
+            file.save(file_path)
+            uploaded_files.append(file.filename)
+    for f in uploaded_files:
+        flash('UPLOADED: {}'.format(f))
+    for f in upload_fails:
+        flash('EXISTS: {}'.format(f), 'warning')
     return redirect(request.referrer)
 
 

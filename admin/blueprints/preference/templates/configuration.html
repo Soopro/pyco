@@ -150,15 +150,5 @@
 <script>
 $(".pwstrength").pwstrength();
 
-$('.file-uploader').each(function(){
-  var uploader = $(this);
-  uploader.find('input[type="file"]').on('change', function(e){
-    target = e.currentTarget || e.target;
-    if (target && target.value) {
-      uploader.submit();
-    }
-  });
-});
-
 </script>
 {% endblock %}

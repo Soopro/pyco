@@ -9,7 +9,25 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h4>All Posts</h4>
+        <h4>{{_('All Files')}}</h4>
+        <small>{{_('* Support image, audio, video, zip and pdf.')}}</small>
+        <form class="file-uploader ml-auto"
+                action="{{url_for('.upload')}}"
+                enctype=multipart/form-data
+                method="POST">
+            <label class="btn btn-primary btn-lg">
+              <i class="fas fa-file-upload"></i>
+              <span>{{_('Upload Files')}}</span>
+              <input class="d-none"
+                     type="file"
+                     name="files"
+                     accept="image/*, audio/*, video/*,
+                             application/pdf, application/zip"
+                     maxlength="12"
+                     maxlength-error="{{_('Can not uploading %s files at same time!!', '12')}}"
+                     multiple>
+            </label>
+          </form>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -18,8 +36,8 @@
               <th class="text-center">{{_('Preview')}}</th>
               <th>{{_('Filename')}}</th>
               <th>MIMEtype</th>
-              <th>{{_('Updated')}}</th>
-              <th>{{_('Creation')}}</th>
+              <th>{{_('Updated Date')}}</th>
+              <th>{{_('Creation Date')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
             {% for media in mediafiles %}

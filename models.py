@@ -470,7 +470,6 @@ class Media():
     def find(cls):
         file_paths = [f for f in os.listdir(cls.UPLOADS_DIR)
                       if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
-        print(cls.UPLOADS_DIR)
         return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
 
     @property
