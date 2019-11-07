@@ -36,8 +36,7 @@
               <th class="text-center">{{_('Preview')}}</th>
               <th>{{_('Filename')}}</th>
               <th>MIMEtype</th>
-              <th>{{_('Updated Date')}}</th>
-              <th>{{_('Creation Date')}}</th>
+              <th>{{_('Uploaded Date')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
             {% for media in mediafiles %}
@@ -45,8 +44,8 @@
               <td class="p-2 text-center">
                 <a href="{{media.src}}" target="_blank">
                   {% if media.type == 'image' %}
-                  <img class="rounded-circle img-thumbnail list-figure"
-                       src="{{media.src}}">
+                  <div class="list-figure"
+                       style="background-image:url({{media.src}});"></div>
                   {% elif media.type == 'video' %}
                   <i class="fas fa-video list-icon"></i>
                   {% elif media.type == 'audio' %}
@@ -59,7 +58,6 @@
               <td>{{media.filename}}</td>
               <td>{{media.mimetype}}</td>
               <td>{{media.updated|dateformat}}</td>
-              <td>{{media.creation|dateformat}}</td>
               <td class="text-center">
                 <a href="{{url_for('.remove', filename=media.filename)}}"
                 class="btn btn-primary">

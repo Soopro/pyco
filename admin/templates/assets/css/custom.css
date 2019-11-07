@@ -19,8 +19,12 @@
 }
 
 .list-figure {
+  display: inline-block;
   width: 100px;
   height: 100px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
 }
 
 .list-icon {

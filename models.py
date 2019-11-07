@@ -469,8 +469,11 @@ class Media():
     @classmethod
     def find(cls):
         file_paths = [f for f in os.listdir(cls.UPLOADS_DIR)
-                      if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
-        return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+                      if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f)) and
+                      not f.startswith('.')]
+        files = [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+        files.sort(key=lambda x: x._updated, reverse=True)
+        return files
 
     @property
     def info(self):

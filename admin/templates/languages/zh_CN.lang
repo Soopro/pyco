@@ -176,6 +176,10 @@
     "msgid": "Creation Date",
     "msgstr": "创建日期"
   },
+  {
+    "msgid": "Uploaded Date",
+    "msgstr": "上传日期"
+  },
 
   {
     "msgid": "Upload a Zip file that contains the entire site content data. All data files must conform to system rules.",

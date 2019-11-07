@@ -8,6 +8,14 @@
 "use strict";
 
 $(document).ready(function() {
+
+  /* Alert */
+  $('.alert-dismissible').on('click', function(e){
+    $(this).find('button.close').click();
+  });
+
+  /* Uploader */
+
   $('.file-uploader').each(function(){
     var uploader = $(this);
     uploader.find('input[name="file"]').on('change', function(e){
