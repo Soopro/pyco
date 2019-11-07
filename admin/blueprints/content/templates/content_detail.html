@@ -14,8 +14,8 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h4>{{_('All Files')}}</h4>
-        <small>{{_('%s files total.', count)}}</small>
+        <h4>{{content.meta.title}}</h4>
+        <small>- {{content.slug}}</small>
         <a class="btn btn-danger ml-auto"
            href="{{url_for('.remove',
                            content_type=content_type.key,
