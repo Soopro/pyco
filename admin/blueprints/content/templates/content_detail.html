@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 
+{% block page_css %}
+<link rel="stylesheet" href="{{assets_url}}/modules/summernote/summernote-bs4.css">
+{% endblock %}
+
+
 {% block header %}
 <a class="btn btn-secondary"
    href="{{url_for('.index', content_type=content_type.key)}}"
@@ -10,27 +15,117 @@
 {% endblock %}
 
 {% block main %}
+<h2 class="section-title">
+  {{document.meta.title}}
+</h2>
+<p class="section-lead">
+  {{document.content_type}} / {{document.slug}}
+</p>
+
+<form>
 <div class="row">
-  <div class="col-12">
+  <div class="col-lg-8">
     <div class="card">
       <div class="card-header">
-        <h4>{{content.meta.title}}</h4>
-        <small>- {{content.slug}}</small>
-        <a class="btn btn-danger ml-auto"
-           href="{{url_for('.remove',
-                           content_type=content_type.key,
-                           slug=content.slug)}}">
-          <i class="fas fa-trash"></i>
-          <span>{{_('Delete')}}</span>
-        </a>
+        <h4>{{_('Content')}}</h4>
       </div>
       <div class="card-body">
+        <div class="form-group">
+          <label>{{_('Title')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="title"
+                 maxlength="60"
+                 value="{{meta.title}}">
+        </div>
+        <div class="form-group content-editor">
+          <textarea class="summernote form-control"
+                    placeholder="{{_('Type content here.')}}"
+                    locale="{{locale}}">{{content}}</textarea>
+        </div>
 
       </div>
     </div>
   </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Properties')}}</h4>
+      </div>
+      <div class="card-body">
+        <div class="d-flex">
+          <button class="btn btn-primary">
+            {{_('Save Content')}}
+          </button>
+          <a class="btn btn-danger ml-auto"
+             aria-label="{{_('Delete')}}"
+             href="{{url_for('.remove',
+                             content_type=document.content_type,
+                             slug=document.slug)}}">
+            <i class="fas fa-trash"></i>
+          </a>
+        </div>
+        <p class="text-muted">General settings such as, site title, site description, address and so on.</p>
+        <div class="form-group">
+          <label>{{_('Slug')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="slug"
+                 value="{{document.slug}}"
+                 {{'disabled' if document.slug}}>
+          <small class="form-text text-muted">
+            {{_('* Slug can not be modify after the content is created.')}}
+          </small>
+        </div>
+        <div class="form-group">
+          <label>{{_('Description')}}</label>
+          <textarea class="form-control"
+                    name="description">{{meta.description}}</textarea>
+        </div>
+        <div class="form-group">
+          <label>Featured Image</label>
+          <div class="m-2">
+            {% if meta.featured_img and meta.featured_img.src %}
+            <a href="#">
+              <img class="mw-100"src="{{meta.featured_img.src}}">
+            </a>
+            {% else %}
+            <a class="btn btn-outline-primary btn-lg"
+               href="#">
+              {{_('Select Featured Image')}}
+            </a>
+            {% endif %}
+          </div>
+          <small class="form-text text-muted">
+            {{_('* Usually displayed in the content list as cover.')}}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+</form>
 {% endblock %}
 {% block page_scripts %}
+<script src="{{assets_url}}/modules/summernote/summernote-bs4.js"></script>
+<script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
+<script>
+  'use strict';
 
+  var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
+  $('.summernote').summernote({
+    lang: editor_lang,
+    toolbar: [
+      // [groupName, [list of button]]
+      ['style', ['bold', 'italic', 'underline', 'clear']],
+      ['font', ['strikethrough', 'superscript', 'subscript']],
+      ['fontsize', ['fontsize']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['insert', ['link', 'picture', 'video']],
+      ['view', ['codeview']],
+    ]
+  });
+</script>
 {% endblock %}

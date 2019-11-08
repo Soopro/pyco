@@ -60,9 +60,11 @@ def index(content_type):
 @login_required
 def content_detail(content_type, slug):
     curr_content_type = _find_content_type(content_type)
-    content = current_app.db.Document.find_one(slug, content_type)
+    document = current_app.db.Document.find_one(slug, content_type)
     return render_template('content_detail.html',
-                           content=content,
+                           document=document,
+                           meta=document['meta'],
+                           content=document['content'],
                            content_type=curr_content_type)
 
 

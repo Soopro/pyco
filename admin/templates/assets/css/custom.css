@@ -34,3 +34,16 @@
   line-height: 96px;
   text-align: center;
 }
+
+
+/* Editor */
+.content-editor .note-editing-area .note-editable,
+.content-editor .note-editing-area .note-codable {
+  min-height: 480px;
+  margin-top: 8px;
+  outline: 0;
+}
+
+.content-editor .note-editing-area .note-codable {
+  max-height: 600px;
+}
