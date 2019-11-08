@@ -96,7 +96,7 @@ def add_site_menu_node(menu_key):
         'link': link,
         'target': target,
         'path_scope': path_scope,
-        'fixed': fixed,
+        'fixed': bool(fixed),
         'class': css
     }
 
@@ -145,10 +145,18 @@ def update_site_menu_node(menu_key):
     if parent_key:
         parent = _find_parent_node(nodes, parent_key)
         node = _find_node(parent['nodes'], node_key)
+        new_node.update({
+            'meta': node['meta'],
+            'nodes': node['nodes']
+        })
         parent['nodes'].insert(_index, new_node)
         parent['nodes'].remove(node)
     else:
         node = _find_node(nodes, node_key)
+        new_node.update({
+            'meta': node['meta'],
+            'nodes': node['nodes']
+        })
         nodes.remove(node)
         nodes.insert(_index, new_node)
     site.save()

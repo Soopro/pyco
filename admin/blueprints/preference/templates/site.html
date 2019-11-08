@@ -413,11 +413,10 @@ $('#MODAL-MENU-NODE').on('show.bs.modal', function(e) {
   var item_css = btn.data('css')
 
   var pos = btn.data('pos');
-
+  console.log(item_fixed);
   modal.find('input[name="name"]').val(item_name);
   modal.find('input[name="link"]').val(item_link);
   modal.find('input[name="target"]').val(item_target);
-  modal.find('input[name="fixed"]').val(item_fixed);
   modal.find('input[name="fixed"]').prop('checked', Boolean(item_fixed));
   modal.find('input[name="path_scope"]').val(item_path_scope);
   modal.find('input[name="css"]').val(item_css);

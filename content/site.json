@@ -18,12 +18,12 @@
         "link": "/",
         "target": "",
         "path_scope": "",
-        "fixed": "",
+        "fixed": "on",
         "class": "",
         "nodes": [
           {
-            "key": "s-123213",
-            "name": "123213",
+            "key": "s-123",
+            "name": "123",
             "link": "",
             "target": "",
             "path_scope": "",
