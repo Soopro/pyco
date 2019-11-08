@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{{assets_url}}/modules/summernote/summernote-bs4.css">
 {% endblock %}
 
+{% set reserved_meta_keys = ['title', 'description', 'featured_img'] %}
 
 {% block header %}
 <a class="btn btn-secondary"
@@ -29,7 +30,7 @@
   <div class="col-lg-8">
     <div class="card">
       <div class="card-header">
-        <h4>{{_('Content')}}</h4>
+        <h4>{{_('Write Content')}}</h4>
       </div>
       <div class="card-body">
         <div class="form-group">
@@ -41,11 +42,35 @@
                  value="{{meta.title}}">
         </div>
         <div class="form-group content-editor">
+          <label>{{_('Content')}}</label>
           <textarea class="summernote form-control"
                     placeholder="{{_('Type content here.')}}"
-                    locale="{{locale}}">{{content}}</textarea>
+                    locale="{{locale}}"
+                    name="content">{{content}}</textarea>
+        </div>
+        <div class="form-group">
+          <label>{{_('Tags')}}</label>
+          <input class="form-control inputtags"
+                 type="text"
+                 name="tags"
+                 value="{{document.tags}}">
         </div>
 
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Custom Fields')}}</h4>
+      </div>
+      <div class="card-body">
+        {% for k, v in meta.items() if k not in reserved_meta_keys %}
+        <div class="form-group content-editor">
+          <label>{{k}}</label>
+          <textarea class="form-control"
+                    name="{{k}}">{{v}}</textarea>
+        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -120,60 +145,44 @@
         </div>
 
         <div class="form-group">
-          <label>{{_('Tags')}}</label>
-          <input class="form-control inputtags"
+          <label>{{_('Template')}}</label>
+          <select class="form-control"
+                  name="template">
+            {% for tmpl in theme.templates %}
+            <option value="{{tmpl}}"
+                    {{'selected' if document.template==tmpl}}>
+              {{tmpl}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>{{_('Parent')}}</label>
+          <input class="form-control"
                  type="text"
-                 name="tags"
-                 value="{{document.tags}}">
+                 name="parent"
+                 value="{{document.parent}}">
+          <small class="form-text text-muted">
+            {{_('* The parent content slug of this content.')}}
+          </small>
         </div>
-
-        <div class="text-right">
-          <button class="btn btn-link"
-                  data-toggle="collapse"
-                  data-target="#CONTENT-ADV-FIELDS"
-                  aria-expanded="true"
-                  type="button" >
-            <span>{{_('More Options')}}</span>
-            <i class="fas fa-caret-down"></i>
-          </button>
+        <div class="form-group">
+          <label>{{_('Priority')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="priority"
+                 value="{{document.priority}}">
+          <small class="form-text text-muted">
+            {{_('* The priority of the content when sorting.')}}
+          </small>
         </div>
-        <div id="CONTENT-ADV-FIELDS"
-             class="collapse">
-          <div class="form-group">
-            <label>{{_('Template')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="template"
-                   value="{{document.template}}">
-          </div>
-
-          <div class="form-group">
-            <label>{{_('Parent')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="parent"
-                   value="{{document.parent}}">
-            <small class="form-text text-muted">
-              {{_('* The parent content slug of this content.')}}
-            </small>
-          </div>
-          <div class="form-group">
-            <label>{{_('Priority')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="priority"
-                   value="{{document.priority}}">
-            <small class="form-text text-muted">
-              {{_('* The priority of the content when sorting.')}}
-            </small>
-          </div>
-          <div class="form-group">
-            <label>{{_('Redirect')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="redirect"
-                   value="{{document.redirect}}">
-          </div>
+        <div class="form-group">
+          <label>{{_('Redirect')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="redirect"
+                 value="{{document.redirect}}">
         </div>
 
       </div>

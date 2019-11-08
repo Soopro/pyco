@@ -10,6 +10,7 @@ from utils.misc import (parse_int,
                         match_cond,
                         sortedby,
                         parse_sortby,
+                        process_slug,
                         gen_excerpt,
                         now)
 
@@ -45,7 +46,7 @@ def query_segments(app, type_slug, parent_slug):
     _config = app['theme_meta']
     _opts = _config.get('options', {})
     sortby = parse_sortby(_opts.get('sortby', 'updated'))
-    tmpls = [tmpl.replace('^', '') for tmpl in _config.get('templates', [])
+    tmpls = [process_slug(tmpl) for tmpl in _config.get('templates', [])
              if tmpl.startswith('^')]
 
     if tmpls:

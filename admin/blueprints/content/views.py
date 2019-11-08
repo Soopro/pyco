@@ -68,6 +68,19 @@ def content_detail(content_type, slug):
                            content_type=curr_content_type)
 
 
+@blueprint.route('/<content_type>/<slug>', methods=['POST'])
+@login_required
+def update_content(content_type, slug):
+    curr_content_type = _find_content_type(content_type)
+    document = current_app.db.Document.find_one(slug, content_type)
+    document['']
+    return render_template('content_detail.html',
+                           document=document,
+                           meta=document['meta'],
+                           content=document['content'],
+                           content_type=curr_content_type)
+
+
 @blueprint.route('/<content_type>/<slug>/remove')
 @login_required
 def remove(content_type, slug):
