@@ -9,12 +9,21 @@
 {% set reserved_meta_keys = ['title', 'description', 'featured_img'] %}
 
 {% block header %}
-<a class="btn btn-secondary"
-   href="{{url_for('.index', content_type=content_type.key)}}"
-   aria-label="{{_('Back')}}">
-  <i class="fas fa-arrow-left"></i>
-</a>
-<h1 class="ml-2">{{_(content_type.title)}}</h1>
+<div class="section-header-back">
+  <a class="btn btn-icon"
+     href="{{url_for('.index', content_type=content_type.key)}}">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+</div>
+<h1>{{_(content_type.title)}}</h1>
+<div class="ml-auto">
+  <a class="btn btn-icon btn-outline-secondary"
+     href="{{url_for('.content_raw',
+                     content_type=document.content_type,
+                     slug=document.slug)}}">
+    <i class="fas fa-flask"></i>
+  </a>
+</div>
 {% endblock %}
 
 {% block main %}
@@ -106,19 +115,19 @@
         </div>
         <div class="form-group">
           <div class="control-label">
-            {{_('Status')}}
+            {{_('Publish Status')}}
           </div>
-          <label class="custom-switch mt-2">
-            <input class="custom-switch-input"
-                   type="checkbox"
-                   name="fixed"
-                   value="1"
-                   {{'checked' if document.status == 1}}>
-            <span class="custom-switch-indicator"></span>
-            <span class="custom-switch-description">
+          <select class="form-control"
+                  name="status">
+            <option value="0"
+                    {{'selected' if document.status==0}}>
+              {{_('Draft')}}
+            </option>
+            <option value="1"
+                    {{'selected' if document.status==1}}>
               {{_('Published')}}
-            </span>
-          </label>
+            </option>
+          </select>
         </div>
         <div class="form-group">
           <label>{{_('Description')}}</label>
@@ -127,7 +136,7 @@
         </div>
 
         <div class="form-group">
-          <label>Featured Image</label>
+          <label>{{_('Featured Image')}}</label>
           {% if meta.featured_img and meta.featured_img.src %}
           <a class="mw-100"
              href="{{meta.featured_img.src}}"
@@ -169,7 +178,7 @@
                  name="parent"
                  value="{{document.parent}}">
           <small class="form-text text-muted">
-            {{_('* The parent content slug of this content.')}}
+            {{_('* Use parent content slug.')}}
           </small>
         </div>
         <div class="form-group">

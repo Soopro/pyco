@@ -1,41 +1,21 @@
 /*
-Cover: ''
+Background: ''
+Button: ''
 Date: '2019-11-09'
-Description: You can write description here.
+Description: ''
 Featured_img:
   Src: ''
 Parent: ''
-Priority: 1
+Priority: 0
 Redirect: ''
 Status: 0
 Tags:
-- sadf
-- asdf
-- abbb
-Template: category
+- ''
+Template: page
 Terms: []
-Title: Category
+Title: Row
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

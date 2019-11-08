@@ -115,6 +115,28 @@ def update_content(content_type, slug):
     return redirect(return_url)
 
 
+@blueprint.route('/<content_type>/<slug>/raw')
+@login_required
+def content_raw(content_type, slug):
+    document = current_app.db.Document.find_one(slug, content_type)
+    return render_template('content_raw.html', document=document)
+
+
+@blueprint.route('/<content_type>/<slug>/raw', methods=['POST'])
+@login_required
+def hardcore_content(content_type, slug):
+    raw = request.form.get('raw', '')
+
+    document = current_app.db.Document.find_one(slug, content_type)
+    document.hardcore(raw)
+    document.save()
+    flash('SAVED')
+    return_url = url_for('.content_raw',
+                         content_type=content_type,
+                         slug=slug)
+    return redirect(return_url)
+
+
 @blueprint.route('/<content_type>/<slug>/remove')
 @login_required
 def remove(content_type, slug):

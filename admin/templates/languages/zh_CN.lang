@@ -282,6 +282,10 @@
     "msgstr": "专家"
   },
   {
+    "msgid": "Expert Mode",
+    "msgstr": "专家模式"
+  },
+  {
     "msgid": "Menu Item",
     "msgstr": "菜单项"
   },
@@ -401,6 +405,66 @@
     "msgid": "Select Image",
     "msgstr": "选择图像"
   },
+  {
+    "msgid": "Write Content",
+    "msgstr": "撰写内容"
+  },
+  {
+    "msgid": "Properties",
+    "msgstr": "属性"
+  },
+  {
+    "msgid": "Save Content",
+    "msgstr": "保存内容"
+  },
+  {
+    "msgid": "Date",
+    "msgstr": "日期"
+  },
+  {
+    "msgid": "Publish Status",
+    "msgstr": "发布状态"
+  },
+  {
+    "msgid": "Published",
+    "msgstr": "发布"
+  },
+  {
+    "msgid": "Draft",
+    "msgstr": "草稿"
+  },
+  {
+    "msgid": "Featured Image",
+    "msgstr": "特色图片"
+  },
+  {
+    "msgid": "Tags",
+    "msgstr": "标签"
+  },
+  {
+    "msgid": "Category",
+    "msgstr": "分类"
+  },
+  {
+    "msgid": "Template",
+    "msgstr": "模版"
+  },
+  {
+    "msgid": "Parent",
+    "msgstr": "父级"
+  },
+  {
+    "msgid": "Priority",
+    "msgstr": "优先级"
+  },
+  {
+    "msgid": "Redirect",
+    "msgstr": "重定向"
+  },
+  {
+    "msgid": "Custom Fields",
+    "msgstr": "自定义表单"
+  },
 
 
 
@@ -432,6 +496,15 @@
     "msgid": "* Support image, audio, video, zip and pdf.",
     "msgstr": "* 支持图像、视频、音频、ZIP压缩包和PDF。"
   },
+  {
+    "msgid": "* Use parent content slug.",
+    "msgstr": "* 使用父级内容的标识。"
+  },
+  {
+    "msgid": "* The priority of the content when sorting.",
+    "msgstr": "* 内容被排序时的优先级。"
+  },
+
 
 
   {

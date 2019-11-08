@@ -355,6 +355,11 @@ class Document(FlatFile):
         super(Document, self).__init__(path)
         self.parse()
 
+    def hardcore(self, raw):
+        print(raw)
+        self.raw = raw
+        self.parse()
+
     def save(self):
         _fields = self.data.get('meta') or {}
         _fields.update({
