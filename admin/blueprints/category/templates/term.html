@@ -1,0 +1,247 @@
+{% extends "layout.html" %}
+
+{% block page_css %}
+<link rel="stylesheet" href="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.css">
+<link rel="stylesheet" href="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="{{assets_url}}/modules/summernote/summernote-bs4.css">
+{% endblock %}
+
+{% set reserved_meta_keys = ['title', 'description', 'featured_img'] %}
+
+{% block header %}
+<div class="section-header-back">
+  <a class="btn btn-icon"
+     href="{{url_for('.index', content_type=content_type.key)}}">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+</div>
+<h1>{{_(content_type.title)}}</h1>
+<div class="ml-auto">
+  <a class="btn btn-icon btn-outline-secondary"
+     href="{{url_for('.content_raw',
+                     content_type=document.content_type,
+                     slug=document.slug)}}">
+    <i class="fas fa-flask"></i>
+  </a>
+</div>
+{% endblock %}
+
+{% block main %}
+<h2 class="section-title">
+  {{document.meta.title}}
+</h2>
+<p class="section-lead">
+  {{document.content_type}} / {{document.slug}}
+</p>
+
+<form action="{{url_for('.update_content',
+                        content_type=document.content_type,
+                        slug=document.slug)}}"
+      method="POST">
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Write Content')}}</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>{{_('Title')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="title"
+                 maxlength="60"
+                 value="{{meta.title}}">
+        </div>
+        <div class="form-group content-editor">
+          <label>{{_('Content')}}</label>
+          <textarea class="summernote form-control"
+                    placeholder="{{_('Type content here.')}}"
+                    locale="{{locale}}"
+                    name="content">{{content}}</textarea>
+        </div>
+        <div class="form-group">
+          <label>{{_('Tags')}}</label>
+          <input class="form-control inputtags"
+                 type="text"
+                 name="tags"
+                 value="{{document.tags|join(',')}}">
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Custom Fields')}}</h4>
+      </div>
+      <div class="card-body">
+        {% for k, v in theme.custom_fields[document.template].items() %}
+        <div class="form-group content-editor">
+          <label>{{k}}</label>
+          <textarea class="form-control"
+                    name="{{k}}">{{meta[k]}}</textarea>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('Properties')}}</h4>
+      </div>
+      <div class="card-body">
+        <div class="d-flex">
+          <button class="btn btn-primary">
+            {{_('Save Content')}}
+          </button>
+          <a class="btn btn-danger ml-auto"
+             aria-label="{{_('Delete')}}"
+             href="{{url_for('.remove',
+                             content_type=document.content_type,
+                             slug=document.slug)}}">
+            <i class="fas fa-trash"></i>
+          </a>
+        </div>
+        <hr>
+        <div class="form-group">
+          <label>{{_('Date')}}</label>
+          <input class="form-control datepicker"
+                 type="text"
+                 name="date"
+                 value="{{document.date}}">
+        </div>
+        <div class="form-group">
+          <div class="control-label">
+            {{_('Publish Status')}}
+          </div>
+          <select class="form-control"
+                  name="status">
+            <option value="0"
+                    {{'selected' if document.status==0}}>
+              {{_('Draft')}}
+            </option>
+            <option value="1"
+                    {{'selected' if document.status==1}}>
+              {{_('Published')}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>{{_('Description')}}</label>
+          <textarea class="form-control"
+                    name="description">{{meta.description}}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>{{_('Featured Image')}}</label>
+          {% if meta.featured_img and meta.featured_img.src %}
+          <a class="mw-100"
+             href="{{meta.featured_img.src}}"
+             target="_blank">
+            <img class="mw-100"src="{{meta.featured_img.src}}">
+          </a>
+          {% endif %}
+          <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="featured_img_src">
+            <div class="input-group-append">
+              <button class="btn btn-primary"
+                      aria-lable="{{_('Select Image')}}"
+                      type="button">
+                <i class="fas fa-image"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>{{_('Template')}}</label>
+          <select class="form-control"
+                  name="template">
+            {% for tmpl in theme.templates %}
+            <option value="{{tmpl}}"
+                    {{'selected' if document.template==tmpl}}>
+              {{tmpl}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>{{_('Parent')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="parent"
+                 value="{{document.parent}}">
+          <small class="form-text text-muted">
+            {{_('* Use parent content slug.')}}
+          </small>
+        </div>
+        <div class="form-group">
+          <label>{{_('Priority')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="priority"
+                 value="{{document.priority}}">
+          <small class="form-text text-muted">
+            {{_('* The priority of the content when sorting.')}}
+          </small>
+        </div>
+        <div class="form-group">
+          <label>{{_('Redirect')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="redirect"
+                 value="{{document.redirect}}">
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}
+{% block page_scripts %}
+<script src="{{assets_url}}/modules/moment.min.js"></script>
+<script src="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+<script src="{{assets_url}}/modules/summernote/summernote-bs4.js"></script>
+<script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
+<script>
+  'use strict';
+
+  $('form').on('keyup keypress', function(e) {
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  $(".inputtags").tagsinput('items');
+
+  var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
+  $('.summernote').summernote({
+    height: 640,
+    dialogsInBody: true,
+    lang: editor_lang,
+    onImageUpload: function(files, editor, welEditable) {
+      sendFile(files[0], editor, welEditable);
+    },
+    toolbar: [
+      // [groupName, [list of button]]
+      ['style', ['bold', 'italic', 'underline', 'clear']],
+      ['font', ['strikethrough', 'superscript', 'subscript']],
+      ['fontsize', ['fontsize']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['insert', ['link', 'picture', 'video']],
+      ['view', ['codeview']],
+    ]
+  });
+</script>
+{% endblock %}
