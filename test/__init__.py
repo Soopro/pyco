@@ -1,4 +1,3 @@
 #coding=utf-8
 
-
-from .pages import PostsTest
+from .base import BaseTest

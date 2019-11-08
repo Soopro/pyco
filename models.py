@@ -201,6 +201,11 @@ class Theme(FlatFile):
         return content_types
 
     @property
+    def templates(self):
+        _templates = self.data.get('templates') or []
+        return [process_slug(template) for template in _templates]
+
+    @property
     def menus(self):
         _menus = self.data.get('menus') or {}
         menus = {k: {
@@ -326,6 +331,8 @@ class Document(FlatFile):
     QUERYABLE_FIELD_KEYS = ('slug', 'parent', 'priority', 'template',
                             'date', 'updated', 'creation')
 
+    STATUS = (STATUS_DRAFT, STATUS_PUBLISHED) = (0, 1)
+
     ensure_dirs(CONTENT_DIR)
 
     path = ''
@@ -347,7 +354,7 @@ class Document(FlatFile):
             'tags': self.data.get('tags', []),
             'terms': self.data.get('terms', []),
             'redirect': self.data.get('redirect', ''),
-            'status': self.data.get('status', 1),
+            'status': self.data.get('status', self.STATUS_PUBLISHED),
         })
 
         fields = yaml.safe_dump(self._prepare_field(_fields),
@@ -383,7 +390,7 @@ class Document(FlatFile):
         date = fields.pop('date', '')
         terms = fields.pop('terms', [])
         redirect = fields.pop('redirect', '')
-        status = fields.pop('status', 1)
+        status = fields.pop('status', self.STATUS_PUBLISHED)
 
         self.data = {
             '_id': self._id,

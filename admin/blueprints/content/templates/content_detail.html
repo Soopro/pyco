@@ -66,17 +66,20 @@
             <i class="fas fa-trash"></i>
           </a>
         </div>
-        <p class="text-muted">General settings such as, site title, site description, address and so on.</p>
+        <hr>
         <div class="form-group">
-          <label>{{_('Slug')}}</label>
+          <label>{{_('Date')}}</label>
           <input class="form-control"
                  type="text"
-                 name="slug"
-                 value="{{document.slug}}"
-                 {{'disabled' if document.slug}}>
-          <small class="form-text text-muted">
-            {{_('* Slug can not be modify after the content is created.')}}
-          </small>
+                 name="date"
+                 value="{{document.date}}">
+        </div>
+        <div class="form-group">
+          <label>{{_('Status')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="status"
+                 value="{{document.status}}">
         </div>
         <div class="form-group">
           <label>{{_('Description')}}</label>
@@ -101,6 +104,63 @@
             {{_('* Usually displayed in the content list as cover.')}}
           </small>
         </div>
+
+        <div class="form-group">
+          <label>{{_('Tags')}}</label>
+          <input class="form-control"
+                 type="text"
+                 name="tags"
+                 value="{{document.tags}}">
+        </div>
+
+        <div class="text-right">
+          <button class="btn btn-link"
+                  data-toggle="collapse"
+                  data-target="#CONTENT-ADV-FIELDS"
+                  aria-expanded="true"
+                  type="button" >
+            {{_('More Options')}}
+          </button>
+        </div>
+        <div id="CONTENT-ADV-FIELDS"
+             class="collapse">
+          <div class="form-group">
+            <label>{{_('Template')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="template"
+                   value="{{document.template}}">
+          </div>
+
+          <div class="form-group">
+            <label>{{_('Parent')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="parent"
+                   value="{{document.parent}}">
+            <small class="form-text text-muted">
+              {{_('* The parent content slug of this content.')}}
+            </small>
+          </div>
+          <div class="form-group">
+            <label>{{_('Priority')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="priority"
+                   value="{{document.priority}}">
+            <small class="form-text text-muted">
+              {{_('* The priority of the content when sorting.')}}
+            </small>
+          </div>
+          <div class="form-group">
+            <label>{{_('Redirect')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="redirect"
+                   value="{{document.redirect}}">
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
