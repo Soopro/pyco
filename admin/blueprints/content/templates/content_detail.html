@@ -25,7 +25,10 @@
   {{document.content_type}} / {{document.slug}}
 </p>
 
-<form>
+<form action="{{url_for('.update_content',
+                        content_type=document.content_type,
+                        slug=document.slug)}}"
+      method="POST">
 <div class="row">
   <div class="col-lg-8">
     <div class="card">
@@ -53,7 +56,7 @@
           <input class="form-control inputtags"
                  type="text"
                  name="tags"
-                 value="{{document.tags}}">
+                 value="{{document.tags|join(',')}}">
         </div>
 
       </div>
@@ -64,11 +67,11 @@
         <h4>{{_('Custom Fields')}}</h4>
       </div>
       <div class="card-body">
-        {% for k, v in meta.items() if k not in reserved_meta_keys %}
+        {% for k, v in theme.custom_fields[document.template].items() %}
         <div class="form-group content-editor">
           <label>{{k}}</label>
           <textarea class="form-control"
-                    name="{{k}}">{{v}}</textarea>
+                    name="{{k}}">{{meta[k]}}</textarea>
         </div>
         {% endfor %}
       </div>
@@ -133,7 +136,9 @@
           </a>
           {% endif %}
           <div class="input-group">
-            <input type="text" class="form-control">
+            <input class="form-control"
+                   type="text"
+                   name="featured_img_src">
             <div class="input-group-append">
               <button class="btn btn-primary"
                       aria-lable="{{_('Select Image')}}"

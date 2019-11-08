@@ -1,18 +1,41 @@
 /*
-Priority: 1
-Status: 1
-Template: category
-Title: Category
+Cover: ''
+Date: '2019-11-09'
 Description: You can write description here.
-Background:
-  src: '[%uploads%]/default.jpg'
-  color:
-  repeat:
-  style: "background-image: url('[%uploads%]/default.jpg');background-size: cover;background-repeat: no-repeat;background-position: top center;"
-  class:
-Button:
-  name: button
-  link: /
-  target:
-  class:
+Featured_img:
+  Src: ''
+Parent: ''
+Priority: 1
+Redirect: ''
+Status: 0
+Tags:
+- sadf
+- asdf
+- abbb
+Template: category
+Terms: []
+Title: Category
+
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

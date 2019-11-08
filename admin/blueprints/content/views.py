@@ -71,14 +71,48 @@ def content_detail(content_type, slug):
 @blueprint.route('/<content_type>/<slug>', methods=['POST'])
 @login_required
 def update_content(content_type, slug):
-    curr_content_type = _find_content_type(content_type)
+    tags = request.form.get('tags', '')
+    terms = request.form.get('terms', [])
+    date = request.form.get('date', '')
+    parent = request.form.get('parent', '')
+    template = request.form.get('template', '')
+    priority = request.form.get('priority', 0)
+    redirect_url = request.form.get('redirect', '')
+    status = request.form.get('status', '')
+
+    title = request.form.get('title', '')
+    description = request.form.get('description', '')
+    featured_img_src = request.form.get('featured_img_src', '')
+    content = request.form.get('content', '')
+    custom_fields = {key: request.form.get(key, '')
+                     for key in _find_custom_field_keys(template)}
+
+    tags = [tag.strip() for tag in tags.split(',')]
+    meta = {k: v for k, v in custom_fields.items()}
+    meta.update({
+        'title': title,
+        'description': description,
+        'featured_img': {
+            'src': featured_img_src
+        }
+    })
+
     document = current_app.db.Document.find_one(slug, content_type)
-    document['']
-    return render_template('content_detail.html',
-                           document=document,
-                           meta=document['meta'],
-                           content=document['content'],
-                           content_type=curr_content_type)
+    document['meta'] = meta
+    document['date'] = date
+    document['tags'] = tags
+    document['terms'] = terms
+    document['template'] = template
+    document['parent'] = parent
+    document['redirect'] = redirect_url
+    document['priority'] = parse_int(priority)
+    document['status'] = parse_int(status)
+    document.save()
+    flash('SAVED')
+    return_url = url_for('.content_detail',
+                         content_type=content_type,
+                         slug=slug)
+    return redirect(return_url)
 
 
 @blueprint.route('/<content_type>/<slug>/remove')
@@ -98,3 +132,13 @@ def _find_content_type(content_type_slug):
     if not content_type:
         raise Exception('Content type not exists')
     return content_type
+
+
+def _find_custom_field_keys(template):
+    theme = current_app.db.Theme(current_app.current_theme_dir)
+    custom_fields = theme.custom_fields.get(template)
+    field_keys = []
+    if isinstance(custom_fields, dict):
+        return [k for k in custom_fields]
+    else:
+        return []

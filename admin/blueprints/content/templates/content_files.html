@@ -22,7 +22,7 @@
           <table class="table table-striped">
             <tr>
               <th class="text-center">{{_('NO.')}}</th>
-              <th class="text-center">{{_('Slug')}}</th>
+              <th class="text-center">{{_('Title')}}</th>
               <th>{{_('Uploaded Date')}}</th>
               <th>{{_('Creation Date')}}</th>
               <th class="text-center">{{_('Action')}}</th>
@@ -34,11 +34,9 @@
               </td>
               <td>
                 {% if content.slug == 'index' %}
-                  <i class="fas fa-home"></i>
-                  <b>{{content.slug}}</b>
-                {% else %}
-                  {{content.slug}}
+                <i class="fas fa-home"></i>
                 {% endif %}
+                {{content.meta.title or content.slug}}
               </td>
               <td>{{content.updated|dateformat}}</td>
               <td>{{content.creation|dateformat}}</td>

@@ -40,7 +40,7 @@ class FlatFile:
         self._id = path
         if isinstance(path, str):
             self.path = path
-        self._load_raw()
+        self.raw = self._load(self.path)
 
     def __getitem__(self, key):
         if key == '_id':
@@ -67,12 +67,12 @@ class FlatFile:
             os.remove(self.path)
         return self._id
 
-    def _load_raw(self):
-        if os.path.isfile(self.path):
-            with open(self.path, 'r') as fh:
-                self.raw = fh.read()
+    def _load(self, path):
+        if os.path.isfile(path):
+            with open(path, 'r') as fh:
+                return fh.read()
         else:
-            self.raw = None
+            return None
 
     def _prepare_field(self, x):
         if isinstance(x, dict):
@@ -150,6 +150,8 @@ class Theme(FlatFile):
     PRIMARY_MENU_LEVEL = 2
 
     config_file_path = 'config.json'
+
+    path = ''
     data = {}
 
     def __init__(self, theme_path):
@@ -204,6 +206,15 @@ class Theme(FlatFile):
     def templates(self):
         _templates = self.data.get('templates') or []
         return [process_slug(template) for template in _templates]
+
+    @property
+    def custom_fields(self):
+        _custom_fields = self.data.get('custom_fields') or {}
+        custom_fields = {
+            k: {_k: _v for _k, _v in v.items() if isinstance(_v, str)}
+            for k, v in _custom_fields.items()
+        }
+        return custom_fields
 
     @property
     def menus(self):
