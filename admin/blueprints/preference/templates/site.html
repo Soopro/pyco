@@ -154,8 +154,7 @@
               <i class="fas fa-bars"></i>
               <span>{{node.name}}</span>
             </button>
-            {% if theme.menus[menu.key] and
-               theme.menus[menu.key].level > 1 %}
+            {% if theme.menus[menu.key] and theme.menus[menu.key].level > 1 %}
             {% for subnode in node.nodes %}
             <div class="py-1">
               <button class="btn btn-outline-secondary w-100"

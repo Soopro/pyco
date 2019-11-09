@@ -300,6 +300,11 @@ class Site(FlatFile):
         return [lang for lang in lang_list]
 
     @property
+    def categories(self):
+        lang_list = self.data.get('meta', {}).get('languages') or []
+        return [lang for lang in lang_list]
+
+    @property
     def menus(self):
         _menus = self.data.get('menus') or {}
         menus = [{'key': k, 'nodes': v} for k, v in _menus.items()]

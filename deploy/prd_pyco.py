@@ -2,9 +2,9 @@
 from __future__ import absolute_import
 import multiprocessing
 
-bind = '127.0.0.1:9000'
+bind = '127.0.0.1:5500'
 workers = multiprocessing.cpu_count() * 2 + 1
-accesslog = '/data/deployment_data/totoro/log/totoro_api.access.log'
-errorlog = '/data/deployment_data/totoro/log/totoro_api.error.log'
-pidfile = '/data/deployment_data/totoro/totoro_api.pid'
-raw_env = 'TOTORO_CONFIG_NAME=production'
+accesslog = '/deploy/pyco_admin.access.log'
+errorlog = '/deploy/pyco_admin.error.log'
+pidfile = '/deploy/pyco_admin.pid'
+raw_env = ''

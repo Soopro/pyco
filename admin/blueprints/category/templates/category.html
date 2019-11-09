@@ -9,12 +9,12 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h4>{{_('All Files')}}</h4>
-        <small>{{_('%s files total.', count)}}</small>
+        <h4>{{_('All Category Terms')}}</h4>
+        <small>{{_('%s terms total.', count)}}</small>
         <a class="btn btn-primary btn-lg ml-auto"
            href="#">
           <i class="fas fa-refresh"></i>
-          <span>{{_('Create New Content')}}</span>
+          <span>{{_('New Category Term')}}</span>
         </a>
       </div>
       <div class="card-body">
@@ -22,9 +22,8 @@
           <table class="table table-striped">
             <tr>
               <th class="text-center">{{_('NO.')}}</th>
-              <th class="text-center">{{_('Title')}}</th>
-              <th>{{_('Uploaded Date')}}</th>
-              <th>{{_('Creation Date')}}</th>
+              <th class="text-center">{{_('Preview')}}</th>
+              <th class="text-center">{{_('Name')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
             {% for content in contents %}
