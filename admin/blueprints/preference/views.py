@@ -322,5 +322,18 @@ def _update_site():
     site = current_app.db.Site()
     site['content_types'] = {k: v.get('title')
                              for k, v in theme.content_types.items()}
-    site['categories'] = theme.categories
+    if theme.categories:
+        cate_name = theme.categories.get('name', '')
+        cate_content_types = theme.categories.get('conten_types', [])
+        if not isinstance(site['categories']):
+            site['categories'] = {'terms': []}
+        site['categories'].update({
+            'status': 1,
+            'name': str(cate_name),
+            'conten_types': [c_type for c_type in cate_content_types
+                             if isinstance(c_type, str)]
+        })
+    else:
+        site['categories'].update({'status': 0})
+
     site.save()

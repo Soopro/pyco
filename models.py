@@ -301,8 +301,18 @@ class Site(FlatFile):
 
     @property
     def categories(self):
-        lang_list = self.data.get('meta', {}).get('languages') or []
-        return [lang for lang in lang_list]
+        _category = self.data.get('categories') or {}
+        if not _category:
+            return {}
+        _terms = _category.get('terms') or []
+        category = {
+            'name': _category.get('name'),
+            'content_types': _category.get('content_types', []),
+            'terms': [{'key': t.get('key'),
+                       'meta': t.get('meta'),
+                       'parent': t.get('parent'),
+                       'status': t.get('status')} for t in _terms]}
+        return category
 
     @property
     def menus(self):

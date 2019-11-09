@@ -7,10 +7,17 @@
 {% block main %}
 <div class="row">
   <div class="col-12">
+    {% if terms is None %}
+    <div class="card">
+      <div class="card-header">
+        {{_('Category is not activated.')}}
+      </div>
+    </div>
+    {% else %}
     <div class="card">
       <div class="card-header">
         <h4>{{_('All Category Terms')}}</h4>
-        <small>{{_('%s terms total.', count)}}</small>
+        <small>{{_('%s terms total.', terms|length)}}</small>
         <a class="btn btn-primary btn-lg ml-auto"
            href="#">
           <i class="fas fa-refresh"></i>
@@ -22,30 +29,31 @@
           <table class="table table-striped">
             <tr>
               <th class="text-center">{{_('NO.')}}</th>
-              <th class="text-center">{{_('Preview')}}</th>
+              <th class="text-center">{{_('Figure')}}</th>
               <th class="text-center">{{_('Name')}}</th>
+              <th class="text-center">{{_('Parent')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
-            {% for content in contents %}
+            {% for term in terms %}
             <tr>
               <td class="p-2 text-center">
                 {{loop.index}}
               </td>
-              <td>
-                {% if content.slug == 'index' %}
-                <i class="fas fa-home"></i>
-                {% endif %}
-                {{content.meta.title or content.slug}}
+              <td class="p-2 text-center">
+                <a href="{{term.figure}}" target="_blank">
+                  <div class="list-figure"
+                       style="background-image:url({{term.figure}});"></div>
+                </a>
               </td>
-              <td>{{content.updated|dateformat}}</td>
-              <td>{{content.creation|dateformat}}</td>
+              <td>
+                {{term.meta.name or term.key}}
+              </td>
+              <td>{{term|parent}}</td>
               <td>
                 <div class="row">
                   <div class="col-lg-6 text-center">
                     <a class="btn btn-primary"
-                       href="{{url_for('.content_detail',
-                                       content_type=content_type.key,
-                                       slug=content.slug)}}">
+                       href="{{url_for('.term', term_key=term.key}}">
                       <i class="fas fa-edit"></i>
                       <span>{{_('Edit')}}</span>
                     </a>
@@ -53,9 +61,7 @@
                   <div class="col-lg-6 d-lg-block d-none text-right">
                     <a class="btn btn-danger"
                        aria-label="{{_('Delete')}}"
-                       href="{{url_for('.remove',
-                                       content_type=content_type.key,
-                                       slug=content.slug)}}">
+                       href="{{url_for('.term', term_key=term.key)}}">
                       <i class="fas fa-trash"></i>
                     </a>
                   </div>
@@ -65,30 +71,9 @@
             {% endfor %}
           </table>
         </div>
-        <div class="float-right">
-          <nav>
-            <ul class="pagination">
-              <li class="page-item {{'disabled' if not p.prev}}">
-                <a class="page-link"
-                   href="{{p.prev}}"
-                   aria-label="{{_('Previous')}}">
-                  <span aria-hidden="true">&laquo;</span>
-                  <span class="sr-only">{{_('Previous')}}</span>
-                </a>
-              </li>
-              <li class="page-item {{'disabled' if not p.next}}">
-                <a class="page-link"
-                   href="{{p.next}}"
-                   aria-label="{{_('Next')}}">
-                  <span aria-hidden="true">&raquo;</span>
-                  <span class="sr-only">{{_('Next')}}</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
       </div>
     </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
