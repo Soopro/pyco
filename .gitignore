@@ -36,6 +36,8 @@ config.conf
 .tags
 .tags_sorted_by_file
 
+configure.yaml
+
 pkg/
 appAuth
 conf.json
