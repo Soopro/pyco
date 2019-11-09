@@ -71,12 +71,13 @@
       </div>
     </div>
 
+    {% if custom_fields %}
     <div class="card">
       <div class="card-header">
         <h4>{{_('Custom Fields')}}</h4>
       </div>
       <div class="card-body">
-        {% for k, v in theme.custom_fields[document.template].items() %}
+        {% for k, v in custom_fields.items() %}
         <div class="form-group content-editor">
           <label>{{k}}</label>
           <textarea class="form-control"
@@ -85,6 +86,7 @@
         {% endfor %}
       </div>
     </div>
+    {% endif %}
   </div>
 
   <div class="col-lg-4">

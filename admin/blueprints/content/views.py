@@ -61,11 +61,13 @@ def index(content_type):
 def content_detail(content_type, slug):
     curr_content_type = _find_content_type(content_type)
     document = current_app.db.Document.find_one(slug, content_type)
+    custom_fields = _find_custom_fields(document.get('template'))
     return render_template('content_detail.html',
                            document=document,
                            meta=document['meta'],
                            content=document['content'],
-                           content_type=curr_content_type)
+                           content_type=curr_content_type,
+                           custom_fields=custom_fields)
 
 
 @blueprint.route('/<content_type>/<slug>', methods=['POST'])
@@ -85,7 +87,7 @@ def update_content(content_type, slug):
     featured_img_src = request.form.get('featured_img_src', '')
     content = request.form.get('content', '')
     custom_fields = {key: request.form.get(key, '')
-                     for key in _find_custom_field_keys(template)}
+                     for key in _find_custom_fields(template)}
 
     tags = [tag.strip() for tag in tags.split(',')]
     meta = {k: v for k, v in custom_fields.items()}
@@ -156,11 +158,10 @@ def _find_content_type(content_type_slug):
     return content_type
 
 
-def _find_custom_field_keys(template):
+def _find_custom_fields(template):
     theme = current_app.db.Theme(current_app.current_theme_dir)
     custom_fields = theme.custom_fields.get(template)
-    field_keys = []
     if isinstance(custom_fields, dict):
-        return [k for k in custom_fields]
+        return custom_fields
     else:
-        return []
+        return {}
