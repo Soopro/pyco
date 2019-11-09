@@ -6,8 +6,6 @@
 <link rel="stylesheet" href="{{assets_url}}/modules/summernote/summernote-bs4.css">
 {% endblock %}
 
-{% set reserved_meta_keys = ['title', 'description', 'featured_img'] %}
-
 {% block header %}
 <div class="section-header-back">
   <a class="btn btn-icon"
@@ -149,7 +147,9 @@
           <div class="input-group">
             <input class="form-control"
                    type="text"
-                   name="featured_img_src">
+                   name="featured_img_src"
+                   value="{{meta.featured_img.src
+                            if meta.featured_img else ''}}">
             <div class="input-group-append">
               <button class="btn btn-primary"
                       aria-lable="{{_('Select Image')}}"

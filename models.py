@@ -7,6 +7,7 @@ import json
 import urllib
 
 from utils.misc import (process_slug,
+                        slug_uuid_suffix,
                         gen_excerpt,
                         guess_mimetype,
                         split_file_ext,
@@ -171,16 +172,16 @@ class Theme(FlatFile):
         return {k: v for k, v in _options.items()}
 
     @property
-    def categories(self):
+    def category(self):
         _category = self.data.get('category') or {}
         if _category:
-            categories = {
+            category = {
                 'name': _category.get('name'),
                 'content_type': _category.get('content_type')
             }
         else:
-            categories = None
-        return categories
+            category = None
+        return category
 
     @property
     def content_types(self):
@@ -278,7 +279,7 @@ class Site(FlatFile):
             'slug': site.get('slug'),
             'locale': site.get('locale', 'en_US'),
             'content_types': c_types,
-            'categories': site.get('categories'),
+            'categories': site.get('categories') or {},
             'menus': site.get('menus') or {self.PRIMARY_MENU: []},
             'slots': site.get('slots', {}),
             'meta': site.get('meta', {}),
@@ -301,18 +302,18 @@ class Site(FlatFile):
 
     @property
     def categories(self):
-        _category = self.data.get('categories') or {}
-        if not _category:
-            return {}
-        _terms = _category.get('terms') or []
-        category = {
-            'name': _category.get('name'),
-            'content_types': _category.get('content_types', []),
+        _categories = self.data.get('categories') or {}
+        _terms = _categories.get('terms') or []
+        categories = {
+            'name': _categories.get('name') or '',
+            'content_types': _categories.get('content_types') or [],
+            'status': _categories.get('status', 0),
             'terms': [{'key': t.get('key'),
                        'meta': t.get('meta'),
                        'parent': t.get('parent'),
+                       'priority': t.get('priority', 0),
                        'status': t.get('status')} for t in _terms]}
-        return category
+        return categories
 
     @property
     def menus(self):
@@ -326,6 +327,63 @@ class Site(FlatFile):
             return 0
         menus.insert(0, menus.pop(_get_index()))
         return menus
+
+    # methods
+    def _uniqueify_term_key(self, term_key):
+        term_key = process_slug(term_key)
+        all_term_keys = [term['key'] for term in self.categories.terms]
+        if term_key in all_term_keys:
+            self._uniqueify_term_key(slug_uuid_suffix(term_key))
+        return term_key
+
+    def _find_term(self, term_key):
+        for term in self.data['categories'].get('terms', []):
+            if term['key'] == term_key:
+                return term
+        return None
+
+    def _get_term_index(terms, term_key):
+        if not terms:
+            return None
+        for idx, m in terms:
+            if m['key'] == term_key:
+                return idx
+        return None
+
+    def add_category_term(self, term):
+        terms = self.data['categories'].get('terms')
+        if not terms:
+            self.data['categories']['terms'] = []
+        term_meta = term.get('meta') or {}
+        term_key = self._uniqueify_term_key(term['key'])
+        self.data['categories']['terms'].insert(0, {
+            'key': term_key,
+            'meta': {
+                'name': term_meta.get('name', term_key),
+                'caption': term_meta.get('caption', ''),
+                'figure': term_meta.get('figure', ''),
+            },
+            'parent': term.get('parent', ''),
+            'priority': term.get('priority', 0),
+            'status': term.get('status', 0),
+        })
+
+    def get_category_term(self, term_key):
+        return self._find_term(term_key)
+
+    def update_category_term(self, upterm):
+        term = self._find_term(upterm['key'])
+        if not term:
+            raise Exception('Term not found.')
+        term.update(upterm)
+        return term
+
+    def remove_category_term(self, term_key):
+        terms = self.data['categories'].get('terms') or []
+        index = self._get_term_index(terms, term_key)
+        if index and terms:
+            terms.pop(index, None)
+        return term_key
 
 
 class Document(FlatFile):

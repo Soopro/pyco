@@ -465,6 +465,34 @@
     "msgid": "Custom Fields",
     "msgstr": "自定义表单"
   },
+  {
+    "msgid": "All Category Terms",
+    "msgstr": "所有分类项"
+  },
+  {
+    "msgid": "Category Term",
+    "msgstr": "分类项"
+  },
+  {
+    "msgid": "%s terms total.",
+    "msgstr": "%s 分类项。"
+  },
+  {
+    "msgid": "New Category Term",
+    "msgstr": "新建分类项"
+  },
+  {
+    "msgid": "Poster",
+    "msgstr": "海报"
+  },
+  {
+    "msgid": "Type content here.",
+    "msgstr": "在这里输入内容。"
+  },
+  {
+    "msgid": "Type caption here.",
+    "msgstr": "在这里输入说明。"
+  },
 
 
 

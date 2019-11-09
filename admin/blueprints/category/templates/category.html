@@ -7,7 +7,7 @@
 {% block main %}
 <div class="row">
   <div class="col-12">
-    {% if terms is None %}
+    {% if categories.status == 0 %}
     <div class="card">
       <div class="card-header">
         {{_('Category is not activated.')}}
@@ -17,8 +17,10 @@
     <div class="card">
       <div class="card-header">
         <h4>{{_('All Category Terms')}}</h4>
-        <small>{{_('%s terms total.', terms|length)}}</small>
+        <small>{{_('%s terms total.', categories.terms|length)}}</small>
         <a class="btn btn-primary btn-lg ml-auto"
+           data-toggle="modal"
+           data-target="#MODAL-CREATE-TERM"
            href="#">
           <i class="fas fa-refresh"></i>
           <span>{{_('New Category Term')}}</span>
@@ -28,32 +30,36 @@
         <div class="table-responsive">
           <table class="table table-striped">
             <tr>
-              <th class="text-center">{{_('NO.')}}</th>
-              <th class="text-center">{{_('Figure')}}</th>
-              <th class="text-center">{{_('Name')}}</th>
-              <th class="text-center">{{_('Parent')}}</th>
+              <th>{{_('NO.')}}</th>
+              <th class="text-center">{{_('Poster')}}</th>
+              <th>{{_('Name')}}</th>
+              <th>{{_('Parent')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
-            {% for term in terms %}
+            {% for term in categories.terms %}
             <tr>
               <td class="p-2 text-center">
                 {{loop.index}}
               </td>
               <td class="p-2 text-center">
+                {% if term.figure %}
                 <a href="{{term.figure}}" target="_blank">
                   <div class="list-figure"
                        style="background-image:url({{term.figure}});"></div>
                 </a>
+                {% else %}
+                <div class="list-figure small"></div>
+                {% endif %}
               </td>
               <td>
                 {{term.meta.name or term.key}}
               </td>
-              <td>{{term|parent}}</td>
+              <td>{{term.parent or '-'}}</td>
               <td>
                 <div class="row">
                   <div class="col-lg-6 text-center">
                     <a class="btn btn-primary"
-                       href="{{url_for('.term', term_key=term.key}}">
+                       href="{{url_for('.term', term_key=term.key)}}">
                       <i class="fas fa-edit"></i>
                       <span>{{_('Edit')}}</span>
                     </a>
@@ -77,6 +83,45 @@
   </div>
 </div>
 {% endblock %}
-{% block page_scripts %}
 
+{% block page_models %}
+<div id="MODAL-CREATE-TERM"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="{{_('Category Term')}}"
+     aria-hidden="true">
+  <div class="modal-dialog" role="exit">
+    <div class="modal-content">
+      <form action="{{url_for('.create_term')}}"
+            method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">{{_('Category Term')}}</h5>
+          <button class="close"
+                  type="button"
+                  data-dismiss="modal"
+                  aria-label="{{_('Close')}}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{_('Name')}}</label>
+             <input class="form-control"
+                   type="text"
+                   name="name"
+                   value="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal">{{_('Dismiss')}}</button>
+          <button class="btn btn-primary">
+            {{_('Save')}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

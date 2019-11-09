@@ -275,7 +275,10 @@ def _sort_terms(terms, included_term_keys=None, nest_output=True):
         'key': term['key'],
         'parent': term.get('parent', ''),
         'meta': term.get('meta', {}),
+        'priority': term.get('priority', 0)
     } for term in terms]
+
+    term_list = sortedby(term_list, [('priority', 1)])
 
     if nest_output:
         output_terms = []

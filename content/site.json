@@ -7,8 +7,22 @@
     "page": "Pages"
   },
   "categories": {
+    "terms": [
+      {
+        "key": "s-12323",
+        "meta": {
+          "name": "12323",
+          "caption": "",
+          "figure": ""
+        },
+        "parent": "",
+        "priority": 0,
+        "status": 0
+      }
+    ],
+    "status": 1,
     "name": "Categories",
-    "content_type": null
+    "conten_types": []
   },
   "menus": {
     "primary": [
