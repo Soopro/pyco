@@ -3,7 +3,7 @@
 from flask import Flask, make_response, g
 import os
 
-from loaders import load_config, load_pretreat_method
+from loaders import load_config, load_pretreat
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
@@ -21,7 +21,7 @@ app = Flask(__name__,
 
 load_config(app)
 
-app.db = DBConnection(app, load_pretreat_method(app))
+app.db = DBConnection(app)
 app.db.register([Configure, Document, Site, Theme, Media])
 
 # register blueprints

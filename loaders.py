@@ -84,13 +84,13 @@ def load_metas(app):
     }
 
 
-def load_pretreat_method(app):
+def load_pretreat(app):
     RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
     uploads_url = str(app.config['UPLOADS_URL'])
-    def pretreat_method(self, text):
+    def pretreat_raw_method(self, text):
         try:
             return re.sub(RE_UPLOADS, uploads_url, text)
         except Exception as e:
             print('Pretreat Error: {}'.format(e))
             return text
-    return pretreat_method
+    return pretreat_raw_method

@@ -14,18 +14,15 @@ def request_url(request):
 
 
 def get_page_content(pack):
-    pack.update({
-        'content': shortcode(CONTEXT['config'], pack['content'])
-    })
+    pass
 
 
 def get_page_meta(meta, redirect):
-    meta.update(shortcode(CONTEXT['config'], meta))
+    pass
 
 
 def get_pages(pages, current_page_id):
-    for p in pages:
-        p.update(shortcode(CONTEXT['config'], p))
+    pass
 
 
 def before_render(context, template):
@@ -34,25 +31,3 @@ def before_render(context, template):
 
 def after_render(rendered):
     pass
-
-
-# shortcode
-RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
-RE_THEME = re.compile(r'\[\%theme\%\]', re.IGNORECASE)
-
-
-def _process_shortcode(config, text):
-    text = re.sub(RE_UPLOADS, str(config['UPLOADS_URL']), text)
-    text = re.sub(RE_THEME, str(config['THEME_URL']), text)
-    return text
-
-
-def shortcode(config, data):
-    if isinstance(data, str):
-        return _process_shortcode(config, data)
-    elif isinstance(data, list):
-        return [shortcode(config, item) for item in data]
-    elif isinstance(data, dict):
-        return {k: shortcode(config, v) for k, v in data.items()}
-    else:
-        return data

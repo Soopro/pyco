@@ -13,7 +13,7 @@ from utils.response import make_cors_headers
 from loaders import (load_config,
                      load_plugins,
                      load_metas,
-                     load_pretreat_method)
+                     load_pretreat)
 from blueprints import register_blueprints
 
 from models import DBConnection, Configure, Document, Site, Theme, Media
@@ -29,7 +29,7 @@ app.version = __version__
 
 load_config(app)
 
-app.db = DBConnection(app, load_pretreat_method(app))
+app.db = DBConnection(app, load_pretreat(app))
 app.db.register([Configure, Document, Site, Theme, Media])
 
 # make importable for plugin folder
