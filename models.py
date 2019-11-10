@@ -17,9 +17,17 @@ from utils.files import ensure_dirs
 
 class DBConnection:
     models = dict()
+    app = None
+    pretreat_method = None
+
+    def __init__(self, app, pretreat_method=None):
+        self.app = app
+        if callable(pretreat_method):
+            self.pretreat_method = pretreat_method
 
     def register(self, models):
         for model in models:
+            model.__pretreat__ = self.pretreat_method
             self.models[model.__name__] = model
 
     def __getattr__(self, name):
@@ -36,6 +44,8 @@ class FlatFile:
     path = str()
     data = dict()
     raw = None
+
+    __pretreat__ = None
 
     def __init__(self, path):
         self._id = path
@@ -71,9 +81,12 @@ class FlatFile:
     def _load(self, path):
         if os.path.isfile(path):
             with open(path, 'r') as fh:
-                return fh.read()
+                readed = fh.read()
         else:
-            return None
+            readed = ''
+        if callable(self.__pretreat__):
+            readed = self.__pretreat__(readed)
+        return readed
 
     def _prepare_field(self, x):
         if isinstance(x, dict):

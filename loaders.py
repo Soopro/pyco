@@ -4,6 +4,7 @@ from utils.files import ensure_dirs
 
 from types import ModuleType
 import os
+import re
 
 
 def load_config(app, config_name='config.py'):
@@ -44,6 +45,8 @@ def load_config(app, config_name='config.py'):
     )
 
 
+
+
 def load_plugins(app):
     plugins = app.config.get('PLUGINS')
     loaded_plugins = []
@@ -79,3 +82,15 @@ def load_metas(app):
         'site_meta': site_meta,
         'theme_meta': theme_meta
     }
+
+
+def load_pretreat_method(app):
+    RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
+    uploads_url = str(app.config['UPLOADS_URL'])
+    def pretreat_method(self, text):
+        try:
+            return re.sub(RE_UPLOADS, uploads_url, text)
+        except Exception as e:
+            print('Pretreat Error: {}'.format(e))
+            return text
+    return pretreat_method

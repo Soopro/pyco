@@ -1,50 +1,21 @@
 {
-  "_id": "content/site.json",
-  "slug": "pyco",
-  "locale": "zh_CN",
+  "app_id":"pyco_app",
+  "slug":"pyco",
+  "locale": "en_US",
   "content_types": {
     "post": "Posts",
-    "page": "Pages"
-  },
-  "categories": {
-    "terms": [
-      {
-        "key": "ha-ha",
-        "meta": {
-          "name": "哈哈",
-          "caption": "adfd",
-          "figure": ""
-        },
-        "parent": "adfadf",
-        "priority": 0,
-        "status": 0
-      }
-    ],
-    "status": 1,
-    "name": "Categories",
-    "conten_types": []
+    "page": "Pages",
+    "work": "Works",
+    "product": "Products"
   },
   "menus": {
     "primary": [
       {
-        "key": "home",
+        "key": "index",
+        "meta": {},
+        "nodes": [],
         "name": "Home",
-        "link": "/",
-        "target": "",
-        "path_scope": "",
-        "fixed": "on",
-        "class": "",
-        "nodes": [
-          {
-            "key": "s-123",
-            "name": "123",
-            "link": "",
-            "target": "",
-            "path_scope": "",
-            "fixed": "",
-            "class": ""
-          }
-        ]
+        "link": "/"
       },
       {
         "key": "posts",
@@ -69,32 +40,36 @@
       }
     ]
   },
+  "categories": {
+    "name": "Categories",
+    "content_types":["post"],
+    "terms": [
+      {"key":"daily", "meta":{"name": "Daily"}},
+      {"key":"food", "meta":{"name": "Food"}},
+      {"key":"daily-2", "meta":{"name": "Daily2"}, "parent":"daily"},
+      {"key":"food-2", "meta":{"name": "Food2"}, "parent":"food"}
+    ]
+  },
   "slots": {
-    "event": {
-      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"
-    }
+    "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
   },
   "meta": {
     "favicon": "",
     "logo": "",
-    "head_metadata": "",
-    "copyright": "",
-    "description": "",
-    "license": "",
-    "title": "123123213",
-    "socials": [],
-    "languages": [
-      {
-        "key": "zh_CN",
-        "name": "汉语",
-        "url": "http://....."
-      },
-      {
-        "key": "en_US",
-        "name": "English",
-        "url": "http://....."
-      }
+    "bg": "",
+    "contact": "redy",
+    "copyright": "2015 Made by Pyco.",
+    "description": "...",
+    "license": "MIT",
+    "title": "Sample",
+    "socials":[
+      {"key": "facebook", "name": "Facebook", "url": "#", "code": "facebook"},
+      {"key": "twitter", "name": "Twitter", "url": "#", "code": "twitter"}
     ],
-    "custom": {}
+    "languages": [
+       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
+       {"key": "en_US", "name":"English", "url":"http://....."}
+    ]
   }
+
 }
