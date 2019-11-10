@@ -1,7 +1,7 @@
 {
   "_id": "content/site.json",
   "slug": "pyco",
-  "locale": "",
+  "locale": "zh_CN",
   "content_types": {
     "post": "Posts",
     "page": "Pages"
@@ -9,13 +9,13 @@
   "categories": {
     "terms": [
       {
-        "key": "s-12323",
+        "key": "ha-ha",
         "meta": {
-          "name": "12323",
-          "caption": "",
+          "name": "哈哈",
+          "caption": "adfd",
           "figure": ""
         },
-        "parent": "",
+        "parent": "adfadf",
         "priority": 0,
         "status": 0
       }
@@ -81,7 +81,7 @@
     "copyright": "",
     "description": "",
     "license": "",
-    "title": "",
+    "title": "123123213",
     "socials": [],
     "languages": [
       {

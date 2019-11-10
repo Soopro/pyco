@@ -12,13 +12,14 @@
 
 {% block main %}
 <h2 class="section-title">
-  {{term.meta.title}}
+  {{term.meta.name}}
 </h2>
 <p class="section-lead">
   {{term.key}}
 </p>
 
-<form action="{{url_for('.update_term', term_key=term.key)}}"
+<form class="editing"
+      action="{{url_for('.update_term', term_key=term.key)}}"
       method="POST">
 <div class="row">
   <div class="col-lg-8">
@@ -49,7 +50,7 @@
                  name="parent"
                  value="{{term.parent}}">
           <small class="form-text text-muted">
-            {{_('* Use parent term slug.')}}
+            {{_('* Use parent term key.')}}
           </small>
         </div>
 
@@ -66,11 +67,11 @@
       <div class="card-body">
         <div class="d-flex">
           <button class="btn btn-primary">
-            {{_('Save')}}
+            {{_('Save and exit')}}
           </button>
           <a class="btn btn-danger ml-auto"
              aria-label="{{_('Delete')}}"
-             href="{{url_for('.remove', term_key=term.key)}}">
+             href="{{url_for('.remove_term', term_key=term.key)}}">
             <i class="fas fa-trash"></i>
           </a>
         </div>
@@ -134,42 +135,4 @@
 </form>
 {% endblock %}
 {% block page_scripts %}
-<script src="{{assets_url}}/modules/moment.min.js"></script>
-<script src="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-<script src="{{assets_url}}/modules/summernote/summernote-bs4.js"></script>
-<script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
-<script>
-  'use strict';
-
-  $('form').on('keyup keypress', function(e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  $(".inputtags").tagsinput('items');
-
-  var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
-  $('.summernote').summernote({
-    height: 640,
-    dialogsInBody: true,
-    lang: editor_lang,
-    onImageUpload: function(files, editor, welEditable) {
-      sendFile(files[0], editor, welEditable);
-    },
-    toolbar: [
-      // [groupName, [list of button]]
-      ['style', ['bold', 'italic', 'underline', 'clear']],
-      ['font', ['strikethrough', 'superscript', 'subscript']],
-      ['fontsize', ['fontsize']],
-      ['color', ['color']],
-      ['para', ['ul', 'ol', 'paragraph']],
-      ['insert', ['link', 'picture', 'video']],
-      ['view', ['codeview']],
-    ]
-  });
-</script>
 {% endblock %}

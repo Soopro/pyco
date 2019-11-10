@@ -2,7 +2,9 @@
 
 from flask import make_response
 from functools import wraps
+from hashlib import sha1
 import json
+import os
 
 
 def output_json(f):
@@ -39,3 +41,13 @@ def make_cors_headers(mime_type):
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Max-Age'] = 60 * 60 * 24
     return headers
+
+
+def generate_etag(content_file_full_path):
+    file_stat = os.stat(content_file_full_path)
+    base = '{mtime:0.0f}_{size:d}_{fpath}'.format(
+        mtime=file_stat.st_mtime,
+        size=file_stat.st_size,
+        fpath=content_file_full_path
+    )
+    return sha1(base).hexdigest()

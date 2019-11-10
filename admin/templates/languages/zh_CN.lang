@@ -113,6 +113,10 @@
     "msgstr": "保存"
   },
   {
+    "msgid": "Save and exit",
+    "msgstr": "保存并退出"
+  },
+  {
     "msgid": "Remove",
     "msgstr": "移除"
   },
@@ -486,6 +490,10 @@
     "msgstr": "海报"
   },
   {
+    "msgid": "Caption",
+    "msgstr": "说明"
+  },
+  {
     "msgid": "Type content here.",
     "msgstr": "在这里输入内容。"
   },
@@ -493,7 +501,10 @@
     "msgid": "Type caption here.",
     "msgstr": "在这里输入说明。"
   },
-
+  {
+    "msgid": "Parent Term",
+    "msgstr": "父级分类项"
+  },
 
 
   {
@@ -531,6 +542,14 @@
   {
     "msgid": "* The priority of the content when sorting.",
     "msgstr": "* 内容被排序时的优先级。"
+  },
+  {
+    "msgid": "* The priority of the term when sorting.",
+    "msgstr": "* 分类项被排序时的优先级。"
+  },
+  {
+    "msgid": "* Use parent term key.",
+    "msgstr": "* 使用父级分类项的键值。"
   },
 
 

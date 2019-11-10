@@ -73,7 +73,7 @@ def update_term(term_key):
     status = request.form.get('status', '')
 
     site = current_app.db.Site()
-    site.update_category_term({
+    site.update_category_term(term_key, {
         'meta': {
             'name': str(name),
             'caption': str(caption),
@@ -83,14 +83,15 @@ def update_term(term_key):
         'priority': parse_int(priority),
         'status': parse_int(status),
     })
+    site.save()
     flash('SAVED')
-    return_url = url_for('.term')
+    return_url = url_for('.index')
     return redirect(return_url)
 
 
 @blueprint.route('/<term_key>/remove')
 @login_required
-def remove(term_key):
+def remove_term(term_key):
     site = current_app.db.Site()
     site.remove_category_term(term_key)
     site.save()

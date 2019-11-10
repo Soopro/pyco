@@ -1,8 +1,6 @@
 # coding=utf-8
 
 from flask import current_app
-from hashlib import sha1
-import os
 import re
 
 
@@ -12,17 +10,6 @@ def run_hook(hook_name, **references):
         if callable(func):
             func(**references)
     return
-
-
-def generate_etag(content_file_full_path):
-    file_stat = os.stat(content_file_full_path)
-    base = '{mtime:0.0f}_{size:d}_{fpath}'.format(
-        mtime=file_stat.st_mtime,
-        size=file_stat.st_size,
-        fpath=content_file_full_path
-    )
-
-    return sha1(base).hexdigest()
 
 
 def get_theme_path(tmpl_name, ext='.html'):

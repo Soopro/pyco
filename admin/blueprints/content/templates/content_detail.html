@@ -138,11 +138,13 @@
         <div class="form-group">
           <label>{{_('Featured Image')}}</label>
           {% if meta.featured_img and meta.featured_img.src %}
-          <a class="mw-100"
-             href="{{meta.featured_img.src}}"
-             target="_blank">
-            <img class="mw-100"src="{{meta.featured_img.src}}">
-          </a>
+          <div>
+            <a class="mw-100"
+               href="{{meta.featured_img.src}}"
+               target="_blank">
+              <img class="mw-100"src="{{meta.featured_img.src}}">
+            </a>
+          </div>
           {% endif %}
           <div class="input-group">
             <input class="form-control"

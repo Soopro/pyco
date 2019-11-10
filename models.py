@@ -331,7 +331,7 @@ class Site(FlatFile):
     # methods
     def _uniqueify_term_key(self, term_key):
         term_key = process_slug(term_key)
-        all_term_keys = [term['key'] for term in self.categories.terms]
+        all_term_keys = [term['key'] for term in self.categories['terms']]
         if term_key in all_term_keys:
             self._uniqueify_term_key(slug_uuid_suffix(term_key))
         return term_key
@@ -342,10 +342,10 @@ class Site(FlatFile):
                 return term
         return None
 
-    def _get_term_index(terms, term_key):
+    def _get_term_index(self, terms, term_key):
         if not terms:
             return None
-        for idx, m in terms:
+        for idx, m in enumerate(terms):
             if m['key'] == term_key:
                 return idx
         return None
@@ -371,18 +371,21 @@ class Site(FlatFile):
     def get_category_term(self, term_key):
         return self._find_term(term_key)
 
-    def update_category_term(self, upterm):
-        term = self._find_term(upterm['key'])
+    def update_category_term(self, term_key, new_term):
+        term = self._find_term(term_key)
         if not term:
             raise Exception('Term not found.')
-        term.update(upterm)
+        new_term['key'] = term_key
+        term.update(new_term)
         return term
 
     def remove_category_term(self, term_key):
         terms = self.data['categories'].get('terms') or []
         index = self._get_term_index(terms, term_key)
-        if index and terms:
-            terms.pop(index, None)
+        if index is None:
+            return None
+        else:
+            terms.pop(index)
         return term_key
 
 
