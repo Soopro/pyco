@@ -48,5 +48,10 @@
   width: 96px;
 }
 
+.modal-fullscreen {
+  min-width: 100%;
+  max-width: 100%;
+  margin: 1rem;
+  padding-right: 15px;
+}
 
-/* Editor */

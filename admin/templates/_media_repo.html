@@ -4,7 +4,7 @@
      role="dialog"
      aria-labelledby="{{_('Media Repository')}}"
      aria-hidden="true">
-  <div class="modal-dialog" role="exit">
+  <div class="modal-dialog modal-xl" role="media-repo">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">{{_('Media Repository')}}</h5>
@@ -16,9 +16,20 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="embed-responsive embed-responsive-4by3">
-          <iframe class="embed-responsive-item"
-                  src="{{url_for('media.repository')}}"></iframe>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-2">
+              <button class="list-icon"
+                      type="button">
+                <i class="fas fa-cloud-upload-alt"></i>
+              </button>
+            </div>
+            <div class="col-md-2">
+              <div class="list-icon"
+                   style="background-image:url({{uploads_url}}/default.jpg)">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
