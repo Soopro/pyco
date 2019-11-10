@@ -7,6 +7,7 @@ import json
 import urllib
 
 from utils.misc import (process_slug,
+                        parse_int,
                         slug_uuid_suffix,
                         gen_excerpt,
                         guess_mimetype,
@@ -84,7 +85,7 @@ class FlatFile:
                 readed = fh.read()
         else:
             readed = ''
-        if callable(self.__pretreat_raw__):
+        if callable(self.__pretreat_raw__) and readed:
             readed = self.__pretreat_raw__(readed)
         return readed
 
@@ -346,7 +347,7 @@ class Site(FlatFile):
         term_key = process_slug(term_key)
         all_term_keys = [term['key'] for term in self.categories['terms']]
         if term_key in all_term_keys:
-            self._uniqueify_term_key(slug_uuid_suffix(term_key))
+            term_key = self._uniqueify_term_key(slug_uuid_suffix(term_key))
         return term_key
 
     def _find_term(self, term_key):
@@ -378,7 +379,7 @@ class Site(FlatFile):
             },
             'parent': term.get('parent', ''),
             'priority': term.get('priority', 0),
-            'status': term.get('status', 0),
+            'status': parse_int(term.get('status')),
         })
 
     def get_category_term(self, term_key):
@@ -440,14 +441,43 @@ class Document(FlatFile):
     _updated = None
     _creation = None
 
-    def __init__(self, path):
+    def __init__(self, path=None):
         super(Document, self).__init__(path)
         self.parse()
 
     def hardcore(self, raw):
-        print(raw)
         self.raw = raw
         self.parse()
+
+    def add(self, content):
+        slug = self._uniqueify_slug(content['slug'], content['content_type'])
+        if content['content_type'] in [None, self.STATIC_TYPE]:
+            rel_path = os.path.join(self.CONTENT_DIR, slug)
+        else:
+            rel_path = os.path.join(self.CONTENT_DIR, content_type, slug)
+
+        self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
+        self._id = self.path
+
+        self.data = {
+            'slug': slug,
+            'meta': content.get('meta', {}),
+            'template': content.get('template', ''),
+            'parent': content.get('parent', ''),
+            'priority': content.get('priority', 0),
+            'date': content.get('date', ''),
+            'tags': content.get('tags', []),
+            'terms': content.get('terms', []),
+            'redirect': content.get('redirect', ''),
+            'status': parse_int(content.get('status')),
+            'content': content.get('content', '')
+        }
+
+    def _uniqueify_slug(self, slug, content_type):
+        doc = self.find_one(slug, content_type)
+        if doc:
+            slug = self._uniqueify_slug(slug_uuid_suffix(slug))
+        return slug
 
     def save(self):
         _fields = self.data.get('meta') or {}

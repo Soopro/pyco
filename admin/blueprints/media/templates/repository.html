@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<h1>{{_('Media Files')}}</h1>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{_('All Files')}}</h4>
+        <small>{{_('* Support image, audio, video, zip and pdf.')}}</small>
+        <form class="file-uploader ml-auto"
+              action="{{url_for('.upload')}}"
+              enctype=multipart/form-data
+              method="POST">
+          <label class="btn btn-primary btn-lg">
+            <i class="fas fa-file-upload"></i>
+            <span>{{_('Upload Files')}}</span>
+            <input class="d-none"
+                   type="file"
+                   name="files"
+                   accept="image/*, audio/*, video/*,
+                           application/pdf, application/zip"
+                   maxlength="12"
+                   maxlength-error="{{_('Can not uploading %s files at same time!!', '12')}}"
+                   multiple>
+          </label>
+        </form>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <tr>
+              <th class="text-center">{{_('Preview')}}</th>
+              <th>{{_('Filename')}}</th>
+              <th>MIMEtype</th>
+              <th>{{_('Uploaded Date')}}</th>
+              <th class="text-center">{{_('Action')}}</th>
+            </tr>
+            {% for media in mediafiles %}
+            <tr>
+              <td class="p-2 text-center">
+                <a href="{{media.src}}" target="_blank">
+                  {% if media.type == 'image' %}
+                  <div class="list-figure"
+                       style="background-image:url({{media.src}});"></div>
+                  {% elif media.type == 'video' %}
+                  <i class="fas fa-video list-icon"></i>
+                  {% elif media.type == 'audio' %}
+                  <i class="fas fa-audio list-icon"></i>
+                  {% else %}
+                  <i class="fas fa-file list-icon"></i>
+                  {% endif %}
+                </a>
+              </td>
+              <td>{{media.filename}}</td>
+              <td>{{media.mimetype}}</td>
+              <td>{{media.updated|dateformat}}</td>
+              <td class="text-center">
+                <a class="btn btn-danger"
+                   aria-label="{{_('Delete')}}"
+                   href="{{url_for('.remove', filename=media.filename)}}">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <div class="float-right">
+          <nav>
+            <ul class="pagination">
+              <li class="page-item {{'disabled' if not p.prev}}">
+                <a class="page-link"
+                   href="{{p.prev}}"
+                   aria-label="{{_('Previous')}}">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">{{_('Previous')}}</span>
+                </a>
+              </li>
+              <li class="page-item {{'disabled' if not p.next}}">
+                <a class="page-link"
+                   href="{{p.next}}"
+                   aria-label="{{_('Next')}}">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">{{_('Next')}}</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block page_scripts %}
+
+{% endblock %}

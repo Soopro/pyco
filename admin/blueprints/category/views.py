@@ -35,7 +35,7 @@ def index():
 @blueprint.route('/', methods=['POST'])
 @login_required
 def create_term():
-    term_name = request.form.get('name', now())
+    term_name = request.form.get('name')
     site = current_app.db.Site()
     term_key = process_slug(term_name)
     site.add_category_term({

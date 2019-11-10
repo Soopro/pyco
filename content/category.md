@@ -1,6 +1,5 @@
 /*
-Background: ''
-Button: ''
+Cover: ''
 Date: '2019-11-09'
 Description: ''
 Featured_img:
@@ -16,6 +15,8 @@ Terms: []
 Title: Row
 
 */
+
+
 
 
 

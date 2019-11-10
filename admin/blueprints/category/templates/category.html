@@ -89,14 +89,14 @@
      class="modal fade"
      tabindex="-1"
      role="dialog"
-     aria-labelledby="{{_('Category Term')}}"
+     aria-labelledby="{{_('New Category Term')}}"
      aria-hidden="true">
   <div class="modal-dialog" role="exit">
     <div class="modal-content">
       <form action="{{url_for('.create_term')}}"
             method="POST">
         <div class="modal-header">
-          <h5 class="modal-title">{{_('Category Term')}}</h5>
+          <h5 class="modal-title">{{_('New Category Term')}}</h5>
           <button class="close"
                   type="button"
                   data-dismiss="modal"
@@ -107,10 +107,11 @@
         <div class="modal-body">
           <div class="form-group">
             <label>{{_('Name')}}</label>
-             <input class="form-control"
+            <input class="form-control"
                    type="text"
                    name="name"
-                   value="">
+                   value=""
+                   required>
           </div>
         </div>
         <div class="modal-footer">

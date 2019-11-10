@@ -378,6 +378,10 @@
     "msgstr": "创建新内容"
   },
   {
+    "msgid": "New Content",
+    "msgstr": "新内容"
+  },
+  {
     "msgid": "Previews",
     "msgstr": "预览"
   },
@@ -504,6 +508,10 @@
   {
     "msgid": "Parent Term",
     "msgstr": "父级分类项"
+  },
+  {
+    "msgid": "Media Repository",
+    "msgstr": "媒体仓库"
   },
 
 

@@ -41,7 +41,7 @@ def shortcode(text):
     try:
         return re.sub(RE_UPLOADS, uploads_url, text)
     except Exception as e:
-        print('Shortcode Error: {}'.format(e))
+        app.logger.error(err_log)
         return text
 
 

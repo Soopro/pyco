@@ -23,32 +23,7 @@ blueprint = Blueprint('media', __name__, template_folder='templates')
 @login_required
 def index():
     paged = parse_int(request.args.get('paged'), 1, True)
-
-    files = current_app.db.Media.find()
-
-    limit = current_app.db.Media.MAXIMUM_QUERY
-    offset = max(limit * (paged - 1), 0)
-    total_count = len(files)
-
-    max_pages = max(int(math.ceil(total_count / float(limit))), 1)
-
-    has_next = paged < max_pages
-    has_previous = paged > 1
-
-    mediafiles = [f.info for f in files[offset:offset + limit]]
-
-    uploads_url = current_app.config.get('UPLOADS_URL')
-    for media in mediafiles:
-        media['src'] = '{}/{}'.format(uploads_url, media['filename'])
-
-    prev_url = url_for(request.endpoint, paged=max(paged - 1, 1))
-    next_url = url_for(request.endpoint, paged=min(paged + 1, max_pages))
-
-    paginator = {
-        'next': next_url if has_next else None,
-        'prev': prev_url if has_previous else None,
-        'paged': paged,
-    }
+    mediafiles, paginator = query_mediafiles(paged)
     return render_template('mediafiles.html',
                            mediafiles=mediafiles,
                            p=paginator)
@@ -82,3 +57,43 @@ def remove(filename):
     media.delete()
     flash('REMOVED')
     return redirect(request.referrer)
+
+
+@blueprint.route('/repository')
+@login_required
+def repository():
+    paged = parse_int(request.args.get('paged'), 1, True)
+    mediafiles, paginator = query_mediafiles(paged)
+    return render_template('repository.html',
+                           mediafiles=mediafiles,
+                           p=paginator)
+
+
+# helpers
+def query_mediafiles(paged):
+    files = current_app.db.Media.find()
+
+    limit = current_app.db.Media.MAXIMUM_QUERY
+    offset = max(limit * (paged - 1), 0)
+    total_count = len(files)
+
+    max_pages = max(int(math.ceil(total_count / float(limit))), 1)
+
+    has_next = paged < max_pages
+    has_previous = paged > 1
+
+    mediafiles = [f.info for f in files[offset:offset + limit]]
+
+    uploads_url = current_app.config.get('UPLOADS_URL')
+    for media in mediafiles:
+        media['src'] = '{}/{}'.format(uploads_url, media['filename'])
+
+    prev_url = url_for(request.endpoint, paged=max(paged - 1, 1))
+    next_url = url_for(request.endpoint, paged=min(paged + 1, max_pages))
+
+    paginator = {
+        'next': next_url if has_next else None,
+        'prev': prev_url if has_previous else None,
+        'paged': paged,
+    }
+    return mediafiles, paginator

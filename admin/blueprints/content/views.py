@@ -56,6 +56,27 @@ def index(content_type):
                            p=paginator)
 
 
+@blueprint.route('/<content_type>', methods=['POST'])
+@login_required
+def create_content(content_type):
+    title = request.form.get('title')
+    content = current_app.db.Document()
+    slug = process_slug(title)
+    content.add({
+        'slug': slug,
+        'content_type': content_type,
+        'meta': {
+            'title': title,
+        }
+    })
+    content.save()
+    flash('SAVED')
+    return_url = url_for('.content_detail',
+                         content_type=content_type,
+                         slug=slug)
+    return redirect(return_url)
+
+
 @blueprint.route('/<content_type>/<slug>')
 @login_required
 def content_detail(content_type, slug):

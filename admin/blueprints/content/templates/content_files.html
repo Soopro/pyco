@@ -12,7 +12,9 @@
         <h4>{{_('All Files')}}</h4>
         <small>{{_('%s files total.', count)}}</small>
         <a class="btn btn-primary btn-lg ml-auto"
-           href="#">
+           href="#"
+           data-toggle="modal"
+           data-target="#MODAL-CREATE-CONTENT">
           <i class="fas fa-refresh"></i>
           <span>{{_('Create New Content')}}</span>
         </a>
@@ -93,6 +95,51 @@
   </div>
 </div>
 {% endblock %}
+
+{% block page_models %}
+<div id="MODAL-CREATE-CONTENT"
+     class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="{{_('New Content')}}"
+     aria-hidden="true">
+  <div class="modal-dialog" role="exit">
+    <div class="modal-content">
+      <form action="{{url_for('.create_content',
+                              content_type=content_type.key)}}"
+            method="POST">
+        <div class="modal-header">
+          <h5 class="modal-title">{{_('New Content')}}</h5>
+          <button class="close"
+                  type="button"
+                  data-dismiss="modal"
+                  aria-label="{{_('Close')}}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>{{_('Title')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="title"
+                   value=""
+                   required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal">{{_('Dismiss')}}</button>
+          <button class="btn btn-primary">
+            {{_('Save')}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
 {% block page_scripts %}
 
 {% endblock %}

@@ -325,7 +325,7 @@ def _update_site():
     if theme.category:
         cate_name = theme.category.get('name', '')
         cate_content_types = theme.category.get('conten_types', [])
-        if not site['categories'] or isinstance(site['categories'], dict):
+        if not site['categories'] or not isinstance(site['categories'], dict):
             site['categories'] = {'terms': []}
         site['categories'].update({
             'status': 1,

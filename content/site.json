@@ -1,12 +1,28 @@
 {
-  "app_id":"pyco_app",
-  "slug":"pyco",
+  "_id": "content/site.json",
+  "slug": "pyco",
   "locale": "en_US",
   "content_types": {
     "post": "Posts",
-    "page": "Pages",
-    "work": "Works",
-    "product": "Products"
+    "page": "Pages"
+  },
+  "categories": {
+    "terms": [
+      {
+        "key": "s-123213",
+        "meta": {
+          "name": "123213",
+          "caption": "",
+          "figure": ""
+        },
+        "parent": "",
+        "priority": 0,
+        "status": 0
+      }
+    ],
+    "status": 1,
+    "name": "Categories",
+    "conten_types": []
   },
   "menus": {
     "primary": [
@@ -40,18 +56,10 @@
       }
     ]
   },
-  "categories": {
-    "name": "Categories",
-    "content_types":["post"],
-    "terms": [
-      {"key":"daily", "meta":{"name": "Daily"}},
-      {"key":"food", "meta":{"name": "Food"}},
-      {"key":"daily-2", "meta":{"name": "Daily2"}, "parent":"daily"},
-      {"key":"food-2", "meta":{"name": "Food2"}, "parent":"food"}
-    ]
-  },
   "slots": {
-    "event": {"script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"}
+    "event": {
+      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"
+    }
   },
   "meta": {
     "favicon": "",
@@ -62,14 +70,31 @@
     "description": "...",
     "license": "MIT",
     "title": "Sample",
-    "socials":[
-      {"key": "facebook", "name": "Facebook", "url": "#", "code": "facebook"},
-      {"key": "twitter", "name": "Twitter", "url": "#", "code": "twitter"}
+    "socials": [
+      {
+        "key": "facebook",
+        "name": "Facebook",
+        "url": "#",
+        "code": "facebook"
+      },
+      {
+        "key": "twitter",
+        "name": "Twitter",
+        "url": "#",
+        "code": "twitter"
+      }
     ],
     "languages": [
-       {"key": "zh_CN", "name":"汉语", "url":"http://....."},
-       {"key": "en_US", "name":"English", "url":"http://....."}
+      {
+        "key": "zh_CN",
+        "name": "汉语",
+        "url": "http://....."
+      },
+      {
+        "key": "en_US",
+        "name": "English",
+        "url": "http://....."
+      }
     ]
   }
-
 }

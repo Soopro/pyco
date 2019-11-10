@@ -1,3 +1,0 @@
-{% set copyright %}
-Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://github.com/soopro/pyco">Pyco</a>
-{% endset %}
