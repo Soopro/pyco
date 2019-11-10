@@ -37,33 +37,33 @@ $(document).ready(function() {
     });
   });
 
-  $(".media-uploader").each(function(e){
-    var submit_btn = $(this).find("button[type=submit]");
-    var previews = $(this).find('.media-previews');
-    $(this).find("input[name='files']").change(function(e) {
-      var files = (this.files && this.files[0]) ? this.files : null;
-      previews.empty();
-      if (!files) {
-        submit_btn.hide();
-        return
-      }
-      if (files.length > 12) {
-        alert('Too many files to upload. (limited to 12)')
-        return
-      }
-      for(var i=0; i < files.length; i++) {
-        var reader = new FileReader();
-        reader.onloadend = function(e) {
-          var pic = document.createElement('IMG');
-          $(pic).attr('src', e.target.result);
-          previews.append(pic);
-        }
-        reader.readAsDataURL(files[i]);
-        console.log(i);
-      }
-      submit_btn.show();
-    });
-  });
+  // $(".media-uploader").each(function(e){
+  //   var submit_btn = $(this).find("button[type=submit]");
+  //   var previews = $(this).find('.media-previews');
+  //   $(this).find("input[name='files']").change(function(e) {
+  //     var files = (this.files && this.files[0]) ? this.files : null;
+  //     previews.empty();
+  //     if (!files) {
+  //       submit_btn.hide();
+  //       return
+  //     }
+  //     if (files.length > 12) {
+  //       alert('Too many files to upload. (limited to 12)')
+  //       return
+  //     }
+  //     for(var i=0; i < files.length; i++) {
+  //       var reader = new FileReader();
+  //       reader.onloadend = function(e) {
+  //         var pic = document.createElement('IMG');
+  //         $(pic).attr('src', e.target.result);
+  //         previews.append(pic);
+  //       }
+  //       reader.readAsDataURL(files[i]);
+  //       console.log(i);
+  //     }
+  //     submit_btn.show();
+  //   });
+  // });
 
   /* Editting */
   $('form.editing').on('keyup keypress', function(e) {
@@ -79,6 +79,8 @@ $(document).ready(function() {
     var modal = $(this);
     var list_container = modal.find('#MODAL-MEDIAREPO-LIST');
     var btn_more = modal.find('#MODAL-MEDIAREPO-MORE');
+    var method_container = modal.find('#MODAL-METHOD-CONTAINER');
+    var uploader = modal.find('#MODAL-MEDIAREPO-UPLOADER');
     var reop_item_tmpl = modal.find('#MODAL-MEDIAREPO-ITEM');
     var mediafiles = [];
 
@@ -95,7 +97,12 @@ $(document).ready(function() {
           var src = encodeURI(media.src);
           item.attr('id', null);
           item.addClass('repo-item');
-          item.find('button').css('background-image', 'url('+src+')');
+          item.data('media-src', src);
+          if(media.type == 'image') {
+            item.find('button').css('background-image', 'url('+src+')');
+            item.find('button .ico').hide();
+          }
+          item.find('.text').html(media.filename);
           item.show();
           list_container.append(item);
         }
@@ -108,8 +115,45 @@ $(document).ready(function() {
     }
     load_media_files();
 
+    // more
     btn_more.click(function(){
       load_media_files();
+    });
+
+    // upload
+    uploader.find('input[name="file"]').on('change', function(e){
+      var target = e.currentTarget || e.target;
+      if (target && target.value) {
+        var fd = new FormData();
+        var file = this.files[0];
+        fd.append('file', file);
+        $.ajax({
+          url: uploader.attr('action'),
+          type: 'post',
+          data: fd,
+          contentType: false,
+          processData: false,
+          success: function(media){
+            if(media.src){
+              var item = reop_item_tmpl.clone();
+              var src = encodeURI(media.src);
+              item.attr('id', null);
+              item.addClass('repo-item');
+              item.data('media-src', src);
+              if(media.type == 'image') {
+                item.find('button').css('background-image', 'url('+src+')');
+                item.find('button .ico').hide();
+              }
+              item.find('.text').html(media.filename);
+              item.show();
+              method_container.after(item);
+            } else {
+              alert(uploader.data('error-message'))
+            }
+
+          },
+        });
+      }
     });
   })
 

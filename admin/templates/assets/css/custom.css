@@ -51,6 +51,7 @@
 .grid-thumbnail {
   display: inline-block;
   padding: 0;
+  margin-bottom: .25rem;
   background-color: #fff;
   background-size: cover;
   background-position: center center;
@@ -60,7 +61,12 @@
   max-height: 96px;
   width: 100%;
   height: 96px;
+  line-height: 96px;
 }
+.grid-thumbnail:hover {
+  cursor: pointer;
+}
+
 .grid-thumbnail .ico {
   font-size: 24px;
 }

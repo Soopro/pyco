@@ -513,6 +513,11 @@
     "msgid": "Media Repository",
     "msgstr": "媒体仓库"
   },
+  {
+    "msgid": "Media Upload Field, Please make sure the file type is allowed and file name is not duplicated.",
+    "msgstr": "媒体上传失败，请确保文件格式是被允许的，并且文件名没有和现存文件重复。"
+  },
+
 
 
   {

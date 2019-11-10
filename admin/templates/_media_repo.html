@@ -20,15 +20,33 @@
         <div class="container-fluid">
           <div id="MODAL-MEDIAREPO-LIST"
                class="row">
-            <div class="col-lg-2 col-md-4 col-6 text-center py-2">
-              <button class="grid-thumbnail btn btn-outline-primary"
-                      type="button">
-                <i class="fas fa-cloud-upload-alt ico"></i>
-              </button>
+            <div  id="MODAL-METHOD-CONTAINER"
+                  class="col-lg-2 col-md-4 col-6 text-center py-2">
+              <form id="MODAL-MEDIAREPO-UPLOADER"
+                    class="ml-auto"
+                    action="{{url_for('media.repository_upload')}}"
+                    enctype=multipart/form-data
+                    method="POST"
+                    data-error-message="{{_('Media Upload Field, Please make sure the file type is allowed and file name is not duplicated.')}}">
+                <label class="grid-thumbnail btn btn-outline-primary">
+                  <i class="fas fa-cloud-upload-alt ico"></i>
+                  <input class="d-none"
+                         type="file"
+                         name="file"
+                         accept="image/*, audio/*, video/*,
+                                 application/pdf, application/zip">
+                </label>
+                <div class="text text-muted text-truncate">
+                  {{_('Upload')}}
+                </div>
+              </form>
             </div>
             <div id="MODAL-MEDIAREPO-ITEM"
                  class="col-lg-2 col-md-4 col-6 text-center py-2">
-              <button class="grid-thumbnail" type="button"></button>
+              <button class="grid-thumbnail" type="button">
+                <i class="fas fa-file ico text-secondary"></i>
+              </button>
+              <div class="text text-muted text-truncate"></div>
             </div>
           </div>
         </div>

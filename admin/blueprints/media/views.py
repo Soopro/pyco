@@ -12,7 +12,7 @@ import os
 import math
 
 from utils.response import output_json
-from utils.misc import parse_int
+from utils.misc import parse_int, safe_filename
 
 from admin.decorators import login_required
 
@@ -62,7 +62,8 @@ def upload():
     uploaded_files = []
     upload_fails = []
     for file in files[:60]:
-        file_path = os.path.join(uploads_dir, file.filename)
+        filename = safe_filename(file.filename)
+        file_path = os.path.join(uploads_dir, filename)
         if os.path.isfile(file_path):
             upload_fails.append(file.filename)
         else:
@@ -105,3 +106,30 @@ def repository():
         media['_count'] = count
 
     return mediafiles
+
+
+@blueprint.route('/repository', methods=['POST'])
+@login_required
+@output_json
+def repository_upload():
+    file = request.files.get('file')
+
+    filename = safe_filename(file.filename)
+    uploads_dir = current_app.db.Media.UPLOADS_DIR
+    file_path = os.path.join(uploads_dir, filename)
+    if os.path.isfile(file_path):
+        return {
+            'duplicated': True
+        }
+    else:
+        file.save(file_path)
+
+    media = current_app.db.Media.find_one(filename)
+
+    uploads_url = current_app.config.get('UPLOADS_URL')
+    output_media = media.info
+    output_media.update({
+        'type': output_media['type'],
+        'src': '{}/{}'.format(uploads_url, output_media['filename'])
+    })
+    return output_media
