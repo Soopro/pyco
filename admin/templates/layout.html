@@ -8,11 +8,6 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-{% if configure.meta %}
-<title>{{configure.meta.title or 'Pyco'}}</title>
-<link rel="shortcut icon"
-      href="{{configure.meta.favicon or assets_url+'/favicon.png'}}">
-{% else %}
 <title>Pyco</title>
 <link rel="shortcut icon" href="{{assets_url+'/favicon.png'}}">
 {% endif %}
@@ -226,64 +221,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
     </div>
   </div>
 
-  <div id="MODAL-EXIT"
-       class="modal fade"
-       tabindex="-1"
-       role="dialog"
-       aria-labelledby="{{_('Exit')}}"
-       aria-hidden="true">
-    <div class="modal-dialog" role="exit">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{_('Exit')}}</h5>
-          <button class="close"
-                  type="button"
-                  data-dismiss="modal"
-                  aria-label="{{_('Close')}}">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p>{{_('Are you sure want exit the system?')}}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary"
-                  data-dismiss="modal">{{_('Dismiss')}}</button>
-          <a class="btn btn-primary"
-             href="{{url_for('dashboard.logout')}}">
-            {{_('Yes, Exit!')}}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="MODAL-MEDIAREPO"
-       class="modal fade"
-       tabindex="-1"
-       role="dialog"
-       aria-labelledby="{{_('Media Repository')}}"
-       aria-hidden="true">
-    <div class="modal-dialog" role="exit">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{_('Media Repository')}}</h5>
-          <button class="close"
-                  type="button"
-                  data-dismiss="modal"
-                  aria-label="{{_('Close')}}">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="embed-responsive embed-responsive-4by3">
-            <iframe class="embed-responsive-item"
-                    src="{{url_for('media.repository')}}"></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  {% include '_media_repo.html' %}
 
   {% block page_models %}
   {% endblock %}
