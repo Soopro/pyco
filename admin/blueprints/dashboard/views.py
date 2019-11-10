@@ -25,7 +25,14 @@ blueprint = Blueprint('dashboard', __name__, template_folder='templates')
 @blueprint.route('/')
 @login_required
 def index():
-    return render_template('dashboard.html')
+    total_count = {
+        'content': current_app.db.Document.count(),
+        'media': current_app.db.Media.count(),
+    }
+    contents = current_app.db.Document.find_recent()
+    return render_template('dashboard.html',
+                           total_count=total_count,
+                           recent_contents=contents)
 
 
 @blueprint.route('/login')

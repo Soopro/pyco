@@ -569,7 +569,17 @@ class Document(FlatFile):
             content_type = self.STATIC_TYPE
         return content_type
 
-    # query methods
+    # methods
+    @classmethod
+    def count(cls):
+        file_paths = []
+        for path, dirs, files in os.walk(cls.CONTENT_DIR):
+            for f in files:
+                if not f.endswith(cls.CONTENT_FILE_EXT) or f.startswith('_'):
+                    continue
+                file_paths.append(os.path.join(path, f))
+        return len(file_paths[:cls.MAXIMUM_STORAGE])
+
     @classmethod
     def find_one(cls, slug, content_type=None):
         if content_type in [None, cls.STATIC_TYPE]:
@@ -585,13 +595,25 @@ class Document(FlatFile):
     @classmethod
     def find(cls, content_type=None):
         if content_type == cls.STATIC_TYPE:
-            f_dir = os.path.join(cls.CONTENT_DIR)
+            f_dir = cls.CONTENT_DIR
         else:
             f_dir = os.path.join(cls.CONTENT_DIR, content_type)
         file_paths = [os.path.join(f_dir, f) for f in os.listdir(f_dir)
                       if f.endswith(cls.CONTENT_FILE_EXT) and
                       not f.startswith('_')]
         return [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+
+    @classmethod
+    def find_recent(cls):
+        file_paths = []
+        for path, dirs, files in os.walk(cls.CONTENT_DIR):
+            for f in files:
+                if not f.endswith(cls.CONTENT_FILE_EXT) or f.startswith('_'):
+                    continue
+                file_paths.append(os.path.join(path, f))
+        files = [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+        files.sort(key=lambda x: x._updated, reverse=True)
+        return files[:6]
 
 
 class Media():
@@ -629,12 +651,12 @@ class Media():
             os.remove(self.path)
         return self._id
 
-    # query methods
+    # methods
     @classmethod
     def count(cls):
-        count_files = [f for f in os.listdir(cls.UPLOADS_DIR)
-                       if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
-        return len(count_files)[:cls.MAXIMUM_STORAGE]
+        files = [f for f in os.listdir(cls.UPLOADS_DIR)
+                 if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
+        return len(files[:cls.MAXIMUM_STORAGE])
 
     @classmethod
     def find_one(cls, filename):

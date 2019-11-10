@@ -17,6 +17,34 @@
     "msgstr": "仪表板"
   },
   {
+    "msgid": "Thumbnail",
+    "msgstr": "内容"
+  },
+  {
+    "msgid": "No Description",
+    "msgstr": "没有描述"
+  },
+  {
+    "msgid": "Total Contents",
+    "msgstr": "内容总量"
+  },
+  {
+    "msgid": "Total Media",
+    "msgstr": "媒体总量"
+  },
+  {
+    "msgid": "Current Theme",
+    "msgstr": "当前主题"
+  },
+  {
+    "msgid": "Shortcuts",
+    "msgstr": "捷径"
+  },
+  {
+    "msgid": "Recent Contents",
+    "msgstr": "近期内容"
+  },
+  {
     "msgid": "Content",
     "msgstr": "内容"
   },

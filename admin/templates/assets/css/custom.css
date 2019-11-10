@@ -36,6 +36,12 @@
   text-align: center;
 }
 
+.media .avatar {
+  line-height: 45px;
+  text-align: center;
+  margin-right: 1rem;
+}
+
 .img-figure {
   margin-top: .25rem;
   margin-bottom: .25rem;
