@@ -3,7 +3,8 @@
      tabindex="-1"
      role="dialog"
      aria-labelledby="{{_('Media Repository')}}"
-     aria-hidden="true">
+     aria-hidden="true"
+     data-request-url="{{url_for('media.repository')}}">
   <div class="modal-dialog modal-xl" role="media-repo">
     <div class="modal-content">
       <div class="modal-header">
@@ -17,19 +18,26 @@
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-2">
-              <button class="list-icon"
+          <div id="MODAL-MEDIAREPO-LIST"
+               class="row">
+            <div class="col-lg-2 col-md-4 col-6 text-center py-2">
+              <button class="grid-thumbnail btn btn-outline-primary"
                       type="button">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fas fa-cloud-upload-alt ico"></i>
               </button>
             </div>
-            <div class="col-md-2">
-              <div class="list-icon"
-                   style="background-image:url({{uploads_url}}/default.jpg)">
-              </div>
+            <div id="MODAL-MEDIAREPO-ITEM"
+                 class="col-lg-2 col-md-4 col-6 text-center py-2">
+              <button class="grid-thumbnail" type="button"></button>
             </div>
           </div>
+        </div>
+        <div id="MODAL-MEDIAREPO-MORE"
+             class="text-center">
+          <hr>
+          <button class="btn btn-outline-primary">
+            {{_('Load More')}}
+          </button>
         </div>
       </div>
     </div>
