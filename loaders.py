@@ -84,7 +84,7 @@ def load_metas(app):
     }
 
 
-def load_pretreat(app):
+def load_modal_pretreat(app):
     RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
     uploads_url = str(app.config['UPLOADS_URL'])
     def pretreat_raw_method(self, text):

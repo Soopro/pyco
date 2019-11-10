@@ -2,8 +2,9 @@
 
 from flask import Flask, make_response, g
 import os
+import re
 
-from loaders import load_config, load_pretreat
+from loaders import load_config, load_modal_pretreat
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
@@ -31,6 +32,17 @@ register_admin_blueprints(app)
 @app.template_filter()
 def dateformat(t, to_format='%Y-%m-%d'):
     return parse_dateformat(t, to_format)
+
+
+@app.template_filter()
+def shortcode(text):
+    RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
+    uploads_url = str(app.config['UPLOADS_URL'])
+    try:
+        return re.sub(RE_UPLOADS, uploads_url, text)
+    except Exception as e:
+        print('Shortcode Error: {}'.format(e))
+        return text
 
 
 # inject before request handlers

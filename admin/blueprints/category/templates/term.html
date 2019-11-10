@@ -97,9 +97,9 @@
           <label>{{_('Poster')}}</label>
           {% if term.meta.figure %}
           <a class="mw-100"
-             href="{{term.meta.figure}}"
+             href="{{term.meta.figure|shortcode}}"
              target="_blank">
-            <img class="mw-100"src="{{term.meta.figure}}">
+            <img class="mw-100" src="{{term.meta.figure|shortcode}}">
           </a>
           {% endif %}
           <div class="input-group">

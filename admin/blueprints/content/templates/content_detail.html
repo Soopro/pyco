@@ -140,9 +140,9 @@
           {% if meta.featured_img and meta.featured_img.src %}
           <div>
             <a class="mw-100"
-               href="{{meta.featured_img.src}}"
+               href="{{meta.featured_img.src|shortcode}}"
                target="_blank">
-              <img class="mw-100"src="{{meta.featured_img.src}}">
+              <img class="mw-100" src="{{meta.featured_img.src|shortcode}}">
             </a>
           </div>
           {% endif %}
