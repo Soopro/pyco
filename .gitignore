@@ -45,4 +45,5 @@ linux-amd64/
 *.conf
 *.log
 backups/
+uploads/
 venv/
