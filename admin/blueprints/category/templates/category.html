@@ -42,10 +42,11 @@
                 {{loop.index}}
               </td>
               <td class="p-2 text-center">
-                {% if term.figure %}
-                <a href="{{term.figure}}" target="_blank">
+                {% if term.meta and term.meta.figure %}
+                <a href="{{term.meta.figure}}" target="_blank">
                   <div class="list-figure"
-                       style="background-image:url({{term.figure}});"></div>
+                       style="background-image:url({{term.meta.figure}});">
+                  </div>
                 </a>
                 {% else %}
                 <i class="fas fa-bookmark list-icon"></i>

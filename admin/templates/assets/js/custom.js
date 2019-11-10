@@ -76,6 +76,9 @@ $(document).ready(function() {
 
   /* Media Repo */
   $('#MODAL-MEDIAREPO').on('show.bs.modal', function (e) {
+    var relate = $(e.relatedTarget);
+    var target_input = $('input[name="'+relate.data('input')+'"]');
+
     var modal = $(this);
     var list_container = modal.find('#MODAL-MEDIAREPO-LIST');
     var btn_more = modal.find('#MODAL-MEDIAREPO-MORE');
@@ -86,6 +89,21 @@ $(document).ready(function() {
 
     btn_more.hide();
     reop_item_tmpl.hide();
+
+    var attach_func = function(media_item, media){
+      var media_src = media ? media.src : '';
+      media_item.click(function(e){
+        modal.modal('hide');
+        target_input.val(media_src);
+        target_input.change();
+      });
+    }
+
+    var reload_media_repo = function(){
+      list_container.find('.repo-item').remove();
+      mediafiles.length = 0;
+      load_media_files();
+    }
 
     var load_media_files = function(){
       var offset = mediafiles.length
@@ -104,6 +122,7 @@ $(document).ready(function() {
           }
           item.find('.text').html(media.filename);
           item.show();
+          attach_func(item, media);
           list_container.append(item);
         }
         if (data[0] && data[0]._more){
@@ -134,6 +153,7 @@ $(document).ready(function() {
           contentType: false,
           processData: false,
           success: function(media){
+            console.info('Uploaded:', media);
             if(media.src){
               var item = reop_item_tmpl.clone();
               var src = encodeURI(media.src);
@@ -146,7 +166,8 @@ $(document).ready(function() {
               }
               item.find('.text').html(media.filename);
               item.show();
-              method_container.after(item);
+              attach_func(item, media);
+              reload_media_repo();
             } else {
               alert(uploader.data('error-message'))
             }

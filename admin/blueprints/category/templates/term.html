@@ -96,20 +96,25 @@
         <div class="form-group">
           <label>{{_('Poster')}}</label>
           {% if term.meta.figure %}
-          <a class="mw-100"
-             href="{{term.meta.figure|shortcode}}"
-             target="_blank">
-            <img class="mw-100" src="{{term.meta.figure|shortcode}}">
-          </a>
+          <div class="media-preview">
+            <a href="{{term.meta.figure|shortcode}}"
+               target="_blank">
+              <img class="img-figure"
+                   src="{{term.meta.figure|shortcode}}">
+            </a>
+          </div>
           {% endif %}
           <div class="input-group">
-            <input class="form-control"
+            <input class="form-control media-input"
                    type="text"
                    name="figure"
                    value="{{term.meta.figure}}">
             <div class="input-group-append">
               <button class="btn btn-primary"
                       aria-lable="{{_('Select Image')}}"
+                      data-toggle="modal"
+                      data-target="#MODAL-MEDIAREPO"
+                      data-input="figure"
                       type="button">
                 <i class="fas fa-image"></i>
               </button>
@@ -135,4 +140,17 @@
 </form>
 {% endblock %}
 {% block page_scripts %}
+<script>
+  $('.media-input').on('change', function(e){
+    var url = $(this).val();
+    var preview = $(this).parent().parent().find('.media-preview');
+    if(url){
+      preview.show();
+      preview.find('a').attr('href', url);
+      preview.find('img').attr('src', url);
+    } else {
+      preview.hide();
+    }
+  });
+</script>
 {% endblock %}

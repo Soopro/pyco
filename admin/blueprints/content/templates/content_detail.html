@@ -138,7 +138,7 @@
         <div class="form-group">
           <label>{{_('Featured Image')}}</label>
           {% if meta.featured_img and meta.featured_img.src %}
-          <div>
+          <div class="media-preview">
             <a href="{{meta.featured_img.src|shortcode}}"
                target="_blank">
               <img class="img-figure"
@@ -147,7 +147,7 @@
           </div>
           {% endif %}
           <div class="input-group">
-            <input class="form-control"
+            <input class="form-control media-input"
                    type="text"
                    name="featured_img_src"
                    value="{{meta.featured_img.src
@@ -157,6 +157,7 @@
                       aria-lable="{{_('Select Image')}}"
                       data-toggle="modal"
                       data-target="#MODAL-MEDIAREPO"
+                      data-input="featured_img_src"
                       type="button">
                 <i class="fas fa-image"></i>
               </button>
@@ -219,6 +220,18 @@
 <script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
 <script>
   'use strict';
+
+  $('.media-input').on('change', function(e){
+    var url = $(this).val();
+    var preview = $(this).parent().parent().find('.media-preview');
+    if(url){
+      preview.show();
+      preview.find('a').attr('href', url);
+      preview.find('img').attr('src', url);
+    } else {
+      preview.hide();
+    }
+  });
 
   $('form').on('keyup keypress', function(e) {
     var keyCode = e.keyCode || e.which;

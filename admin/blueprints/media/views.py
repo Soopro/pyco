@@ -93,7 +93,7 @@ def repository():
 
     files = current_app.db.Media.find()
     offset = parse_int(offset, 0)
-    limit = current_app.db.Media.MAXIMUM_QUERY
+    limit = 3
 
     count = len(files)
     mediafiles = [f.info for f in files[offset:offset + limit]]
