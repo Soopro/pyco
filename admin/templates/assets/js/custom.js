@@ -92,8 +92,10 @@ $(document).ready(function() {
         for (var i=0; i < data.length; i++){
           var media = data[i];
           var item = reop_item_tmpl.clone();
+          var src = encodeURI(media.src);
+          item.attr('id', null);
           item.addClass('repo-item');
-          item.find('button').css('background-image', 'url('+media.src+')');
+          item.find('button').css('background-image', 'url('+src+')');
           item.show();
           list_container.append(item);
         }
