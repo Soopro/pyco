@@ -58,7 +58,7 @@
   },
   "slots": {
     "event": {
-      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div>"
+      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div><script>var a = {x:1}</script>"
     }
   },
   "meta": {
@@ -95,6 +95,10 @@
         "name": "English",
         "url": "http://....."
       }
-    ]
+    ],
+    "head_metadata": "",
+    "custom": {
+      "test": 1
+    }
   }
 }
