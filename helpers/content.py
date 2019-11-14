@@ -319,7 +319,7 @@ def helper_wrap_slot(app):
     slots_map = {}
     for k, v in app['slots'].items():
         slots_map[k] = {
-            'name': v.get('src', ''),
+            'name': v.get('name', ''),
             'src': v.get('src', ''),
             'route': v.get('route', ''),
             'scripts': v.get('scripts', ''),

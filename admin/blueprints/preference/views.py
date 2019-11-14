@@ -63,11 +63,15 @@ def update_site_adv():
     head_metadata = request.form.get('head_metadata', '')
     socials = request.form.get('socials', '')
     languages = request.form.get('languages', '')
+    customs = request.form.get('customs', '')
+    slots = request.form.get('slots', '')
 
     site = current_app.db.Site()
     site['meta']['socials'] = str_eval(socials, [])
     site['meta']['languages'] = str_eval(languages, [])
     site['meta']['head_metadata'] = head_metadata
+    site['meta']['custom'] = str_eval(customs, {})
+    site['slots'] = str_eval(slots, {})
     site.save()
 
     flash('SAVED')

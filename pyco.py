@@ -19,7 +19,7 @@ from blueprints import register_blueprints
 from models import DBConnection, Configure, Document, Site, Theme, Media
 
 
-__version_info__ = ('3', '0', '0')
+__version_info__ = ('3', '0', '1')
 __version__ = '.'.join(__version_info__)
 
 
