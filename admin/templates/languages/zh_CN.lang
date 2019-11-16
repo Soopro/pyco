@@ -553,6 +553,10 @@
     "msgid": "Slots",
     "msgstr": "插槽"
   },
+  {
+    "msgid": "Category is not activated.",
+    "msgstr": "分类没有激活，当前主题不支持分类系统。"
+  },
 
 
   {
