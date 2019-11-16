@@ -162,7 +162,6 @@ class Theme(FlatFile):
 
     PRIMARY_MENU = 'primary'
     PRIMARY_MENU_NAME = 'Primary Menu'
-    PRIMARY_MENU_LEVEL = 2
 
     config_file_path = 'config.json'
 
@@ -242,7 +241,7 @@ class Theme(FlatFile):
             menus.update({
                 self.PRIMARY_MENU: {
                     'title': self.PRIMARY_MENU_NAME,
-                    'level': self.PRIMARY_MENU_LEVEL,
+                    'level': 1,
                 }
             })
         return menus
