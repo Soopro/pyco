@@ -22,8 +22,6 @@ app = Flask(__name__,
 
 load_config(app)
 
-app.static_url_path = '/{}'.format(app.config.get('STATIC_PATH'))
-
 app.db = DBConnection(app)
 app.db.register([Configure, Document, Site, Theme, Media])
 
@@ -43,7 +41,7 @@ def shortcode(text):
     try:
         return re.sub(RE_UPLOADS, uploads_url, text)
     except Exception as e:
-        app.logger.error(err_log)
+        app.logger.error(e)
         return text
 
 
@@ -67,8 +65,8 @@ def inject_global_variable():
     # theme config
     theme = app.db.Theme(app.current_theme_dir)
     return {
-        'static_url': '{}{}'.formact(app.config['ADMIN_BASE_URL'],
-                                     app.static_url_path),
+        'static_url': '{}{}'.format(app.config['ADMIN_BASE_URL'],
+                                    app.static_url_path),
         'base_url': app.config['ADMIN_BASE_URL'],
         'theme_url': app.config['THEME_URL'],
         'uploads_url': app.config['UPLOADS_URL'],
