@@ -29,7 +29,10 @@
   {{document.meta.title}}
 </h2>
 <p class="section-lead">
-  {{document.content_type}} / {{document.slug}}
+  <a href="{{preview_url}}"
+     target="_blank">
+    {{document.content_type}} / {{document.slug}}
+  </a>
 </p>
 
 <form action="{{url_as('.update_content',
@@ -122,6 +125,12 @@
           <button class="btn btn-primary">
             {{_('Save Content')}}
           </button>
+          <a class="btn"
+             aria-label="{{_('Save Content')}}"
+             href="{{preview_url}}"
+             target="_blank">
+            <i class="fa fa-link"></i>
+          </a>
           <a class="btn btn-danger ml-auto"
              aria-label="{{_('Delete')}}"
              href="{{url_as('.remove',

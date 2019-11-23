@@ -83,8 +83,18 @@ def content_detail(content_type, slug):
     curr_content_type = _find_content_type(content_type)
     document = current_app.db.Document.find_one(slug, content_type)
     custom_fields = _find_custom_fields(document.get('template'))
+    if document.content_type == document.STATIC_TYPE:
+        if document.slug == document.INDEX_SLUG:
+            preview_path = '/'
+        else:
+            preview_path = '/{}'.format(document.slug)
+    else:
+        preview_path = '/{}/{}'.format(document.content_type, document.slug)
+    preview_url = '{}{}'.format(current_app.config['BASE_URL'], preview_path)
+
     return render_template('content_detail.html',
                            document=document,
+                           preview_url=preview_url,
                            meta=document['meta'],
                            content=document['content'],
                            content_type=curr_content_type,
