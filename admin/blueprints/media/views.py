@@ -91,9 +91,9 @@ def remove(filename):
 def repository():
     offset = parse_int(request.args.get('offset'), 0)
 
-    files = current_app.db.Media.find()
+    files = current_app.db.Media.find_images()
     offset = parse_int(offset, 0)
-    limit = 3
+    limit = current_app.db.Media.MAXIMUM_QUERY
 
     count = len(files)
     mediafiles = [f.info for f in files[offset:offset + limit]]

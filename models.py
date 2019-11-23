@@ -674,6 +674,11 @@ class Media():
         files.sort(key=lambda x: x._updated, reverse=True)
         return files
 
+    @classmethod
+    def find_images(cls):
+        files = cls.find()
+        return [img for img in files if img.info['ext'] in cls.IMAGE_EXTS]
+
     @property
     def info(self):
         return {
@@ -686,4 +691,3 @@ class Media():
             'creation': self._creation,
             'is_file': os.path.isfile(self.path),
         }
-
