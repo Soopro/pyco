@@ -76,11 +76,26 @@
       </div>
       <div class="card-body">
         {% for k, v in custom_fields.items() %}
-        <div class="form-group content-editor">
-          <label>{{k}}</label>
-          <textarea class="form-control"
-                    name="{{k}}">{{meta[k]}}</textarea>
-        </div>
+          {% if v == 'series' %}
+          <div class="form-group content-editor">
+            <label>{{k}}</label>
+            <textarea class="form-control"
+                      name="{{k}}"
+                      rows="6">{{meta[k]}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* For expert only, must use JSON format.')}}
+            </small>
+          </div>
+          {% else %}
+          <div class="form-group content-editor">
+            <label>{{k}}</label>
+            <textarea class="form-control"
+                      name="{{k}}">{{meta[k]}}</textarea>
+            <small class="form-text text-muted">
+              {{_('* For expert only, must use JSON format.')}}
+            </small>
+          </div>
+          {% endif %}
         {% endfor %}
       </div>
     </div>

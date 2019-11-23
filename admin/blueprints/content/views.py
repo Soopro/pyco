@@ -10,7 +10,7 @@ from flask import (Blueprint,
                    render_template)
 import math
 
-from utils.misc import (parse_int, process_slug)
+from utils.misc import (parse_int, process_slug, str_eval)
 
 from admin.decorators import login_required
 
@@ -111,7 +111,7 @@ def update_content(content_type, slug):
                      for key in _find_custom_fields(template)}
 
     tags = [tag.strip() for tag in tags.split(',')]
-    meta = {k: v for k, v in custom_fields.items()}
+    meta = {k: str_eval(v) for k, v in custom_fields.items()}
     meta.update({
         'title': title,
         'description': description,
@@ -130,6 +130,7 @@ def update_content(content_type, slug):
     document['redirect'] = redirect_url
     document['priority'] = parse_int(priority)
     document['status'] = parse_int(status)
+    document['content'] = content
     document.save()
     flash('SAVED')
     return_url = url_for('.content_detail',
