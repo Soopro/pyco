@@ -77,7 +77,16 @@
       </div>
       <div class="card-body">
         {% for k, v in custom_fields.items() %}
-          {% if v == 'series' %}
+          {% if v in ['', 'text'] %}
+          <div class="form-group content-editor">
+            <label>{{k}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="{{k}}"
+                   maxlength="360"
+                   value="{{meta[k]}}">
+          </div>
+          {% elif v == 'series' %}
           <div class="form-group content-editor">
             <label>{{k}}</label>
             <textarea class="form-control"

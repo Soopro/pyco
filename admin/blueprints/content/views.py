@@ -107,11 +107,12 @@ def update_content(content_type, slug):
     description = request.form.get('description', '')
     featured_img_src = request.form.get('featured_img_src', '')
     content = request.form.get('content', '')
-    custom_fields = {key: request.form.get(key, '')
-                     for key in _find_custom_fields(template)}
+    custom_fields = {key: {'value': request.form.get(key, ''), 'type': kind}
+                     for key, kind in _find_custom_fields(template).items()}
 
     tags = [tag.strip() for tag in tags.split(',')]
-    meta = {k: str_eval(v, '') for k, v in custom_fields.items()}
+    meta = {k: _parse_custom_field(v['value'], v['type'])
+            for k, v in custom_fields.items()}
     meta.update({
         'title': title,
         'description': description,
@@ -187,3 +188,10 @@ def _find_custom_fields(template):
         return custom_fields
     else:
         return {}
+
+
+def _parse_custom_field(field_val, field_type):
+    if field_type in ['', 'text']:
+        return field_val
+    else:
+        return str_eval(field_val, field_val)
