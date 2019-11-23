@@ -5,7 +5,6 @@ from flask import (Blueprint,
                    session,
                    request,
                    flash,
-                   url_for,
                    redirect,
                    render_template,
                    send_from_directory,
@@ -19,6 +18,7 @@ from utils.misc import hmac_sha, now, str_eval, process_slug, parse_int
 from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
+from admin.helpers import url_as
 
 
 blueprint = Blueprint('preference', __name__, template_folder='templates')
@@ -53,7 +53,7 @@ def update_site():
     site['meta']['license'] = license
     site.save()
     flash('SAVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -75,7 +75,7 @@ def update_site_adv():
     site.save()
 
     flash('SAVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -114,7 +114,7 @@ def add_site_menu_node(menu_key):
 
     site.save()
     flash('SAVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -165,7 +165,7 @@ def update_site_menu_node(menu_key):
         nodes.insert(_index, new_node)
     site.save()
     flash('SAVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -186,7 +186,7 @@ def remove_site_menu_node(menu_key):
         nodes.remove(node)
     site.save()
     flash('REMOVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -199,7 +199,7 @@ def hardcore_site_menu(menu_key):
     site['menus'][menu_key] = str_eval(hardcore, {})
     site.save()
     flash('SAVED')
-    return_url = url_for('.site')
+    return_url = url_as('.site')
     return redirect(return_url)
 
 
@@ -222,7 +222,7 @@ def install_theme():
 
     _update_site()
     flash('INSTALLED')
-    return_url = url_for('.appearance')
+    return_url = url_as('.appearance')
     return redirect(return_url)
 
 
@@ -231,7 +231,7 @@ def install_theme():
 def reload_theme():
     _update_site()
     flash('RELOADED')
-    return_url = url_for('.appearance')
+    return_url = url_as('.appearance')
     return redirect(return_url)
 
 
@@ -251,7 +251,7 @@ def update_configure():
     configure['locale'] = locale
     configure.save()
     flash('SAVED')
-    return_url = url_for('.configuration')
+    return_url = url_as('.configuration')
     return redirect(return_url)
 
 
@@ -275,7 +275,7 @@ def change_passcode():
         configure.save()
         flash('SAVED')
 
-    return_url = url_for('.configuration')
+    return_url = url_as('.configuration')
     return redirect(return_url)
 
 
@@ -300,7 +300,7 @@ def backup_restore():
     # unpack files
     unzip(f, content_dir)
     flash('RESTORED')
-    return_url = url_for('.configuration')
+    return_url = url_as('.configuration')
     return redirect(return_url)
 
 

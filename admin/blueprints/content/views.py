@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from flask import (Blueprint,
                    current_app,
                    request,
-                   url_for,
                    redirect,
                    flash,
                    render_template)
@@ -13,6 +12,7 @@ import math
 from utils.misc import (parse_int, process_slug, str_eval)
 
 from admin.decorators import login_required
+from admin.helpers import url_as
 
 
 blueprint = Blueprint('content', __name__, template_folder='templates')
@@ -37,12 +37,12 @@ def index(content_type):
 
     contents = files[offset:offset + limit]
 
-    prev_url = url_for(request.endpoint,
-                       content_type=content_type,
-                       paged=max(paged - 1, 1))
-    next_url = url_for(request.endpoint,
-                       content_type=content_type,
-                       paged=min(paged + 1, max_pages))
+    prev_url = url_as(request.endpoint,
+                      content_type=content_type,
+                      paged=max(paged - 1, 1))
+    next_url = url_as(request.endpoint,
+                      content_type=content_type,
+                      paged=min(paged + 1, max_pages))
 
     paginator = {
         'next': next_url if has_next else None,
@@ -71,9 +71,9 @@ def create_content(content_type):
     })
     content.save()
     flash('SAVED')
-    return_url = url_for('.content_detail',
-                         content_type=content_type,
-                         slug=slug)
+    return_url = url_as('.content_detail',
+                        content_type=content_type,
+                        slug=slug)
     return redirect(return_url)
 
 
@@ -134,9 +134,9 @@ def update_content(content_type, slug):
     document['content'] = content
     document.save()
     flash('SAVED')
-    return_url = url_for('.content_detail',
-                         content_type=content_type,
-                         slug=slug)
+    return_url = url_as('.content_detail',
+                        content_type=content_type,
+                        slug=slug)
     return redirect(return_url)
 
 
@@ -156,9 +156,9 @@ def hardcore_content(content_type, slug):
     document.hardcore(raw)
     document.save()
     flash('SAVED')
-    return_url = url_for('.content_raw',
-                         content_type=content_type,
-                         slug=slug)
+    return_url = url_as('.content_raw',
+                        content_type=content_type,
+                        slug=slug)
     return redirect(return_url)
 
 
@@ -168,7 +168,7 @@ def remove(content_type, slug):
     content = current_app.db.Document.find_one(slug, content_type)
     content.delete()
     flash('REMOVED')
-    return_url = url_for('.index', content_type=content_type)
+    return_url = url_as('.index', content_type=content_type)
     return redirect(return_url)
 
 

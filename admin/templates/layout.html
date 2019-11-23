@@ -91,7 +91,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
           <ul class="sidebar-menu">
             <li class="menu-header">{{_('Cardinal')}}</li>
             <li>
-              <a class="nav-link" href="{{url_for('dashboard.index')}}">
+              <a class="nav-link" href="{{url_as('dashboard.index')}}">
                 <i class="fas fa-fire"></i> <span>{{_('Dashboard')}}</span>
               </a>
             </li>
@@ -99,7 +99,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
             <li class="menu-header">{{_('Content')}}</li>
             <li>
               <a class="nav-link"
-                 href="{{url_for('content.index', content_type='page')}}">
+                 href="{{url_as('content.index', content_type='page')}}">
                 <i class="fas fa-file"></i>
                 <span>{{_('Pages')}}</span>
               </a>
@@ -109,7 +109,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
                if content_type.key != 'page' %}
             <li>
               <a class="nav-link"
-                 href="{{url_for('content.index',
+                 href="{{url_as('content.index',
                          content_type=content_type.key)}}">
                 <i class="far fa-file-alt"></i>
                 <span>{{_(content_type.title)}}</span>
@@ -119,7 +119,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
 
             <li>
               <a class="nav-link"
-                 href="{{url_for('category.index')}}">
+                 href="{{url_as('category.index')}}">
                 <i class="fas fa-book"></i>
                 <span>{{_('Category')}}</span>
               </a>
@@ -127,7 +127,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
 
             <li>
               <a class="nav-link"
-                 href="{{url_for('media.index')}}">
+                 href="{{url_as('media.index')}}">
                 <i class="fas fa-photo-video"></i>
                 <span>{{_('Media Files')}}</span>
               </a>
@@ -136,21 +136,21 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
             <li class="menu-header">{{_('Preference')}}</li>
             <li>
               <a class="nav-link"
-                 href="{{url_for('preference.site')}}">
+                 href="{{url_as('preference.site')}}">
                 <i class="fas fa-sitemap"></i>
                 <span>{{_('Site')}}</span>
               </a>
             </li>
             <li>
               <a class="nav-link"
-                 href="{{url_for('preference.appearance')}}">
+                 href="{{url_as('preference.appearance')}}">
                 <i class="fas fa-palette"></i>
                 <span>{{_('Appearance')}}</span>
               </a>
             </li>
             <li>
               <a class="nav-link"
-                 href="{{url_for('preference.configuration')}}">
+                 href="{{url_as('preference.configuration')}}">
                 <i class="fas fa-cog"></i>
                 <span>{{_('Configuration')}}</span>
               </a>
@@ -212,7 +212,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
           <button type="button" class="btn btn-secondary"
                   data-dismiss="modal">{{_('Dismiss')}}</button>
           <a class="btn btn-primary"
-             href="{{url_for('dashboard.logout')}}">
+             href="{{url_as('dashboard.logout')}}">
             {{_('Yes, Exit!')}}
           </a>
         </div>

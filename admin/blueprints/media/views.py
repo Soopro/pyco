@@ -4,7 +4,6 @@ from __future__ import absolute_import
 from flask import (Blueprint,
                    current_app,
                    request,
-                   url_for,
                    redirect,
                    flash,
                    render_template)
@@ -15,6 +14,7 @@ from utils.response import output_json
 from utils.misc import parse_int, safe_filename
 
 from admin.decorators import login_required
+from admin.helpers import url_as
 
 
 blueprint = Blueprint('media', __name__, template_folder='templates')
@@ -41,8 +41,8 @@ def index():
     for media in mediafiles:
         media['src'] = '{}/{}'.format(uploads_url, media['filename'])
 
-    prev_url = url_for(request.endpoint, paged=max(paged - 1, 1))
-    next_url = url_for(request.endpoint, paged=min(paged + 1, max_pages))
+    prev_url = url_as(request.endpoint, paged=max(paged - 1, 1))
+    next_url = url_as(request.endpoint, paged=min(paged + 1, max_pages))
 
     paginator = {
         'next': next_url if has_next else None,

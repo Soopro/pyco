@@ -3,7 +3,7 @@
 {% block header %}
 <div class="section-header-back">
   <a class="btn btn-icon"
-     href="{{url_for('.index')}}">
+     href="{{url_as('.index')}}">
     <i class="fas fa-arrow-left"></i>
   </a>
 </div>
@@ -19,7 +19,7 @@
 </p>
 
 <form class="editing"
-      action="{{url_for('.update_term', term_key=term.key)}}"
+      action="{{url_as('.update_term', term_key=term.key)}}"
       method="POST">
 <div class="row">
   <div class="col-lg-8">
@@ -71,7 +71,7 @@
           </button>
           <a class="btn btn-danger ml-auto"
              aria-label="{{_('Delete')}}"
-             href="{{url_for('.remove_term', term_key=term.key)}}">
+             href="{{url_as('.remove_term', term_key=term.key)}}">
             <i class="fas fa-trash"></i>
           </a>
         </div>

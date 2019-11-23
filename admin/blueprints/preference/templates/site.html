@@ -8,7 +8,7 @@
 <div class="row">
   <div class="col-12 col-md-6 col-lg-6">
     <div class="card">
-      <form action="{{url_for('.update_site')}}"
+      <form action="{{url_as('.update_site')}}"
             method="POST">
         <div class="card-header">
           <h4>{{_('Site Settings')}}</h4>
@@ -82,7 +82,7 @@
       </form>
     </div>
     <div class="card">
-      <form action="{{url_for('.update_site_adv')}}"
+      <form action="{{url_as('.update_site_adv')}}"
             method="POST">
         <div class="card-header">
           <h4>{{_('Advanced Options')}}</h4>
@@ -163,10 +163,10 @@
                     data-path-scope="{{node.path_scope}}"
                     data-css="{{node.class}}"
                     data-pos="{{loop.index0}}"
-                    data-remove-url="{{url_for('.remove_site_menu_node',
+                    data-remove-url="{{url_as('.remove_site_menu_node',
                                                 menu_key=menu.key,
                                                 node_key=node.key)}}"
-                    data-action-url="{{url_for('.update_site_menu_node',
+                    data-action-url="{{url_as('.update_site_menu_node',
                                               menu_key=menu.key,
                                               node_key=node.key)}}">
               <i class="fas fa-bars"></i>
@@ -186,11 +186,11 @@
                       data-path-scope="{{subnode.path_scope}}"
                       data-css="{{subnode.class}}"
                       data-pos="{{loop.index0}}"
-                      data-remove-url="{{url_for('.remove_site_menu_node',
+                      data-remove-url="{{url_as('.remove_site_menu_node',
                                                  menu_key=menu.key,
                                                  parent_key=node.key,
                                                  node_key=subnode.key)}}"
-                      data-action-url="{{url_for('.update_site_menu_node',
+                      data-action-url="{{url_as('.update_site_menu_node',
                                                  menu_key=menu.key,
                                                  parent_key=node.key,
                                                  node_key=subnode.key)}}">
@@ -204,7 +204,7 @@
                         type="button"
                         data-toggle="modal"
                         data-target="#MODAL-MENU-NODE"
-                        data-action-url="{{url_for('.add_site_menu_node',
+                        data-action-url="{{url_as('.add_site_menu_node',
                                                    menu_key=menu.key,
                                                    parent_key=node.key)}}">
                   <i class="fas fa-plus"></i>
@@ -221,7 +221,7 @@
                       type="button"
                       data-toggle="modal"
                       data-target="#MODAL-MENU-NODE"
-                      data-action-url="{{url_for('.add_site_menu_node',
+                      data-action-url="{{url_as('.add_site_menu_node',
                                                  menu_key=menu.key)}}">
                 <i class="fas fa-plus"></i>
                 <span>{{_('New Menu Item')}}</span>
@@ -233,7 +233,7 @@
                       data-toggle="modal"
                       data-target="#MODAL-MENU-HARDCORE"
                       data-hardcore="{{menu.nodes or ''}}"
-                      data-action-url="{{url_for('.hardcore_site_menu',
+                      data-action-url="{{url_as('.hardcore_site_menu',
                                                  menu_key=menu.key)}}">
                 <i class="fas fa-flask"></i>
                 <span>{{_('Expert')}}</span>

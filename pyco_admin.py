@@ -4,10 +4,11 @@ from flask import Flask, make_response, g
 import os
 import re
 
-from loaders import load_config, load_modal_pretreat
+from loaders import load_config
 
 from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
+from admin.helpers import url_as
 from models import DBConnection, Configure, Document, Site, Theme, Media
 
 from services.i18n import Translator
@@ -77,6 +78,7 @@ def inject_global_variable():
         '_t': translator.t_gettext,
         'site': site,
         'theme': theme,
+        'url_as': url_as
     }
 
 

@@ -8,7 +8,7 @@
 <div class="row">
   <div class="col-12 col-md-6 col-lg-6">
     <div class="card">
-      <form action="{{url_for('.update_configure')}}"
+      <form action="{{url_as('.update_configure')}}"
             method="POST">
         <div class="card-header">
           <h4>{{_('Basic Configuration')}}</h4>
@@ -36,7 +36,7 @@
       </form>
     </div>
     <div class="card">
-      <form action="{{url_for('.change_passcode')}}"
+      <form action="{{url_as('.change_passcode')}}"
             method="POST">
         <div class="card-header">
           <h4>{{_('Security')}}</h4>
@@ -110,7 +110,7 @@
         </div>
         <div class="mt-4">
           <a class="btn btn-primary btn-lg"
-             href="{{url_for('.backup_download')}}">
+             href="{{url_as('.backup_download')}}">
             <i class="fas fa-cloud-download-alt"></i>
             <span>{{_('Download')}}</span>
           </a>
@@ -127,7 +127,7 @@
         </div>
         <div class="mt-4">
           <form class="file-uploader"
-                action="{{url_for('.backup_restore')}}"
+                action="{{url_as('.backup_restore')}}"
                 enctype=multipart/form-data
                 method="POST">
             <label class="btn btn-info btn-lg">

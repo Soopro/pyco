@@ -12,7 +12,7 @@
         <h4>{{_('All Files')}}</h4>
         <small>{{_('* Support image, audio, video, zip and pdf.')}}</small>
         <form class="file-uploader ml-auto"
-              action="{{url_for('.upload')}}"
+              action="{{url_as('.upload')}}"
               enctype=multipart/form-data
               method="POST">
           <label class="btn btn-primary btn-lg">
@@ -60,7 +60,7 @@
               <td class="text-center">
                 <a class="btn btn-danger"
                    aria-label="{{_('Delete')}}"
-                   href="{{url_for('.remove', filename=media.filename)}}">
+                   href="{{url_as('.remove', filename=media.filename)}}">
                   <i class="fas fa-trash"></i>
                 </a>
               </td>

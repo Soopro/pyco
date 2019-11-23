@@ -9,13 +9,13 @@
   <div class="col-12 col-md-6 col-lg-6">
     <div class="card">
       <form class="file-uploader"
-            action="{{url_for('.install_theme')}}"
+            action="{{url_as('.install_theme')}}"
             enctype=multipart/form-data
             method="POST">
         <div class="card-header">
           <h4>{{_('Theme')}}</h4>
           <a class="btn btn-outline-primary btn-lg ml-auto"
-             href="{{url_for('.reload_theme')}}">
+             href="{{url_as('.reload_theme')}}">
             <i class="fas fa-refresh"></i>
             <span>{{_('Reload')}}</span>
           </a>
