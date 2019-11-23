@@ -49,6 +49,7 @@ def before_request():
         # change reload template folder
         current_app.jinja_env.cache = None
         tpl_folder = current_app.template_folder
+        # reload jinja loader to new folder
         current_app.jinja_loader = FileSystemLoader(tpl_folder)
 
     if request.path.strip('/') in current_app.config.get('SYS_ICONS', []):

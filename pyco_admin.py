@@ -22,6 +22,8 @@ app = Flask(__name__,
 
 load_config(app)
 
+app.static_url_path = '/{}'.format(app.config.get('STATIC_PATH'))
+
 app.db = DBConnection(app)
 app.db.register([Configure, Document, Site, Theme, Media])
 
@@ -65,7 +67,8 @@ def inject_global_variable():
     # theme config
     theme = app.db.Theme(app.current_theme_dir)
     return {
-        'assets_url': app.static_url_path,
+        'static_url': '{}{}'.formact(app.config['ADMIN_BASE_URL'],
+                                     app.static_url_path),
         'base_url': app.config['ADMIN_BASE_URL'],
         'theme_url': app.config['THEME_URL'],
         'uploads_url': app.config['UPLOADS_URL'],
@@ -91,6 +94,7 @@ def errorhandler(err):
 if __name__ == '__main__':
     host = app.config.get('HOST')
     port = app.config.get('ADMIN_PORT')
+    debug = app.config.get('DEBUG')
 
     print("-------------------------------------------------------")
     print('Pyco: Admin Panel: {}'.format(port))
@@ -99,4 +103,4 @@ if __name__ == '__main__':
     if app.debug:
         print('Pyco is running in DEBUG mode !!!')
 
-    app.run(host=str(host), port=int(port), debug=True, threaded=True)
+    app.run(host=str(host), port=int(port), debug=bool(debug), threaded=True)

@@ -24,7 +24,7 @@ __version__ = '.'.join(__version_info__)
 
 
 # create app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.version = __version__
 
 load_config(app)
@@ -36,12 +36,19 @@ app.db.register([Configure, Document, Site, Theme, Media])
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, app.config.get('PLUGINS_DIR')))
 
-# init app
+# template
 app.template_folder = os.path.join(app.config.get('THEMES_DIR'),
                                    app.config.get('THEME_NAME'))
 
+# static
 app.static_folder = app.config.get('THEMES_DIR')
-app.static_url_path = '/{}'.format(app.config.get('STATIC_PATH'))
+# UNCOMMENT THOSE LINES, IF YOU WANT CUSTOM STATIC URL
+# app.static_url_path = '/static'
+# app.add_url_rule(
+#     app.static_url_path + '/<path:filename>',
+#     view_func=app.send_static_file,
+#     endpoint='static'
+# )
 
 # jinja env
 app.jinja_env.autoescape = False
@@ -58,13 +65,6 @@ load_plugins(app)
 
 # register blueprints
 register_blueprints(app)
-
-# static
-app.add_url_rule(
-    app.static_url_path + '/<path:filename>',
-    view_func=app.send_static_file,
-    endpoint='static'
-)
 
 
 # inject before request handlers
@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
     host = app.config.get('HOST')
     port = app.config.get('PORT')
+    debug = app.config.get('DEBUG')
 
     print("-------------------------------------------------------")
     print('Pyco: {}'.format(app.version))
@@ -118,4 +119,4 @@ if __name__ == '__main__':
         print('Pyco is running in DEBUG mode !!!')
         print('Jinja2 template folder is about to reload.')
 
-    app.run(host=str(host), port=int(port), debug=True, threaded=True)
+    app.run(host=str(host), port=int(port), debug=bool(debug), threaded=True)

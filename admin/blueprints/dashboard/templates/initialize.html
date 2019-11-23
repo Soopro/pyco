@@ -8,7 +8,7 @@
                   offset-lg-3 col-xl-4 offset-xl-4">
         <div class="login-brand">
           <img class="shadow-light rounded-circle bg-white"
-               src="{{assets_url}}/pyco.png"
+               src="{{static_url}}/pyco.png"
                alt="logo"
                width="100" >
         </div>
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {% block page_scripts %}
-<script src="{{assets_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
+<script src="{{static_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
 <script>
 $(".pwstrength").pwstrength();
 </script>

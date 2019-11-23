@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block page_css %}
-<link rel="stylesheet" href="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.css">
-<link rel="stylesheet" href="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.css">
-<link rel="stylesheet" href="{{assets_url}}/modules/summernote/summernote-bs4.css">
+<link rel="stylesheet" href="{{static_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.css">
+<link rel="stylesheet" href="{{static_url}}/modules/bootstrap-daterangepicker/daterangepicker.css">
+<link rel="stylesheet" href="{{static_url}}/modules/summernote/summernote-bs4.css">
 {% endblock %}
 
 {% block header %}
@@ -238,12 +238,12 @@
 </form>
 {% endblock %}
 {% block page_scripts %}
-<script src="{{assets_url}}/modules/moment.min.js"></script>
-<script src="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-<script src="{{assets_url}}/modules/summernote/summernote-bs4.js"></script>
-<script src="{{assets_url}}/modules/summernote/plugin/ext-media.js"></script>
-<script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
+<script src="{{static_url}}/modules/moment.min.js"></script>
+<script src="{{static_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="{{static_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+<script src="{{static_url}}/modules/summernote/summernote-bs4.js"></script>
+<script src="{{static_url}}/modules/summernote/plugin/ext-media.js"></script>
+<script src="{{static_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
 <script>
   'use strict';
 

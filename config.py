@@ -7,11 +7,10 @@ PORT = 5500
 
 THEMES_DIR = 'themes'
 THEME_NAME = 'default'
-STATIC_PATH = 'static'
 
 BASE_URL = 'http://localhost:5500'
 API_URL = 'http://localhost:5500/restapi'
-THEME_URL = '{}/{}/{}'.format(BASE_URL, STATIC_PATH, THEME_NAME)
+THEME_URL = '{}/static/{}'.format(BASE_URL, THEME_NAME)
 UPLOADS_URL = '{}/uploads'.format(BASE_URL)
 RES_URL = '{}/res'.format(UPLOADS_URL)
 

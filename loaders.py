@@ -10,7 +10,6 @@ import re
 def load_config(app, config_name='config.py'):
     app.config.from_pyfile(config_name)
     app.config.setdefault('DEBUG', False)
-    app.config.setdefault('STATIC_PATH', 'static')
 
     app.config.setdefault('BACKUPS_DIR', 'backups')
     app.config.setdefault('PLUGINS_DIR', 'plugins')
