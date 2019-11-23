@@ -26,7 +26,7 @@ MARKDOWN_EXTENSIONS = []
 
 
 # plugins
-PLUGINS = ['default']
+PLUGINS = []
 
 
 # admin
