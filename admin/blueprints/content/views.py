@@ -111,7 +111,7 @@ def update_content(content_type, slug):
                      for key in _find_custom_fields(template)}
 
     tags = [tag.strip() for tag in tags.split(',')]
-    meta = {k: str_eval(v) for k, v in custom_fields.items()}
+    meta = {k: str_eval(v, '') for k, v in custom_fields.items()}
     meta.update({
         'title': title,
         'description': description,
