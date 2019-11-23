@@ -1,18 +1,19 @@
-echo 'Stoping'
+echo 'Pyco Admin Stoping'
 
-ID1=`ps -ef | grep "pyco" | grep -v "grep" | awk '{print $2}'`
-ID2=`ps -ef | grep "pyco_admin" | grep -v "grep" | awk '{print $2}'`
+IDS_ADMIN=`ps -ef | grep "pyco_admin.py" | grep -v "grep" | awk '{print $2}'`
+for admin_id in $IDS_ADMIN
+do
+kill -9 $admin_id
+echo 'killed pyco_admin.py at' $admin_id
+done
 
-for id in $ID1
+echo 'Pyco Stoping'
+
+IDS=`ps -ef | grep "pyco.py" | grep -v "grep" | awk '{print $2}'`
+for id in $IDS
 do
 kill -9 $id
 echo 'killed pyco.py at' $id
-done
-
-for id in $ID2
-do
-kill -9 $id
-echo 'killed pyco_admin.py at' $id
 done
 
 echo 'Starting'
