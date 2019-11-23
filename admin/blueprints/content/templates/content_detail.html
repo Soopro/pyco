@@ -56,6 +56,7 @@
           <textarea class="summernote form-control"
                     placeholder="{{_('Type content here.')}}"
                     locale="{{locale}}"
+                    media-modal="#MODAL-MEDIAREPO"
                     name="content">{{content}}</textarea>
         </div>
         <div class="form-group">
@@ -232,6 +233,7 @@
 <script src="{{assets_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="{{assets_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 <script src="{{assets_url}}/modules/summernote/summernote-bs4.js"></script>
+<script src="{{assets_url}}/modules/summernote/plugin/ext-media.js"></script>
 <script src="{{assets_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
 <script>
   'use strict';
@@ -258,14 +260,15 @@
 
   $(".inputtags").tagsinput('items');
 
+
+  /* summernote */
   var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
+
   $('.summernote').summernote({
     height: 640,
     dialogsInBody: true,
     lang: editor_lang,
-    onImageUpload: function(files, editor, welEditable) {
-      sendFile(files[0], editor, welEditable);
-    },
+    callbacks: {},
     toolbar: [
       // [groupName, [list of button]]
       ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -273,7 +276,7 @@
       ['fontsize', ['fontsize']],
       ['color', ['color']],
       ['para', ['ul', 'ol', 'paragraph']],
-      ['insert', ['link', 'picture', 'video']],
+      ['insert', ['link', 'video', 'media']],
       ['view', ['codeview']],
     ]
   });
