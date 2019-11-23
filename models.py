@@ -145,7 +145,8 @@ class Configure(FlatFile):
                                   stream=None,
                                   default_flow_style=False,
                                   indent=2,
-                                  encoding=None)
+                                  encoding=None,
+                                  allow_unicode=True)
         return super(Configure, self).save()
 
     def exists(self):
@@ -453,7 +454,9 @@ class Document(FlatFile):
         if content['content_type'] in [None, self.STATIC_TYPE]:
             rel_path = os.path.join(self.CONTENT_DIR, slug)
         else:
-            rel_path = os.path.join(self.CONTENT_DIR, content_type, slug)
+            rel_path = os.path.join(self.CONTENT_DIR,
+                                    content['content_type'],
+                                    slug)
 
         self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
         self._id = self.path
@@ -495,7 +498,8 @@ class Document(FlatFile):
                                 stream=None,
                                 default_flow_style=False,
                                 indent=2,
-                                encoding=None)
+                                encoding=None,
+                                allow_unicode=True)
         content = self.data.get('content') or ''
         self.raw = '/*\n{}\n*/\n{}'.format(fields, content)
         return super(Document, self).save()
