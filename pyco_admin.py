@@ -71,7 +71,6 @@ def inject_global_variable():
         'base_url': app.config['ADMIN_BASE_URL'],
         'theme_url': app.config['THEME_URL'],
         'uploads_url': app.config['UPLOADS_URL'],
-        'configure': g.configure,
         'locale': locale,
         'lang': locale.split('_')[0],
         '_': translator.gettext,

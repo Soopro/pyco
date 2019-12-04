@@ -240,7 +240,8 @@ def reload_theme():
 @blueprint.route('/configuration')
 @login_required
 def configuration():
-    return render_template('configuration.html')
+    configure = g.configure
+    return render_template('configuration.html', configure=configure)
 
 
 @blueprint.route('/configuration', methods=['POST'])
