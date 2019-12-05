@@ -51,42 +51,4 @@
 </form>
 {% endblock %}
 {% block page_scripts %}
-<script src="{{static_url}}/modules/moment.min.js"></script>
-<script src="{{static_url}}/modules/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="{{static_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
-<script src="{{static_url}}/modules/summernote/summernote-bs4.js"></script>
-<script src="{{static_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
-<script>
-  'use strict';
-
-  $('form').on('keyup keypress', function(e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  $(".inputtags").tagsinput('items');
-
-  var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
-  $('.summernote').summernote({
-    height: 640,
-    dialogsInBody: true,
-    lang: editor_lang,
-    onImageUpload: function(files, editor, welEditable) {
-      sendFile(files[0], editor, welEditable);
-    },
-    toolbar: [
-      // [groupName, [list of button]]
-      ['style', ['bold', 'italic', 'underline', 'clear']],
-      ['font', ['strikethrough', 'superscript', 'subscript']],
-      ['fontsize', ['fontsize']],
-      ['color', ['color']],
-      ['para', ['ul', 'ol', 'paragraph']],
-      ['insert', ['link', 'picture', 'video']],
-      ['view', ['codeview']],
-    ]
-  });
-</script>
 {% endblock %}
