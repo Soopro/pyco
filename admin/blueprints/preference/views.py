@@ -272,7 +272,7 @@ def change_passcode():
     else:
         configure['passcode_hash'] = generate_password_hash(passcode)
         hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
-        session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
+        session['pyco_admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         configure.save()
         flash('SAVED')
 

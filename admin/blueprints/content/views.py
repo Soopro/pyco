@@ -92,20 +92,24 @@ def content_detail(content_type, slug):
         preview_path = '/{}/{}'.format(document.content_type, document.slug)
     preview_url = '{}{}'.format(current_app.config['BASE_URL'], preview_path)
 
+    # category
+    site = current_app.db.Site()
+    terms = site.categories.get('terms', [])
     return render_template('content_detail.html',
                            document=document,
                            preview_url=preview_url,
                            meta=document['meta'],
                            content=document['content'],
                            content_type=curr_content_type,
-                           custom_fields=custom_fields)
+                           custom_fields=custom_fields,
+                           terms=terms)
 
 
 @blueprint.route('/<content_type>/<slug>', methods=['POST'])
 @login_required
 def update_content(content_type, slug):
     tags = request.form.get('tags', '')
-    terms = request.form.get('terms', [])
+    terms = request.form.getlist('terms') or []
     date = request.form.get('date', '')
     parent = request.form.get('parent', '')
     template = request.form.get('template', '')
@@ -120,7 +124,6 @@ def update_content(content_type, slug):
     custom_fields = {key: {'value': request.form.get(key, ''), 'type': kind}
                      for key, kind in _find_custom_fields(template).items()}
 
-    tags = [tag.strip() for tag in tags.split(',')]
     meta = {k: _parse_custom_field(v['value'], v['type'])
             for k, v in custom_fields.items()}
     meta.update({
@@ -134,8 +137,8 @@ def update_content(content_type, slug):
     document = current_app.db.Document.find_one(slug, content_type)
     document['meta'] = meta
     document['date'] = date
-    document['tags'] = tags
-    document['terms'] = terms
+    document['tags'] = [tag.strip() for tag in tags.split(',')]
+    document['terms'] = [term for term in terms if term]
     document['template'] = template
     document['parent'] = parent
     document['redirect'] = redirect_url
@@ -143,6 +146,7 @@ def update_content(content_type, slug):
     document['status'] = parse_int(status)
     document['content'] = content
     document.save()
+    print(document['terms'])
     flash('SAVED')
     return_url = url_as('.content_detail',
                         content_type=content_type,

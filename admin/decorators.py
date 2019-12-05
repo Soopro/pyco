@@ -13,8 +13,9 @@ def login_required(f):
     def wrapper(*args, **kwargs):
         hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         configure = g.configure
-        if not configure.exists() or not session.get('admin') or \
-           session['admin'] != hmac_sha(hmac_key, configure['passcode_hash']):
+        if not configure.exists() or not session.get('pyco_admin') or \
+           session['pyco_admin'] != hmac_sha(hmac_key,
+                                             configure['passcode_hash']):
             session.clear()
             return redirect(url_as('dashboard.login'))
         return f(*args, **kwargs)

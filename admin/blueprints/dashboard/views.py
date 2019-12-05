@@ -40,7 +40,7 @@ def login():
     configure = g.configure
     if not configure.exists():
         return redirect(url_as('.initialize'))
-    elif session.get('admin'):
+    elif session.get('pyco_admin'):
         return redirect('/')
     return render_template('login.html')
 
@@ -53,7 +53,7 @@ def exec_login():
         return redirect(url_as('.initialize'))
     elif check_password_hash(configure['passcode_hash'], passcode):
         hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
-        session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
+        session['pyco_admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         return redirect('/')
     else:
         flash('WRONG_PASSCODE', 'danger')

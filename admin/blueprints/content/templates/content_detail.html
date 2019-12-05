@@ -213,6 +213,21 @@
         </div>
 
         <div class="form-group">
+          <label>{{_('Category')}}</label>
+          <select class="form-control"
+                  data-height="100%"
+                  name="terms"
+                  multiple>
+            {% for term in terms %}
+            <option value="{{term.key}}"
+                    {{'selected' if term.key in document.terms}}>
+              {{term.meta.name}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
           <label>{{_('Parent')}}</label>
           <input class="form-control"
                  type="text"
