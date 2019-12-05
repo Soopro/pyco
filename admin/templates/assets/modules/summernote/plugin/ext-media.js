@@ -33,6 +33,7 @@
           tooltip: lang.image.image,
           click: function() {
             if (self.$panel) {
+              self.$panel.data('for-summernote', true);
               self.$panel.modal('show');
             }
           },
@@ -55,12 +56,15 @@
         },
       };
 
-      // This method will be called when editor is initialized by $('..').summernote();
-      // You can create elements for plugin
       var media_modal_handler = function (e) {
-        var img_src = $(this).data('media-src');
-        var filename = $(this).data('media-filename');
-        context.invoke('editor.insertImage', img_src, filename);
+        if (self.$panel && self.$panel.data('for-summernote')) {
+          var img_src = self.$panel.data('media-src');
+          var filename = self.$panel.data('media-filename');
+          self.$panel.data('for-summernote', false);
+          if (img_src) {
+            context.invoke('editor.insertImage', img_src, filename);
+          }
+        }
       }
 
       this.initialize = function() {

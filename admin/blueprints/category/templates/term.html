@@ -140,17 +140,4 @@
 </form>
 {% endblock %}
 {% block page_scripts %}
-<script>
-  $('.media-input').on('change', function(e){
-    var url = $(this).val();
-    var preview = $(this).parent().parent().find('.media-preview');
-    if(url){
-      preview.show();
-      preview.find('a').attr('href', url);
-      preview.find('img').attr('src', url);
-    } else {
-      preview.hide();
-    }
-  });
-</script>
 {% endblock %}

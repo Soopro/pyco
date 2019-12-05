@@ -74,11 +74,22 @@ $(document).ready(function() {
     }
   });
 
-  /* Media Repo */
-  $('#MODAL-MEDIAREPO').each(function(e){
-    var relate = $(e.relatedTarget);
-    var target_input = $('input[name="'+relate.data('input')+'"]');
+  /* Media Input */
+  $('.media-input').on('change', function(e){
+    var url = $(this).val();
+    var preview = $(this).parent().parent().find('.media-preview');
+    if(url){
+      preview.show();
+      preview.find('a').attr('href', url);
+      preview.find('img').attr('src', url);
+    } else {
+      preview.hide();
+    }
+  });
 
+  /* Media Repo */
+  $('#MODAL-MEDIAREPO').each(function(index, element){
+    var relate, target_input;
     var modal = $(this);
     var list_container = modal.find('#MODAL-MEDIAREPO-LIST');
     var btn_more = modal.find('#MODAL-MEDIAREPO-MORE');
@@ -94,7 +105,7 @@ $(document).ready(function() {
       var media_src = media ? media.src : '';
       var media_filename = media ? media.filename : '';
       media_item.click(function(e){
-        if (target_input.length) {
+        if (target_input && target_input.length) {
           target_input.val(media_src);
           target_input.change();
         }
@@ -180,11 +191,15 @@ $(document).ready(function() {
       }
     });
 
-    $(this).on('show.bs.modal', function(e){
+    modal.on('show.bs.modal', function(e){
+      modal.data('media-src', '');
+      modal.data('media-filename', '');
       mediafiles.length = 0;
+      relate = $(e.relatedTarget);
+      target_input = $('input[name="'+relate.data('input')+'"]');
       load_media_files()
     });
-    $(this).on('hidden.bs.modal', function (e) {
+    modal.on('hidden.bs.modal', function (e) {
       list_container.find('.repo-item').remove();
     })
   });
