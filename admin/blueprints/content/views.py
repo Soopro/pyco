@@ -70,7 +70,6 @@ def create_content(content_type):
         }
     })
     content.save()
-    flash('SAVED')
     return_url = url_as('.content_detail',
                         content_type=content_type,
                         slug=slug)

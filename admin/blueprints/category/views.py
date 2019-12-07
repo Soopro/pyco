@@ -50,7 +50,6 @@ def create_term():
         'status': 0,
     })
     site.save()
-    flash('SAVED')
     return_url = url_as('.term', term_key=term_key)
     return redirect(return_url)
 
