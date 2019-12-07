@@ -65,8 +65,8 @@ $(document).ready(function() {
   //   });
   // });
 
-  /* Editting */
-  $('form.editing').on('keyup keypress', function(e) {
+  /* prevent ENTER key */
+  $('.prevent-enter-key').on('keyup keypress', function(e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
       e.preventDefault();
