@@ -40,13 +40,14 @@
 	},
 
   "custom_fields": {
+    "category": {
+      "!": ["content", "tags"],
+      "series": "series",
+      "cover": "image"
+    },
     "page": {
-      "!content": false,
       "background": "image",
       "button": "link"
-    },
-    "category": {
-      "cover": "image"
     }
   }
 }

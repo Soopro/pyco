@@ -239,9 +239,8 @@ class Theme(FlatFile):
         _custom_fields = self.data.get('custom_fields') or {}
 
         def _get_hidden_fields(opts):
-            return [process_slug(k) for k, v in opts if k.startswith('!')]
-
-        hidden_fields = {k: _get_hidden_fields(v.items())
+            return [process_slug(i) for i in opts.get('!', [])]
+        hidden_fields = {k: _get_hidden_fields(v)
                          for k, v in _custom_fields.items()}
         return hidden_fields
 

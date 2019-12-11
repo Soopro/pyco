@@ -101,6 +101,10 @@ def content_detail(content_type, slug):
     # category
     site = current_app.db.Site()
     terms = site.categories.get('terms', [])
+
+    def display_field(key):
+        return key not in hidden_field_keys
+
     return render_template('content_detail.html',
                            document=document,
                            preview_url=preview_url,
@@ -108,7 +112,7 @@ def content_detail(content_type, slug):
                            content=document['content'],
                            content_type=curr_content_type,
                            custom_fields=custom_fields,
-                           hidden_field_keys=hidden_field_keys,
+                           display_field=display_field,
                            terms=terms)
 
 
@@ -153,7 +157,6 @@ def update_content(content_type, slug):
     document['status'] = parse_int(status)
     document['content'] = content
     document.save()
-    print(document['terms'])
     flash('SAVED')
     return_url = url_as('.content_detail',
                         content_type=content_type,
@@ -214,6 +217,7 @@ def _find_custom_fields(template):
 def _find_hidden_field_keys(template):
     theme = current_app.db.Theme(current_app.current_theme_dir)
     hidden_field_keys = theme.hidden_fields.get(template)
+    print(hidden_field_keys, template, theme.hidden_fields)
     if isinstance(hidden_field_keys, list):
         return hidden_field_keys
     else:

@@ -47,7 +47,6 @@
         <h4>{{_('Write Content')}}</h4>
       </div>
       <div class="card-body">
-        {% if 'title' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Title')}}</label>
           <input class="form-control"
@@ -56,9 +55,8 @@
                  maxlength="60"
                  value="{{meta.title}}">
         </div>
-        {% endif %}
-        {% if 'content' not in hidden_field_keys %}
-        <div class="form-group content-editor">
+        {% if display_field('content') %}
+        <div class="form-group">
           <label>{{_('Content')}}</label>
           <textarea class="summernote form-control"
                     placeholder="{{_('Type content here.')}}"
@@ -67,7 +65,7 @@
                     name="content">{{content|shortcode}}</textarea>
         </div>
         {% endif %}
-        {% if 'tags' not in hidden_field_keys %}
+        {% if display_field('tags') %}
         <div class="form-group">
           <label>{{_('Tags')}}</label>
           <input class="form-control inputtags"
@@ -82,13 +80,13 @@
     {% if custom_fields %}
     <div class="card">
       <div class="card-header">
-        <h4>{{_('Custom Fields')}}</h4>
+        <h4>{{_('Custom Data Fields')}}</h4>
       </div>
       <div class="card-body">
         {% for k, v in custom_fields.items() %}
           {% if v in ['', 'text'] %}
-          <div class="form-group content-editor">
-            <label>{{k}}</label>
+          <div class="form-group">
+            <label>{{k|title}}</label>
             <input class="form-control"
                    type="text"
                    name="{{k}}"
@@ -96,8 +94,8 @@
                    value="{{meta[k]}}">
           </div>
           {% elif v == 'series' %}
-          <div class="form-group content-editor">
-            <label>{{k}}</label>
+          <div class="form-group">
+            <label>{{k|title}}</label>
             <textarea class="form-control"
                       name="{{k}}"
                       rows="6">{{meta[k]}}</textarea>
@@ -106,8 +104,8 @@
             </small>
           </div>
           {% else %}
-          <div class="form-group content-editor">
-            <label>{{k}}</label>
+          <div class="form-group">
+            <label>{{k|title}}</label>
             <textarea class="form-control"
                       name="{{k}}">{{meta[k]}}</textarea>
             <small class="form-text text-muted">
@@ -148,7 +146,7 @@
           {% endif %}
         </div>
         <hr>
-        {% if 'date' not in hidden_field_keys %}
+        {% if display_field('date') %}
         <div class="form-group">
           <label>{{_('Date')}}</label>
           <input class="form-control datepicker"
@@ -171,14 +169,14 @@
             </option>
           </select>
         </div>
-        {% if 'description' not in hidden_field_keys %}
+        {% if display_field('description') %}
         <div class="form-group">
           <label>{{_('Description')}}</label>
           <textarea class="form-control"
                     name="description">{{meta.description}}</textarea>
         </div>
         {% endif %}
-        {% if 'tags' not in hidden_field_keys %}
+        {% if display_field('featured_img_src') %}
         <div class="form-group">
           <label>{{_('Featured Image')}}</label>
           {% if meta.featured_img and meta.featured_img.src %}
@@ -209,7 +207,6 @@
           </div>
         </div>
         {% endif %}
-        {% if 'tags' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Template')}}</label>
           <select class="form-control"
@@ -222,8 +219,7 @@
             {% endfor %}
           </select>
         </div>
-        {% endif %}
-        {% if 'tags' not in hidden_field_keys and theme.category %}
+        {% if display_field('terms') and theme.category %}
         <div class="form-group">
           <label>{{_('Category')}}</label>
           <select class="form-control"
@@ -240,7 +236,7 @@
         </div>
         {% endif %}
 
-        {% if 'parent' not in hidden_field_keys %}
+        {% if display_field('parent') %}
         <div class="form-group">
           <label>{{_('Parent')}}</label>
           <input class="form-control"
@@ -252,7 +248,7 @@
           </small>
         </div>
         {% endif %}
-        {% if 'priority' not in hidden_field_keys %}
+        {% if display_field('priority') %}
         <div class="form-group">
           <label>{{_('Priority')}}</label>
           <input class="form-control"
@@ -264,7 +260,7 @@
           </small>
         </div>
         {% endif %}
-        {% if 'redirect' not in hidden_field_keys %}
+        {% if display_field('redirect') %}
         <div class="form-group">
           <label>{{_('Redirect')}}</label>
           <input class="form-control"
@@ -304,7 +300,7 @@
   var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
 
   $('.summernote').summernote({
-    height: 640,
+    height: 480,
     dialogsInBody: true,
     lang: editor_lang,
     callbacks: {},

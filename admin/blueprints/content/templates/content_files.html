@@ -25,8 +25,8 @@
             <tr>
               <th class="text-center">{{_('NO.')}}</th>
               <th>{{_('Title')}}</th>
+              <th>{{_('Template')}}</th>
               <th>{{_('Updated Date')}}</th>
-              <th>{{_('Creation Date')}}</th>
               <th class="text-center">{{_('Action')}}</th>
             </tr>
             {% for content in contents %}
@@ -40,8 +40,8 @@
                 {% endif %}
                 {{content.meta.title or content.slug}}
               </td>
+              <td>{{content.template}}</td>
               <td>{{content.updated|dateformat}}</td>
-              <td>{{content.creation|dateformat}}</td>
               <td>
                 <div class="row">
                   <div class="col-lg-6 text-center">
