@@ -54,6 +54,8 @@
                     </a>
                   </div>
                   <div class="col-lg-6 d-lg-block d-none text-right">
+                    {% if content.slug != 'index' or
+                          content.content_type != 'page' %}
                     <a class="btn btn-danger"
                        aria-label="{{_('Delete')}}"
                        href="{{url_as('.remove',
@@ -61,6 +63,7 @@
                                        slug=content.slug)}}">
                       <i class="fas fa-trash"></i>
                     </a>
+                    {% endif %}
                   </div>
                 </div>
               </td>
