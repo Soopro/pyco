@@ -13,131 +13,147 @@
   <div class="card-body">
     <div class="fields">
       {% for item in _series %}
-      <div class="form-group">
-        <label>{{_('Text')}}</label>
-        <input class="form-control"
-                 type="text"
-                 name="title"
-                 maxlength="60"
-                 placeholder="{{_('Title')}}"
-                 value="{{item.title}}">
-          <input class="form-control"
-               type="text"
-               name="caption"
-               maxlength="360"
-               placeholder="{{_('Caption')}} {{_('(Optional)')}}"
-               value="item.caption">
-      </div>
-
-      <div class="form-group">
-        <label>{{_('Caption')}}</label>
-        <input class="form-control"
-               type="text"
-               name="caption"
-               maxlength="360"
-               value="{{item.caption}}">
-      </div>
-
-      <div class="form-group media-preview-field">
-        <label>{{_('Image URL')}}</label>
-        <div class="media-preview">
-          <a href="#" target="_blank">
-            <img class="img-figure" src="">
-          </a>
+      <div class="field-entry">
+        <div class="mb-3 d-flex">
+          <h4><span class="badge badge-light">#{{loop.index0}}</span></h4>
+          <button class="btn btn-outline-danger btn-icon remove-field ml-auto"
+                  aria-label="{{_('Remove')}}"
+                  type="button">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-        <div class="input-group">
-          <input class="form-control media-input"
+        <div class="form-group">
+          <label>{{_('Text')}}</label>
+          <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="title"
+                   maxlength="60"
+                   placeholder="{{_('Title')}}"
+                   value="{{item.title}}">
+            <input class="form-control"
                  type="text"
-                 name="src"
-                 value="{{item.src}}">
-          <div class="input-group-append">
-            <button class="btn btn-secondary"
-                    aria-lable="{{_('Select Image')}}"
-                    data-toggle="modal"
-                    data-target="#MODAL-MEDIAREPO"
-                    data-input="src"
-                    type="button">
-              <i class="fas fa-image"></i>
-            </button>
+                 name="caption"
+                 maxlength="360"
+                 placeholder="{{_('Caption')}} {{_('(Optional)')}}"
+                 value="{{item.caption}}">
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>{{_('Link to URL')}}</label>
-        <div class="input-group">
-          <input class="form-control"
-                 type="text"
-                 name="link"
-                 maxlength="360"
-                 placeholder="URL, http://somesite.com"
-                 value="{{item.link}}">
-          <input class="form-control col-md-3 col-4"
-                 type="text"
-                 name="target"
-                 maxlength="60"
-                 placeholder="_self"
-                 value="{{item.target}}">
+        <div class="form-group media-preview-field">
+          <label>{{_('Image URL')}}</label>
+          <div class="media-preview">
+            <a href="#" target="_blank">
+              <img class="img-figure" src="">
+            </a>
+          </div>
+          <div class="input-group">
+            <input class="form-control media-input"
+                   type="text"
+                   name="src"
+                   value="{{item.src}}">
+            <div class="input-group-append">
+              <button class="btn btn-secondary"
+                      aria-lable="{{_('Select Image')}}"
+                      data-toggle="modal"
+                      data-target="#MODAL-MEDIAREPO"
+                      data-input="src"
+                      type="button">
+                <i class="fas fa-image"></i>
+              </button>
+            </div>
+          </div>
         </div>
+
+        <div class="form-group">
+          <label>{{_('Link to URL')}}</label>
+          <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="link"
+                   maxlength="360"
+                   placeholder="URL, http://somesite.com"
+                   value="{{item.link}}">
+            <input class="form-control col-md-3 col-4"
+                   type="text"
+                   name="target"
+                   maxlength="60"
+                   placeholder="_self"
+                   value="{{item.target}}">
+          </div>
+        </div>
+        <hr>
       </div>
       {% endfor %}
     </div>
 
     <div class="TMPL">
-      <div class="form-group">
-        <label>{{_('Text')}}</label>
-        <div class="input-group">
-          <input class="form-control"
-                 type="text"
-                 name="title"
-                 maxlength="60"
-                 placeholder="{{_('Title')}}"
-                 value="">
-          <input class="form-control"
-               type="text"
-               name="caption"
-               maxlength="360"
-               placeholder="{{_('Caption')}} {{_('(Optional)')}}"
-               value="">
+      <div class="field-entry">
+        <div class="mb-3 d-flex">
+          <h4><span class="badge badge-light">#{{_('New')}}</span></h4>
+          <button class="btn btn-outline-danger btn-icon remove-field ml-auto"
+                  aria-label="{{_('Remove')}}"
+                  type="button">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-      </div>
-
-      <div class="form-group">
-        <label>{{_('Image URL')}}</label>
-        <div class="input-group">
-          <input class="form-control media-input"
+        <div class="form-group">
+          <label>{{_('Text')}}</label>
+          <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="title"
+                   maxlength="60"
+                   placeholder="{{_('Title')}}"
+                   value="">
+            <input class="form-control"
                  type="text"
-                 name="src"
+                 name="caption"
+                 maxlength="360"
+                 placeholder="{{_('Caption')}} {{_('(Optional)')}}"
                  value="">
-          <div class="input-group-append">
-            <button class="btn btn-secondary"
-                    aria-lable="{{_('Select Image')}}"
-                    data-toggle="modal"
-                    data-target="#MODAL-MEDIAREPO"
-                    data-input="src"
-                    type="button">
-              <i class="fas fa-image"></i>
-            </button>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label>{{_('Link to URL')}}</label>
-        <div class="input-group">
-          <input class="form-control"
-                 type="text"
-                 name="link"
-                 maxlength="360"
-                 placeholder="URL, http://somesite.com"
-                 value="">
-          <input class="form-control col-md-3 col-4"
-                 type="text"
-                 name="target"
-                 maxlength="60"
-                 placeholder="_self"
-                 value="">
+
+        <div class="form-group">
+          <label>{{_('Image URL')}}</label>
+          <div class="input-group">
+            <input class="form-control media-input"
+                   type="text"
+                   name="src"
+                   value="">
+            <div class="input-group-append">
+              <button class="btn btn-secondary"
+                      aria-lable="{{_('Select Image')}}"
+                      data-toggle="modal"
+                      data-target="#MODAL-MEDIAREPO"
+                      data-input="src"
+                      type="button">
+                <i class="fas fa-image"></i>
+              </button>
+            </div>
+          </div>
         </div>
+        <div class="form-group">
+          <label>{{_('Link to URL')}}</label>
+          <div class="input-group">
+            <input class="form-control"
+                   type="text"
+                   name="link"
+                   maxlength="360"
+                   placeholder="URL, http://somesite.com"
+                   value="">
+            <input class="form-control col-md-3 col-4"
+                   type="text"
+                   name="target"
+                   maxlength="60"
+                   placeholder="_self"
+                   value="">
+          </div>
+        </div>
+        <hr>
       </div>
+
     </div>
 
   </div>

@@ -289,4 +289,25 @@ def _update_custom_bg_field():
 
 
 def _update_custom_series_field():
-    return []
+    titles = request.form.getlist('title')
+    captions = request.form.getlist('caption')
+    links = request.form.getlist('link')
+    targets = request.form.getlist('target')
+
+    series = []
+    for idx, title in enumerate(titles):
+        series.append({
+            'title': title or '',
+            'caption': _load_field_list(captions, idx),
+            'link': _load_field_list(links, idx),
+            'target': _load_field_list(targets, idx)
+        })
+
+    return series
+
+
+def _load_field_list(field_list, index):
+    try:
+        return field_list[index]
+    except Exception as e:
+        return ''

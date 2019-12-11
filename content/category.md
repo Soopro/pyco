@@ -12,7 +12,11 @@ Date: '2019-01-01'
 Description: ''
 Featured_img:
   Src: ''
-Features: []
+Features:
+- Caption: ''
+  Link: ''
+  Target: ''
+  Title: '66666'
 Parent: ''
 Priority: 0
 Redirect: ''
@@ -25,6 +29,13 @@ Terms: []
 Title: sbafsdfasdfdsaffds
 
 */
+
+
+
+
+
+
+
 
 
 
