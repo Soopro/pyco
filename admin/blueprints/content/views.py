@@ -130,23 +130,17 @@ def update_content(content_type, slug):
 
     title = request.form.get('title', '')
     description = request.form.get('description', '')
-    featured_img_src = request.form.get('featured_img_src', '')
+    featured_img_src = request.form.get('featured_img', '')
     content = request.form.get('content', '')
-    custom_fields = {key: {'value': request.form.get(key, ''), 'type': kind}
-                     for key, kind in _find_custom_fields(template).items()}
 
-    meta = {k: _parse_custom_field(v['value'], v['type'])
-            for k, v in custom_fields.items()}
-    meta.update({
+    document = current_app.db.Document.find_one(slug, content_type)
+    document['meta'].update({
         'title': title,
         'description': description,
         'featured_img': {
             'src': featured_img_src
         }
     })
-
-    document = current_app.db.Document.find_one(slug, content_type)
-    document['meta'] = meta
     document['date'] = date
     document['tags'] = [tag.strip() for tag in tags.split(',')]
     document['terms'] = [term for term in terms if term]
@@ -158,6 +152,33 @@ def update_content(content_type, slug):
     document['content'] = content
     document.save()
     flash('SAVED')
+    return_url = url_as('.content_detail',
+                        content_type=content_type,
+                        slug=slug)
+    return redirect(return_url)
+
+
+@blueprint.route('/<content_type>/<slug>/custom', methods=['POST'])
+@login_required
+def update_custom_field(content_type, slug):
+    custom_key = request.form.get('key')
+    custom_type = request.form.get('type', 'text')
+
+    document = current_app.db.Document.find_one(slug, content_type)
+
+    if custom_type == 'text':
+        result = _update_custom_text_field()
+    elif custom_type == 'media':
+        result = _update_custom_media_field()
+    elif custom_type == 'series':
+        result = _update_custom_series_field()
+    elif custom_type == 'script':
+        result = _update_custom_script_field()
+    elif custom_type == 'hardcore':
+        result = _update_custom_hardcore_field()
+
+    document['meta'][custom_key] = result
+    document.save()
     return_url = url_as('.content_detail',
                         content_type=content_type,
                         slug=slug)
@@ -224,8 +245,34 @@ def _find_hidden_field_keys(template):
         return []
 
 
-def _parse_custom_field(field_val, field_type):
-    if field_type in ['', 'text']:
-        return field_val
-    else:
-        return str_eval(field_val, field_val)
+def _update_custom_text_field():
+    text = request.form.get('text')
+    return text or ''
+
+
+def _update_custom_script_field():
+    script = request.form.get('script')
+    return script or ''
+
+
+def _update_custom_hardcore_field():
+    code = request.form.get('code')
+    return str_eval(code, '')
+
+
+def _update_custom_media_field():
+    title = request.form.get('title')
+    src = request.form.get('src')
+    link = request.form.get('link')
+    target = request.form.get('target')
+
+    return {
+        'title': title or '',
+        'src': src or '',
+        'link': link or '',
+        'target': target or ''
+    }
+
+
+def _update_custom_series_field():
+    return []

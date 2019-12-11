@@ -70,9 +70,9 @@ def upload():
             file.save(file_path)
             uploaded_files.append(file.filename)
     for f in uploaded_files:
-        flash('UPLOADED: {}'.format(f))
+        flash('{}'.format(f), 'MEDIA_UPLOADED')
     for f in upload_fails:
-        flash('EXISTS: {}'.format(f), 'warning')
+        flash('{}'.format(f), 'MEDIA_EXISTS')
     return redirect(request.referrer)
 
 

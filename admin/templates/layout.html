@@ -34,15 +34,26 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for style, message in messages %}
-          <div class="alert
-                      alert-{{'success' if style == 'message' else style}}
-                      alert-dismissible alert-has-icon
-                      show fade">
+          {% if style == 'MEDIA_UPLOADED' %}
+            {% set flash_style = 'success' %}
+            {% set flash_msg = _('MEDIA_UPLOADED: %s', message) %}
+          {% elif style == 'MEDIA_EXISTS' %}
+            {% set flash_style = 'warning' %}
+            {% set flash_msg = _('MEDIA_EXISTS: %s', message) %}
+          {% elif style == 'message' %}
+            {% set flash_style = 'success' %}
+            {% set flash_msg = _(message) %}
+          {% else %}
+            {% set flash_style = style %}
+            {% set flash_msg = _(message) %}
+          {% endif %}
+          <div class="alert alert-{{flash_style}}
+                      alert-dismissible alert-has-icon show fade">
             <div class="alert-icon mt-0">
               <i class="fas fa-exclamation-triangle"></i>
             </div>
             <div class="alert-body">
-              <span>{{_(message)}}</span>
+              <span>{{flash_msg}}</span>
               <button class="close" data-dismiss="alert">
                 <span>×</span>
               </button>

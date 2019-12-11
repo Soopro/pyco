@@ -41,12 +41,13 @@
 
   "custom_fields": {
     "category": {
-      "!": ["content", "tags"],
+      "!": ["content", "tags", "description", "featured_img", "terms"],
       "series": "series",
-      "cover": "image"
+      "cover": "media",
+      "test": "text"
     },
     "page": {
-      "background": "image",
+      "background": "media",
       "button": "link"
     }
   }

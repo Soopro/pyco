@@ -35,11 +35,6 @@
   </a>
 </p>
 
-<form class="prevent-enter-key"
-      action="{{url_as('.update_content',
-                        content_type=document.content_type,
-                        slug=document.slug)}}"
-      method="POST">
 <div class="row">
   <div class="col-lg-8">
     <div class="card">
@@ -49,16 +44,18 @@
       <div class="card-body">
         <div class="form-group">
           <label>{{_('Title')}}</label>
-          <input class="form-control"
+          <input class="form-control shadow-field"
                  type="text"
                  name="title"
                  maxlength="60"
+                 data-form="FORM-CONTENT"
                  value="{{meta.title}}">
         </div>
         {% if display_field('content') %}
         <div class="form-group">
           <label>{{_('Content')}}</label>
           <textarea class="summernote form-control"
+                    data-form="FORM-CONTENT"
                     placeholder="{{_('Type content here.')}}"
                     locale="{{locale}}"
                     media-modal="#MODAL-MEDIAREPO"
@@ -68,9 +65,10 @@
         {% if display_field('tags') %}
         <div class="form-group">
           <label>{{_('Tags')}}</label>
-          <input class="form-control inputtags"
+          <input class="form-control inputtags shadow-field"
                  type="text"
                  name="tags"
+                 data-form="FORM-CONTENT"
                  value="{{document.tags|join(',')}}">
         </div>
         {% endif %}
@@ -78,202 +76,190 @@
     </div>
 
     {% if custom_fields %}
-    <div class="card">
-      <div class="card-header">
-        <h4>{{_('Custom Data Fields')}}</h4>
-      </div>
-      <div class="card-body">
-        {% for k, v in custom_fields.items() %}
-          {% if v in ['', 'text'] %}
-          <div class="form-group">
-            <label>{{k|title}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="{{k}}"
-                   maxlength="360"
-                   value="{{meta[k]}}">
-          </div>
-          {% elif v == 'series' %}
-          <div class="form-group">
-            <label>{{k|title}}</label>
-            <textarea class="form-control"
-                      name="{{k}}"
-                      rows="6">{{meta[k]}}</textarea>
-            <small class="form-text text-muted">
-              {{_('* For expert only, must use JSON format.')}}
-            </small>
-          </div>
-          {% else %}
-          <div class="form-group">
-            <label>{{k|title}}</label>
-            <textarea class="form-control"
-                      name="{{k}}">{{meta[k]}}</textarea>
-            <small class="form-text text-muted">
-              {{_('* For expert only, must use JSON format.')}}
-            </small>
-          </div>
-          {% endif %}
-        {% endfor %}
-      </div>
+    <h2 class="section-title">
+      {{_('Data Fields')}}
+    </h2>
+    <p class="section-lead">
+      {{_('Please note, each data fields must save separately, other modified but unsaved data will not be saved.')}}
+    </p>
+    <div>
+      {% for key, opts in custom_fields.items() %}
+      {% if opts.type in ['', 'text'] %}
+        {% include '_custom_text.tmpl' %}
+      {% elif opts.type == 'media' %}
+        {% include '_custom_media.tmpl' %}
+      {% elif opts.type == 'series' %}
+
+      {% elif opts.type == 'script' %}
+        {% include '_custom_script.tmpl' %}
+      {% else %}
+        {% include '_custom_hardcore.tmpl' %}
+      {% endif %}
+      {% endfor %}
     </div>
     {% endif %}
   </div>
 
   <div class="col-lg-4">
-    <div class="card">
-      <div class="card-header">
-        <h4>{{_('Properties')}}</h4>
-      </div>
-      <div class="card-body">
-        <div class="d-flex">
-          <button class="btn btn-primary">
-            {{_('Save Content')}}
-          </button>
-          <a class="btn"
-             aria-label="{{_('Save Content')}}"
-             href="{{preview_url}}"
-             target="_blank">
-            <i class="fa fa-link"></i>
-          </a>
-          {% if document.slug != 'index' or document.content_type != 'page' %}
-          <a class="btn btn-danger ml-auto"
-             aria-label="{{_('Delete')}}"
-             href="{{url_as('.remove',
-                             content_type=document.content_type,
-                             slug=document.slug)}}">
-            <i class="fas fa-trash"></i>
-          </a>
-          {% endif %}
+    <form name="FORM-CONTENT"
+          method="POST"
+          action="{{url_as('.update_content',
+                            content_type=document.content_type,
+                            slug=document.slug)}}">
+      <input type="hidden" name="title" value="{{meta.title}}">
+      <input type="hidden" name="content" value="{{content}}">
+      <input type="hidden" name="tags" value="{{document.tags|join(',')}}">
+      <div class="card">
+        <div class="card-header">
+          <h4>{{_('Properties')}}</h4>
         </div>
-        <hr>
-        {% if display_field('date') %}
-        <div class="form-group">
-          <label>{{_('Date')}}</label>
-          <input class="form-control datepicker"
-                 type="text"
-                 name="date"
-                 value="{{document.date}}">
-        </div>
-        {% endif %}
-        <div class="form-group">
-          <label>{{_('Publish Status')}}</label>
-          <select class="form-control"
-                  name="status">
-            <option value="0"
-                    {{'selected' if document.status==0}}>
-              {{_('Draft')}}
-            </option>
-            <option value="1"
-                    {{'selected' if document.status==1}}>
-              {{_('Published')}}
-            </option>
-          </select>
-        </div>
-        {% if display_field('description') %}
-        <div class="form-group">
-          <label>{{_('Description')}}</label>
-          <textarea class="form-control"
-                    name="description">{{meta.description}}</textarea>
-        </div>
-        {% endif %}
-        {% if display_field('featured_img_src') %}
-        <div class="form-group">
-          <label>{{_('Featured Image')}}</label>
-          {% if meta.featured_img and meta.featured_img.src %}
-          <div class="media-preview">
-            <a href="{{meta.featured_img.src|shortcode}}"
+        <div class="card-body">
+          <div class="d-flex">
+            <button class="btn btn-primary">
+              {{_('Save Content')}}
+            </button>
+            <a class="btn"
+               aria-label="{{_('Save Content')}}"
+               href="{{preview_url}}"
                target="_blank">
-              <img class="img-figure"
-                   src="{{meta.featured_img.src|shortcode}}">
+              <i class="fa fa-link"></i>
             </a>
+            {% if document.slug != 'index' or document.content_type != 'page' %}
+            <a class="btn btn-danger ml-auto"
+               aria-label="{{_('Delete')}}"
+               href="{{url_as('.remove',
+                               content_type=document.content_type,
+                               slug=document.slug)}}">
+              <i class="fas fa-trash"></i>
+            </a>
+            {% endif %}
+          </div>
+          <hr>
+          {% if display_field('date') %}
+          <div class="form-group">
+            <label>{{_('Date')}}</label>
+            <input class="form-control datepicker"
+                   type="text"
+                   name="date"
+                   value="{{document.date}}">
           </div>
           {% endif %}
-          <div class="input-group">
-            <input class="form-control media-input"
-                   type="text"
-                   name="featured_img_src"
-                   value="{{meta.featured_img.src
-                            if meta.featured_img else ''}}">
-            <div class="input-group-append">
-              <button class="btn btn-primary"
-                      aria-lable="{{_('Select Image')}}"
-                      data-toggle="modal"
-                      data-target="#MODAL-MEDIAREPO"
-                      data-input="featured_img_src"
-                      type="button">
-                <i class="fas fa-image"></i>
-              </button>
+          <div class="form-group">
+            <label>{{_('Publish Status')}}</label>
+            <select class="form-control"
+                    name="status">
+              <option value="0"
+                      {{'selected' if document.status==0}}>
+                {{_('Draft')}}
+              </option>
+              <option value="1"
+                      {{'selected' if document.status==1}}>
+                {{_('Published')}}
+              </option>
+            </select>
+          </div>
+          {% if display_field('description') %}
+          <div class="form-group">
+            <label>{{_('Description')}}</label>
+            <textarea class="form-control"
+                      name="description">{{meta.description}}</textarea>
+          </div>
+          {% endif %}
+          {% if display_field('featured_img') %}
+          <div class="form-group media-input-field">
+            <label>{{_('Featured Image')}}</label>
+            <div class="media-preview">
+              <a href="#" target="_blank">
+                <img class="img-figure" src="">
+              </a>
+            </div>
+            <div class="input-group">
+              <input class="form-control media-input"
+                     type="text"
+                     name="featured_img"
+                     value="{{meta.featured_img.src
+                              if meta.featured_img else ''}}">
+              <div class="input-group-append">
+                <button class="btn btn-primary"
+                        aria-lable="{{_('Select Image')}}"
+                        data-toggle="modal"
+                        data-target="#MODAL-MEDIAREPO"
+                        data-input="featured_img"
+                        type="button">
+                  <i class="fas fa-image"></i>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        {% endif %}
-        <div class="form-group">
-          <label>{{_('Template')}}</label>
-          <select class="form-control"
-                  name="template">
-            {% for tmpl in theme.templates %}
-            <option value="{{tmpl}}"
-                    {{'selected' if document.template==tmpl}}>
-              {{tmpl}}
-            </option>
-            {% endfor %}
-          </select>
-        </div>
-        {% if display_field('terms') and theme.category %}
-        <div class="form-group">
-          <label>{{_('Category')}}</label>
-          <select class="form-control"
-                  data-height="100%"
-                  name="terms"
-                  multiple>
-            {% for term in terms %}
-            <option value="{{term.key}}"
-                    {{'selected' if term.key in document.terms}}>
-              {{term.meta.name}}
-            </option>
-            {% endfor %}
-          </select>
-        </div>
-        {% endif %}
+          {% endif %}
+          <div class="form-group">
+            <label>{{_('Template')}}</label>
+            <select class="form-control"
+                    name="template">
+              {% for tmpl in theme.templates %}
+              <option value="{{tmpl}}"
+                      {{'selected' if document.template==tmpl}}>
+                {{tmpl}}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          {% if display_field('terms') and theme.category %}
+          <div class="form-group">
+            <label>{{_('Category')}}</label>
+            <select class="form-control"
+                    data-height="100%"
+                    name="terms"
+                    multiple>
+              {% for term in terms %}
+              <option value="{{term.key}}"
+                      {{'selected' if term.key in document.terms}}>
+                {{term.meta.name}}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
 
-        {% if display_field('parent') %}
-        <div class="form-group">
-          <label>{{_('Parent')}}</label>
-          <input class="form-control"
-                 type="text"
-                 name="parent"
-                 value="{{document.parent}}">
-          <small class="form-text text-muted">
-            {{_('* Use parent content slug.')}}
-          </small>
+          {% if display_field('parent') %}
+          <div class="form-group">
+            <label>{{_('Parent')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="parent"
+                   value="{{document.parent}}">
+            <small class="form-text text-muted">
+              {{_('* Use parent content slug.')}}
+            </small>
+          </div>
+          {% endif %}
+          {% if display_field('priority') %}
+          <div class="form-group">
+            <label>{{_('Priority')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="priority"
+                   value="{{document.priority}}">
+            <small class="form-text text-muted">
+              {{_('* The priority of the content when sorting.')}}
+            </small>
+          </div>
+          {% endif %}
+          {% if display_field('redirect') %}
+          <div class="form-group">
+            <label>{{_('Redirect')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="redirect"
+                   value="{{document.redirect}}">
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
-        {% if display_field('priority') %}
-        <div class="form-group">
-          <label>{{_('Priority')}}</label>
-          <input class="form-control"
-                 type="text"
-                 name="priority"
-                 value="{{document.priority}}">
-          <small class="form-text text-muted">
-            {{_('* The priority of the content when sorting.')}}
-          </small>
-        </div>
-        {% endif %}
-        {% if display_field('redirect') %}
-        <div class="form-group">
-          <label>{{_('Redirect')}}</label>
-          <input class="form-control"
-                 type="text"
-                 name="redirect"
-                 value="{{document.redirect}}">
-        </div>
-        {% endif %}
       </div>
-    </div>
+    </form>
   </div>
+
 </div>
-</form>
 {% endblock %}
 {% block page_scripts %}
 <script src="{{static_url}}/modules/moment.min.js"></script>
@@ -295,15 +281,36 @@
 
   $(".inputtags").tagsinput('items');
 
+  /* shadow fields */
+  // use to to reflect a form field to another form.
+  $('.shadow-field').each(function(){
+    var field_name = $(this).attr('name');
+    var target_form = $('form[name='+$(this).data('form')+']');
+    var target_field = target_form.find('input[name='+field_name+']');
+    if (target_field.length == 1) {
+      $(this).on('change', function(e){
+        target_field.val($(this).val());
+      });
+    } else {
+      console.error('shadow-field require only 1 target field.')
+    }
+  });
 
   /* summernote */
   var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
-
+  var sh_form_name = $('.summernote').data('form');
+  var sh_field_name = $('.summernote').attr('name');
+  var sh_form = $('form[name="'+sh_form_name+'"]');
+  var shadow_field = sh_form.find('input[name="'+sh_field_name+'"]');
   $('.summernote').summernote({
     height: 480,
     dialogsInBody: true,
     lang: editor_lang,
-    callbacks: {},
+    callbacks: {
+      onChange: function(e) {
+        if (shadow_field.length == 1){shadow_field.val(e)}
+      }
+    },
     toolbar: [
       // [groupName, [list of button]]
       ['style', ['bold', 'italic', 'underline', 'clear']],

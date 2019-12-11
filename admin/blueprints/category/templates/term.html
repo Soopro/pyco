@@ -91,17 +91,13 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group media-input-field">
           <label>{{_('Poster')}}</label>
-          {% if term.meta.figure %}
           <div class="media-preview">
-            <a href="{{term.meta.figure|shortcode}}"
-               target="_blank">
-              <img class="img-figure"
-                   src="{{term.meta.figure|shortcode}}">
+            <a href="#" target="_blank">
+              <img class="img-figure" src="">
             </a>
           </div>
-          {% endif %}
           <div class="input-group">
             <input class="form-control media-input"
                    type="text"

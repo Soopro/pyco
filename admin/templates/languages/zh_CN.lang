@@ -137,6 +137,10 @@
     "msgstr": "外观"
   },
   {
+    "msgid": "Reset",
+    "msgstr": "重制"
+  },
+  {
     "msgid": "Save",
     "msgstr": "保存"
   },
@@ -538,8 +542,12 @@
     "msgstr": "重定向"
   },
   {
-    "msgid": "Custom Data Fields",
-    "msgstr": "自定义数据"
+    "msgid": "Data Fields",
+    "msgstr": "数据表单"
+  },
+  {
+    "msgid": "Please note, each data fields must save separately, other modified but unsaved data will not be saved.",
+    "msgstr": "请注意，每项数据都要单独保存，此时其他已修改但未保存的数据将不会保存。"
   },
   {
     "msgid": "All Category Terms",
@@ -675,8 +683,12 @@
     "msgstr": "已刷新。"
   },
   {
-    "msgid": "MEDIA_UPLOADED",
-    "msgstr": "媒体文件已经上传。"
+    "msgid": "MEDIA_UPLOADED: %s",
+    "msgstr": "媒体文件上传：%s"
+  },
+  {
+    "msgid": "MEDIA_EXISTS: %s",
+    "msgstr": "媒体文件重复：%s"
   },
   {
     "msgid": "WRONG_PASSCODE",

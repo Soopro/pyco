@@ -1,0 +1,28 @@
+{% set _value = meta[key] or '' %}
+<form action="{{url_as('.update_custom_field',
+                       content_type=document.content_type,
+                       slug=document.slug)}}"
+      method="POST">
+<input type="hidden" name="type" value="hardcore">
+<input type="hidden" name="key" value="{{key}}">
+<div class="card">
+  <div class="card-header">
+    <h4>{{k|title}}</h4>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <label>{{_('Code')}}</label>
+      <textarea class="form-control"
+                name="code">{{_value}}</textarea>
+      <small class="form-text text-muted">
+        {{_('* For expert only, must use JSON format.')}}
+      </small>
+    </div>
+  </div>
+  <div class="card-footer text-right">
+    <button class="btn btn-primary">
+      {{_('Save')}}
+    </button>
+  </div>
+</div>
+</form>

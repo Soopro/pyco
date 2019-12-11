@@ -227,11 +227,19 @@ class Theme(FlatFile):
         _custom_fields = self.data.get('custom_fields') or {}
 
         def _get_fields(opts):
-            return {process_slug(k): v for k, v in opts
-                    if isinstance(v, str) and not k.startswith('!')}
+            fields = {}
+            for k, v in opts.items():
+                if k.startswith('!'):
+                    continue
+                elif isinstance(v, str):
+                    fields[process_slug(k)] = {'type': v}
+                elif isinstance(v, dict):
+                    fields[process_slug(k)] = {'type': v.get('type', '')}
+                else:
+                    fields[process_slug(k)] = {'type': ''}
+            return fields
 
-        custom_fields = {k: _get_fields(v.items())
-                         for k, v in _custom_fields.items()}
+        custom_fields = {k: _get_fields(v) for k, v in _custom_fields.items()}
         return custom_fields
 
     @property
@@ -239,7 +247,7 @@ class Theme(FlatFile):
         _custom_fields = self.data.get('custom_fields') or {}
 
         def _get_hidden_fields(opts):
-            return [process_slug(i) for i in opts.get('!', [])]
+            return [i for i in opts.get('!', [])]
         hidden_fields = {k: _get_hidden_fields(v)
                          for k, v in _custom_fields.items()}
         return hidden_fields

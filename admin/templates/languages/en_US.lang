@@ -25,8 +25,12 @@
     "msgstr": "Refreshed."
   },
   {
-    "msgid": "MEDIA_UPLOADED",
-    "msgstr": "Media has been uploaded."
+    "msgid": "MEDIA_UPLOADED: %s",
+    "msgstr": "Media has been uploaded: %s"
+  },
+  {
+    "msgid": "MEDIA_EXISTS: %s",
+    "msgstr": "Media already exists: %s"
   },
   {
     "msgid": "WRONG_PASSCODE",

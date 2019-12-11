@@ -14,6 +14,13 @@ $(document).ready(function() {
     $(this).find('button.close').click();
   });
 
+  /* form */
+  $('form').each(function(){
+    var form = $(this);
+    form.find('.reset-form').on('click', function(){
+      form.trigger("reset");
+    });
+  });
 
   $('.multientry-form').each(function(){
     var form = $(this);
@@ -48,14 +55,12 @@ $(document).ready(function() {
   $('.file-uploader').each(function(){
     var uploader = $(this);
     uploader.find('input[name="file"]').on('change', function(e){
-      var target = e.currentTarget || e.target;
-      if (target && target.value) {
+      if ($(this).val()) {
         uploader.submit();
       }
     });
     uploader.find('input[name="files"][multiple]').on('change', function(e){
-      var target = e.currentTarget || e.target;
-      if (target && target.value) {
+      if ($(this).val()) {
         var limit = parseInt($(this).attr('maxlength')) || 60;
         if (this.files.length <= limit) {
           uploader.submit();
@@ -75,17 +80,30 @@ $(document).ready(function() {
     }
   });
 
-  /* Media Input */
-  $('.media-input').on('change', function(e){
+  /* Media Input Field */
+  $('.media-input-field').each(function(){
+    var media_input = $(this).find('.media-input');
+    var preview = $(this).find('.media-preview');
+    var preview_link = preview.find('a');
+    var preview_img = preview.find('img');
     var url = $(this).val();
-    var preview = $(this).parent().parent().find('.media-preview');
-    if(url){
-      preview.show();
-      preview.find('a').attr('href', url);
-      preview.find('img').attr('src', url);
-    } else {
-      preview.hide();
+
+    function toggle_preview() {
+      var url = media_input.val();
+      if(url){
+        preview_link.attr('href', url);
+        preview_img.attr('src', url);
+        preview.show();
+      } else {
+        preview_link.attr('href', '#');
+        preview_img.attr('src', '');
+        preview.hide();
+      }
     }
+    toggle_preview();
+    media_input.on('change', function(e){
+      toggle_preview();
+    });
   });
 
   /* Media Repo */
@@ -157,8 +175,7 @@ $(document).ready(function() {
 
     // upload
     uploader.find('input[name="file"]').on('change', function(e){
-      var target = e.currentTarget || e.target;
-      if (target && target.value) {
+      if ($(this).val()) {
         var fd = new FormData();
         var file = this.files[0];
         fd.append('file', file);
