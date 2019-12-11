@@ -126,6 +126,25 @@
                    value=""
                    required>
           </div>
+          {% if content_type.templates|length > 1 %}
+          <div class="form-group">
+            <label>{{_('Template')}}</label>
+            <select class="form-control"
+                    name="template">
+              {% for tmpl in theme.templates
+                 if tmpl in content_type.templates %}
+              <option value="{{tmpl}}"
+                      {{'selected' if content_type.key==tmpl}}>
+                {{tmpl}}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          {% else %}
+          <input type="hidden"
+                 name="template"
+                 value="{{content_type.templates[0]}}">
+          {% endif %}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary"

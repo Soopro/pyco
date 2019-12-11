@@ -60,11 +60,14 @@ def index(content_type):
 @login_required
 def create_content(content_type):
     title = request.form.get('title')
+    template = request.form.get('template', '')
+
     content = current_app.db.Document()
     slug = process_slug(title)
     content.add({
         'slug': slug,
         'content_type': content_type,
+        'template': template,
         'meta': {
             'title': title,
         }

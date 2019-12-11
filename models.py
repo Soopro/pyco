@@ -204,7 +204,7 @@ class Theme(FlatFile):
             'key': k,
             'title': v.get('title') or '',
             'cloaked': bool(v.get('cloaked')),
-            'templates': v.get('templates'),
+            'templates': v.get('templates', [k]),
         } for k, v in _content_types.items()}
         if self.STATIC_TYPE not in content_types:
             content_types.update({
@@ -212,7 +212,7 @@ class Theme(FlatFile):
                     'key': self.STATIC_TYPE,
                     'title': self.STATIC_TYPE_NAME,
                     'cloaked': False,
-                    'templates': None,
+                    'templates': [self.STATIC_TYPE],
                 }
             })
         return content_types
