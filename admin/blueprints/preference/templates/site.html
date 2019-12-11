@@ -26,7 +26,7 @@
               {% endfor %}
             </select>
             <small class="form-text text-muted">
-              {{_('* This setting is work for site only.')}}
+              {{_('* Used to indicate the language of this website.')}}
             </small>
           </div>
           <div class="form-group">
@@ -39,27 +39,49 @@
           <div class="form-group">
             <label>{{_('Description')}}</label>
             <textarea class="form-control"
-                      name="description"
-                      placeholder="...">{{site.meta.description}}</textarea>
+                      placeholder="{{_('Description for this website.')}}"
+                      name="description">{{site.meta.description}}</textarea>
           </div>
 
           <div class="form-group">
             <label>{{_('Logo')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="logo"
-                   value="{{site.meta.logo}}"
-                   placeholder="{{_('Use `[%uplaods%]` as relative url '+
-                                    'of uplaods.')}}">
+            <div class="input-group">
+              <input class="form-control"
+                     type="text"
+                     name="logo"
+                     placeholder="{{_('A URL for site logo image.')}}"
+                     value="{{site.meta.logo}}">
+              <div class="input-group-append">
+                <button class="btn btn-primary"
+                        aria-lable="{{_('Select Image')}}"
+                        data-toggle="modal"
+                        data-target="#MODAL-MEDIAREPO"
+                        data-input="logo"
+                        type="button">
+                  <i class="fas fa-image"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label>{{_('Favicon')}}</label>
-            <input class="form-control"
-                   type="text"
-                   name="favicon"
-                   value="{{site.meta.favicon}}"
-                   placeholder="{{_('Use `[%uplaods%]` as relative url '+
-                                    'of uplaods.')}}">
+            <div class="input-group">
+              <input class="form-control"
+                     type="text"
+                     name="favicon"
+                     placeholder="{{_('A URL for site favicon image.')}}"
+                     value="{{site.meta.favicon}}">
+              <div class="input-group-append">
+                <button class="btn btn-primary"
+                        aria-lable="{{_('Select Image')}}"
+                        data-toggle="modal"
+                        data-target="#MODAL-MEDIAREPO"
+                        data-input="favicon"
+                        type="button">
+                  <i class="fas fa-image"></i>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -89,29 +111,11 @@
         </div>
         <div class="card-body">
           <div class="form-group">
-            <label>{{_('Head Metadata')}}</label>
+            <label>{{_('SEO Metadata')}}</label>
             <textarea class="form-control"
                       name="head_metadata">{{site.meta.head_metadata}}</textarea>
             <small class="form-text text-muted">
-              {{_('* This is usually used in the <head> of the HTML.')}}
-            </small>
-          </div>
-          <div class="form-group">
-            <label>{{_('Social Media')}}</label>
-            <textarea class="form-control"
-                      name="socials"
-                      placeholder="[{'figure': 'http://youruploads.com/figure.jpg', 'key': 'github', 'name': 'Github', 'scirpt': '...script', 'url': 'http://yoursocial.com'}]">{{site.meta.socials or ''}}</textarea>
-            <small class="form-text text-muted">
-              {{_('* For expert only, must use JSON format.')}}
-            </small>
-          </div>
-          <div class="form-group">
-            <label>{{_('Languages')}}</label>
-            <textarea class="form-control"
-                      name="languages"
-                      placeholder="[{'key': 'en_US', 'name': 'English', 'url': 'http://en.yoursite.com'}]">{{site.meta.languages or ''}}</textarea>
-            <small class="form-text text-muted">
-              {{_('* For expert only, must use JSON format.')}}
+              {{_('* A HTML code into <head> of the site.')}}
             </small>
           </div>
           <div class="form-group">
@@ -134,11 +138,12 @@
           </div>
         </div>
         <div class="card-footer">
-          <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
+          <button class="btn btn-warning btn-lg">{{_('Save')}}</button>
         </div>
       </form>
     </div>
   </div>
+
   <div class="col-12 col-md-6 col-lg-6">
     <div class="card">
       <div class="card-header">
@@ -244,6 +249,184 @@
         {% endfor %}
       </div>
     </div>
+
+    <div class="card">
+      <form class="multientry-form"
+            action="{{url_as('.update_site_language')}}"
+            method="POST">
+        <div class="card-header">
+          <h4>{{_('Languages')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="section-title mt-0}}">
+            {{_('Language Switcher Options')}}
+          </div>
+          <div class="fields">
+            {% for lang in site.languages %}
+            <div class="form-group field-entry">
+              <div class="input-group">
+                <input class="form-control col-3"
+                       placeholder="{{_('Key')}}"
+                       value="{{lang.key}}"
+                       name="key"
+                       type="text">
+                <input class="form-control col-3"
+                       placeholder="{{_('Name')}}"
+                       value="{{lang.name}}"
+                       name="name"
+                       type="text">
+                <input class="form-control"
+                       placeholder="{{_('URL, http://lang.yoursite.com')}}"
+                       value="{{lang.url}}"
+                       name="url"
+                       type="text">
+                <div class="input-group-prepend">
+                  <button class="btn btn-danger btn-icon remove-field"
+                          aria-label="{{_('Remove')}}"
+                          type="button">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            <div class="TMPL d-none">
+              <div class="form-group field-entry">
+                <div class="input-group">
+                  <input class="form-control col-3"
+                         placeholder="{{_('Key')}}"
+                         name="key"
+                         type="text">
+                  <input class="form-control col-3"
+                         placeholder="{{_('Name')}}"
+                         name="name"
+                         type="text">
+                  <input class="form-control"
+                         placeholder="{{_('URL, http://lang.yoursite.com')}}"
+                         name="url"
+                         type="text">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-danger btn-icon remove-field"
+                            aria-label="{{_('Remove')}}"
+                            type="button">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <div class="col-6">
+            <button class="btn btn-outline-primary btn-icon add-field"
+                    aria-label="{{_('Add New Language')}}"
+                    type="button">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <div class="col-6 text-right">
+            <button class="btn btn-primary">
+              {{_('Save')}}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <form class="multientry-form"
+            action="{{url_as('.update_site_social')}}"
+            method="POST">
+        <div class="card-header">
+          <h4>{{_('Social Media')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="section-title mt-0}}">
+            {{_('Social Media Channels')}}
+          </div>
+          <div class="fields">
+            {% for social in site.meta.socials %}
+            <div class="form-group field-entry">
+              <div class="input-group">
+                <input class="form-control"
+                       placeholder="{{_('Key')}}"
+                       value="{{social.key}}"
+                       name="key"
+                       type="text">
+                <input class="form-control"
+                       placeholder="{{_('Name')}}"
+                       value="{{social.name}}"
+                       name="name"
+                       type="text">
+                <input class="form-control"
+                       placeholder="{{_('URL, http://social.com/you')}}"
+                       value="{{social.url}}"
+                       name="url"
+                       type="text">
+                <input class="form-control"
+                       placeholder="{{_('Script')}}"
+                       value="{{social.url}}"
+                       name="code"
+                       type="text">
+                <div class="input-group-prepend">
+                  <button class="btn btn-danger btn-icon remove-field"
+                          aria-label="{{_('Remove')}}"
+                          type="button">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            <div class="TMPL d-none">
+              <div class="form-group field-entry">
+                <div class="input-group">
+                  <input class="form-control col-3"
+                         placeholder="{{_('Key')}}"
+                         name="key"
+                         type="text">
+                  <input class="form-control col-3"
+                         placeholder="{{_('Name')}}"
+                         name="name"
+                         type="text">
+                  <input class="form-control"
+                         placeholder="{{_('URL, http://social.com/you')}}"
+                         name="url"
+                         type="text">
+                  <input class="form-control"
+                         placeholder="{{_('Script')}}"
+                         name="code"
+                         type="text">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-danger btn-icon remove-field"
+                            aria-label="{{_('Remove')}}"
+                            type="button">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <div class="col-6">
+            <button class="btn btn-outline-primary btn-icon add-field"
+                    aria-label="{{_('Add New Social Media')}}"
+                    type="button">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+          <div class="col-6 text-right">
+            <button class="btn btn-primary">
+              {{_('Save')}}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
   </div>
 </div>
 {% endblock %}

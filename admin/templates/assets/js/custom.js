@@ -14,6 +14,35 @@ $(document).ready(function() {
     $(this).find('button.close').click();
   });
 
+
+  $('.multientry-form').each(function(){
+    var form = $(this);
+    var field_tmpl = form.find('.TMPL');
+    var fields_container = form.find('.fields');
+    var btn_add_field = form.find('.add-field');
+    var TEMPLATE = '';
+    if (field_tmpl.length) {
+      TEMPLATE = field_tmpl.html();
+      field_tmpl.remove();
+    } else {
+      console.warn('multientry: TEMPLATE IS MISSING.')
+    }
+    form.find('.fields .field-entry').each(function(){
+      var entry = $(this);
+      entry.find('.remove-field').on('click', function(e){
+        entry.remove();
+      });
+    });
+    btn_add_field.on('click', function(){
+      var new_entry = $(TEMPLATE);
+      new_entry.find('.remove-field').on('click', function(e){
+        new_entry.remove();
+      });
+      fields_container.append(new_entry);
+    });
+
+  });
+
   /* Uploader */
 
   $('.file-uploader').each(function(){
@@ -36,34 +65,6 @@ $(document).ready(function() {
       }
     });
   });
-
-  // $(".media-uploader").each(function(e){
-  //   var submit_btn = $(this).find("button[type=submit]");
-  //   var previews = $(this).find('.media-previews');
-  //   $(this).find("input[name='files']").change(function(e) {
-  //     var files = (this.files && this.files[0]) ? this.files : null;
-  //     previews.empty();
-  //     if (!files) {
-  //       submit_btn.hide();
-  //       return
-  //     }
-  //     if (files.length > 12) {
-  //       alert('Too many files to upload. (limited to 12)')
-  //       return
-  //     }
-  //     for(var i=0; i < files.length; i++) {
-  //       var reader = new FileReader();
-  //       reader.onloadend = function(e) {
-  //         var pic = document.createElement('IMG');
-  //         $(pic).attr('src', e.target.result);
-  //         previews.append(pic);
-  //       }
-  //       reader.readAsDataURL(files[i]);
-  //       console.log(i);
-  //     }
-  //     submit_btn.show();
-  //   });
-  // });
 
   /* prevent ENTER key */
   $('.prevent-enter-key').on('keyup keypress', function(e) {

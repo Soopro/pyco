@@ -62,16 +62,92 @@ def update_site():
 def update_site_adv():
     head_metadata = request.form.get('head_metadata', '')
     socials = request.form.get('socials', '')
-    languages = request.form.get('languages', '')
     customs = request.form.get('customs', '')
     slots = request.form.get('slots', '')
 
     site = current_app.db.Site()
     site['meta']['socials'] = str_eval(socials, [])
-    site['meta']['languages'] = str_eval(languages, [])
     site['meta']['head_metadata'] = head_metadata
     site['meta']['custom'] = str_eval(customs, {})
     site['slots'] = str_eval(slots, {})
+    site.save()
+
+    flash('SAVED')
+    return_url = url_as('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/language', methods=['POST'])
+@login_required
+def update_site_language():
+    keys = request.form.getlist('key')
+    names = request.form.getlist('name')
+    urls = request.form.getlist('url')
+
+    languages = []
+    for idx, key in enumerate(keys):
+        if not key:
+            continue
+
+        try:
+            name = names[idx]
+        except Exception as e:
+            name = key
+        try:
+            url = urls[idx]
+        except Exception as e:
+            url = '#'
+
+        languages.append({
+            'key': key,
+            'name': name,
+            'url': url,
+        })
+
+    site = current_app.db.Site()
+    site['meta']['languages'] = languages
+    site.save()
+
+    flash('SAVED')
+    return_url = url_as('.site')
+    return redirect(return_url)
+
+
+@blueprint.route('/site/social-media', methods=['POST'])
+@login_required
+def update_site_social():
+    keys = request.form.getlist('key')
+    names = request.form.getlist('name')
+    urls = request.form.getlist('url')
+    codes = request.form.getlist('code')
+
+    socials = []
+    for idx, key in enumerate(keys):
+        if not key:
+            continue
+
+        try:
+            name = names[idx]
+        except Exception:
+            name = key
+        try:
+            url = urls[idx]
+        except Exception:
+            url = '#'
+        try:
+            code = codes[idx]
+        except Exception:
+            code = ''
+
+        socials.append({
+            'key': key,
+            'name': name,
+            'url': url,
+            'code': code,
+        })
+
+    site = current_app.db.Site()
+    site['meta']['socials'] = socials
     site.save()
 
     flash('SAVED')
