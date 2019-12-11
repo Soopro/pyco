@@ -35,7 +35,8 @@
   </a>
 </p>
 
-<form action="{{url_as('.update_content',
+<form class="prevent-enter-key"
+      action="{{url_as('.update_content',
                         content_type=document.content_type,
                         slug=document.slug)}}"
       method="POST">
