@@ -683,6 +683,10 @@
     "msgid": "* Use parent term key.",
     "msgstr": "* 使用父级分类项的键值。"
   },
+  {
+    "msgid": "* Please briefly describe this content.",
+    "msgstr": "* 请用简短的文字描述这篇内容。"
+  },
 
 
 

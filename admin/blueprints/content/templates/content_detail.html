@@ -51,6 +51,17 @@
                  data-form="FORM-CONTENT"
                  value="{{meta.title}}">
         </div>
+        {% if display_field('description') %}
+        <div class="form-group">
+          <label>{{_('Description')}}</label>
+          <textarea class="form-control shadow-field"
+                    data-form="FORM-CONTENT"
+                    name="description">{{meta.description}}</textarea>
+          <small class="form-text text-muted">
+            {{_('* Please briefly describe this content.')}}
+          </small>
+        </div>
+        {% endif %}
         {% if display_field('content') %}
         <div class="form-group">
           <label>{{_('Content')}}</label>
@@ -109,6 +120,7 @@
                             content_type=document.content_type,
                             slug=document.slug)}}">
       <input type="hidden" name="title" value="{{meta.title}}">
+      <input type="hidden" name="description" value="{{meta.description}}">
       <input type="hidden" name="content" value="{{content}}">
       <input type="hidden" name="tags" value="{{document.tags|join(',')}}">
       <div class="card">
@@ -160,13 +172,6 @@
               </option>
             </select>
           </div>
-          {% if display_field('description') %}
-          <div class="form-group">
-            <label>{{_('Description')}}</label>
-            <textarea class="form-control"
-                      name="description">{{meta.description}}</textarea>
-          </div>
-          {% endif %}
           {% if display_field('featured_img') %}
           <div class="form-group media-input-field">
             <label>{{_('Featured Image')}}</label>
@@ -305,7 +310,7 @@
   var sh_form = $('form[name="'+sh_form_name+'"]');
   var shadow_field = sh_form.find('input[name="'+sh_field_name+'"]');
   $('.summernote').summernote({
-    height: 480,
+    height: 600,
     dialogsInBody: true,
     lang: editor_lang,
     callbacks: {

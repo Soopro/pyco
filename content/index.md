@@ -1,8 +1,19 @@
 /*
-Priority: 1
-Status: 1
-Template: index
-Title: Sample Theme
+Date: '2019-12-12'
+Description: asdfsdaf
 Featured_img:
   Src: '[%uploads%]/default.jpg'
+Parent: ''
+Priority: 1
+Redirect: ''
+Status: 1
+Tags:
+- sdfsadf
+Template: index
+Terms: []
+Title: Sample Theme
+
 */
+
+
+
