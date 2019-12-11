@@ -643,7 +643,7 @@ class Document(FlatFile):
 class Media():
 
     UPLOADS_DIR = 'uploads'
-    IMAGE_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'bmp', 'tiff')
+    IMAGE_EXTS = ('jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg')
 
     MAXIMUM_QUERY = 60
     MAXIMUM_STORAGE = 6000

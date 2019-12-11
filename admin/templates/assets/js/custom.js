@@ -82,15 +82,24 @@ $(document).ready(function() {
 
   /* Media Input Field */
   $('.media-input-field').each(function(){
+    console.log('fuck111');
     var media_input = $(this).find('.media-input');
     var preview = $(this).find('.media-preview');
     var preview_link = preview.find('a');
     var preview_img = preview.find('img');
-    var url = $(this).val();
+    var allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg'];
 
-    function toggle_preview() {
+    function _is_img(url){
+      if (!url || typeof(url) != 'string'){
+        return false;
+      } else {
+        var ends = url.split('.').pop();
+        return allowed_exts.indexOf(ends) >= 0;
+      }
+    }
+    function _toggle_preview() {
       var url = media_input.val();
-      if(url){
+      if(_is_img(url)){
         preview_link.attr('href', url);
         preview_img.attr('src', url);
         preview.show();
@@ -100,9 +109,9 @@ $(document).ready(function() {
         preview.hide();
       }
     }
-    toggle_preview();
+    _toggle_preview();
     media_input.on('change', function(e){
-      toggle_preview();
+      _toggle_preview();
     });
   });
 
@@ -214,7 +223,8 @@ $(document).ready(function() {
       modal.data('media-filename', '');
       mediafiles.length = 0;
       relate = $(e.relatedTarget);
-      target_input = $('input[name="'+relate.data('input')+'"]');
+      target_input = relate.parent().parent().find(
+        'input[name="'+relate.data('input')+'"]');
       load_media_files()
     });
     modal.on('hidden.bs.modal', function (e) {

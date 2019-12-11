@@ -10,6 +10,29 @@
     <h4>{{key|title}}</h4>
   </div>
   <div class="card-body">
+    {% for item in _series %}
+    <div class="series-fields">
+
+      <div class="form-group">
+        <label>{{_('Title')}}</label>
+        <input class="form-control"
+               type="text"
+               name="title"
+               maxlength="360"
+               value="{{item.title}}">
+      </div>
+
+      <div class="form-group">
+        <label>{{_('Title')}}</label>
+        <input class="form-control"
+               type="text"
+               name="title"
+               maxlength="360"
+               value="{{item.title}}">
+      </div>
+
+    </div>
+    {% endfor %}
     <div class="form-group">
       <label>{{_('Title')}}</label>
       <input class="form-control"
@@ -26,7 +49,7 @@
         </a>
       </div>
       <div class="input-group">
-        <input class="form-control"
+        <input class="form-control media-input"
                type="text"
                name="src"
                value="{{_series.src or ''}}">
