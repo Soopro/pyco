@@ -149,6 +149,10 @@
     "msgstr": "保存并退出"
   },
   {
+    "msgid": "Add",
+    "msgstr": "添加"
+  },
+  {
     "msgid": "Remove",
     "msgstr": "移除"
   },
@@ -322,20 +326,12 @@
     "msgstr": "多语言"
   },
   {
-    "msgid": "Add New Language",
-    "msgstr": "添加新语言"
-  },
-  {
     "msgid": "Language Switcher Options",
     "msgstr": "多语言切换器选项"
   },
   {
     "msgid": "Social Media",
     "msgstr": "社交媒体"
-  },
-  {
-    "msgid": "Add New Social Media",
-    "msgstr": "添加新社交媒体"
   },
   {
     "msgid": "Social Media Channels",
