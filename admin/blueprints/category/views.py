@@ -10,7 +10,7 @@ from flask import (Blueprint,
                    render_template)
 
 
-from utils.misc import (parse_int, process_slug, now)
+from utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
 from admin.helpers import url_as

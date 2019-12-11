@@ -47,6 +47,7 @@
         <h4>{{_('Write Content')}}</h4>
       </div>
       <div class="card-body">
+        {% if 'title' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Title')}}</label>
           <input class="form-control"
@@ -55,6 +56,8 @@
                  maxlength="60"
                  value="{{meta.title}}">
         </div>
+        {% endif %}
+        {% if 'content' not in hidden_field_keys %}
         <div class="form-group content-editor">
           <label>{{_('Content')}}</label>
           <textarea class="summernote form-control"
@@ -63,6 +66,8 @@
                     media-modal="#MODAL-MEDIAREPO"
                     name="content">{{content|shortcode}}</textarea>
         </div>
+        {% endif %}
+        {% if 'tags' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Tags')}}</label>
           <input class="form-control inputtags"
@@ -70,7 +75,7 @@
                  name="tags"
                  value="{{document.tags|join(',')}}">
         </div>
-
+        {% endif %}
       </div>
     </div>
 
@@ -143,6 +148,7 @@
           {% endif %}
         </div>
         <hr>
+        {% if 'date' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Date')}}</label>
           <input class="form-control datepicker"
@@ -150,6 +156,7 @@
                  name="date"
                  value="{{document.date}}">
         </div>
+        {% endif %}
         <div class="form-group">
           <label>{{_('Publish Status')}}</label>
           <select class="form-control"
@@ -164,12 +171,14 @@
             </option>
           </select>
         </div>
+        {% if 'description' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Description')}}</label>
           <textarea class="form-control"
                     name="description">{{meta.description}}</textarea>
         </div>
-
+        {% endif %}
+        {% if 'tags' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Featured Image')}}</label>
           {% if meta.featured_img and meta.featured_img.src %}
@@ -199,7 +208,8 @@
             </div>
           </div>
         </div>
-
+        {% endif %}
+        {% if 'tags' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Template')}}</label>
           <select class="form-control"
@@ -212,7 +222,8 @@
             {% endfor %}
           </select>
         </div>
-
+        {% endif %}
+        {% if 'tags' not in hidden_field_keys and theme.category %}
         <div class="form-group">
           <label>{{_('Category')}}</label>
           <select class="form-control"
@@ -227,7 +238,9 @@
             {% endfor %}
           </select>
         </div>
+        {% endif %}
 
+        {% if 'parent' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Parent')}}</label>
           <input class="form-control"
@@ -238,6 +251,8 @@
             {{_('* Use parent content slug.')}}
           </small>
         </div>
+        {% endif %}
+        {% if 'priority' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Priority')}}</label>
           <input class="form-control"
@@ -248,6 +263,8 @@
             {{_('* The priority of the content when sorting.')}}
           </small>
         </div>
+        {% endif %}
+        {% if 'redirect' not in hidden_field_keys %}
         <div class="form-group">
           <label>{{_('Redirect')}}</label>
           <input class="form-control"
@@ -255,7 +272,7 @@
                  name="redirect"
                  value="{{document.redirect}}">
         </div>
-
+        {% endif %}
       </div>
     </div>
   </div>

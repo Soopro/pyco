@@ -15,8 +15,7 @@
     "index",
     "page",
     "post",
-    "category",
-    "error_404"
+    "category"
   ],
 
   "slots": ["event"],
@@ -42,6 +41,7 @@
 
   "custom_fields": {
     "page": {
+      "!content": false,
       "background": "image",
       "button": "link"
     },

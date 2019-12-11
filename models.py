@@ -225,11 +225,25 @@ class Theme(FlatFile):
     @property
     def custom_fields(self):
         _custom_fields = self.data.get('custom_fields') or {}
-        custom_fields = {
-            k: {_k: _v for _k, _v in v.items() if isinstance(_v, str)}
-            for k, v in _custom_fields.items()
-        }
+
+        def _get_fields(opts):
+            return {process_slug(k): v for k, v in opts
+                    if isinstance(v, str) and not k.startswith('!')}
+
+        custom_fields = {k: _get_fields(v.items())
+                         for k, v in _custom_fields.items()}
         return custom_fields
+
+    @property
+    def hidden_fields(self):
+        _custom_fields = self.data.get('custom_fields') or {}
+
+        def _get_hidden_fields(opts):
+            return [process_slug(k) for k, v in opts if k.startswith('!')]
+
+        hidden_fields = {k: _get_hidden_fields(v.items())
+                         for k, v in _custom_fields.items()}
+        return hidden_fields
 
     @property
     def menus(self):

@@ -93,11 +93,12 @@ def find_content_file(type_slug, file_slug):
 
 
 def find_404_content_file():
+    error_404_slug = current_app.db.Document.ERROR404_SLUG
     return {
         '_id': '.id-error-404',
         'app_id': g.curr_app['_id'],
-        'slug': current_app.config.get('ERROR404_SLUG'),
-        'template': current_app.config.get('ERROR404_SLUG'),
+        'slug': error_404_slug,
+        'template': error_404_slug,
         'content_type': '.h',
         'meta': {},
         'parent': '',

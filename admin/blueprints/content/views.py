@@ -84,7 +84,11 @@ def create_content(content_type):
 def content_detail(content_type, slug):
     curr_content_type = _find_content_type(content_type)
     document = current_app.db.Document.find_one(slug, content_type)
-    custom_fields = _find_custom_fields(document.get('template'))
+
+    template = document.get('template')
+    custom_fields = _find_custom_fields(template)
+    hidden_field_keys = _find_hidden_field_keys(template)
+
     if document.content_type == document.STATIC_TYPE:
         if document.slug == document.INDEX_SLUG:
             preview_path = '/'
@@ -104,6 +108,7 @@ def content_detail(content_type, slug):
                            content=document['content'],
                            content_type=curr_content_type,
                            custom_fields=custom_fields,
+                           hidden_field_keys=hidden_field_keys,
                            terms=terms)
 
 
@@ -204,6 +209,15 @@ def _find_custom_fields(template):
         return custom_fields
     else:
         return {}
+
+
+def _find_hidden_field_keys(template):
+    theme = current_app.db.Theme(current_app.current_theme_dir)
+    hidden_field_keys = theme.hidden_fields.get(template)
+    if isinstance(hidden_field_keys, list):
+        return hidden_field_keys
+    else:
+        return []
 
 
 def _parse_custom_field(field_val, field_type):

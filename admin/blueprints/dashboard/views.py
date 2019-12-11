@@ -16,7 +16,7 @@ from utils.request import get_remote_addr
 from utils.misc import hmac_sha
 
 from admin.decorators import login_required
-from admin.helpers import url_as
+from admin.helpers import url_as, sync_site_by_theme_opts
 
 
 blueprint = Blueprint('dashboard', __name__, template_folder='templates')
@@ -49,9 +49,14 @@ def login():
 def exec_login():
     configure = g.configure
     passcode = request.form['passcode']
+
     if not configure:
         return redirect(url_as('.initialize'))
     elif check_password_hash(configure['passcode_hash'], passcode):
+        try:
+            sync_site_by_theme_opts()
+        except Exception as e:
+            raise Exception('Not installed properly: {}'.format(e))
         hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         session['pyco_admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         return redirect('/')

@@ -18,7 +18,7 @@ from utils.misc import hmac_sha, now, str_eval, process_slug, parse_int
 from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
-from admin.helpers import url_as
+from admin.helpers import url_as, sync_site_by_theme_opts
 
 
 blueprint = Blueprint('preference', __name__, template_folder='templates')
@@ -296,7 +296,7 @@ def install_theme():
     clean_dirs(theme_dir)
     unzip(f, theme_dir)
 
-    _update_site()
+    sync_site_by_theme_opts()
     flash('INSTALLED')
     return_url = url_as('.appearance')
     return redirect(return_url)
@@ -305,7 +305,7 @@ def install_theme():
 @blueprint.route('/appearance/reload')
 @login_required
 def reload_theme():
-    _update_site()
+    sync_site_by_theme_opts()
     flash('RELOADED')
     return_url = url_as('.appearance')
     return redirect(return_url)
@@ -396,25 +396,3 @@ def _find_node(nodes, node_key):
         if node_key and node.get('key') == node_key:
             return node
     raise Exception('Menu item is not found')
-
-
-def _update_site():
-    theme = current_app.db.Theme(current_app.current_theme_dir)
-    site = current_app.db.Site()
-    site['content_types'] = {k: v.get('title')
-                             for k, v in theme.content_types.items()}
-    if theme.category:
-        cate_name = theme.category.get('name', '')
-        cate_content_types = theme.category.get('conten_types', [])
-        if not site['categories'] or not isinstance(site['categories'], dict):
-            site['categories'] = {'terms': []}
-        site['categories'].update({
-            'status': 1,
-            'name': str(cate_name),
-            'conten_types': [c_type for c_type in cate_content_types
-                             if isinstance(c_type, str)]
-        })
-    else:
-        site['categories'].update({'status': 0})
-
-    site.save()
