@@ -126,8 +126,8 @@
                target="_blank">
               <i class="fa fa-link"></i>
             </a>
-            {% if document.slug != 'index' or document.content_type != 'page' %}
-            <a class="btn btn-danger btn-lg ml-auto"
+            {% if document.slug!='index' or document.content_type!='page' %}
+            <a class="btn btn-danger btn-lg btn-icon ml-auto"
                aria-label="{{_('Delete')}}"
                href="{{url_as('.remove',
                                content_type=document.content_type,
