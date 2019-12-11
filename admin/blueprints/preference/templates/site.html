@@ -43,7 +43,7 @@
                       name="description">{{site.meta.description}}</textarea>
           </div>
 
-          <div class="form-group media-input-field">
+          <div class="form-group media-preview-field">
             <label>{{_('Logo')}}</label>
             <div class="media-preview">
               <a href="#" target="_blank">
@@ -68,7 +68,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group media-input-field">
+          <div class="form-group media-preview-field">
             <label>{{_('Favicon')}}</label>
             <div class="media-preview">
               <a href="#" target="_blank">
@@ -464,22 +464,25 @@
                    value=""
                    required>
           </div>
-          <div class="form-row">
-            <div class="form-group col-md-8">
-              <label>{{_('Link')}}</label>
+          <div class="form-group">
+            <label>{{_('Path')}}</label>
+            <div class="input-group">
               <input class="form-control"
                      type="text"
                      name="link"
+                     maxlength="360"
+                     placeholder="/page-path"
                      value="">
-            </div>
-            <div class="form-group col-md-4">
-              <label>{{_('Target Window')}}</label>
-              <input class="form-control"
+              <input class="form-control col-md-3 col-4"
                      type="text"
                      name="target"
+                     maxlength="60"
                      placeholder="_self"
                      value="">
             </div>
+            <small class="form-text text-muted">
+              {{_('* Use absolute path or a URL.')}}
+            </small>
           </div>
 
           <div class="form-group">

@@ -370,6 +370,10 @@
     "msgstr": "链接"
   },
   {
+    "msgid": "Path",
+    "msgstr": "路径"
+  },
+  {
     "msgid": "Target Window",
     "msgstr": "目标窗口"
   },
@@ -594,6 +598,10 @@
     "msgstr": "说明"
   },
   {
+    "msgid": "(Optional)",
+    "msgstr": "（可选）"
+  },
+  {
     "msgid": "Type content here.",
     "msgstr": "在这里输入内容。"
   },
@@ -682,6 +690,10 @@
   {
     "msgid": "* Please briefly describe this content.",
     "msgstr": "* 请用简短的文字描述这篇内容。"
+  },
+  {
+    "msgid": "* Use absolute path or a URL.",
+    "msgstr": "* 使用绝对路径或是网址。"
   },
 
 

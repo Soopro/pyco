@@ -5,6 +5,13 @@
  *
  */
 
+a[href="#"] {
+  pointer-events: none;
+}
+.media-preview a[href="#"] {
+  display: none;
+}
+
 .form-control::placeholder {
   opacity: 0.6 !important;
 }

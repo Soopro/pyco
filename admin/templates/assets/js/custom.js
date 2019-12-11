@@ -81,7 +81,7 @@ $(document).ready(function() {
   });
 
   /* Media Input Field */
-  $('.media-input-field').each(function(){
+  $('.media-preview-field').each(function(){
     var media_input = $(this).find('.media-input');
     var preview = $(this).find('.media-preview');
     var preview_link = preview.find('a');
