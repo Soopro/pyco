@@ -94,7 +94,7 @@ def update_site_language():
         except Exception as e:
             name = key
         try:
-            url = urls[idx]
+            url = urls[idx] or '#'
         except Exception as e:
             url = '#'
 
@@ -131,7 +131,7 @@ def update_site_social():
         except Exception:
             name = key
         try:
-            url = urls[idx]
+            url = urls[idx] or '#'
         except Exception:
             url = '#'
         try:
