@@ -7,7 +7,12 @@
 <input type="hidden" name="key" value="{{key}}">
 <div class="card">
   <div class="card-header">
-    <h4>{{key|title}}</h4>
+    {% if opts.label is mapping %}
+      {% set label = opts.label[locale] or opts.label[lang] %}
+    {% else %}
+      {% set label = opts.label %}
+    {% endif %}
+    <h4>{{label or key|title}}</h4>
   </div>
   <div class="card-body">
     <div class="form-group">

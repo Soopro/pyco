@@ -234,7 +234,8 @@ class Theme(FlatFile):
                 elif isinstance(v, str):
                     fields[process_slug(k)] = {'type': v}
                 elif isinstance(v, dict):
-                    fields[process_slug(k)] = {'type': v.get('type', '')}
+                    fields[process_slug(k)] = {'type': v.get('type', ''),
+                                               'label': v.get('label', '')}
                 else:
                     fields[process_slug(k)] = {'type': ''}
             return fields

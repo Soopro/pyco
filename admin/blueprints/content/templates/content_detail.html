@@ -99,8 +99,14 @@
         {% include '_custom_text.tmpl' %}
       {% elif opts.type == 'media' %}
         {% include '_custom_media.tmpl' %}
+      {% elif opts.type == 'lines' %}
+        {% include '_custom_lines.tmpl' %}
+      {% elif opts.type == 'link' %}
+        {% include '_custom_link.tmpl' %}
       {% elif opts.type == 'bg' %}
         {% include '_custom_bg.tmpl' %}
+      {% elif opts.type == 'line' %}
+        {% include '_custom_line.tmpl' %}
       {% elif opts.type == 'series' %}
         {% include '_custom_series.tmpl' %}
       {% elif opts.type == 'script' %}

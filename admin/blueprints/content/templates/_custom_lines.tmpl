@@ -1,0 +1,69 @@
+{% set _lines = meta[key] or [] %}
+<form class="multientry-form"
+      action="{{url_as('.update_custom_field',
+                       content_type=document.content_type,
+                       slug=document.slug)}}"
+      method="POST">
+<input type="hidden" name="type" value="lines">
+<input type="hidden" name="key" value="{{key}}">
+<div class="card">
+  <div class="card-header">
+    {% if opts.label is mapping %}
+      {% set label = opts.label[locale] or opts.label[lang] %}
+    {% else %}
+      {% set label = opts.label %}
+    {% endif %}
+    <h4>{{label or key|title}}</h4>
+  </div>
+  <div class="card-body">
+    <div class="fields">
+      {% for item in _lines %}
+      <div class="form-group field-entry">
+        <div class="input-group">
+          <input class="form-control"
+                 value="{{item.text}}"
+                 name="text"
+                 type="text">
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-danger btn-icon remove-field"
+                    aria-label="{{_('Remove')}}"
+                    type="button">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="TMPL d-none">
+      <div class="form-group field-entry">
+        <div class="input-group">
+          <input class="form-control"
+                 value=""
+                 name="text"
+                 type="text">
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-danger btn-icon remove-field"
+                    aria-label="{{_('Remove')}}"
+                    type="button">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="card-footer d-flex">
+    <button class="btn btn-outline-primary btn-icon add-field"
+            aria-label="{{_('Add')}}"
+            type="button">
+      <i class="fas fa-plus"></i>
+    </button>
+    <button class="btn btn-primary ml-auto">
+      {{_('Save')}}
+    </button>
+  </div>
+</div>
+</form>

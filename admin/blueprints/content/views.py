@@ -170,10 +170,14 @@ def update_custom_field(content_type, slug):
         result = _update_custom_text_field()
     elif custom_type == 'media':
         result = _update_custom_media_field()
+    elif custom_type == 'link':
+        result = _update_custom_link_field()
     elif custom_type == 'bg':
         result = _update_custom_bg_field()
     elif custom_type == 'series':
         result = _update_custom_series_field()
+    elif custom_type == 'lines':
+        result = _update_custom_lines_field()
     elif custom_type == 'script':
         result = _update_custom_script_field()
     elif custom_type == 'hardcore':
@@ -288,6 +292,20 @@ def _update_custom_bg_field():
     }
 
 
+def _update_custom_link_field():
+    name = request.form.get('name')
+    css_class = request.form.get('class')
+    link = request.form.get('link')
+    target = request.form.get('target')
+
+    return {
+        'name': name or '',
+        'link': link or '',
+        'target': target or '',
+        'class': css_class or ''
+    }
+
+
 def _update_custom_series_field():
     titles = request.form.getlist('title')
     captions = request.form.getlist('caption')
@@ -304,6 +322,12 @@ def _update_custom_series_field():
         })
 
     return series
+
+
+def _update_custom_lines_field():
+    texts = request.form.getlist('text')
+
+    return [{'text': t} for t in texts]
 
 
 def _load_field_list(field_list, index):

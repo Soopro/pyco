@@ -42,8 +42,22 @@
   "custom_fields": {
     "category": {
       "!": ["content", "tags", "description", "featured_img", "terms"],
-      "features": "series",
-      "cover": "media",
+      "textttt": "lines",
+      "link-to": "link",
+      "features": {
+        "type": "series",
+        "label": {
+          "en": "List",
+          "zh": "序列"
+        }
+      },
+      "cover": {
+        "type": "media",
+        "label": {
+          "en": "Background Cover",
+          "zh-CN": "背景图"
+        }
+      },
       "bg-img": "bg",
       "text-1": "text",
       "script-s": "script",
