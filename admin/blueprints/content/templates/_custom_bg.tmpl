@@ -1,0 +1,69 @@
+{% set _field = meta[key] or {} %}
+<form action="{{url_as('.update_custom_field',
+                       content_type=document.content_type,
+                       slug=document.slug)}}"
+      method="POST">
+<input type="hidden" name="type" value="bg">
+<input type="hidden" name="key" value="{{key}}">
+<div class="card">
+  <div class="card-header">
+    <h4>{{key|title}}</h4>
+  </div>
+  <div class="card-body">
+    <div class="form-group media-input-field">
+      <label>{{_('Image URL')}}</label>
+      <div class="media-preview">
+        <a href="#" target="_blank">
+          <img class="img-figure" src="">
+        </a>
+      </div>
+      <div class="input-group">
+        <input class="form-control"
+               type="text"
+               name="src"
+               value="{{_field.src or ''}}">
+        <div class="input-group-append">
+          <button class="btn btn-primary"
+                  aria-lable="{{_('Select Image')}}"
+                  data-toggle="modal"
+                  data-target="#MODAL-MEDIAREPO"
+                  data-input="src"
+                  type="button">
+            <i class="fas fa-image"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>{{_('Styles')}}</label>
+      <div class="input-group">
+        <input class="form-control col-md-3 col-4"
+               type="text"
+               name="class"
+               maxlength="360"
+               placeholder="{{_('CSS Class')}}"
+               value="{{_field.class}}">
+        <input class="form-control"
+               type="text"
+               name="style"
+               maxlength="600"
+               placeholder="{{_('CSS Styles')}}"
+               value="{{_field.style}}">
+      </div>
+    </div>
+  </div>
+  <div class="card-footer row">
+    <div class="col-md-6">
+      <a class="btn btn-outline-secondary btn-icon reset-form"
+         aria-label="{{_('Reset')}}">
+        <i class="fa fa-redo-alt"></i>
+      </a>
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-primary">
+        {{_('Save')}}
+      </button>
+    </div>
+  </div>
+</div>
+</form>

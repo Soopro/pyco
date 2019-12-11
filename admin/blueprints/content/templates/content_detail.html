@@ -84,12 +84,14 @@
     </p>
     <div>
       {% for key, opts in custom_fields.items() %}
-      {% if opts.type in ['', 'text'] %}
+      {% if opts.type == 'text' %}
         {% include '_custom_text.tmpl' %}
       {% elif opts.type == 'media' %}
         {% include '_custom_media.tmpl' %}
+      {% elif opts.type == 'bg' %}
+        {% include '_custom_bg.tmpl' %}
       {% elif opts.type == 'series' %}
-
+        {% include '_custom_series.tmpl' %}
       {% elif opts.type == 'script' %}
         {% include '_custom_script.tmpl' %}
       {% else %}

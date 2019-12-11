@@ -170,6 +170,8 @@ def update_custom_field(content_type, slug):
         result = _update_custom_text_field()
     elif custom_type == 'media':
         result = _update_custom_media_field()
+    elif custom_type == 'bg':
+        result = _update_custom_bg_field()
     elif custom_type == 'series':
         result = _update_custom_series_field()
     elif custom_type == 'script':
@@ -271,6 +273,18 @@ def _update_custom_media_field():
         'src': src or '',
         'link': link or '',
         'target': target or ''
+    }
+
+
+def _update_custom_bg_field():
+    src = request.form.get('src')
+    css_class = request.form.get('class')
+    css_style = request.form.get('style')
+
+    return {
+        'src': src or '',
+        'class': css_class or '',
+        'style': css_style or '',
     }
 
 

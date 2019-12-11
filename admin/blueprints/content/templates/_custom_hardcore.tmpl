@@ -3,19 +3,19 @@
                        content_type=document.content_type,
                        slug=document.slug)}}"
       method="POST">
-<input type="hidden" name="type" value="script">
+<input type="hidden" name="type" value="hardcore">
 <input type="hidden" name="key" value="{{key}}">
 <div class="card">
   <div class="card-header">
-    <h4>{{k|title}}</h4>
+    <h4>{{key|title}}</h4>
   </div>
   <div class="card-body">
     <div class="form-group">
-      <label>{{_('Script')}}</label>
+      <label>{{_('Code')}}</label>
       <textarea class="form-control"
-                name="script">{{_value}}</textarea>
+                name="code">{{_value}}</textarea>
       <small class="form-text text-muted">
-        {{_('* For expert only, HTML, Javascript or any others.')}}
+        {{_('* For expert only, must use JSON format.')}}
       </small>
     </div>
   </div>

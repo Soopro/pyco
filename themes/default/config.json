@@ -42,9 +42,12 @@
   "custom_fields": {
     "category": {
       "!": ["content", "tags", "description", "featured_img", "terms"],
-      "series": "series",
+      "features": "series",
       "cover": "media",
-      "test": "text"
+      "bg-img": "bg",
+      "text-1": "text",
+      "script-s": "script",
+      "unknow-f": ""
     },
     "page": {
       "background": "media",

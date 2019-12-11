@@ -478,6 +478,30 @@
     "msgstr": "选择图像"
   },
   {
+    "msgid": "Image URL",
+    "msgstr": "图像 URL"
+  },
+  {
+    "msgid": "Link to URL",
+    "msgstr": "链接到 URL"
+  },
+  {
+    "msgid": "Styles",
+    "msgstr": "样式"
+  },
+  {
+    "msgid": "CSS Styles",
+    "msgstr": "CSS 内联样式"
+  },
+  {
+    "msgid": "CSS Class",
+    "msgstr": "CSS 样式类"
+  },
+  {
+    "msgid": "Text",
+    "msgstr": "文本"
+  },
+  {
     "msgid": "Write Content",
     "msgstr": "撰写内容"
   },
@@ -626,6 +650,10 @@
   {
     "msgid": "* For expert only, must use JSON format.",
     "msgstr": "* 这是专家选项，仅支持JSON格式数据。"
+  },
+  {
+    "msgid": "* For expert only, HTML, Javascript or any others.",
+    "msgstr": "* 这是专家选项，可以输入HTML、JS等各种数据。"
   },
   {
     "msgid": "* Type `_blank` for open in new window.",
