@@ -57,6 +57,7 @@ $(document).ready(function() {
     flash.hide();
     form.on('mouseup', function(e){
       var target = $(e.target);
+      form.removeClass('error');
       if (target.is('input, textarea, button, select')){
         flash.hide(100);
       }
@@ -67,6 +68,7 @@ $(document).ready(function() {
         flash.removeClass('text-danger').addClass('text-success').show(100);
       }, 'json').fail(function(err){
         console.error(err);
+        form.addClass('error');
         flash.removeClass('text-success').addClass('text-danger').show(100);
         setTimeout(function(){
           alert('['+err.status+']'+err.statusText);

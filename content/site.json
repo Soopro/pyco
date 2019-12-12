@@ -28,37 +28,37 @@
     "primary": [
       {
         "key": "index",
+        "link": "/",
         "meta": {},
-        "nodes": [],
         "name": "Home",
-        "link": "/"
+        "nodes": []
       },
       {
         "key": "posts",
+        "link": "/post/index",
         "meta": {},
-        "nodes": [],
         "name": "Posts",
-        "link": "/post/index"
+        "nodes": []
       },
       {
         "key": "category",
+        "link": "/category",
         "meta": {},
-        "nodes": [],
         "name": "Category",
-        "link": "/category"
+        "nodes": []
       },
       {
         "key": "about",
+        "link": "/about",
         "meta": {},
-        "nodes": [],
         "name": "About",
-        "link": "/about"
+        "nodes": []
       }
     ]
   },
   "slots": {
     "event": {
-      "script": "<div style='background:#ccc;max-width:200px;padding:16px;'>This is EVENT wdiget slot.</div><script>var a = {x:1}</script>"
+      "script": "<div></div>"
     }
   },
   "meta": {

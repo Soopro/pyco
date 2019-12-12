@@ -23,7 +23,7 @@
       <label>{{_('JSON Code')}}</label>
       <textarea class="form-control"
                 rows="6"
-                name="code">{{_value}}</textarea>
+                name="code">{{_value|tojson}}</textarea>
       <small class="form-text text-muted">
         {{_('* For expert only, must use JSON format.')}}
       </small>

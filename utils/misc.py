@@ -10,6 +10,7 @@ import ast
 import uuid
 import time
 import random
+import json
 import hashlib
 import hmac
 import urllib
@@ -440,5 +441,18 @@ def chunks(raw_list, group_size=12):
 def str_eval(s, default=None):
     try:
         return ast.literal_eval(s)
-    except Exception:
-        return default
+    except Exception as e:
+        if default is not None:
+            return default
+        else:
+            raise e
+
+
+def parse_json(s, default=None):
+    try:
+        return json.loads(s)
+    except Exception as e:
+        if default is not None:
+            return default
+        else:
+            raise e

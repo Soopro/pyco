@@ -14,7 +14,7 @@ import os
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from utils.request import get_remote_addr
-from utils.misc import hmac_sha, now, str_eval, process_slug, parse_int
+from utils.misc import hmac_sha, now, process_slug, parse_int, parse_json
 from utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
@@ -61,15 +61,13 @@ def update_site():
 @login_required
 def update_site_adv():
     head_metadata = request.form.get('head_metadata', '')
-    socials = request.form.get('socials', '')
     customs = request.form.get('customs', '')
     slots = request.form.get('slots', '')
 
     site = current_app.db.Site()
-    site['meta']['socials'] = str_eval(socials, [])
     site['meta']['head_metadata'] = head_metadata
-    site['meta']['custom'] = str_eval(customs, {})
-    site['slots'] = str_eval(slots, {})
+    site['meta']['custom'] = parse_json(customs, {})
+    site['slots'] = parse_json(slots, {})
     site.save()
 
     flash('SAVED')
@@ -272,7 +270,7 @@ def hardcore_site_menu(menu_key):
     hardcore = request.form.get('hardcore', '')
 
     site = current_app.db.Site()
-    site['menus'][menu_key] = str_eval(hardcore, {})
+    site['menus'][menu_key] = parse_json(hardcore, [])
     site.save()
     flash('SAVED')
     return_url = url_as('.site')

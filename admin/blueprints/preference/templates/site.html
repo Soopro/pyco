@@ -132,7 +132,7 @@
             <label>{{_('Slots')}}</label>
             <textarea class="form-control"
                       name="slots"
-                      placeholder="{'<slot_key>': {'name': '<name>', 'src':'<img_url>', 'route': '<url>', 'script':'....', 'stauts': true}}">{{site.slots or ''}}</textarea>
+                      placeholder="{'<slot_key>': {'name': '<name>', 'src':'<img_url>', 'route': '<url>', 'script':'....', 'stauts': true}}">{{site.slots|tojson}}</textarea>
             <small class="form-text text-muted">
               {{_('* For expert only, must use JSON format.')}}
             </small>
@@ -141,7 +141,7 @@
             <label>{{_('Custom Metas')}}</label>
             <textarea class="form-control"
                       name="customs"
-                      placeholder="{'<key>': '<value>'}">{{site.meta.custom or ''}}</textarea>
+                      placeholder="{'<key>': '<value>'}">{{site.meta.custom|tojson}}</textarea>
             <small class="form-text text-muted">
               {{_('* For expert only, must use JSON format.')}}
             </small>
@@ -247,11 +247,11 @@
                       type="button"
                       data-toggle="modal"
                       data-target="#MODAL-MENU-HARDCORE"
-                      data-hardcore="{{menu.nodes or ''}}"
                       data-action-url="{{url_as('.hardcore_site_menu',
                                                  menu_key=menu.key)}}">
                 <i class="fas fa-flask"></i>
                 <span>{{_('Expert')}}</span>
+                <textarea class="d-none">{{menu.nodes|tojson}}</textarea>
               </button>
             </div>
           </div>
@@ -645,7 +645,8 @@ $('#MODAL-MENU-HARDCORE').on('show.bs.modal', function(e) {
   var modal = $(e.currentTarget);
 
   var action_url = btn.data('action-url');
-  var hardcore = btn.data('hardcore');
+  var hardcore = btn.find('textarea').val();
+  console.log(hardcore, typeof(hardcore));
   modal.find('form').attr('action', action_url);
   modal.find('textarea[name="hardcore"]').val(hardcore);
 });

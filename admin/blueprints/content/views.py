@@ -9,8 +9,9 @@ from flask import (Blueprint,
                    jsonify,
                    render_template)
 import math
+import json
 
-from utils.misc import (parse_int, process_slug, str_eval)
+from utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
 from admin.helpers import url_as
@@ -242,7 +243,6 @@ def _find_custom_fields(template):
 def _find_hidden_field_keys(template):
     theme = current_app.db.Theme(current_app.current_theme_dir)
     hidden_field_keys = theme.hidden_fields.get(template)
-    print(hidden_field_keys, template, theme.hidden_fields)
     if isinstance(hidden_field_keys, list):
         return hidden_field_keys
     else:
@@ -261,7 +261,7 @@ def _update_custom_script_field():
 
 def _update_custom_hardcore_field():
     code = request.form.get('code')
-    return str_eval(code, '')
+    return json.loads(code)
 
 
 def _update_custom_media_field():
@@ -324,7 +324,6 @@ def _update_custom_series_field():
 
 def _update_custom_lines_field():
     texts = request.form.getlist('text')
-
     return [{'text': t} for t in texts]
 
 
