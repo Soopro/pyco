@@ -57,8 +57,8 @@ $(document).ready(function() {
     flash.hide();
     form.on('mouseup', function(e){
       var target = $(e.target);
-      form.removeClass('error');
       if (target.is('input, textarea, button, select')){
+        form.removeClass('error');
         flash.hide(100);
       }
     });
