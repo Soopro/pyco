@@ -14,7 +14,7 @@ def get_uploads(filepath):
     except Exception:
         mime_type = 'text'
 
-    uploads_dir = current_app.db.Media.UPLOADS_DIR
+    uploads_dir = current_app.db.Media.get_dir()
     send_file = send_from_directory(uploads_dir, filepath)
     response = make_response(send_file)
     response.headers = make_cors_headers(mime_type)

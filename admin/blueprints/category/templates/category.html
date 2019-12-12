@@ -30,7 +30,6 @@
         <div class="table-responsive">
           <table class="table table-striped">
             <tr>
-              <th>{{_('NO.')}}</th>
               <th class="text-center">{{_('Poster')}}</th>
               <th>{{_('Name')}}</th>
               <th>{{_('Parent')}}</th>
@@ -38,9 +37,6 @@
             </tr>
             {% for term in categories.terms %}
             <tr>
-              <td class="p-2 text-center">
-                {{loop.index}}
-              </td>
               <td class="p-2 text-center">
                 {% if term.meta and term.meta.figure %}
                 <a href="{{term.meta.figure}}" target="_blank">
@@ -54,6 +50,11 @@
               </td>
               <td>
                 {{term.meta.name or term.key}}
+                {% if not term.status %}
+                <small class="text-muted">
+                  [{{_('Draft')}}]
+                </small>
+                {% endif %}
               </td>
               <td>{{term.parent or '-'}}</td>
               <td>

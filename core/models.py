@@ -50,8 +50,7 @@ class FlatFile:
     __pretreat_raw__ = None
 
     def __init__(self, path):
-        self.path = path
-        self._id = self._abs_path()
+        self._id = self.path = path
         self.raw = self._load()
 
     def __getitem__(self, key):
@@ -70,8 +69,7 @@ class FlatFile:
         return self.data.get(key, default)
 
     def save(self):
-        path = self._abs_path()
-        with open(path, 'w') as f:
+        with open(self.path, 'w') as f:
             f.write(self.raw or '')
         return self._id
 
@@ -80,16 +78,9 @@ class FlatFile:
             os.remove(self.path)
         return self._id
 
-    def _abs_path(self):
-        if self.__base_dir__:
-            return os.path.join(self.__base_dir__, self.path)
-        else:
-            return self.path
-
     def _load(self):
-        path = self._abs_path()
-        if os.path.isfile(path):
-            with open(path, 'r') as fh:
+        if os.path.isfile(self.path):
+            with open(self.path, 'r') as fh:
                 readed = fh.read()
         else:
             readed = ''
@@ -129,10 +120,16 @@ class FlatFile:
                 x = str(e)
         return x
 
+    def _abs_path(self, path):
+        if self.__base_dir__:
+            return os.path.join(self.__base_dir__, path)
+        else:
+            return path
+
 
 class Configure(FlatFile):
 
-    path = 'configure.yaml'
+    conf_path = 'configure.yaml'
     data = {
         'passcode_hash': '',
         'locale': 'en_US'
@@ -143,6 +140,7 @@ class Configure(FlatFile):
     ]
 
     def __init__(self):
+        self.path = self._abs_path(self.conf_path)
         super(Configure, self).__init__(self.path)
         if self.raw:
             fields = yaml.safe_load(self.raw)
@@ -175,13 +173,14 @@ class Theme(FlatFile):
     PRIMARY_MENU = 'primary'
     PRIMARY_MENU_NAME = 'Primary Menu'
 
-    config_path = 'config.json'
+    conf_path = 'config.json'
 
     path = ''
     data = {}
 
-    def __init__(self, name):
-        self.path = os.path.join(self.THEMES_DIR, name, self.config_path)
+    def __init__(self, theme_name):
+        theme_path = self._abs_path(self.THEMES_DIR)
+        self.path = os.path.join(theme_path, theme_name, self.conf_path)
         super(Theme, self).__init__(self.path)
         self.data = json.loads(self.raw)
 
@@ -298,10 +297,12 @@ class Site(FlatFile):
         "meta": {"title": "Pyco"}
     }
 
-    path = os.path.join(CONTENT_DIR, 'site.json')
+    conf_path = 'site.json'
     data = {}
 
     def __init__(self):
+        content_dir = self._abs_path(self.CONTENT_DIR)
+        self.path = os.path.join(content_dir, self.conf_path)
         super(Site, self).__init__(self.path)
         self._ensure()
 
@@ -481,17 +482,18 @@ class Document(FlatFile):
         self.parse()
 
     def add(self, content):
+        content_dir = self.get_dir()
         slug = self._uniqueify_slug(content['slug'], content['content_type'])
         if content['content_type'] in [None, self.STATIC_TYPE]:
-            rel_path = os.path.join(self.CONTENT_DIR, slug)
+            rel_path = os.path.join(content_dir, slug)
         else:
-            rel_path = os.path.join(self.CONTENT_DIR,
+            rel_path = os.path.join(content_dir,
                                     content['content_type'],
                                     slug)
-
-        self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
-        self._id = self._abs_path()
-
+        print(content_dir)
+        print('-----------------------------')
+        self._id = self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
+        print(self.path)
         self.data = {
             'slug': slug,
             'meta': content.get('meta', {}),
@@ -586,8 +588,8 @@ class Document(FlatFile):
             self._updated = int(os.path.getmtime(self.path))
             self._creation = int(os.path.getctime(self.path))
         except Exception:
-            self._updated = None
-            self._creation = None
+            self._updated = 0
+            self._creation = 0
 
     @property
     def slug(self):
@@ -671,29 +673,22 @@ class Media():
     _updated = None
     _creation = None
 
-    def __init__(self, filename):
-        self.filename = filename
-        self.path = os.path.join(self.UPLOADS_DIR, filename)
-        self._id = self.path
+    def __init__(self, path):
+        self._id = self.path = path
+        self.filename = os.path.basename(path)
         self._refresh_time()
-
-    def _abs_path(self):
-        if self.__base_dir__:
-            return os.path.join(self.__base_dir__, self.path)
-        else:
-            return self.path
 
     def _refresh_time(self):
         try:
-            self._updated = int(os.path.getmtime(self._abs_path()))
-            self._creation = int(os.path.getctime(self._abs_path()))
+            self._updated = int(os.path.getmtime(self.path))
+            self._creation = int(os.path.getctime(self.path))
         except Exception:
             self._updated = 0
             self._creation = 0
 
     def delete(self):
-        if os.path.isfile(self._abs_path()):
-            os.remove(self._abs_path())
+        if os.path.isfile(self.path):
+            os.remove(self.path)
         return self._id
 
     # methods
@@ -713,17 +708,17 @@ class Media():
     def find_one(cls, filename):
         file_path = os.path.join(cls.get_dir(), filename)
         if os.path.isfile(file_path):
-            return cls(filename)
+            return cls(file_path)
         else:
             return None
 
     @classmethod
     def find(cls):
-        file_paths = [f for f in os.listdir(cls.get_dir())
-                      if os.path.isfile(os.path.join(cls.get_dir(), f)) and
+        uploads_dir = cls.get_dir()
+        file_paths = [f for f in os.listdir(uploads_dir)
+                      if os.path.isfile(os.path.join(uploads_dir, f)) and
                       not f.startswith('.')]
         files = [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
-        print(cls.get_dir(), files)
         files.sort(key=lambda x: x._updated, reverse=True)
         return files
 
@@ -742,5 +737,5 @@ class Media():
             'mimetype': guess_mimetype(self.filename),
             'updated': self._updated,
             'creation': self._creation,
-            'is_file': os.path.isfile(self._abs_path()),
+            'is_file': os.path.isfile(self.path),
         }

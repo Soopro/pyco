@@ -24,7 +24,9 @@
           <table class="table table-striped">
             <tr>
               <th class="text-center">{{_('NO.')}}</th>
-              <th>{{_('Title')}}</th>
+              <th>
+                {{_('Title')}}
+              </th>
               <th>{{_('Template')}}</th>
               <th>{{_('Updated Date')}}</th>
               <th class="text-center">{{_('Action')}}</th>
@@ -39,6 +41,11 @@
                 <i class="fas fa-home"></i>
                 {% endif %}
                 {{content.meta.title or content.slug}}
+                {% if not content.status %}
+                <small class="text-muted">
+                  [{{_('Draft')}}]
+                </small>
+                {% endif %}
               </td>
               <td>{{content.template}}</td>
               <td>{{content.updated|dateformat}}</td>

@@ -5,9 +5,6 @@
  *
  */
 
-a[href="#"] {
-  pointer-events: none;
-}
 .media-preview a[href="#"] {
   display: none;
 }

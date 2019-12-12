@@ -1,5 +1,5 @@
 {
-  "_id": "content/site.json",
+  "_id": "payload/content/site.json",
   "slug": "pyco",
   "locale": "en_US",
   "content_types": {
@@ -8,6 +8,28 @@
   },
   "categories": {
     "terms": [
+      {
+        "key": "bbb",
+        "meta": {
+          "name": "bbb",
+          "caption": "",
+          "figure": ""
+        },
+        "parent": "",
+        "priority": 0,
+        "status": 1
+      },
+      {
+        "key": "asdfdsf",
+        "meta": {
+          "name": "asdfdsf",
+          "caption": "adsfsdaf",
+          "figure": ""
+        },
+        "parent": "index",
+        "priority": 0,
+        "status": 0
+      },
       {
         "key": "s-123213",
         "meta": {
