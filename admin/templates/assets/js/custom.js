@@ -50,6 +50,33 @@ $(document).ready(function() {
 
   });
 
+  $('form.ajax-form').each(function(){
+    var form = $(this);
+    var flash = form.find('.flash');
+    flash.hide();
+    form.on('mouseup', function(e){
+      var target = $(e.target);
+      if (target.is('input, textarea, button, select')){
+        flash.removeClass('text-success');
+        flash.removeClass('text-danger');
+        flash.hide();
+      }
+    });
+    form.on('submit', function(e){
+      e.preventDefault();
+      $.post(form.attr('action'), form.serialize(), function(res){
+        flash.addClass('text-success');
+        flash.show();
+      }, 'json').fail(function(err){
+        console.error(err);
+        flash.addClass('text-danger');
+        flash.show();
+        alert('['+err.status+']'+err.statusText);
+      })
+      return false
+    });
+  });
+
   /* Uploader */
 
   $('.file-uploader').each(function(){

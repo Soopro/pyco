@@ -1,18 +1,22 @@
 {% set _field = meta[key] or {} %}
-<form action="{{url_as('.update_custom_field',
+<form class="ajax-form"
+      action="{{url_as('.update_custom_field',
                        content_type=document.content_type,
                        slug=document.slug)}}"
       method="POST">
 <input type="hidden" name="type" value="media">
 <input type="hidden" name="key" value="{{key}}">
 <div class="card">
-  <div class="card-header">
+  <div class="card-header d-flex">
     {% if opts.label is mapping %}
       {% set label = opts.label[locale] or opts.label[lang] %}
     {% else %}
       {% set label = opts.label %}
     {% endif %}
     <h4>{{label or key|title}}</h4>
+    <span class="flash ml-auto">
+      <i class="fa fa-save"></i>
+    </span>
   </div>
   <div class="card-body">
     <div class="form-group">
@@ -66,11 +70,13 @@
     </div>
   </div>
   <div class="card-footer d-flex">
-    <a class="btn btn-outline-secondary btn-icon reset-form"
-       aria-label="{{_('Reset')}}">
+    <button class="btn btn-outline-secondary btn-icon reset-form"
+            aria-label="{{_('Reset')}}"
+            type="button">
       <i class="fa fa-redo-alt"></i>
-    </a>
-    <button class="btn btn-primary ml-auto">
+    </button>
+    <button class="btn btn-primary ml-auto"
+            type="submit">
       {{_('Save')}}
     </button>
   </div>

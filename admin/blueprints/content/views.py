@@ -6,6 +6,7 @@ from flask import (Blueprint,
                    request,
                    redirect,
                    flash,
+                   jsonify,
                    render_template)
 import math
 
@@ -185,10 +186,8 @@ def update_custom_field(content_type, slug):
 
     document['meta'][custom_key] = result
     document.save()
-    return_url = url_as('.content_detail',
-                        content_type=content_type,
-                        slug=slug)
-    return redirect(return_url)
+
+    return jsonify(document['meta'][custom_key])
 
 
 @blueprint.route('/<content_type>/<slug>/raw')

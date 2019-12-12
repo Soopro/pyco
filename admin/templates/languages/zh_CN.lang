@@ -570,8 +570,8 @@
     "msgstr": "数据表单"
   },
   {
-    "msgid": "Please note, each data fields must save separately, other modified but unsaved data will not be saved.",
-    "msgstr": "请注意，每项数据都要单独保存，此时其他已修改但未保存的数据将还原。"
+    "msgid": "Please note, each data fields below must save separately, those fields will NOT BE SAVED when you only operate Save Content.",
+    "msgstr": "请注意，下面的每个数据表单必须分别保存，当你仅操作「保存内容」时将不会保存这些数据。"
   },
   {
     "msgid": "All Category Terms",
