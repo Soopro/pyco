@@ -9,7 +9,7 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('DEBUG', False)
 
     app.config.setdefault('PAYLOAD_DIR', 'paylaod')
-    app.config.setdefault('BACKUPS_DIR', 'backups')
+    app.config.setdefault('BACKUPS_DIR', '_backups')
 
     app.config.setdefault('THEME_NAME', 'default')
 

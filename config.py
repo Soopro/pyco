@@ -1,14 +1,12 @@
 # coding=utf-8
 
-import os
-
 DEBUG = True
 
 HOST = '0.0.0.0'
 PORT = 5500
 
 PAYLOAD_DIR = 'payload'
-BACKUPS_DIR = os.path.join(PAYLOAD_DIR, 'backups')
+BACKUPS_DIR = '_backups'
 
 THEME_NAME = 'default'
 

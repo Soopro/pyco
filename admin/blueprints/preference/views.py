@@ -358,9 +358,9 @@ def change_passcode():
 @login_required
 def backup_download():
     backups_dir = current_app.config['BACKUPS_DIR']
-    content_dir = current_app.db.Document.CONTENT_DIR
-    temp_zip_file = 'pyco-backup-{}.zip'.format(now())
-    zipdir(os.path.join(backups_dir, temp_zip_file), content_dir)
+    payload_dir = current_app.config['PAYLOAD_DIR']
+    temp_zip_file = 'pyco-payload-{}.zip'.format(now())
+    zipdir(os.path.join(backups_dir, temp_zip_file), payload_dir)
     return send_from_directory(backups_dir, temp_zip_file,
                                as_attachment=True, cache_timeout=1)
 
@@ -369,11 +369,11 @@ def backup_download():
 @login_required
 def backup_restore():
     f = request.files['file']
-    content_dir = current_app.db.Document.CONTENT_DIR
+    payload_dir = current_app.config['PAYLOAD_DIR']
     # cleanup
-    clean_dirs(content_dir)
+    clean_dirs(payload_dir)
     # unpack files
-    unzip(f, content_dir)
+    unzip(f, payload_dir)
     flash('RESTORED')
     return_url = url_as('.configuration')
     return redirect(return_url)
