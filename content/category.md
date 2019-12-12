@@ -12,11 +12,7 @@ Date: '2019-01-01'
 Description: ''
 Featured_img:
   Src: ''
-Features:
-- Caption: ''
-  Link: ''
-  Target: ''
-  Title: '66666'
+Features: []
 Link-to:
   Class: adsfadsffff
   Link: asdfdasf
@@ -30,16 +26,19 @@ Status: 0
 Tags:
 - sdfdsf
 - sdfasdf
-Template: category
+Template: customs
 Terms: []
 Text-1: ''
-Textttt:
-- Text: sdfsadf213123
-Title: sbafsdfasdfdsaffds
+Textttt: []
+Title: Test Custom fields
 Unknow-f:
   '1': x
 
 */
+
+
+
+
 
 
 

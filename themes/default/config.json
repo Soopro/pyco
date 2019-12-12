@@ -15,7 +15,8 @@
     "index",
     "page",
     "post",
-    "category"
+    "category",
+    "customs"
   ],
 
   "slots": ["event"],
@@ -40,7 +41,7 @@
 	},
 
   "custom_fields": {
-    "category": {
+    "customs": {
       "!": ["content", "tags", "description", "featured_img", "terms"],
       "textttt": "lines",
       "link-to": "link",
