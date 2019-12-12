@@ -53,11 +53,14 @@ $(document).ready(function() {
   $('form.ajax-form').each(function(){
     var form = $(this);
     var flash = form.find('.flash');
+    var btn = form.find('button[type="submit"]');
     var is_flashing = false;
     flash.hide();
-    form.on('mouseup', function(e){
+    form.on('mousedown', function(e){
       var target = $(e.target);
       if (target.is('input, textarea, button, select')){
+        btn.removeClass('btn-success').removeClass('btn-danger');
+        btn.addClass('btn-primary');
         form.removeClass('error');
         flash.hide(100);
       }
@@ -65,10 +68,12 @@ $(document).ready(function() {
     form.on('submit', function(e){
       e.preventDefault();
       $.post(form.attr('action'), form.serialize(), function(res){
+        btn.removeClass('btn-primary').addClass('btn-success');
         flash.removeClass('text-danger').addClass('text-success').show(100);
       }, 'json').fail(function(err){
         console.error(err);
         form.addClass('error');
+        btn.removeClass('btn-primary').addClass('btn-danger');
         flash.removeClass('text-success').addClass('text-danger').show(100);
         setTimeout(function(){
           alert('['+err.status+']'+err.statusText);

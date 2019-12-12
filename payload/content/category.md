@@ -1,18 +1,22 @@
 /*
 Bg-img:
-  Class: ''
+  Class: dafadsf
   Src: dsdafsdafdsfasdfsdf
-  Style: ''
+  Style: adsadsf
 Cover:
-  Link: ''
+  Link: asdfadsf
   Src: http://localhost:5500/uploads/default.jpg
-  Target: ''
+  Target: adsfasdf
   Title: '123123213'
 Date: '2019-01-01'
 Description: ''
 Featured_img:
   Src: ''
-Features: []
+Features:
+- Caption: ''
+  Link: ''
+  Target: ''
+  Title: '123213213'
 Link-to:
   Class: adsfadsffff
   Link: asdfdasf
@@ -21,7 +25,7 @@ Link-to:
 Parent: ''
 Priority: 0
 Redirect: ''
-Script-s: sdfasdfsadf
+Script-s: sdfasdfsadfasdfdsaf
 Status: 0
 Tags:
 - sdfdsf
@@ -29,12 +33,41 @@ Tags:
 Template: customs
 Terms: []
 Text-1: ''
-Textttt: []
+Textttt:
+- Text: adsfdasf
 Title: Test Custom fields
 Unknow-f:
   '1': x
 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

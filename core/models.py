@@ -50,8 +50,9 @@ class FlatFile:
     __pretreat_raw__ = None
 
     def __init__(self, path):
-        self._id = self.path = path
-        self.raw = self._load()
+        if path:
+            self._id = self.path = path
+            self.raw = self._load()
 
     def __getitem__(self, key):
         if key == '_id':
@@ -474,8 +475,9 @@ class Document(FlatFile):
     _creation = None
 
     def __init__(self, path=None):
-        super(Document, self).__init__(path)
-        self.parse()
+        if path:
+            super(Document, self).__init__(path)
+            self.parse()
 
     def hardcore(self, raw):
         self.raw = raw
@@ -490,10 +492,7 @@ class Document(FlatFile):
             rel_path = os.path.join(content_dir,
                                     content['content_type'],
                                     slug)
-        print(content_dir)
-        print('-----------------------------')
         self._id = self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
-        print(self.path)
         self.data = {
             'slug': slug,
             'meta': content.get('meta', {}),
@@ -598,7 +597,7 @@ class Document(FlatFile):
 
     @property
     def content_type(self):
-        path_parts = self.path.split('/')
+        path_parts = self.path.split(self.get_dir())[-1].split('/')
         if len(path_parts) > 2:
             content_type = path_parts[1].lower()
         else:
@@ -607,10 +606,10 @@ class Document(FlatFile):
 
     # methods
     @classmethod
-    def get_dir(self):
-        if self.__base_dir__:
-            return os.path.join(self.__base_dir__, self.CONTENT_DIR)
-        return self.CONTENT_DIR
+    def get_dir(cls):
+        if cls.__base_dir__:
+            return os.path.join(cls.__base_dir__, cls.CONTENT_DIR)
+        return cls.CONTENT_DIR
 
     @classmethod
     def count(cls):
@@ -693,10 +692,10 @@ class Media():
 
     # methods
     @classmethod
-    def get_dir(self):
-        if self.__base_dir__:
-            return os.path.join(self.__base_dir__, self.UPLOADS_DIR)
-        return self.UPLOADS_DIR
+    def get_dir(cls):
+        if cls.__base_dir__:
+            return os.path.join(cls.__base_dir__, cls.UPLOADS_DIR)
+        return cls.UPLOADS_DIR
 
     @classmethod
     def count(cls):
