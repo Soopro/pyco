@@ -7,19 +7,19 @@ import time
 from flask import Flask, current_app, request, make_response, g
 from flask.json import JSONEncoder
 
-from utils.request import get_remote_addr, get_request_url
-from utils.response import make_cors_headers
+from core.utils.request import get_remote_addr, get_request_url
+from core.utils.response import make_cors_headers
+from core.utils.files import ensure_dirs, concat_path
+from core.loaders import (load_config,
+                          load_plugins,
+                          load_metas,
+                          load_modal_pretreat)
+from app.blueprints import register_blueprints
 
-from loaders import (load_config,
-                     load_plugins,
-                     load_metas,
-                     load_modal_pretreat)
-from blueprints import register_blueprints
-
-from models import DBConnection, Configure, Document, Site, Theme, Media
+from core.models import DBConnection, Configure, Document, Site, Theme, Media
 
 
-__version_info__ = ('3', '3', '1')
+__version_info__ = ('3', '4', '0')
 __version__ = '.'.join(__version_info__)
 
 
@@ -29,19 +29,33 @@ app.version = __version__
 
 load_config(app)
 
+
 app.db = DBConnection(app, load_modal_pretreat(app))
-app.db.register([Configure, Document, Site, Theme, Media])
+app.db.register([Configure, Document, Site, Theme, Media],
+                app.config['PAYLOAD_DIR'])
+
+# ensure dirs
+ensure_dirs(
+    app.config['PAYLOAD_DIR'],
+    app.config['BACKUPS_DIR'],
+    concat_path(app.config['PAYLOAD_DIR'], Theme.THEMES_DIR),
+    concat_path(app.config['PAYLOAD_DIR'], Site.CONTENT_DIR),
+    concat_path(app.config['PAYLOAD_DIR'], Media.UPLOADS_DIR)
+)
+
 
 # make importable for plugin folder
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(BASE_DIR, app.config.get('PLUGINS_DIR')))
+sys.path.insert(0, os.path.join(BASE_DIR, 'app', 'plugins'))
 
 # template
-app.template_folder = os.path.join(app.config.get('THEMES_DIR'),
+app.template_folder = os.path.join(app.config['PAYLOAD_DIR'],
+                                   Theme.THEMES_DIR,
                                    app.config.get('THEME_NAME'))
 
 # static
-app.static_folder = app.config.get('THEMES_DIR')
+app.static_folder = os.path.join(app.config['PAYLOAD_DIR'],
+                                 Theme.THEMES_DIR)
 # UNCOMMENT THOSE LINES, IF YOU WANT CUSTOM STATIC URL
 # app.static_url_path = '/static'
 # app.add_url_rule(

@@ -12,11 +12,11 @@ from flask import (Blueprint,
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from utils.request import get_remote_addr
-from utils.misc import hmac_sha
+from core.utils.request import get_remote_addr
+from core.utils.misc import hmac_sha
 
 from admin.decorators import login_required
-from admin.helpers import url_as, sync_site_by_theme_opts
+from admin.act import url_as, sync_site_by_theme_opts
 
 
 blueprint = Blueprint('dashboard', __name__, template_folder='templates')

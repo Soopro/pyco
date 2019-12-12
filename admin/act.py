@@ -9,7 +9,7 @@ def url_as(endpoint, **values):
 
 
 def sync_site_by_theme_opts():
-    theme = current_app.db.Theme(current_app.current_theme_dir)
+    theme = current_app.db.Theme(current_app.config['THEME_NAME'])
     site = current_app.db.Site()
     site['content_types'] = {k: v.get('title')
                              for k, v in theme.content_types.items()}

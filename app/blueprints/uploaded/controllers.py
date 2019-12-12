@@ -1,9 +1,10 @@
 # coding=utf-8
 
 from flask import current_app, make_response, send_from_directory
-from utils.response import make_cors_headers
 import os
 import mimetypes
+
+from core.utils.response import make_cors_headers
 
 
 def get_uploads(filepath):

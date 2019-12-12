@@ -11,10 +11,10 @@ from flask import (Blueprint,
 import math
 import json
 
-from utils.misc import (parse_int, process_slug)
+from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
-from admin.helpers import url_as
+from admin.act import url_as
 
 
 blueprint = Blueprint('content', __name__, template_folder='templates')
@@ -224,7 +224,7 @@ def remove(content_type, slug):
 
 # helpers
 def _find_content_type(content_type_slug):
-    theme = current_app.db.Theme(current_app.current_theme_dir)
+    theme = current_app.db.Theme(current_app.config['THEME_NAME'])
     content_type = theme.content_types.get(content_type_slug)
     if not content_type:
         raise Exception('Content type not exists')
@@ -232,7 +232,7 @@ def _find_content_type(content_type_slug):
 
 
 def _find_custom_fields(template):
-    theme = current_app.db.Theme(current_app.current_theme_dir)
+    theme = current_app.db.Theme(current_app.config['THEME_NAME'])
     custom_fields = theme.custom_fields.get(template)
     if isinstance(custom_fields, dict):
         return custom_fields
@@ -241,7 +241,7 @@ def _find_custom_fields(template):
 
 
 def _find_hidden_field_keys(template):
-    theme = current_app.db.Theme(current_app.current_theme_dir)
+    theme = current_app.db.Theme(current_app.config['THEME_NAME'])
     hidden_field_keys = theme.hidden_fields.get(template)
     if isinstance(hidden_field_keys, list):
         return hidden_field_keys

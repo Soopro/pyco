@@ -3,26 +3,25 @@
 from flask import current_app, request, abort, render_template, redirect, g
 import os
 import math
-from services.i18n import Translator
 
-from utils.request import parse_args
-from utils.response import make_content_response
-from utils.model import make_dotted_dict
-from utils.misc import parse_int
-
-from helpers.app import (run_hook,
-                         helper_redirect_url,
-                         get_theme_path)
-from helpers.content import (find_content_file,
-                             find_404_content_file,
-                             query_by_files,
-                             query_segments,
-                             helper_wrap_languages,
-                             helper_wrap_category,
-                             helper_wrap_menu,
-                             helper_wrap_slot,
-                             parse_page_metas,
-                             parse_page_content)
+from core.services.i18n import Translator
+from core.utils.request import parse_args
+from core.utils.response import make_content_response
+from core.utils.model import make_dotted_dict
+from core.utils.misc import parse_int
+from core.act.app import (run_hook,
+                          get_redirect_url,
+                          get_theme_path)
+from core.act.content import (find_content_file,
+                              find_404_content_file,
+                              query_by_files,
+                              query_segments,
+                              gen_wrap_languages,
+                              gen_wrap_category,
+                              gen_wrap_menu,
+                              gen_wrap_slot,
+                              parse_page_metas,
+                              parse_page_content)
 
 from .helpers.jinja import (saltshaker,
                             glue,
@@ -80,7 +79,7 @@ def rendering(content_type_slug, file_slug):
 
     # page redirect
     if redirect_to['url']:
-        redirect_to_url = helper_redirect_url(redirect_to['url'], base_url)
+        redirect_to_url = get_redirect_url(redirect_to['url'], base_url)
         if redirect_to_url and request.url != redirect_to_url:
             return redirect(redirect_to_url, code=302)
 
@@ -97,10 +96,10 @@ def rendering(content_type_slug, file_slug):
     set_multi_language(view_ctx, curr_app)
 
     # menu
-    view_ctx['menu'] = helper_wrap_menu(curr_app, base_url)
+    view_ctx['menu'] = gen_wrap_menu(curr_app, base_url)
 
     # slots
-    view_ctx['slot'] = helper_wrap_slot(curr_app)
+    view_ctx['slot'] = gen_wrap_slot(curr_app)
 
     # base view context
     view_ctx['app_id'] = curr_app['_id']
@@ -179,7 +178,7 @@ def set_multi_language(view_context, app, lang_dir='languages'):
     view_context['locale'] = locale
     view_context['lang'] = locale.split('_')[0]
     # make language swither
-    languages = helper_wrap_languages(app['languages'], locale)
+    languages = gen_wrap_languages(app['languages'], locale)
     view_context['languages'] = make_dotted_dict(languages)
 
 
@@ -258,7 +257,7 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
 
 def _get_category(term_keys=False):
     _check_query_limit('_get_category', 1)
-    category = helper_wrap_category(g.curr_app, term_keys)
+    category = gen_wrap_category(g.curr_app, term_keys)
     return make_dotted_dict(category)
 
 

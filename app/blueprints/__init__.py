@@ -10,6 +10,6 @@ def register_blueprints(app):
     from .restapi import blueprint as restapi_module
     app.register_blueprint(restapi_module, url_prefix='/restapi/app')
 
-    # uploads
-    from .uploads import blueprint as uploads_module
-    app.register_blueprint(uploads_module, url_prefix='/uploads')
+    # upload
+    from .uploaded import blueprint as upload_module
+    app.register_blueprint(upload_module, url_prefix='/uploads')

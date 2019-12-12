@@ -10,11 +10,11 @@ from flask import (Blueprint,
 import os
 import math
 
-from utils.response import output_json
-from utils.misc import parse_int, safe_filename
+from core.utils.response import output_json
+from core.utils.misc import parse_int, safe_filename
 
 from admin.decorators import login_required
-from admin.helpers import url_as
+from admin.act import url_as
 
 
 blueprint = Blueprint('media', __name__, template_folder='templates')
@@ -58,7 +58,7 @@ def index():
 @login_required
 def upload():
     files = request.files.getlist('files')
-    uploads_dir = current_app.db.Media.UPLOADS_DIR
+    uploads_dir = current_app.db.Media.get_dir()
     uploaded_files = []
     upload_fails = []
     for file in files[:60]:
@@ -115,7 +115,7 @@ def repository_upload():
     file = request.files.get('file')
 
     filename = safe_filename(file.filename)
-    uploads_dir = current_app.db.Media.UPLOADS_DIR
+    uploads_dir = current_app.db.Media.get_dir()
     file_path = os.path.join(uploads_dir, filename)
     if os.path.isfile(file_path):
         return {

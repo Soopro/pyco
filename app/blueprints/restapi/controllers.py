@@ -3,22 +3,22 @@
 from flask import current_app, g
 import math
 
-from utils.response import output_json
-from utils.request import get_param, get_args
-from utils.model import make_dotted_dict
-from utils.misc import parse_int
+from core.utils.response import output_json
+from core.utils.request import get_param, get_args
+from core.utils.model import make_dotted_dict
+from core.utils.misc import parse_int
 
-from helpers.app import run_hook
-from helpers.content import (parse_page_metas,
-                             query_by_files,
-                             query_segments,
-                             search_by_files,
-                             find_content_file,
-                             parse_page_content,
-                             helper_wrap_languages,
-                             helper_wrap_category,
-                             helper_wrap_menu,
-                             helper_wrap_slot)
+from core.act.app import run_hook
+from core.act.content import (parse_page_metas,
+                              query_by_files,
+                              query_segments,
+                              search_by_files,
+                              find_content_file,
+                              parse_page_content,
+                              gen_wrap_languages,
+                              gen_wrap_category,
+                              gen_wrap_menu,
+                              gen_wrap_slot)
 
 
 @output_json
@@ -45,10 +45,10 @@ def get_view_metas(app_id):
         'res_url': config.get('RES_URL', ''),
         'lang': locale.split('_')[0],
         'locale': locale,
-        'languages': helper_wrap_languages(languages, locale),
-        'menu': helper_wrap_menu(curr_app, g.curr_base_url),
+        'languages': gen_wrap_languages(languages, locale),
+        'menu': gen_wrap_menu(curr_app, g.curr_base_url),
         'content_type': curr_app['content_types'],
-        'slot': helper_wrap_slot(curr_app)
+        'slot': gen_wrap_slot(curr_app)
     }
     return context
 
@@ -57,7 +57,7 @@ def get_view_metas(app_id):
 def get_view_category(app_id):
     term_keys = get_args('term_keys', default=False, multiple=True)
     return {
-        'category': helper_wrap_category(g.curr_app, term_keys)
+        'category': gen_wrap_category(g.curr_app, term_keys)
     }
 
 

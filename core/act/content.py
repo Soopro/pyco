@@ -5,14 +5,14 @@ from flask import current_app, Markup, g
 import re
 import markdown
 
-from utils.validators import url_validator
-from utils.misc import (parse_int,
-                        match_cond,
-                        sortedby,
-                        parse_sortby,
-                        process_slug,
-                        gen_excerpt,
-                        now)
+from core.utils.validators import url_validator
+from core.utils.misc import (parse_int,
+                             match_cond,
+                             sortedby,
+                             parse_sortby,
+                             process_slug,
+                             gen_excerpt,
+                             now)
 
 
 def query_by_files(content_type=None, attrs=None, term=None, tag=None,
@@ -181,7 +181,7 @@ def gen_page_url(data, static_type='page', index='index'):
 
 
 # menus
-def helper_wrap_menu(app, base_url=''):
+def gen_wrap_menu(app, base_url=''):
     if not app['menus']:
         return {}
 
@@ -235,7 +235,7 @@ def helper_wrap_menu(app, base_url=''):
 
 
 # category
-def helper_wrap_category(app, included_term_keys=None):
+def gen_wrap_category(app, included_term_keys=None):
     if not app['categories'] or not isinstance(app['categories'], dict):
         return None
 
@@ -314,7 +314,7 @@ def _sort_terms(terms, included_term_keys=None, nest_output=True):
 
 
 # slot
-def helper_wrap_slot(app):
+def gen_wrap_slot(app):
     if not app['slots']:
         return {}
     slots_map = {}
@@ -330,7 +330,7 @@ def helper_wrap_slot(app):
 
 
 # languages
-def helper_wrap_languages(languages, locale):
+def gen_wrap_languages(languages, locale):
     """ languages data sample
     [
         {'key': 'zh_CN', 'name': '汉语', 'url': 'http://.....'},

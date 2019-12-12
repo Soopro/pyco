@@ -1,19 +1,17 @@
 # coding=utf-8
 
 from flask import Flask, make_response, g
+import traceback
 import os
 import re
 
-from loaders import load_config
+from core.loaders import load_config
+from core.utils.misc import parse_dateformat
+from core.models import DBConnection, Configure, Document, Site, Theme, Media
+from core.services.i18n import Translator
 
-from utils.misc import parse_dateformat
 from admin.blueprints import register_admin_blueprints
-from admin.helpers import url_as
-from models import DBConnection, Configure, Document, Site, Theme, Media
-
-from services.i18n import Translator
-
-import traceback
+from admin.act import url_as
 
 
 app = Flask(__name__,
@@ -24,7 +22,8 @@ app = Flask(__name__,
 load_config(app)
 
 app.db = DBConnection(app)
-app.db.register([Configure, Document, Site, Theme, Media])
+app.db.register([Configure, Document, Site, Theme, Media],
+                app.config['PAYLOAD_DIR'])
 
 # register blueprints
 register_admin_blueprints(app)
@@ -64,7 +63,7 @@ def inject_global_variable():
     # site data
     site = app.db.Site()
     # theme config
-    theme = app.db.Theme(app.current_theme_dir)
+    theme = app.db.Theme(app.config['THEME_NAME'])
     return {
         'static_url': '{}{}'.format(app.config['ADMIN_BASE_URL'],
                                     app.static_url_path),

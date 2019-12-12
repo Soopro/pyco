@@ -2,10 +2,11 @@
 
 from functools import wraps
 from flask import current_app, session, redirect, g
-from utils.request import get_remote_addr
-from utils.misc import hmac_sha
 
-from .helpers import url_as
+from core.utils.request import get_remote_addr
+from core.utils.misc import hmac_sha
+
+from .act import url_as
 
 
 def login_required(f):

@@ -1,11 +1,9 @@
 # coding=utf-8
 
 from flask import Blueprint, current_app, make_response, request
-from jinja2 import FileSystemLoader
 import traceback
-import os
 
-from utils.misc import route_inject
+from core.utils.misc import route_inject
 
 from .helpers.jinja import (filter_thumbnail,
                             filter_timestamp,
@@ -41,17 +39,6 @@ def before_first_request():
 
 @blueprint.before_request
 def before_request():
-    if current_app.debug:
-        # change template folder
-        themes_dir = current_app.config.get('THEMES_DIR')
-        theme_name = current_app.config.get('THEME_NAME')
-        current_app.template_folder = os.path.join(themes_dir, theme_name)
-        # change reload template folder
-        current_app.jinja_env.cache = None
-        tpl_folder = current_app.template_folder
-        # reload jinja loader to new folder
-        current_app.jinja_loader = FileSystemLoader(tpl_folder)
-
     if request.path.strip('/') in current_app.config.get('SYS_ICONS', []):
         # for browser default icons
         return make_response('', 204)

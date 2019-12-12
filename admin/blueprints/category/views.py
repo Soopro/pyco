@@ -9,11 +9,10 @@ from flask import (Blueprint,
                    flash,
                    render_template)
 
-
-from utils.misc import (parse_int, process_slug)
+from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
-from admin.helpers import url_as
+from admin.act import url_as
 
 
 blueprint = Blueprint('category', __name__, template_folder='templates')

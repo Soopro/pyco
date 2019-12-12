@@ -1,8 +1,10 @@
 # coding=utf-8
 
 from flask import Blueprint
-from utils.misc import route_inject
+
+from core.utils.misc import route_inject
 from .routes import urlpatterns
+
 
 bp_name = 'uploads'
 

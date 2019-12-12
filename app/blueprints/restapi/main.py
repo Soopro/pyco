@@ -3,8 +3,8 @@
 from flask import Blueprint, current_app
 import traceback
 
-from utils.misc import route_inject
-from utils.response import make_json_response
+from core.utils.misc import route_inject
+from core.utils.response import make_json_response
 
 from .routes import urlpatterns
 

@@ -16,7 +16,7 @@ def get_theme_path(tmpl_name, ext='.html'):
     return '{}{}'.format(tmpl_name, ext)
 
 
-def helper_redirect_url(url, base_url):
+def get_redirect_url(url, base_url):
     if not url or not isinstance(url, str):
         return None
     if re.match('^(?:http|ftp)s?://', url):

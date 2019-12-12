@@ -1,11 +1,15 @@
 # coding=utf-8
 
+import os
+
 DEBUG = True
 
 HOST = '0.0.0.0'
 PORT = 5500
 
-THEMES_DIR = 'themes'
+PAYLOAD_DIR = 'payload'
+BACKUPS_DIR = os.path.join(PAYLOAD_DIR, 'backups')
+
 THEME_NAME = 'default'
 
 BASE_URL = 'http://localhost:5500'

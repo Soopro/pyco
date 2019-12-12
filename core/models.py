@@ -6,14 +6,13 @@ import yaml
 import json
 import urllib
 
-from utils.misc import (process_slug,
-                        parse_int,
-                        slug_uuid_suffix,
-                        gen_excerpt,
-                        guess_mimetype,
-                        split_file_ext,
-                        split_file_type)
-from utils.files import ensure_dirs
+from .utils.misc import (process_slug,
+                         parse_int,
+                         slug_uuid_suffix,
+                         gen_excerpt,
+                         guess_mimetype,
+                         split_file_ext,
+                         split_file_type)
 
 
 class DBConnection:
@@ -26,9 +25,10 @@ class DBConnection:
         if callable(pretreat_raw_method):
             self.pretreat_raw_method = pretreat_raw_method
 
-    def register(self, models):
+    def register(self, models, base_dir=None):
         for model in models:
             model.__pretreat_raw__ = self.pretreat_raw_method
+            model.__base_dir__ = str(base_dir)
             self.models[model.__name__] = model
 
     def __getattr__(self, name):
@@ -46,13 +46,13 @@ class FlatFile:
     data = dict()
     raw = None
 
+    __base_dir__ = None
     __pretreat_raw__ = None
 
     def __init__(self, path):
-        self._id = path
-        if isinstance(path, str):
-            self.path = path
-        self.raw = self._load(self.path)
+        self.path = path
+        self._id = self._abs_path()
+        self.raw = self._load()
 
     def __getitem__(self, key):
         if key == '_id':
@@ -70,7 +70,8 @@ class FlatFile:
         return self.data.get(key, default)
 
     def save(self):
-        with open(self.path, 'w') as f:
+        path = self._abs_path()
+        with open(path, 'w') as f:
             f.write(self.raw or '')
         return self._id
 
@@ -79,7 +80,14 @@ class FlatFile:
             os.remove(self.path)
         return self._id
 
-    def _load(self, path):
+    def _abs_path(self):
+        if self.__base_dir__:
+            return os.path.join(self.__base_dir__, self.path)
+        else:
+            return self.path
+
+    def _load(self):
+        path = self._abs_path()
         if os.path.isfile(path):
             with open(path, 'r') as fh:
                 readed = fh.read()
@@ -158,19 +166,22 @@ class Configure(FlatFile):
 
 
 class Theme(FlatFile):
+
+    THEMES_DIR = 'themes'
+
     STATIC_TYPE = 'page'
     STATIC_TYPE_NAME = 'Pages'
 
     PRIMARY_MENU = 'primary'
     PRIMARY_MENU_NAME = 'Primary Menu'
 
-    config_file_path = 'config.json'
+    config_path = 'config.json'
 
     path = ''
     data = {}
 
-    def __init__(self, theme_path):
-        self.path = os.path.join(theme_path, self.config_file_path)
+    def __init__(self, name):
+        self.path = os.path.join(self.THEMES_DIR, name, self.config_path)
         super(Theme, self).__init__(self.path)
         self.data = json.loads(self.raw)
 
@@ -286,7 +297,7 @@ class Site(FlatFile):
         "menus": {PRIMARY_MENU: []},
         "meta": {"title": "Pyco"}
     }
-    ensure_dirs(CONTENT_DIR)
+
     path = os.path.join(CONTENT_DIR, 'site.json')
     data = {}
 
@@ -456,8 +467,6 @@ class Document(FlatFile):
 
     STATUS = (STATUS_DRAFT, STATUS_PUBLISHED) = (0, 1)
 
-    ensure_dirs(CONTENT_DIR)
-
     path = ''
     data = {}
     _updated = None
@@ -481,7 +490,7 @@ class Document(FlatFile):
                                     slug)
 
         self.path = '{}{}'.format(rel_path, self.CONTENT_FILE_EXT)
-        self._id = self.path
+        self._id = self._abs_path()
 
         self.data = {
             'slug': slug,
@@ -596,9 +605,15 @@ class Document(FlatFile):
 
     # methods
     @classmethod
+    def get_dir(self):
+        if self.__base_dir__:
+            return os.path.join(self.__base_dir__, self.CONTENT_DIR)
+        return self.CONTENT_DIR
+
+    @classmethod
     def count(cls):
         file_paths = []
-        for path, dirs, files in os.walk(cls.CONTENT_DIR):
+        for path, dirs, files in os.walk(cls.get_dir()):
             for f in files:
                 if not f.endswith(cls.CONTENT_FILE_EXT) or f.startswith('_'):
                     continue
@@ -608,9 +623,9 @@ class Document(FlatFile):
     @classmethod
     def find_one(cls, slug, content_type=None):
         if content_type in [None, cls.STATIC_TYPE]:
-            rel_path = os.path.join(cls.CONTENT_DIR, slug)
+            rel_path = os.path.join(cls.get_dir(), slug)
         else:
-            rel_path = os.path.join(cls.CONTENT_DIR, content_type, slug)
+            rel_path = os.path.join(cls.get_dir(), content_type, slug)
         path = '{}{}'.format(rel_path, cls.CONTENT_FILE_EXT)
         if os.path.isfile(path):
             return cls(path)
@@ -620,9 +635,9 @@ class Document(FlatFile):
     @classmethod
     def find(cls, content_type=None):
         if content_type == cls.STATIC_TYPE:
-            f_dir = cls.CONTENT_DIR
+            f_dir = cls.get_dir()
         else:
-            f_dir = os.path.join(cls.CONTENT_DIR, content_type)
+            f_dir = os.path.join(cls.get_dir(), content_type)
         file_paths = [os.path.join(f_dir, f) for f in os.listdir(f_dir)
                       if f.endswith(cls.CONTENT_FILE_EXT) and
                       not f.startswith('_')]
@@ -631,7 +646,7 @@ class Document(FlatFile):
     @classmethod
     def find_recent(cls):
         file_paths = []
-        for path, dirs, files in os.walk(cls.CONTENT_DIR):
+        for path, dirs, files in os.walk(cls.get_dir()):
             for f in files:
                 if not f.endswith(cls.CONTENT_FILE_EXT) or f.startswith('_'):
                     continue
@@ -649,7 +664,6 @@ class Media():
     MAXIMUM_QUERY = 60
     MAXIMUM_STORAGE = 6000
 
-    ensure_dirs(UPLOADS_DIR)
     filename = ''
     path = ''
 
@@ -663,29 +677,41 @@ class Media():
         self._id = self.path
         self._refresh_time()
 
+    def _abs_path(self):
+        if self.__base_dir__:
+            return os.path.join(self.__base_dir__, self.path)
+        else:
+            return self.path
+
     def _refresh_time(self):
         try:
-            self._updated = int(os.path.getmtime(self.path))
-            self._creation = int(os.path.getctime(self.path))
+            self._updated = int(os.path.getmtime(self._abs_path()))
+            self._creation = int(os.path.getctime(self._abs_path()))
         except Exception:
-            self._updated = None
-            self._creation = None
+            self._updated = 0
+            self._creation = 0
 
     def delete(self):
-        if os.path.isfile(self.path):
-            os.remove(self.path)
+        if os.path.isfile(self._abs_path()):
+            os.remove(self._abs_path())
         return self._id
 
     # methods
     @classmethod
+    def get_dir(self):
+        if self.__base_dir__:
+            return os.path.join(self.__base_dir__, self.UPLOADS_DIR)
+        return self.UPLOADS_DIR
+
+    @classmethod
     def count(cls):
-        files = [f for f in os.listdir(cls.UPLOADS_DIR)
-                 if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f))]
+        files = [f for f in os.listdir(cls.get_dir())
+                 if os.path.isfile(os.path.join(cls.get_dir(), f))]
         return len(files[:cls.MAXIMUM_STORAGE])
 
     @classmethod
     def find_one(cls, filename):
-        file_path = os.path.join(cls.UPLOADS_DIR, filename)
+        file_path = os.path.join(cls.get_dir(), filename)
         if os.path.isfile(file_path):
             return cls(filename)
         else:
@@ -693,10 +719,11 @@ class Media():
 
     @classmethod
     def find(cls):
-        file_paths = [f for f in os.listdir(cls.UPLOADS_DIR)
-                      if os.path.isfile(os.path.join(cls.UPLOADS_DIR, f)) and
+        file_paths = [f for f in os.listdir(cls.get_dir())
+                      if os.path.isfile(os.path.join(cls.get_dir(), f)) and
                       not f.startswith('.')]
         files = [cls(f) for f in file_paths[:cls.MAXIMUM_STORAGE]]
+        print(cls.get_dir(), files)
         files.sort(key=lambda x: x._updated, reverse=True)
         return files
 
@@ -715,5 +742,5 @@ class Media():
             'mimetype': guess_mimetype(self.filename),
             'updated': self._updated,
             'creation': self._creation,
-            'is_file': os.path.isfile(self.path),
+            'is_file': os.path.isfile(self._abs_path()),
         }

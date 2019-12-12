@@ -1,6 +1,5 @@
 # coding=utf-8
 
-
 from slugify import slugify
 import datetime
 import zipfile
@@ -97,6 +96,11 @@ def zipdir(zipfile_location, source_dir):
 
 
 # folders
+def concat_path(*paths):
+    paths = [p for p in paths if isinstance(p, str) and p]
+    return os.path.join(*paths)
+
+
 def remove_dirs(*folders):
     for folder in folders:
         if os.path.isdir(folder):

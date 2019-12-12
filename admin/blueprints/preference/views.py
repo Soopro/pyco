@@ -11,14 +11,14 @@ from flask import (Blueprint,
                    g)
 
 import os
-
 from werkzeug.security import generate_password_hash, check_password_hash
-from utils.request import get_remote_addr
-from utils.misc import hmac_sha, now, process_slug, parse_int, parse_json
-from utils.files import unzip, zipdir, clean_dirs
+
+from core.utils.request import get_remote_addr
+from core.utils.misc import hmac_sha, now, process_slug, parse_int, parse_json
+from core.utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
-from admin.helpers import url_as, sync_site_by_theme_opts
+from admin.act import url_as, sync_site_by_theme_opts
 
 
 blueprint = Blueprint('preference', __name__, template_folder='templates')
@@ -289,7 +289,7 @@ def appearance():
 @login_required
 def install_theme():
     f = request.files['file']
-    theme_dir = current_app.current_theme_dir
+    theme_dir = current_app.template_folder
 
     clean_dirs(theme_dir)
     unzip(f, theme_dir)
