@@ -186,7 +186,6 @@ def update_custom_field(content_type, slug):
 
     document['meta'][custom_key] = result
     document.save()
-
     return jsonify(document['meta'][custom_key])
 
 

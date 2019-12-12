@@ -53,25 +53,24 @@ $(document).ready(function() {
   $('form.ajax-form').each(function(){
     var form = $(this);
     var flash = form.find('.flash');
+    var is_flashing = false;
     flash.hide();
     form.on('mouseup', function(e){
       var target = $(e.target);
       if (target.is('input, textarea, button, select')){
-        flash.removeClass('text-success');
-        flash.removeClass('text-danger');
-        flash.hide();
+        flash.hide(100);
       }
     });
     form.on('submit', function(e){
       e.preventDefault();
       $.post(form.attr('action'), form.serialize(), function(res){
-        flash.addClass('text-success');
-        flash.show();
+        flash.removeClass('text-danger').addClass('text-success').show(100);
       }, 'json').fail(function(err){
         console.error(err);
-        flash.addClass('text-danger');
-        flash.show();
-        alert('['+err.status+']'+err.statusText);
+        flash.removeClass('text-success').addClass('text-danger').show(100);
+        setTimeout(function(){
+          alert('['+err.status+']'+err.statusText);
+        }, 200)
       })
       return false
     });
