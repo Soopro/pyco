@@ -13,30 +13,20 @@ Description: ''
 Featured_img:
   Src: ''
 Features:
+- Caption: asdfdsaf
+  Link: asdfdsf
+  Src: http://localhost:5500/uploads/default.jpg
+  Target: asdfdsf
+  Title: Testsadfsadfad
 - Caption: ''
   Link: ''
-  Target: ''
-  Title: '123213213'
-- Caption: ''
-  Link: ''
-  Target: ''
-  Title: ''
-- Caption: ''
-  Link: ''
-  Target: ''
-  Title: ''
-- Caption: ''
-  Link: ''
-  Target: ''
-  Title: ''
-- Caption: ''
-  Link: ''
+  Src: http://localhost:5500/uploads/default.jpg
   Target: ''
   Title: ''
 Link-to:
   Class: adsfadsffff
-  Link: asdfdasf
-  Name: ddsfadffff
+  Link: 23123123asdfdasf
+  Name: ddsfadffff123123213
   Target: asdfdsf
 Opt:
   Prop-rel_content: ''
@@ -62,6 +52,16 @@ Unknow-f:
   '1': x
 
 */
+
+
+
+
+
+
+
+
+
+
 
 
 

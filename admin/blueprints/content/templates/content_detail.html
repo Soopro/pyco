@@ -183,12 +183,10 @@
           {% if display_field('featured_img') %}
           <div class="form-group media-preview-field">
             <label>{{_('Featured Image')}}</label>
-            <div class="media-preview">
-              <a href="#" target="_blank">
-                <img class="img-figure" src="">
-              </a>
-            </div>
             <div class="input-group">
+              <div class="input-group-append media-preview">
+                <a href="#" target="_blank"><img src=""></a>
+              </div>
               <input class="form-control media-input"
                      type="text"
                      name="featured_img"
