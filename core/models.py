@@ -337,8 +337,8 @@ class Site(FlatFile):
     data = {}
 
     def __init__(self):
-        content_dir = self._abs_path(self.CONTENT_DIR)
-        self.path = os.path.join(content_dir, self.conf_path)
+        self.content_folder = self._abs_path(self.CONTENT_DIR)
+        self.path = os.path.join(self.content_folder, self.conf_path)
         super(Site, self).__init__(self.path)
         self._ensure()
 
