@@ -64,6 +64,8 @@ def inject_global_variable():
     site = app.db.Site()
     # theme config
     theme = app.db.Theme(app.config['THEME_NAME'])
+    theme_lang_path = os.path.join(theme.theme_folder, 'languages')
+    translator.append(theme_lang_path)
     return {
         'static_url': '{}{}'.format(app.config['ADMIN_BASE_URL'],
                                     app.static_url_path),

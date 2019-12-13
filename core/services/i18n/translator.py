@@ -10,7 +10,8 @@
 # Methods & Parameters:
 # - Translate: init with current locale language,
 #   `locale` -> the local language code .
-#   `source` -> where is dictionary, could be a file path or dict or list.
+#   `source` -> where is dictionary, could be the dir of translate files
+#               or dict and list.
 #   `case_sensitive` -> to ignore cases.
 # - load: load translate dictionary as new.
 #   `source` -> dictionary source again.
@@ -93,7 +94,7 @@ class Translator(object):
 
     def append(self, source):
         # load will replace old dictionary
-        self.dictionary.updated(self._load(source))
+        self.dictionary.update(self._load(source))
 
     def empty(self):
         # empty dictionary

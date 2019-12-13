@@ -13,7 +13,7 @@
 <div class="card">
   <div class="card-header d-flex">
     <h4 key="{{key}}">
-      {{(opts.label[lang] or opts.label[locale] or opts.label)|title}}
+      {{_(opts.label)|title}}
     </h4>
     <span class="flash ml-auto" style="display: none;">
       <i class="fa fa-save"></i>
@@ -26,7 +26,7 @@
       <div class="form-group col-md-6 col-xl-4">
         {% if prop.type == 'text' %}
         <label>
-          {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+          {{_(prop.label)|title}}
         </label>
         <input class="form-control"
                type="text"
@@ -35,20 +35,20 @@
                value="{{_value}}">
         {% elif prop.type == 'select' %}
         <label>
-          {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+          {{_(prop.label)|title}}
         </label>
         <select class="form-control"
                 name="prop-{{prop.key}}">
           <option value="">{{_('Empty')}}</option>
           {% for op in prop.options %}
           <option value="{{op.value}}" {{'selected' if _value == op.value}}>
-            {{(op.label[lang] or op.label[locale] or op.label)|title}}
+            {{_(op.label)|title}}
           </option>
           {% endfor %}
         </select>
         {% elif prop.type == 'switch' %}
         <div class="control-label">
-          {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+          {{_(prop.label)|title}}
         </div>
         <label class="custom-switch mt-2">
           <input class="custom-switch-input"

@@ -65,7 +65,7 @@
             "options": [
                 "test-not-dict",
                 {"label": "Post", "value": "post"},
-                {"label": {"en": "Post", "zh_CN":"帖子"}, "value": "post"}
+                {"label": "Post", "value": "post"}
             ]
           },
           {
@@ -80,17 +80,11 @@
       "link-to": "link",
       "features": {
         "type": "collection",
-        "label": {
-          "en": "List",
-          "zh": "序列"
-        }
+        "label": "List"
       },
       "cover": {
         "type": "bg",
-        "label": {
-          "en": "Background Cover",
-          "zh_CN": "背景图"
-        }
+        "label": "Background Cover"
       },
       "img": "media",
       "text-1": "text",

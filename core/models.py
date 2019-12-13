@@ -180,8 +180,9 @@ class Theme(FlatFile):
     data = {}
 
     def __init__(self, theme_name):
-        theme_path = self._abs_path(self.THEMES_DIR)
-        self.path = os.path.join(theme_path, theme_name, self.conf_path)
+        themes_dir = self._abs_path(self.THEMES_DIR)
+        self.theme_folder = os.path.join(themes_dir, theme_name)
+        self.path = os.path.join(self.theme_folder, self.conf_path)
         super(Theme, self).__init__(self.path)
         self.data = json.loads(self.raw)
 
