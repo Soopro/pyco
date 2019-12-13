@@ -1,10 +1,10 @@
-{% set _sequence = meta[key] or [] %}
+{% set _collection = meta[key] or [] %}
 <form class="multientry-form ajax-form"
       action="{{url_as('.update_custom_field',
                        content_type=document.content_type,
                        slug=document.slug)}}"
       method="POST">
-<input type="hidden" name="type" value="seq">
+<input type="hidden" name="type" value="collection">
 <input type="hidden" name="key" value="{{key}}">
 <div class="card">
   <div class="card-header d-flex">
@@ -17,7 +17,7 @@
   </div>
   <div class="card-body">
     <div class="fields">
-      {% for item in _sequence %}
+      {% for item in _collection %}
       <div class="field-entry">
         <div class="mb-3 d-flex">
           <div class="btn btn-outline-secondary mr-1">

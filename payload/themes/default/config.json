@@ -46,7 +46,7 @@
       "textttt": "lines",
       "link-to": "link",
       "features": {
-        "type": "seq",
+        "type": "collection",
         "label": {
           "en": "List",
           "zh": "序列"
