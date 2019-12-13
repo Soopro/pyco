@@ -108,21 +108,16 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
             </li>
 
             <li class="menu-header">{{_('Content')}}</li>
-            <li>
-              <a class="nav-link"
-                 href="{{url_as('content.index', content_type='page')}}">
-                <i class="fas fa-file"></i>
-                <span>{{_('Pages')}}</span>
-              </a>
-            </li>
-
-            {% for content_type in site.content_types
-               if content_type.key != 'page' %}
+            {% for content_type in site.content_types %}
             <li>
               <a class="nav-link"
                  href="{{url_as('content.index',
                          content_type=content_type.key)}}">
-                <i class="far fa-file-alt"></i>
+                {% if content_type.key == 'page' %}
+                  <i class="far fa-file"></i>
+                {% else %}
+                  <i class="far fa-file-alt"></i>
+                {% endif %}
                 <span>{{_(content_type.title)}}</span>
               </a>
             </li>

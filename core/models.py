@@ -362,7 +362,16 @@ class Site(FlatFile):
     @property
     def content_types(self):
         _content_types = self.data.get('content_types') or {}
-        return [{'key': k, 'title': v} for k, v in _content_types.items()]
+        page_type = None
+        site_content_types = []
+        for k, v in _content_types.items():
+            if k == self.STATIC_TYPE:
+                page_type = {'key': k, 'title': v}
+            else:
+                site_content_types.append({'key': k, 'title': v})
+        if page_type:
+            site_content_types.insert(0, page_type)
+        return site_content_types
 
     @property
     def languages(self):
