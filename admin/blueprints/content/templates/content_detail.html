@@ -212,7 +212,7 @@
                     name="template">
               {% for tmpl in tmpls %}
               <option value="{{tmpl}}"
-                      {{'selected' if content_type.key==tmpl}}>
+                      {{'selected' if document.template==tmpl}}>
                 {{tmpl}}
               </option>
               {% endfor %}
