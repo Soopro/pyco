@@ -39,6 +39,10 @@ def before_first_request():
 
 @blueprint.before_request
 def before_request():
+    if current_app.debug:
+        # clear jinja cache for instance reload pages.
+        current_app.jinja_env.cache = None
+
     if request.path.strip('/') in current_app.config.get('SYS_ICONS', []):
         # for browser default icons
         return make_response('', 204)
