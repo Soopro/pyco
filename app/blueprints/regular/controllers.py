@@ -195,7 +195,8 @@ def _check_query_limit(key, limit):
 
 def _query_contents(content_type=None, attrs=[], term=None, tag=None,
                     paged=0, perpage=0, sortby=None, with_content=False):
-    _check_query_limit('_query_contents', 3)
+    _check_query_limit('_query_contents',
+                       current_app.config.get('CONTENT_QUERY_LIMIT', 3))
 
     curr_id = g.curr_file_id
     theme_meta = g.curr_app['theme_meta']

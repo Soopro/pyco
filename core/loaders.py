@@ -7,6 +7,7 @@ import re
 def load_config(app, config_name='config.py'):
     app.config.from_pyfile(config_name)
     app.config.setdefault('DEBUG', False)
+    app.config.setdefault('CONTENT_QUERY_LIMIT', 3)
 
     app.config.setdefault('PAYLOAD_DIR', 'paylaod')
     app.config.setdefault('BACKUPS_DIR', '_backups')
