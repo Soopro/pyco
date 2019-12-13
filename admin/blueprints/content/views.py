@@ -262,11 +262,14 @@ def _update_custom_attrs_field():
 
     attrs = {}
     for k in attr_text_keys:
-        attrs[k] = request.form.get(k, '')
+        if k:
+            attrs[k] = request.form.get(k, '')
     for k in attr_select_keys:
-        attrs[k] = request.form.get(k, '')
+        if k:
+            attrs[k] = request.form.get(k, '')
     for k in attr_switch_keys:
-        attrs[k] = bool(request.form.get(k))
+        if k:
+            attrs[k] = bool(request.form.get(k))
 
     return attrs
 

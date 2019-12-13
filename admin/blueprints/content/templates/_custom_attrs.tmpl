@@ -40,8 +40,8 @@
               name="prop-{{prop.key}}">
         <option value="">{{_('Empty')}}</option>
         {% for op in prop.options %}
-        <option value="{{op}}" {{'selected' if _value == op}}>
-          {{op}}
+        <option value="{{op.value}}" {{'selected' if _value == op.value}}>
+          {{(op.label[lang] or op.label[locale] or op.label)|title}}
         </option>
         {% endfor %}
       </select>

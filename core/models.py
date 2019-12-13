@@ -237,6 +237,20 @@ class Theme(FlatFile):
     def custom_fields(self):
         _custom_fields = self.data.get('custom_fields') or {}
 
+        def _get_opts(sel_opts):
+            selection = []
+            for op in sel_opts:
+                if isinstance(op, str):
+                    value = label = op
+                elif isinstance(op, dict):
+                    value = op.get('value', '')
+                    label = op.get('label', '?')
+                else:
+                    value = ''
+                    label = '?'
+                selection.append({'label': label, 'value': value})
+            return selection
+
         def _get_fields(opts):
             fields = {}
             for k, v in opts.items():
@@ -255,7 +269,7 @@ class Theme(FlatFile):
                         'label': p.get('label', p['key']),
                         'type': p.get('type', 'text'),  # text/select/switch
                         'value': p.get('value', ''),  # default value
-                        'options': p.get('options', [])}  # select options
+                        'options': _get_opts(p.get('options', []))}  # select
                         for p in props
                         if isinstance(p, dict) and p.get('key')]
                     fields[process_slug(k)] = {

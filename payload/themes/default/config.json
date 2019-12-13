@@ -62,7 +62,11 @@
             "type": "select",
             "label":"Releated",
             "value": "",
-            "options": ["post", "feature", "works"]
+            "options": [
+                "test-not-dict",
+                {"label": "Post", "value": "post"},
+                {"label": {"en": "Post", "zh_CN":"帖子"}, "value": "post"}
+            ]
           },
           {
             "key":"rel_switch",
