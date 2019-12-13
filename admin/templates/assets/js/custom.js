@@ -123,8 +123,7 @@ $(document).ready(function() {
   $('.media-preview-field').each(function(){
     var media_input = $(this).find('.media-input');
     var preview = $(this).find('.media-preview');
-    var preview_link = preview.find('a');
-    var preview_img = preview.find('img');
+    var preview_lnk = preview.find('a');
     var allowed_exts = ['jpg', 'jpe', 'jpeg', 'png', 'gif', 'svg'];
 
     function _is_img(url){
@@ -138,12 +137,10 @@ $(document).ready(function() {
     function _toggle_preview() {
       var url = media_input.val();
       if(_is_img(url)){
-        preview_link.attr('href', url);
-        preview_img.attr('src', url);
+        preview_lnk.attr('href', url).css('background-image','url('+url+')');
         preview.show();
       } else {
-        preview_link.attr('href', '#');
-        preview_img.attr('src', '');
+        preview_lnk.attr('href', '#').css('background-image','none');
         preview.hide();
       }
     }

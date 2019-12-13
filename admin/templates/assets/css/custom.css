@@ -13,6 +13,16 @@ form.ajax-form.error textarea,
 form.ajax-form.error select {
   border-color: red;
 }
+.media-preview {
+  overflow: hidden;
+}
+.media-preview a {
+  width: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center, center;
+  background-color: #eee;
+}
 
 .form-control::placeholder {
   opacity: 0.6 !important;
@@ -61,16 +71,6 @@ form.ajax-form.error select {
   max-width: 100%;
   max-height: 96px;
   width: 96px;
-}
-
-.media-preview {
-  overflow: hidden;
-}
-.media-preview img {
-  max-width: 50px;
-  max-height: 100%;
-  width: 100%;
-  height: 100%;
 }
 
 .grid-thumbnail {
