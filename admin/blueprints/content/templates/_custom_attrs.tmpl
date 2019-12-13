@@ -47,16 +47,17 @@
           {% endfor %}
         </select>
         {% elif prop.type == 'switch' %}
-        <div class="control-label">
-          {{_(prop.label)|title}}
+        <label>{{_('Switch')}}</label>
+        <div>
+          <label class="custom-switch mt-2">
+            <input class="custom-switch-input"
+                   type="checkbox"
+                   name="ATTRS-{{prop.key}}"
+                   {{'checked' if _value}}>
+            <span class="custom-switch-indicator"></span>
+            <span class="custom-switch-description">{{_(prop.label)}}</span>
+          </label>
         </div>
-        <label class="custom-switch mt-2">
-          <input class="custom-switch-input"
-                 type="checkbox"
-                 name="ATTRS-{{prop.key}}"
-                 {{'checked' if _value}}>
-          <span class="custom-switch-indicator"></span>
-        </label>
         {% endif %}
       </div>
       {% endfor %}

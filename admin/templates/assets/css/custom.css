@@ -36,6 +36,9 @@ form.ajax-form.error select {
 .form-control::-ms-input-placeholder {
   opacity: 0.6 !important;
 }
+.custom-switch {
+  padding-left: 0.5rem;
+}
 
 .list-figure {
   display: inline-block;
