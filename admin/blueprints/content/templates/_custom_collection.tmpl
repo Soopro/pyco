@@ -51,13 +51,13 @@
             </div>
           </div>
           <div class="form-group col-md-6">
-            <label>{{_('Caption')}} {{_('(Optional)')}}</label>
+            <label>{{_('Subtitle')}} {{_('(Optional)')}}</label>
             <div class="input-group">
               <input class="form-control"
-                   type="text"
-                   name="caption"
-                   maxlength="360"
-                   value="{{item.caption}}">
+                     type="text"
+                     name="subtitle"
+                     maxlength="60"
+                     value="{{item.subtitle}}">
             </div>
           </div>
         </div>
@@ -104,6 +104,15 @@
                      placeholder="_self"
                      value="{{item.target}}">
             </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-12">
+            <label>{{_('Caption')}} {{_('(Optional)')}}</label>
+            <textarea class="form-control"
+                        name="caption"
+                        maxlength="3600">{{item.caption}}</textarea>
           </div>
         </div>
 

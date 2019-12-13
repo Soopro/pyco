@@ -5,6 +5,10 @@
 		"msgstr": "标题"
 	},
   {
+    "msgid": "Subtitle",
+    "msgstr": "副标题"
+  },
+  {
     "msgid": "Description",
     "msgstr": "描述"
   },

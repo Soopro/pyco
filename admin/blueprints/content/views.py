@@ -338,6 +338,7 @@ def _update_custom_link_field():
 
 def _update_custom_collection_field():
     titles = request.form.getlist('title')
+    subtitles = request.form.getlist('subtitle')
     captions = request.form.getlist('caption')
     links = request.form.getlist('link')
     srcs = request.form.getlist('src')
@@ -347,6 +348,7 @@ def _update_custom_collection_field():
     for idx, title in enumerate(titles):
         collection.append({
             'title': title or '',
+            'subtitle': _load_field_list(subtitles, idx),
             'caption': _load_field_list(captions, idx),
             'link': _load_field_list(links, idx),
             'target': _load_field_list(targets, idx),
