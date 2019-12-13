@@ -294,12 +294,14 @@ def _update_custom_media_field():
     src = request.form.get('src')
     link = request.form.get('link')
     target = request.form.get('target')
+    css_class = request.form.get('class')
 
     return {
         'title': title or '',
         'src': src or '',
         'link': link or '',
-        'target': target or ''
+        'target': target or '',
+        'class': css_class or ''
     }
 
 

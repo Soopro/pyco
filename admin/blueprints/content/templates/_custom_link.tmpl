@@ -16,38 +16,42 @@
     </span>
   </div>
   <div class="card-body">
-    <div class="form-group">
-      <label>{{_('Name')}}</label>
-      <input class="form-control"
-             type="text"
-             name="name"
-             maxlength="60"
-             value="{{_field.name}}">
-    </div>
-    <div class="form-group">
-      <label>{{_('Link to URL')}}</label>
-      <div class="input-group">
+    <div class="form-row">
+      <div class="form-group col-md-8">
+        <label>{{_('Name')}}</label>
         <input class="form-control"
                type="text"
-               name="link"
-               maxlength="360"
-               placeholder="URL, http://somesite.com"
-               value="{{_field.link}}">
-        <input class="form-control col-md-3 col-4"
-               type="text"
-               name="target"
+               name="name"
                maxlength="60"
-               placeholder="_self"
-               value="{{_field.target}}">
+               value="{{_field.name}}">
+      </div>
+      <div class="form-group col-md-4">
+        <label>{{_('CSS Class')}}</label>
+        <input class="form-control"
+               type="text"
+               name="class"
+               maxlength="360"
+               value="{{_field.class}}">
       </div>
     </div>
-    <div class="form-group">
-      <label>{{_('CSS Class')}}</label>
-      <input class="form-control"
-             type="text"
-             name="class"
-             maxlength="360"
-             value="{{_field.class}}">
+    <div class="form-row">
+      <div class="form-group col-12">
+        <label>{{_('Link to URL')}}</label>
+        <div class="input-group">
+          <input class="form-control"
+                 type="text"
+                 name="link"
+                 maxlength="360"
+                 placeholder="URL, http://somesite.com"
+                 value="{{_field.link}}">
+          <input class="form-control col-md-3 col-4"
+                 type="text"
+                 name="target"
+                 maxlength="60"
+                 placeholder="_self"
+                 value="{{_field.target}}">
+        </div>
+      </div>
     </div>
   </div>
   <div class="card-footer d-flex">

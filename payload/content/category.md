@@ -23,11 +23,17 @@ Features:
   Src: http://localhost:5500/uploads/default.jpg
   Target: ''
   Title: ''
+Img:
+  Class: er
+  Link: '123213'
+  Src: '123123213'
+  Target: '123213'
+  Title: '23123'
 Link-to:
   Class: adsfadsffff
   Link: 23123123asdfdasf
   Name: ddsfadffff123123213
-  Target: asdfdsf
+  Target: ''
 Opt:
   Prop-rel_content: ''
   Prop-rel_switch: false
@@ -44,6 +50,8 @@ Tags:
 Template: customs
 Terms: []
 Text-1: ''
+Text-lines:
+- Text: sss
 Textttt:
 - Text: ''
 - Text: adsfdasf
@@ -52,6 +60,11 @@ Unknow-f:
   '1': x
 
 */
+
+
+
+
+
 
 
 

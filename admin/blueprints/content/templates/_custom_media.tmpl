@@ -16,51 +16,63 @@
     </span>
   </div>
   <div class="card-body">
-    <div class="form-group">
-      <label>{{_('Title')}}</label>
-      <input class="form-control"
-             type="text"
-             name="title"
-             maxlength="60"
-             value="{{_field.title}}">
-    </div>
-    <div class="form-group media-preview-field">
-      <label>{{_('Image URL')}}</label>
-      <div class="input-group">
-        <div class="input-group-append media-preview">
-          <a href="#" target="_blank"><img src=""></a>
-        </div>
-        <input class="form-control media-input"
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label>{{_('Title')}}</label>
+        <input class="form-control"
                type="text"
-               name="src"
-               value="{{_field.src or ''}}">
-        <div class="input-group-append">
-          <button class="btn btn-secondary"
-                  aria-lable="{{_('Select Image')}}"
-                  data-toggle="modal"
-                  data-target="#MODAL-MEDIAREPO"
-                  data-input="src"
-                  type="button">
-            <i class="fas fa-image"></i>
-          </button>
+               name="title"
+               maxlength="60"
+               value="{{_field.title}}">
+      </div>
+      <div class="form-group col-md-6">
+        <label>{{_('Link to URL')}}</label>
+        <div class="input-group">
+          <input class="form-control"
+                 type="text"
+                 name="link"
+                 maxlength="360"
+                 placeholder="URL, http://somesite.com"
+                 value="{{_field.link}}">
+          <input class="form-control col-md-3 col-4"
+                 type="text"
+                 name="target"
+                 maxlength="60"
+                 placeholder="_self"
+                 value="{{_field.target}}">
         </div>
       </div>
     </div>
-    <div class="form-group">
-      <label>{{_('Link to URL')}}</label>
-      <div class="input-group">
+    <div class="form-row">
+      <div class="form-group media-preview-field col-md-8">
+        <label>{{_('Image URL')}}</label>
+        <div class="input-group">
+          <div class="input-group-append media-preview">
+            <a href="#" target="_blank"><img src=""></a>
+          </div>
+          <input class="form-control media-input"
+                 type="text"
+                 name="src"
+                 value="{{_field.src or ''}}">
+          <div class="input-group-append">
+            <button class="btn btn-secondary"
+                    aria-lable="{{_('Select Image')}}"
+                    data-toggle="modal"
+                    data-target="#MODAL-MEDIAREPO"
+                    data-input="src"
+                    type="button">
+              <i class="fas fa-image"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-4">
+        <label>{{_('CSS Class')}}</label>
         <input class="form-control"
                type="text"
-               name="link"
+               name="class"
                maxlength="360"
-               placeholder="URL, http://somesite.com"
-               value="{{_field.link}}">
-        <input class="form-control col-md-3 col-4"
-               type="text"
-               name="target"
-               maxlength="60"
-               placeholder="_self"
-               value="{{_field.target}}">
+               value="{{_field.class}}">
       </div>
     </div>
   </div>

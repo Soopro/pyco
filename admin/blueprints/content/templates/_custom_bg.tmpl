@@ -16,37 +16,42 @@
     </span>
   </div>
   <div class="card-body">
-    <div class="form-group media-preview-field">
-      <label>{{_('Image URL')}}</label>
-      <div class="input-group">
-        <div class="input-group-append media-preview">
-          <a href="#" target="_blank"><img src=""></a>
-        </div>
-        <input class="form-control media-input"
-               type="text"
-               name="src"
-               value="{{_field.src or ''}}">
-        <div class="input-group-append">
-          <button class="btn btn-secondary"
-                  aria-lable="{{_('Select Image')}}"
-                  data-toggle="modal"
-                  data-target="#MODAL-MEDIAREPO"
-                  data-input="src"
-                  type="button">
-            <i class="fas fa-image"></i>
-          </button>
+    <div class="form-row">
+      <div class="form-group media-preview-field col-md-8">
+        <label>{{_('Image URL')}}</label>
+        <div class="input-group">
+          <div class="input-group-append media-preview">
+            <a href="#" target="_blank"><img src=""></a>
+          </div>
+          <input class="form-control media-input"
+                 type="text"
+                 name="src"
+                 value="{{_field.src or ''}}">
+          <div class="input-group-append">
+            <button class="btn btn-secondary"
+                    aria-lable="{{_('Select Image')}}"
+                    data-toggle="modal"
+                    data-target="#MODAL-MEDIAREPO"
+                    data-input="src"
+                    type="button">
+              <i class="fas fa-image"></i>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <label>{{_('Styles')}}</label>
-      <div class="input-group">
-        <input class="form-control col-md-3 col-4"
+      <div class="form-group col-md-4">
+        <label>{{_('CSS Class')}}</label>
+        <input class="form-control"
                type="text"
                name="class"
                maxlength="360"
                placeholder="{{_('CSS Class')}}"
                value="{{_field.class}}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-12">
+        <label>{{_('CSS Styles')}}</label>
         <input class="form-control"
                type="text"
                name="style"
