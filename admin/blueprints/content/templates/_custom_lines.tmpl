@@ -8,12 +8,9 @@
 <input type="hidden" name="key" value="{{key}}">
 <div class="card">
   <div class="card-header d-flex">
-    {% if opts.label is mapping %}
-      {% set label = opts.label[locale] or opts.label[lang] %}
-    {% else %}
-      {% set label = opts.label %}
-    {% endif %}
-    <h4>{{label or key|title}}</h4>
+    <h4 key="{{key}}">
+      {{(opts.label[lang] or opts.label[locale] or opts.label)|title}}
+    </h4>
     <span class="flash ml-auto" style="display: none;">
       <i class="fa fa-save"></i>
     </span>
@@ -23,6 +20,18 @@
       {% for item in _lines %}
       <div class="form-group field-entry">
         <div class="input-group">
+          <div class="input-group-prepend">
+            <button class="btn btn-secondary btn-icon move-field-up"
+                    aria-label="{{_('Move Up')}}"
+                    type="button">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <button class="btn btn-secondary btn-icon move-field-down"
+                    aria-label="{{_('Move Down')}}"
+                    type="button">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
           <input class="form-control"
                  value="{{item.text}}"
                  name="text"
@@ -42,6 +51,18 @@
     <div class="TMPL d-none">
       <div class="form-group field-entry">
         <div class="input-group">
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-secondary btn-icon move-field-up"
+                    aria-label="{{_('Move Up')}}"
+                    type="button">
+              <i class="fas fa-chevron-up"></i>
+            </button>
+            <button class="btn btn-outline-secondary btn-icon move-field-down"
+                    aria-label="{{_('Move Down')}}"
+                    type="button">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
           <input class="form-control"
                  value=""
                  name="text"

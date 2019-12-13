@@ -34,17 +34,23 @@ $(document).ready(function() {
     } else {
       console.warn('multientry: TEMPLATE IS MISSING.')
     }
-    form.find('.fields .field-entry').each(function(){
-      var entry = $(this);
+    function attach_handler(entry){
       entry.find('.remove-field').on('click', function(e){
         entry.remove();
       });
+      entry.find('.move-field-up').on('click', function(e){
+        entry.insertBefore(entry.prev('.field-entry'));
+      });
+      entry.find('.move-field-down').on('click', function(e){
+        entry.insertAfter(entry.next('.field-entry'));
+      });
+    }
+    form.find('.fields .field-entry').each(function(){
+      attach_handler($(this));
     });
     btn_add_field.on('click', function(){
       var new_entry = $(TEMPLATE);
-      new_entry.find('.remove-field').on('click', function(e){
-        new_entry.remove();
-      });
+      attach_handler(new_entry);
       fields_container.append(new_entry);
     });
 

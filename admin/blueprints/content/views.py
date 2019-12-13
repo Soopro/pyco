@@ -176,8 +176,8 @@ def update_custom_field(content_type, slug):
         result = _update_custom_link_field()
     elif custom_type == 'bg':
         result = _update_custom_bg_field()
-    elif custom_type == 'series':
-        result = _update_custom_series_field()
+    elif custom_type == 'seq':
+        result = _update_custom_seq_field()
     elif custom_type == 'lines':
         result = _update_custom_lines_field()
     elif custom_type == 'script':
@@ -304,22 +304,22 @@ def _update_custom_link_field():
     }
 
 
-def _update_custom_series_field():
+def _update_custom_seq_field():
     titles = request.form.getlist('title')
     captions = request.form.getlist('caption')
     links = request.form.getlist('link')
     targets = request.form.getlist('target')
 
-    series = []
+    sequence = []
     for idx, title in enumerate(titles):
-        series.append({
+        sequence.append({
             'title': title or '',
             'caption': _load_field_list(captions, idx),
             'link': _load_field_list(links, idx),
             'target': _load_field_list(targets, idx)
         })
 
-    return series
+    return sequence
 
 
 def _update_custom_lines_field():

@@ -243,12 +243,12 @@ class Theme(FlatFile):
                 if k.startswith('!'):
                     continue
                 elif isinstance(v, str):
-                    fields[process_slug(k)] = {'type': v}
+                    fields[process_slug(k)] = {'type': v, 'label': k}
                 elif isinstance(v, dict):
                     fields[process_slug(k)] = {'type': v.get('type', ''),
                                                'label': v.get('label', '')}
                 else:
-                    fields[process_slug(k)] = {'type': ''}
+                    fields[process_slug(k)] = {'type': '', 'label': k}
             return fields
 
         custom_fields = {k: _get_fields(v) for k, v in _custom_fields.items()}

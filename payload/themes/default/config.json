@@ -46,20 +46,20 @@
       "textttt": "lines",
       "link-to": "link",
       "features": {
-        "type": "series",
+        "type": "seq",
         "label": {
           "en": "List",
           "zh": "序列"
         }
       },
       "cover": {
-        "type": "media",
+        "type": "bg",
         "label": {
           "en": "Background Cover",
-          "zh-CN": "背景图"
+          "zh_CN": "背景图"
         }
       },
-      "bg-img": "bg",
+      "img": "media",
       "text-1": "text",
       "script-s": "script",
       "unknow-f": ""
