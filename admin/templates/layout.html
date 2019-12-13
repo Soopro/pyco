@@ -128,6 +128,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
             </li>
             {% endfor %}
 
+            {% if site.categories.status %}
             <li>
               <a class="nav-link"
                  href="{{url_as('category.index')}}">
@@ -135,6 +136,7 @@ Copyright &copy; 2019 <div class="bullet"></div> Powered By <a href="https://git
                 <span>{{_('Category')}}</span>
               </a>
             </li>
+            {% endif %}
 
             <li>
               <a class="nav-link"

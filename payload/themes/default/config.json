@@ -43,7 +43,36 @@
   "custom_fields": {
     "customs": {
       "!": ["content", "tags", "description", "featured_img", "terms"],
-      "textttt": "lines",
+      "opt": {
+        "type": "attrs",
+        "label": "Options",
+        "props": [
+          {
+            "key":"test_tytle",
+            "type": "text",
+            "label":"Test",
+            "value": "hahhaa"
+          },
+          {
+            "key":"rel_content",
+            "value": ""
+          },
+          {
+            "key":"rel_type",
+            "type": "select",
+            "label":"Releated",
+            "value": "",
+            "options": ["post", "feature", "works"]
+          },
+          {
+            "key":"rel_switch",
+            "type": "switch",
+            "label": "Switch",
+            "value": true
+          }
+        ]
+      },
+      "text-lines": "lines",
       "link-to": "link",
       "features": {
         "type": "collection",

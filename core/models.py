@@ -243,12 +243,32 @@ class Theme(FlatFile):
                 if k.startswith('!'):
                     continue
                 elif isinstance(v, str):
-                    fields[process_slug(k)] = {'type': v, 'label': k}
+                    fields[process_slug(k)] = {
+                        'type': v,
+                        'label': k,
+                        'props': [],
+                    }
                 elif isinstance(v, dict):
-                    fields[process_slug(k)] = {'type': v.get('type', ''),
-                                               'label': v.get('label', '')}
+                    props = v.get('props', [])[:60]
+                    props = [{
+                        'key': p['key'],  # sub attr key
+                        'label': p.get('label', p['key']),
+                        'type': p.get('type', 'text'),  # text/select/switch
+                        'value': p.get('value', ''),  # default value
+                        'options': p.get('options', [])}  # select options
+                        for p in props
+                        if isinstance(p, dict) and p.get('key')]
+                    fields[process_slug(k)] = {
+                        'type': v.get('type', ''),
+                        'label': v.get('label', k),
+                        'props': props
+                    }
                 else:
-                    fields[process_slug(k)] = {'type': '', 'label': k}
+                    fields[process_slug(k)] = {
+                        'type': '',
+                        'label': k,
+                        'props': []
+                    }
             return fields
 
         custom_fields = {k: _get_fields(v) for k, v in _custom_fields.items()}

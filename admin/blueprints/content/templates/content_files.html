@@ -155,6 +155,14 @@
                  name="template"
                  value="{{content_type.templates[0]}}">
           {% endif %}
+          <div class="form-group">
+            <label>{{_('Slug')}} {{_('(Optional)')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="slug"
+                   placeholder="http://site.com/<this-is-slug>"
+                   value="">
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary"

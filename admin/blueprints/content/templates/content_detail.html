@@ -95,7 +95,9 @@
     </p>
     <div>
       {% for key, opts in custom_fields.items() %}
-      {% if opts.type == 'text' %}
+      {% if opts.type == 'attrs' %}
+        {% include '_custom_attrs.tmpl' %}
+      {% elif opts.type == 'text' %}
         {% include '_custom_text.tmpl' %}
       {% elif opts.type == 'media' %}
         {% include '_custom_media.tmpl' %}

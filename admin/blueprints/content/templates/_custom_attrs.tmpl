@@ -1,0 +1,75 @@
+{% set _obj = meta[key] or {} %}
+<form class="ajax-form"
+      action="{{url_as('.update_custom_field',
+                       content_type=document.content_type,
+                       slug=document.slug)}}"
+      method="POST">
+<input type="hidden" name="type" value="attrs">
+<input type="hidden" name="key" value="{{key}}">
+{% for prop in opts.props %}
+<input type="hidden" name="{{prop.type}}" value="prop-{{prop.key}}">
+{% endfor %}
+
+<div class="card">
+  <div class="card-header d-flex">
+    <h4 key="{{key}}">
+      {{(opts.label[lang] or opts.label[locale] or opts.label)|title}}
+    </h4>
+    <span class="flash ml-auto" style="display: none;">
+      <i class="fa fa-save"></i>
+    </span>
+  </div>
+  <div class="card-body row">
+    {% for prop in opts.props %}
+    {% set _value = _obj[prop.key] if prop.key in _obj else prop.value %}
+    <div class="form-group col-md-6 col-xl-4">
+      {% if prop.type == 'text' %}
+      <label>
+        {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+      </label>
+      <input class="form-control"
+             type="text"
+             name="prop-{{prop.key}}"
+             maxlength="360"
+             value="{{_value}}">
+      {% elif prop.type == 'select' %}
+      <label>
+        {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+      </label>
+      <select class="form-control"
+              name="prop-{{prop.key}}">
+        <option value="">{{_('Empty')}}</option>
+        {% for op in prop.options %}
+        <option value="{{op}}" {{'selected' if _value == op}}>
+          {{op}}
+        </option>
+        {% endfor %}
+      </select>
+      {% elif prop.type == 'switch' %}
+      <div class="control-label">
+        {{(prop.label[lang] or prop.label[locale] or prop.label)|title}}
+      </div>
+      <label class="custom-switch mt-2">
+        <input class="custom-switch-input"
+               type="checkbox"
+               name="prop-{{prop.key}}"
+               {{'checked' if _value}}>
+        <span class="custom-switch-indicator"></span>
+      </label>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <div class="card-footer d-flex">
+    <button class="btn btn-outline-secondary btn-icon reset-form"
+            aria-label="{{_('Reset')}}"
+            type="button">
+      <i class="fa fa-redo-alt"></i>
+    </button>
+    <button class="btn btn-primary ml-auto"
+            type="submit">
+      {{_('Save')}}
+    </button>
+  </div>
+</div>
+</form>

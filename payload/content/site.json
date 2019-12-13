@@ -9,6 +9,28 @@
   "categories": {
     "terms": [
       {
+        "key": "bb",
+        "meta": {
+          "name": "aa",
+          "caption": "",
+          "figure": ""
+        },
+        "parent": "",
+        "priority": 0,
+        "status": 0
+      },
+      {
+        "key": "sdfasdf",
+        "meta": {
+          "name": "213123",
+          "caption": "",
+          "figure": ""
+        },
+        "parent": "",
+        "priority": 0,
+        "status": 0
+      },
+      {
         "key": "bbb",
         "meta": {
           "name": "bbb",

@@ -113,6 +113,14 @@
     "msgstr": "档案"
   },
   {
+    "msgid": "Empty",
+    "msgstr": "空"
+  },
+  {
+    "msgid": "Nothing",
+    "msgstr": "没有"
+  },
+  {
     "msgid": "Preference",
     "msgstr": "偏好设置"
   },

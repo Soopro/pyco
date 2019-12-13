@@ -35,8 +35,9 @@ def index():
 @login_required
 def create_term():
     term_name = request.form.get('name')
+    term_key = request.form.get('key')
     site = current_app.db.Site()
-    term_key = process_slug(term_name)
+    term_key = process_slug(term_key or term_name)
     site.add_category_term({
         'key': term_key,
         'meta': {

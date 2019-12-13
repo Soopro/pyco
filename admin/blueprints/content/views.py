@@ -62,10 +62,11 @@ def index(content_type):
 @login_required
 def create_content(content_type):
     title = request.form.get('title')
+    slug = request.form.get('slug')
     template = request.form.get('template', '')
 
     content = current_app.db.Document()
-    slug = process_slug(title)
+    slug = process_slug(slug or title)
     content.add({
         'slug': slug,
         'content_type': content_type,
@@ -168,7 +169,9 @@ def update_custom_field(content_type, slug):
 
     document = current_app.db.Document.find_one(slug, content_type)
 
-    if custom_type == 'text':
+    if custom_type == 'attrs':
+        result = _update_custom_attrs_field()
+    elif custom_type == 'text':
         result = _update_custom_text_field()
     elif custom_type == 'media':
         result = _update_custom_media_field()
@@ -247,6 +250,25 @@ def _find_hidden_field_keys(template):
         return hidden_field_keys
     else:
         return []
+
+
+def _update_custom_attrs_field():
+    attr_text_keys = request.form.getlist('text')
+    attr_select_keys = request.form.getlist('select')
+    attr_switch_keys = request.form.getlist('switch')
+
+    if not any([attr_text_keys, attr_select_keys, attr_switch_keys]):
+        return {}
+
+    attrs = {}
+    for k in attr_text_keys:
+        attrs[k] = request.form.get(k, '')
+    for k in attr_select_keys:
+        attrs[k] = request.form.get(k, '')
+    for k in attr_switch_keys:
+        attrs[k] = bool(request.form.get(k))
+
+    return attrs
 
 
 def _update_custom_text_field():
