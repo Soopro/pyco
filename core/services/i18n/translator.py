@@ -1,5 +1,29 @@
 # coding=utf-8
 
+# ---------------------
+# Simplify i18n Translator
+#
+# Author : Redy Ru
+# Email : redy.ru@gmail.com
+# License : MIT
+#
+# Methods & Parameters:
+# - Translate: init with current locale language,
+#   `locale` -> the local language code .
+#   `source` -> where is dictionary, could be a file path or dict or list.
+#   `case_sensitive` -> to ignore cases.
+# - load: load translate dictionary as new.
+#   `source` -> dictionary source again.
+# - append: add new dictionary in the the old one.old
+#   `source` -> dictionary source again.
+# - empty: clean up the translate dictionary already loaded.
+# - gettext: translate a word, expose it to template context.
+#   `<word>` -> the word you need translate.word
+#   `<*replacement>` -> replace those text into '%s' in the translate word.
+# - t_gettext: translate dict of word which is define by it self.
+#   `<dict>` -> a dict with word or language definition. {'en': 'Word'}
+# ---------------------
+
 import os
 import json
 
@@ -11,12 +35,13 @@ class Translator(object):
     dictionary = dict()
     case_sensitive = False
 
-    def __init__(self, locale, loc_dict=None, case_sensitive=False):
+    def __init__(self, locale, source=None, case_sensitive=False):
         if isinstance(locale, str):
             self.locale = locale
             self.lang = locale.split('_')[0]
-        if loc_dict:
-            self.load(loc_dict, case_sensitive)
+        self.case_sensitive = bool(case_sensitive)
+        if source:
+            self.load(source)
 
     def _trans_key(self, text):
         return text if self.case_sensitive else text.lower()
@@ -35,36 +60,44 @@ class Translator(object):
             return {}
         try:
             with open(path) as f:
-                dictionary = json.load(f)
-            assert isinstance(dictionary, list)
+                source = json.load(f)
         except Exception as e:
             raise IOError('i18n: Invalid dictionary file. {}'.format(e))
-        return dictionary
+        return source
 
-    def load(self, dictionary=None, case_sensitive=False):
-        self.dictionary = {}  # reset dictionary
+    def _load(self, source=None):
+        dictionary = {}
+        if isinstance(source, str):
+            source = self._load_file(source)
 
-        if isinstance(dictionary, str):
-            dictionary = self._load_file(dictionary)
-
-        self.case_sensitive = bool(case_sensitive)
-
-        if isinstance(dictionary, list):
-            for msg in dictionary:
+        if isinstance(source, list):
+            for msg in source:
                 msgid = msg.get('msgid')
                 msgstr = msg.get('msgstr')
                 if msgid:
-                    self.dictionary.update({self._trans_key(msgid): msgstr})
-
-        elif isinstance(dictionary, dict):
-            for k, v in dictionary.items():
+                    dictionary.update({self._trans_key(msgid): msgstr})
+        elif isinstance(source, dict):
+            for k, v in source.items():
                 msgid = k
                 msgstr = v
                 if msgid:
-                    self.dictionary.update({self._trans_key(msgid): msgstr})
-
+                    dictionary.update({self._trans_key(msgid): msgstr})
         else:
             raise TypeError('i18n: Invalid dictionary type.')
+
+        return dictionary
+
+    def load(self, source):
+        # load will replace old dictionary
+        self.dictionary = self._load(source)
+
+    def append(self, source):
+        # load will replace old dictionary
+        self.dictionary.updated(self._load(source))
+
+    def empty(self):
+        # empty dictionary
+        self.dictionary = {}
 
     def gettext(self, text, *args):
         if not isinstance(text, str):

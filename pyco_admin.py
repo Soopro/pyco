@@ -73,7 +73,6 @@ def inject_global_variable():
         'locale': locale,
         'lang': locale.split('_')[0],
         '_': translator.gettext,
-        '_t': translator.t_gettext,
         'site': site,
         'theme': theme,
         'url_as': url_as
