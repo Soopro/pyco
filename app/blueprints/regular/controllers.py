@@ -187,7 +187,7 @@ def _check_query_limit(key, limit):
     if key not in g.query_map:
         g.query_map[key] = 0
     if g.query_map[key] >= limit:
-        raise Exception('Query Overrun')
+        raise Exception('Query Overrun: {}'.format(limit))
     else:
         g.query_map[key] += 1
     return limit - g.query_map[key]
