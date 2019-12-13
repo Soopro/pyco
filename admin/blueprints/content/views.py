@@ -261,16 +261,21 @@ def _update_custom_attrs_field():
         return {}
 
     attrs = {}
-    for k in attr_text_keys:
-        if k:
-            attrs[k] = request.form.get(k, '')
-    for k in attr_select_keys:
-        if k:
-            attrs[k] = request.form.get(k, '')
-    for k in attr_switch_keys:
-        if k:
-            attrs[k] = bool(request.form.get(k))
 
+    def __attach_attr(keys, attrs, as_bool=False):
+        for k in keys:
+            key = k.split('prop-')[-1]
+            # `prop-` is add in form for keep field name not masseup.
+            # but we don't need it when save to document.
+            if key:
+                attrs[k] = request.form.get(key, '')
+                if as_bool:
+                    attrs[k] = bool(attrs[k])
+        return attrs
+
+    __attach_attr(attr_text_keys, attrs)
+    __attach_attr(attr_select_keys, attrs)
+    __attach_attr(attr_switch_keys, attrs, True)
     return attrs
 
 
