@@ -255,10 +255,11 @@ class Theme(FlatFile):
         def _get_fields(opts):
             fields = {}
             for k, v in opts.items():
+                key = process_slug(k).replace('-', '_')
                 if k.startswith('!'):
                     continue
                 elif isinstance(v, str):
-                    fields[process_slug(k)] = {
+                    fields[key] = {
                         'type': v,
                         'label': k,
                         'props': [],
@@ -273,13 +274,13 @@ class Theme(FlatFile):
                         'options': _get_opts(p.get('options', []))}  # select
                         for p in props
                         if isinstance(p, dict) and p.get('key')]
-                    fields[process_slug(k)] = {
+                    fields[key] = {
                         'type': v.get('type', ''),
                         'label': v.get('label', k),
                         'props': props
                     }
                 else:
-                    fields[process_slug(k)] = {
+                    fields[key] = {
                         'type': '',
                         'label': k,
                         'props': []
