@@ -7,7 +7,7 @@
 <input type="hidden" name="type" value="attrs">
 <input type="hidden" name="key" value="{{key}}">
 {% for prop in opts.props %}
-<input type="hidden" name="{{prop.type}}" value="prop-{{prop.key}}">
+<input type="hidden" name="{{prop.type}}" value="ATTRS-{{prop.key}}">
 {% endfor %}
 
 <div class="card">
@@ -30,7 +30,7 @@
         </label>
         <input class="form-control"
                type="text"
-               name="prop-{{prop.key}}"
+               name="ATTRS-{{prop.key}}"
                maxlength="360"
                value="{{_value}}">
         {% elif prop.type == 'select' %}
@@ -38,7 +38,7 @@
           {{_(prop.label)|title}}
         </label>
         <select class="form-control"
-                name="prop-{{prop.key}}">
+                name="ATTRS-{{prop.key}}">
           <option value="">{{_('Empty')}}</option>
           {% for op in prop.options %}
           <option value="{{op.value}}" {{'selected' if _value == op.value}}>
@@ -53,7 +53,7 @@
         <label class="custom-switch mt-2">
           <input class="custom-switch-input"
                  type="checkbox"
-                 name="prop-{{prop.key}}"
+                 name="ATTRS-{{prop.key}}"
                  {{'checked' if _value}}>
           <span class="custom-switch-indicator"></span>
         </label>

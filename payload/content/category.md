@@ -35,10 +35,10 @@ Link-to:
   Name: ddsfadffff123123213
   Target: ''
 Opt:
-  Prop-rel_content: ''
-  Prop-rel_switch: false
-  Prop-rel_type: ''
-  Prop-test_tytle: hahhaa
+  Rel_content: ''
+  Rel_switch: true
+  Rel_type: post
+  Test_tytle: hahhaa
 Parent: ''
 Priority: 0
 Redirect: ''
@@ -60,6 +60,13 @@ Unknow-f:
   '1': x
 
 */
+
+
+
+
+
+
+
 
 
 

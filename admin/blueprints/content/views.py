@@ -264,13 +264,13 @@ def _update_custom_attrs_field():
 
     def __attach_attr(keys, attrs, as_bool=False):
         for k in keys:
-            key = k.split('prop-')[-1]
-            # `prop-` is add in form for keep field name not masseup.
+            key = k.split('ATTRS-', 1)[-1]
+            # `prop-` has been added by form to keep field name not masseup.
             # but we don't need it when save to document.
             if key:
-                attrs[k] = request.form.get(key, '')
+                attrs[key] = request.form.get(k, '')
                 if as_bool:
-                    attrs[k] = bool(attrs[k])
+                    attrs[key] = bool(attrs[key])
         return attrs
 
     __attach_attr(attr_text_keys, attrs)
