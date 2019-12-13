@@ -20,9 +20,6 @@
       {% for item in _collection %}
       <div class="field-entry">
         <div class="mb-3 d-flex">
-          <div class="btn btn-outline-secondary mr-1">
-            #{{loop.index0}}
-          </div>
           <button class="btn btn-secondary btn-icon move-field-up mr-1"
                   aria-label="{{_('Move Up')}}"
                   type="button">
@@ -33,6 +30,9 @@
                   type="button">
             <i class="fas fa-chevron-down"></i>
           </button>
+          <div class="btn btn-outline-secondary mr-1" disabled>
+            #{{loop.index0}}
+          </div>
           <button class="btn btn-outline-danger btn-icon remove-field ml-auto"
                   aria-label="{{_('Remove')}}"
                   type="button">
@@ -107,9 +107,6 @@
     <div class="TMPL d-none">
       <div class="field-entry">
         <div class="mb-3 d-flex">
-          <div class="btn btn-outline-secondary mr-1">
-            #{{_('New')}}
-          </div>
           <button class="btn btn-secondary btn-icon move-field-up mr-1"
                   aria-label="{{_('Move Up')}}"
                   type="button">
