@@ -136,13 +136,13 @@
                    value=""
                    required>
           </div>
-          {% if content_type.templates|length > 1 %}
+          {% set tmpls = content_type.templates or theme.templates %}
+          {% if tmpls > 1 %}
           <div class="form-group">
             <label>{{_('Template')}}</label>
             <select class="form-control"
                     name="template">
-              {% for tmpl in theme.templates
-                 if tmpl in content_type.templates %}
+              {% for tmpl in tmpls %}
               <option value="{{tmpl}}"
                       {{'selected' if content_type.key==tmpl}}>
                 {{tmpl}}
@@ -153,7 +153,7 @@
           {% else %}
           <input type="hidden"
                  name="template"
-                 value="{{content_type.templates[0]}}">
+                 value="{{tmpls or theme.STATIC_TYPE}}">
           {% endif %}
           <div class="form-group">
             <label>{{_('Slug')}} {{_('(Optional)')}}</label>

@@ -205,18 +205,25 @@
             </div>
           </div>
           {% endif %}
+          {% set tmpls = content_type.templates or theme.templates %}
+          {% if tmpls > 1 %}
           <div class="form-group">
             <label>{{_('Template')}}</label>
             <select class="form-control"
                     name="template">
-              {% for tmpl in theme.templates %}
+              {% for tmpl in tmpls %}
               <option value="{{tmpl}}"
-                      {{'selected' if document.template==tmpl}}>
+                      {{'selected' if content_type.key==tmpl}}>
                 {{tmpl}}
               </option>
               {% endfor %}
             </select>
           </div>
+          {% else %}
+          <input type="hidden"
+                 name="template"
+                 value="{{tmpls or theme.STATIC_TYPE}}">
+          {% endif %}
           {% if display_field('terms') and theme.category %}
           <div class="form-group">
             <label>{{_('Category')}}</label>

@@ -224,7 +224,7 @@ class Theme(FlatFile):
                     'key': self.STATIC_TYPE,
                     'title': self.STATIC_TYPE_NAME,
                     'cloaked': False,
-                    'templates': [self.STATIC_TYPE],
+                    'templates': [],
                 }
             })
         return content_types
