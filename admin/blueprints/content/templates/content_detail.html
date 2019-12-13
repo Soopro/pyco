@@ -206,7 +206,7 @@
           </div>
           {% endif %}
           {% set tmpls = content_type.templates or theme.templates %}
-          {% if tmpls > 1 %}
+          {% if tmpls|length > 1 %}
           <div class="form-group">
             <label>{{_('Template')}}</label>
             <select class="form-control"
