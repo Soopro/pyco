@@ -73,17 +73,24 @@ $(document).ready(function() {
     });
     form.on('submit', function(e){
       e.preventDefault();
-      $.post(form.attr('action'), form.serialize(), function(res){
+      $.post(form.attr('action'), form.serialize(), null, 'json')
+      .done(function(res){
         btn.removeClass('btn-primary').addClass('btn-success');
         flash.removeClass('text-danger').addClass('text-success').show(100);
-      }, 'json').fail(function(err){
+        form.trigger( "ajax-form-done");
+      })
+      .fail(function(err){
         console.error(err);
         form.addClass('error');
         btn.removeClass('btn-primary').addClass('btn-danger');
         flash.removeClass('text-success').addClass('text-danger').show(100);
+        form.trigger( "ajax-form-fail");
         setTimeout(function(){
           alert('['+err.status+']'+err.statusText);
-        }, 200)
+        }, 200);
+      })
+      .always(function(){
+        // console.info('ajax-form has been submitted.')
       })
       return false
     });

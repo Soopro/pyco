@@ -29,8 +29,7 @@
   {{document.meta.title}}
 </h2>
 <p class="section-lead">
-  <a href="{{preview_url}}"
-     target="_blank">
+  <a href="{{url_as('.index', content_type=content_type.key)}}">
     {{document.content_type}} / {{document.slug}}
   </a>
 </p>
@@ -87,6 +86,7 @@
     </div>
 
     {% if custom_fields %}
+
     <h2 class="section-title">
       {{_('Data Fields')}}
     </h2>
@@ -122,7 +122,8 @@
   </div>
 
   <div class="col-lg-4">
-    <form name="FORM-CONTENT"
+    <form class="prevent-enter-key save-content-form"
+          name="FORM-CONTENT"
           method="POST"
           action="{{url_as('.update_content',
                             content_type=document.content_type,
@@ -137,7 +138,7 @@
         </div>
         <div class="card-body">
           <div class="d-flex">
-            <button class="btn btn-primary btn-lg">
+            <button class="btn btn-primary btn-lg save-btn">
               {{_('Save Content')}}
             </button>
             <a class="btn"

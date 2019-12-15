@@ -32,22 +32,6 @@ def dateformat(t, to_format='%Y-%m-%d'):
     return parse_dateformat(t, to_format)
 
 
-@app.template_filter()
-def purl(doc):
-    try:
-        if doc.content_type == doc.STATIC_TYPE:
-            if doc.slug == doc.INDEX_SLUG:
-                preview_path = '/'
-            else:
-                preview_path = '/{}'.format(doc.slug)
-        else:
-            preview_path = '/{}/{}'.format(doc.content_type, doc.slug)
-        preview_url = '{}{}'.format(app.config['BASE_URL'], preview_path)
-    except Exception as e:
-        preview_url = '#{}'.format(str(e))
-    return preview_url
-
-
 # inject before request handlers
 @app.before_request
 def app_before_request():
