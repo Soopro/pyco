@@ -1,17 +1,54 @@
 /*
-Date: '2019-12-13'
-Description: ''
+? ''
+: ''
+Cover:
+  Class: ''
+  Src: ffffff
+  Style: ''
+Date: '2019-11-26'
+Description: '123123123'
 Featured_img:
+  Src: http://localhost:5500/uploads/banner-profile.jpg
+Features:
+- Caption: bbb
+  Link: ''
+  Src: bbb
+  Subtitle: bbb
+  Target: ''
+  Title: bbbb
+Img:
+  Class: ''
+  Link: ''
   Src: ''
-Parent: ''
-Priority: 0
+  Target: ''
+  Title: ffff
+Link_to:
+  Class: ''
+  Link: bbb
+  Name: bbbb
+  Target: ''
+Opt:
+  Rel_content: sadfsdaf
+  Rel_switch: false
+  Rel_type: post
+  Test_tytle: hahhaa
+Parent: fsdaf
+Priority: 1
 Redirect: ''
-Status: 0
+Script_s: fsdaf
+Status: 1
 Tags:
-- ''
-Template: page
+- sadfsdaf
+- dsfsdaf
+Template: customs
 Terms: []
-Title: bbbbb
+Text_1: fff
+Text_lines:
+- Text: adsfdasf
+- Text: adsfdaf
+- Text: bbbb
+Title: bbbbb123
+Unknow_f: ''
 
 */
-
+<p><br></p>

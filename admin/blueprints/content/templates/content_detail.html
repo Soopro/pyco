@@ -17,8 +17,8 @@
 <div class="ml-auto">
   <a class="btn btn-icon btn-outline-secondary"
      href="{{url_as('.content_raw',
-                     content_type=document.content_type,
-                     slug=document.slug)}}">
+                    content_type=document.content_type,
+                    slug=document.slug)}}">
     <i class="fas fa-flask"></i>
   </a>
 </div>
@@ -33,28 +33,31 @@
     {{document.content_type}} / {{document.slug}}
   </a>
 </p>
-
+<form class="prevent-enter-key"
+      id="FORM-CONTENT-DETAIL"
+      method="POST"
+      action="{{url_as('.update_content',
+                       content_type=document.content_type,
+                       slug=document.slug)}}">
 <div class="row">
   <div class="col-lg-8">
-    <div class="card">
+    <div class="card base-form">
       <div class="card-header">
         <h4>{{_('Write Content')}}</h4>
       </div>
       <div class="card-body">
         <div class="form-group">
           <label>{{_('Title')}}</label>
-          <input class="form-control shadow-field"
+          <input class="form-control"
                  type="text"
                  name="title"
                  maxlength="60"
-                 data-form="FORM-CONTENT"
                  value="{{meta.title}}">
         </div>
         {% if display_field('description') %}
         <div class="form-group">
           <label>{{_('Description')}}</label>
-          <textarea class="form-control shadow-field"
-                    data-form="FORM-CONTENT"
+          <textarea class="form-control"
                     name="description">{{meta.description}}</textarea>
           <small class="form-text text-muted">
             {{_('* Please briefly describe this content.')}}
@@ -65,7 +68,6 @@
         <div class="form-group">
           <label>{{_('Content')}}</label>
           <textarea class="summernote form-control"
-                    data-form="FORM-CONTENT"
                     placeholder="{{_('Type content here.')}}"
                     locale="{{locale}}"
                     media-modal="#MODAL-MEDIAREPO"
@@ -75,10 +77,9 @@
         {% if display_field('tags') %}
         <div class="form-group">
           <label>{{_('Tags')}}</label>
-          <input class="form-control inputtags shadow-field"
+          <input class="form-control inputtags"
                  type="text"
                  name="tags"
-                 data-form="FORM-CONTENT"
                  value="{{document.tags|join(',')}}">
         </div>
         {% endif %}
@@ -122,17 +123,8 @@
   </div>
 
   <div class="col-lg-4">
-    <form class="prevent-enter-key save-content-form"
-          name="FORM-CONTENT"
-          method="POST"
-          action="{{url_as('.update_content',
-                            content_type=document.content_type,
-                            slug=document.slug)}}">
-      <input type="hidden" name="title" value="{{meta.title}}">
-      <input type="hidden" name="description" value="{{meta.description}}">
-      <input type="hidden" name="content" value="{{content}}">
-      <input type="hidden" name="tags" value="{{document.tags|join(',')}}">
-      <div class="card">
+      <div class="card base-form"
+           data-type="base">
         <div class="card-header">
           <h4>{{_('Properties')}}</h4>
         </div>
@@ -271,10 +263,10 @@
           {% endif %}
         </div>
       </div>
-    </form>
   </div>
 
 </div>
+</form>
 {% endblock %}
 {% block page_scripts %}
 <script src="{{static_url}}/modules/moment.min.js"></script>
@@ -286,46 +278,149 @@
 <script>
   'use strict';
 
-  $('form').on('keyup keypress', function(e) {
-    var keyCode = e.keyCode || e.which;
-    if (keyCode === 13) {
-      e.preventDefault();
-      return false;
+  function _load_dict(form){
+    var output = {};
+    form.find('input:checkbox').map(function() {
+      // for switch type.
+      output[this.name] = this.checked ? true: false
+    });
+    form.find('input:text, textarea, select').map(function() {
+      // for text and select type.
+      output[this.name] = this.value;
+    });
+    return output;
+  }
+  function _load_list(form){
+    var output = [];
+    form.find('.field-entry').each(function(){
+      var field = $(this);
+      var item = {};
+      field.find('input, textarea').map(function(){
+        item[this.name] = this.value;
+      })
+      output.push(item);
+    });
+    return output;
+  }
+  function _load_text(form) {
+    var output = '';
+    form.find('input, textarea').map(function() {
+      output = this.value || '';
+    });
+    return output;
+  }
+  function _load_hardcore(form) {
+    var output = '';
+    form.find('textarea').map(function() {
+      try {
+        output = JSON.parse(this.value);
+      } catch(e) {
+        output = ''
+      }
+    });
+    return output;
+  }
+
+  function _reform_list(list){
+    if(Array.isArray(list)){
+      var _list = [];
+      list.forEach(function(entry){
+        if(typeof(entry) == 'string'){
+          var txt = entry.trim();
+          if (txt){
+            _list.push(txt);
+          }
+        }
+      });
+      return _list;
+    } else {
+      return [];
     }
+  }
+
+  $('#FORM-CONTENT-DETAIL').on('submit', function(e){
+    e.preventDefault();
+    var content_form = $(this);
+    var meta = {};
+    var content = '';
+
+    $('.custom-form').each(function(){
+      var form = $(this);
+      var type = form.data('type');
+      var key = form.data('key');
+      switch (type){
+        case 'attrs':
+          meta[key] = _load_dict(form);
+          break;
+        case 'bg':
+          meta[key] = _load_dict(form);
+          break;
+        case 'collection':
+          meta[key] = _load_list(form);
+          break;
+        case 'lines':
+          meta[key] = _load_list(form);
+          break;
+        case 'link':
+          meta[key] = _load_dict(form);
+          break;
+        case 'media':
+          meta[key] = _load_dict(form);
+          break;
+        case 'script':
+          meta[key] = _load_text(form);
+          break;
+        case 'text':
+          meta[key] = _load_text(form);
+          break;
+        case 'hardcore':
+          meta[key] = _load_hardcore(form);
+          break;
+      }
+    });
+    $('.base-form').each(function(){
+      var form = $(this);
+      var output = _load_dict(form);
+      $.extend(meta, output);
+    });
+    content = meta.content || '';
+    content = content.replace(/\r?\n|\r/gm, '');
+    delete meta.content;
+
+    meta.terms = _reform_list(meta.terms)
+    meta.tags = _reform_list(meta.tags.split(','))
+
+    $.ajax(content_form.attr('action'), {
+      data: JSON.stringify({
+        'content': content,
+        'meta': meta,
+      }),
+      type: 'post',
+      contentType: 'application/json',
+      dataType: 'json'
+    })
+    .done(function(res){
+      window.location.reload(false);
+    })
+    .fail(function(err){
+      console.error(err);
+      setTimeout(function(){
+        alert('['+err.status+']'+err.statusText);
+      }, 200);
+    })
+    return false;
   });
+
 
   $(".inputtags").tagsinput('items');
 
-  /* shadow fields */
-  // use to to reflect a form field to another form.
-  $('.shadow-field').each(function(){
-    var field_name = $(this).attr('name');
-    var target_form = $('form[name='+$(this).data('form')+']');
-    var target_field = target_form.find('input[name='+field_name+']');
-    if (target_field.length == 1) {
-      $(this).on('change', function(e){
-        target_field.val($(this).val());
-      });
-    } else {
-      console.error('shadow-field require only 1 target field.')
-    }
-  });
-
   /* summernote */
   var editor_lang = ($('.summernote').attr('locale') || '').replace('_', '-');
-  var sh_form_name = $('.summernote').data('form');
-  var sh_field_name = $('.summernote').attr('name');
-  var sh_form = $('form[name="'+sh_form_name+'"]');
-  var shadow_field = sh_form.find('input[name="'+sh_field_name+'"]');
   $('.summernote').summernote({
     height: 420,
     dialogsInBody: true,
     lang: editor_lang,
-    callbacks: {
-      onChange: function(e) {
-        if (shadow_field.length == 1){shadow_field.val(e)}
-      }
-    },
+    callbacks: {},
     toolbar: [
       // [groupName, [list of button]]
       ['style', ['style', 'bold', 'italic', 'underline', 'clear']],

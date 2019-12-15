@@ -80,7 +80,7 @@ def load_modal_pretreat(app):
     def pretreat_raw_method(self, text):
         for code, replace_to in app.config['SHORTCODE'].items():
             try:
-                _compiler = re.compile(r'\[\%{}\%\]'.fromat(str(code)),
+                _compiler = re.compile(r'\[\%{}\%\]'.format(str(code)),
                                        re.IGNORECASE)
                 text = re.sub(_compiler, str(replace_to), str(text))
             except Exception as e:

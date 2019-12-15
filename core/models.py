@@ -87,10 +87,8 @@ class FlatFile:
                 readed = fh.read()
         else:
             readed = ''
-        print('readed---------------->>> \n', self.__pretreat_method__)
         if callable(self.__pretreat_method__) and readed:
             readed = self.__pretreat_method__(readed)
-            print(readed)
         return readed
 
     def _prepare_field(self, x):

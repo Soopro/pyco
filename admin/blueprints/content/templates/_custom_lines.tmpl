@@ -1,19 +1,14 @@
 {% set _lines = meta[key] or [] %}
-<form class="multientry-form ajax-form"
-      action="{{url_as('.update_custom_field',
-                       content_type=document.content_type,
-                       slug=document.slug)}}"
-      method="POST">
-<input type="hidden" name="type" value="lines">
-<input type="hidden" name="key" value="{{key}}">
-<div class="card">
+<div class="card multientry-form custom-form"
+     data-key="{{key}}"
+     data-type="lines">
   <div class="card-header d-flex">
-    <h4 key="{{key}}">
+    <h4>
       {{_(opts.label)|title}}
     </h4>
-    <span class="flash ml-auto" style="display: none;">
-      <i class="fa fa-save"></i>
-    </span>
+    <small class="text-muted ml-auto">
+      {{key}}
+    </small>
   </div>
   <div class="card-body">
     <div class="fields">
@@ -85,10 +80,5 @@
             type="button">
       <i class="fas fa-plus"></i>
     </button>
-    <button class="btn btn-primary ml-auto"
-            type="submit">
-      {{_('Save')}}
-    </button>
   </div>
 </div>
-</form>

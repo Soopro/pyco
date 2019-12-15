@@ -56,45 +56,6 @@ $(document).ready(function() {
 
   });
 
-  $('form.ajax-form').each(function(){
-    var form = $(this);
-    var flash = form.find('.flash');
-    var btn = form.find('button[type="submit"]');
-    var is_flashing = false;
-    flash.hide();
-    form.on('mousedown', function(e){
-      var target = $(e.target);
-      if (target.is('input, textarea, button, select')){
-        btn.removeClass('btn-success').removeClass('btn-danger');
-        btn.addClass('btn-primary');
-        form.removeClass('error');
-        flash.hide(100);
-      }
-    });
-    form.on('submit', function(e){
-      e.preventDefault();
-      $.post(form.attr('action'), form.serialize(), null, 'json')
-      .done(function(res){
-        btn.removeClass('btn-primary').addClass('btn-success');
-        flash.removeClass('text-danger').addClass('text-success').show(100);
-        form.trigger( "ajax-form-done");
-      })
-      .fail(function(err){
-        console.error(err);
-        form.addClass('error');
-        btn.removeClass('btn-primary').addClass('btn-danger');
-        flash.removeClass('text-success').addClass('text-danger').show(100);
-        form.trigger( "ajax-form-fail");
-        setTimeout(function(){
-          alert('['+err.status+']'+err.statusText);
-        }, 200);
-      })
-      .always(function(){
-        // console.info('ajax-form has been submitted.')
-      })
-      return false
-    });
-  });
 
   /* Uploader */
 

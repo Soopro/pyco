@@ -11,6 +11,7 @@ from flask import (Blueprint,
 import math
 import json
 
+from core.utils.request import get_param
 from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
@@ -117,21 +118,24 @@ def content_detail(content_type, slug):
 @blueprint.route('/<content_type>/<slug>', methods=['POST'])
 @login_required
 def update_content(content_type, slug):
-    tags = request.form.get('tags', '')
-    terms = request.form.getlist('terms') or []
-    date = request.form.get('date', '')
-    parent = request.form.get('parent', '')
-    template = request.form.get('template', '')
-    priority = request.form.get('priority', 0)
-    redirect_url = request.form.get('redirect', '')
-    status = request.form.get('status', '')
+    meta = get_param('meta', dict, True, default={})
+    content = get_param('content', str, default='')
 
-    title = request.form.get('title', '')
-    description = request.form.get('description', '')
-    featured_img_src = request.form.get('featured_img', '')
-    content = request.form.get('content', '')
+    tags = meta.pop('tags', '')
+    terms = meta.pop('terms', [])
+    date = meta.pop('date', '')
+    parent = meta.pop('parent', '')
+    template = meta.pop('template', '')
+    redirect_url = meta.pop('redirect', '')
+    priority = meta.pop('priority')
+    status = meta.pop('status')
+
+    title = meta.pop('title', '')
+    description = meta.pop('description', '')
+    featured_img_src = meta.pop('featured_img', '')
 
     document = current_app.db.Document.find_one(slug, content_type)
+    document['meta'] = meta
     document['meta'].update({
         'title': title,
         'description': description,
@@ -140,8 +144,10 @@ def update_content(content_type, slug):
         }
     })
     document['date'] = date
-    document['tags'] = [tag.strip() for tag in tags.split(',')]
-    document['terms'] = [term for term in terms if term]
+    document['tags'] = [tag.strip() for tag in tags
+                        if tag and isinstance(tag, str)]
+    document['terms'] = [term.strip() for term in terms
+                         if term and isinstance(term, str)]
     document['template'] = template
     document['parent'] = parent
     document['redirect'] = redirect_url
@@ -150,42 +156,7 @@ def update_content(content_type, slug):
     document['content'] = content
     document.save()
     flash('SAVED')
-    return_url = url_as('.content_detail',
-                        content_type=content_type,
-                        slug=slug)
-    return redirect(return_url)
-
-
-@blueprint.route('/<content_type>/<slug>/custom', methods=['POST'])
-@login_required
-def update_custom_field(content_type, slug):
-    custom_key = request.form.get('key')
-    custom_type = request.form.get('type', 'text')
-
-    document = current_app.db.Document.find_one(slug, content_type)
-
-    if custom_type == 'attrs':
-        result = _update_custom_attrs_field()
-    elif custom_type == 'text':
-        result = _update_custom_text_field()
-    elif custom_type == 'media':
-        result = _update_custom_media_field()
-    elif custom_type == 'link':
-        result = _update_custom_link_field()
-    elif custom_type == 'bg':
-        result = _update_custom_bg_field()
-    elif custom_type == 'collection':
-        result = _update_custom_collection_field()
-    elif custom_type == 'lines':
-        result = _update_custom_lines_field()
-    elif custom_type == 'script':
-        result = _update_custom_script_field()
-    elif custom_type == 'hardcore':
-        result = _update_custom_hardcore_field()
-
-    document['meta'][custom_key] = result
-    document.save()
-    return jsonify(document['meta'][custom_key])
+    return jsonify({'updated': True})
 
 
 @blueprint.route('/<content_type>/<slug>/raw')
@@ -245,121 +216,3 @@ def _find_hidden_field_keys(template):
         return hidden_field_keys
     else:
         return []
-
-
-def _update_custom_attrs_field():
-    attr_text_keys = request.form.getlist('text')
-    attr_select_keys = request.form.getlist('select')
-    attr_switch_keys = request.form.getlist('switch')
-
-    if not any([attr_text_keys, attr_select_keys, attr_switch_keys]):
-        return {}
-
-    attrs = {}
-
-    def __attach_attr(keys, attrs, as_bool=False):
-        for k in keys:
-            key = k.split('ATTRS-', 1)[-1]
-            # `prop-` has been added by form to keep field name not masseup.
-            # but we don't need it when save to document.
-            if key:
-                attrs[key] = request.form.get(k, '')
-                if as_bool:
-                    attrs[key] = bool(attrs[key])
-        return attrs
-
-    __attach_attr(attr_text_keys, attrs)
-    __attach_attr(attr_select_keys, attrs)
-    __attach_attr(attr_switch_keys, attrs, True)
-    return attrs
-
-
-def _update_custom_text_field():
-    text = request.form.get('text')
-    return text or ''
-
-
-def _update_custom_script_field():
-    script = request.form.get('script')
-    return script or ''
-
-
-def _update_custom_hardcore_field():
-    code = request.form.get('code')
-    return json.loads(code)
-
-
-def _update_custom_media_field():
-    title = request.form.get('title')
-    src = request.form.get('src')
-    link = request.form.get('link')
-    target = request.form.get('target')
-    css_class = request.form.get('class')
-
-    return {
-        'title': title or '',
-        'src': src or '',
-        'link': link or '',
-        'target': target or '',
-        'class': css_class or ''
-    }
-
-
-def _update_custom_bg_field():
-    src = request.form.get('src')
-    css_class = request.form.get('class')
-    css_style = request.form.get('style')
-
-    return {
-        'src': src or '',
-        'class': css_class or '',
-        'style': css_style or '',
-    }
-
-
-def _update_custom_link_field():
-    name = request.form.get('name')
-    css_class = request.form.get('class')
-    link = request.form.get('link')
-    target = request.form.get('target')
-
-    return {
-        'name': name or '',
-        'link': link or '',
-        'target': target or '',
-        'class': css_class or ''
-    }
-
-
-def _update_custom_collection_field():
-    titles = request.form.getlist('title')
-    subtitles = request.form.getlist('subtitle')
-    captions = request.form.getlist('caption')
-    links = request.form.getlist('link')
-    srcs = request.form.getlist('src')
-    targets = request.form.getlist('target')
-
-    collection = []
-    for idx, title in enumerate(titles):
-        collection.append({
-            'title': title or '',
-            'subtitle': _load_field_list(subtitles, idx),
-            'caption': _load_field_list(captions, idx),
-            'link': _load_field_list(links, idx),
-            'target': _load_field_list(targets, idx),
-            'src': _load_field_list(srcs, idx)
-        })
-
-    return collection
-
-
-def _update_custom_lines_field():
-    texts = request.form.getlist('text')
-    return [{'text': t} for t in texts]
-
-
-def _load_field_list(field_list, index):
-    try:
-        return field_list[index]
-    except Exception as e:
-        return ''

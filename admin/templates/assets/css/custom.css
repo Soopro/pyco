@@ -8,9 +8,9 @@
 .media-preview a[href="#"] {
   display: none;
 }
-form.ajax-form.error input,
-form.ajax-form.error textarea,
-form.ajax-form.error select {
+.form-field.error input,
+.form-field.error textarea,
+.form-field.error select {
   border-color: red;
 }
 .media-preview {

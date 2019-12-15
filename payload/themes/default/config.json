@@ -42,7 +42,7 @@
 
   "custom_fields": {
     "customs": {
-      "!": ["content", "tags", "description", "featured_img", "terms"],
+
       "opt": {
         "type": "attrs",
         "label": "Options",
