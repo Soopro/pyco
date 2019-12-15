@@ -77,7 +77,7 @@ def load_modal_pretreat(app):
         return None
 
     def pretreat_raw_method(self, text):
-        for code, replace_to in app.config['SHORTCODE'].itmes():
+        for code, replace_to in app.config['SHORTCODE'].items():
             try:
                 _compiler = re.compile(r'\[\%{}\%\]'.fromat(str(code)),
                                        re.IGNORECASE)
