@@ -28,7 +28,7 @@ CONTENT_QUERY_LIMIT = 3
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = []
 
-# shortcodes
+# shortcode
 SHORTCODE = {
     'uploads': UPLOADS_URL
 }
