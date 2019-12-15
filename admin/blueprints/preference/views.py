@@ -289,10 +289,10 @@ def appearance():
 @login_required
 def install_theme():
     f = request.files['file']
-    theme_dir = current_app.template_folder
+    theme = current_app.db.Theme(current_app.config['THEME_NAME'])
 
-    clean_dirs(theme_dir)
-    unzip(f, theme_dir)
+    clean_dirs(theme.theme_folder)
+    unzip(f, theme.theme_folder)
 
     sync_site_by_theme_opts()
     flash('INSTALLED')

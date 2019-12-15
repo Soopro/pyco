@@ -251,11 +251,16 @@ The default content type is `page`, every `.md` in root of `content` folder is `
 
 Each content file `.md`, separated with 2 parts, `meta` and `content`.
 
-Pyco also support `shortcode`. `shortcode` is for generation dynamic value in your contents, must exactly follow this format `[%shortcode%]`. if you really want a str like that, you can use html entity to replace the `%` to `&#37;`. You have to quote it while using in `meta`, such as `'[%shortcode%]/your_pic.jpg'` because that's YAML.
+Pyco also support `shortcode` for people who need write data file manually. `shortcode` will generation dynamic value in your data. BUT, shortcode is only work for manual operation. When you saved data in Admin Panel, those shortcode will be replace to what they should be.
+
+Shortcode is a str as this format `[%<shortcode_name>%]`. if you really want a text exactly the same as shortcode, you must use html entity to replace the `%` to `&#37;`. Remember You have to **quote** it while using in `meta`, such as `'[%uploads%]/your_pic.jpg'` because YAML can not read `%`.
+
+
+We provide one default shortcode:
 
 * `[%uploads%]`: A shortcode for uploads url.
 
-* `[%theme%]`: A shortcode for theme url, same as above.
+You can modify or add your shortcodes form config.py. but keep in your mind, too many shortcode always slow down data loading time.
 
 
 ##### Meta

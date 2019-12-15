@@ -3,9 +3,8 @@
 from flask import Flask, make_response, g
 import traceback
 import os
-import re
 
-from core.loaders import load_config
+from core.loaders import load_config, load_modal_pretreat
 from core.utils.misc import parse_dateformat
 from core.models import DBConnection, Configure, Document, Site, Theme, Media
 from core.services.i18n import Translator
@@ -21,9 +20,8 @@ app = Flask(__name__,
 
 load_config(app)
 
-app.db = DBConnection(app)
-app.db.register([Configure, Document, Site, Theme, Media],
-                app.config['PAYLOAD_DIR'])
+app.db = DBConnection(app.config['PAYLOAD_DIR'], load_modal_pretreat(app))
+app.db.register([Configure, Document, Site, Theme, Media])
 
 # register blueprints
 register_admin_blueprints(app)
@@ -32,17 +30,6 @@ register_admin_blueprints(app)
 @app.template_filter()
 def dateformat(t, to_format='%Y-%m-%d'):
     return parse_dateformat(t, to_format)
-
-
-@app.template_filter()
-def shortcode(text):
-    RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
-    uploads_url = str(app.config['UPLOADS_URL'])
-    try:
-        return re.sub(RE_UPLOADS, uploads_url, text)
-    except Exception as e:
-        app.logger.error(e)
-        return text
 
 
 # inject before request handlers

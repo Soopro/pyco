@@ -73,13 +73,16 @@ def load_metas(app):
 
 
 def load_modal_pretreat(app):
-    RE_UPLOADS = re.compile(r'\[\%uploads\%\]', re.IGNORECASE)
-    uploads_url = str(app.config['UPLOADS_URL'])
+    if not isinstance(app.config['SHORTCODE'], dict):
+        return None
 
     def pretreat_raw_method(self, text):
-        try:
-            return re.sub(RE_UPLOADS, uploads_url, text)
-        except Exception as e:
-            print('Pretreat Error: {}'.format(e))
-            return text
+        for code, replace_to in app.config['SHORTCODE'].itmes():
+            try:
+                _compiler = re.compile(r'\[\%{}\%\]'.fromat(str(code)),
+                                       re.IGNORECASE)
+                text = re.sub(_compiler, str(replace_to), str(text))
+            except Exception as e:
+                app.logger.error('Shortcode Error: {}'.format(e))
+        return text
     return pretreat_raw_method

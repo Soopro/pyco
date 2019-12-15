@@ -22,10 +22,16 @@ SYS_ICONS = [
     'apple-touch-icon.png'
 ]
 
+CONTENT_QUERY_LIMIT = 3
+
 # markdown
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = []
 
+# shortcodes
+SHORTCODE = {
+    'uploads': UPLOADS_URL
+}
 
 # plugins
 PLUGINS = []

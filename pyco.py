@@ -19,7 +19,7 @@ from app.blueprints import register_blueprints
 from core.models import DBConnection, Configure, Document, Site, Theme, Media
 
 
-__version_info__ = ('3', '5', '4')
+__version_info__ = ('3', '5', '6')
 __version__ = '.'.join(__version_info__)
 
 
@@ -30,9 +30,8 @@ app.version = __version__
 load_config(app)
 
 
-app.db = DBConnection(app, load_modal_pretreat(app))
-app.db.register([Configure, Document, Site, Theme, Media],
-                app.config['PAYLOAD_DIR'])
+app.db = DBConnection(app.config['PAYLOAD_DIR'], load_modal_pretreat(app))
+app.db.register([Configure, Document, Site, Theme, Media])
 
 # ensure dirs
 ensure_dirs(

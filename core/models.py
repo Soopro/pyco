@@ -18,17 +18,19 @@ from .utils.misc import (process_slug,
 class DBConnection:
     models = dict()
     app = None
-    pretreat_raw_method = None
+    pretreat_method = None
+    data_dir = None
 
-    def __init__(self, app, pretreat_raw_method=None):
-        self.app = app
-        if callable(pretreat_raw_method):
-            self.pretreat_raw_method = pretreat_raw_method
+    def __init__(self, data_dir=None, pretreat_method=None):
+        if isinstance(data_dir, str) and data_dir:
+            self.data_dir = data_dir
+        if callable(pretreat_method):
+            self.pretreat_method = pretreat_method
 
-    def register(self, models, base_dir=None):
+    def register(self, models):
         for model in models:
-            model.__pretreat_raw__ = self.pretreat_raw_method
-            model.__base_dir__ = str(base_dir)
+            model.__pretreat_method__ = self.pretreat_method
+            model.__data_dir__ = self.data_dir
             self.models[model.__name__] = model
 
     def __getattr__(self, name):
@@ -46,8 +48,8 @@ class FlatFile:
     data = dict()
     raw = None
 
-    __base_dir__ = None
-    __pretreat_raw__ = None
+    __data_dir__ = None
+    __pretreat_method__ = None
 
     def __init__(self, path):
         if path:
@@ -85,8 +87,10 @@ class FlatFile:
                 readed = fh.read()
         else:
             readed = ''
-        if callable(self.__pretreat_raw__) and readed:
-            readed = self.__pretreat_raw__(readed)
+        print('readed---------------->>> \n', self.__pretreat_method__)
+        if callable(self.__pretreat_method__) and readed:
+            readed = self.__pretreat_method__(readed)
+            print(readed)
         return readed
 
     def _prepare_field(self, x):
@@ -122,8 +126,8 @@ class FlatFile:
         return x
 
     def _abs_path(self, path):
-        if self.__base_dir__:
-            return os.path.join(self.__base_dir__, path)
+        if self.__data_dir__:
+            return os.path.join(self.__data_dir__, path)
         else:
             return path
 
@@ -652,8 +656,8 @@ class Document(FlatFile):
     # methods
     @classmethod
     def get_dir(cls):
-        if cls.__base_dir__:
-            return os.path.join(cls.__base_dir__, cls.CONTENT_DIR)
+        if cls.__data_dir__:
+            return os.path.join(cls.__data_dir__, cls.CONTENT_DIR)
         return cls.CONTENT_DIR
 
     @classmethod
@@ -738,8 +742,8 @@ class Media():
     # methods
     @classmethod
     def get_dir(cls):
-        if cls.__base_dir__:
-            return os.path.join(cls.__base_dir__, cls.UPLOADS_DIR)
+        if cls.__data_dir__:
+            return os.path.join(cls.__data_dir__, cls.UPLOADS_DIR)
         return cls.UPLOADS_DIR
 
     @classmethod
