@@ -88,11 +88,11 @@
 
     {% if custom_fields %}
 
-    <h2 class="section-title">
-      {{_('Data Fields')}}
+    <h2 class="section-title mt-5">
+      {{_('Custom Data Fields')}}
     </h2>
     <p class="section-lead">
-      {{_('Please note, each data fields below must save separately, those fields will NOT BE SAVED when you only operate Save Content.')}}
+      {{_('Those custom data fields is defined by theme. Different Template might use different definition.')}}
     </p>
     <div>
       {% for key, opts in custom_fields.items() %}

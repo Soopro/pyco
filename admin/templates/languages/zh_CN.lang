@@ -590,12 +590,12 @@
     "msgstr": "重定向"
   },
   {
-    "msgid": "Data Fields",
-    "msgstr": "数据表单"
+    "msgid": "Custom Data Fields",
+    "msgstr": "自定义数据"
   },
   {
-    "msgid": "Please note, each data fields below must save separately, those fields will NOT BE SAVED when you only operate Save Content.",
-    "msgstr": "请注意，下面的每个数据表单必须分别保存，当你仅操作「保存内容」时将不会保存这些数据。"
+    "msgid": "Those custom data fields is defined by theme. Different Template might use different definition.",
+    "msgstr": "以下的自定义数据由主题定义，不同的模版可能使用不同的自定义数据定义。"
   },
   {
     "msgid": "All Category Terms",
