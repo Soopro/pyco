@@ -39,3 +39,15 @@ def sync_site_by_theme_opts():
         site['categories'].update({'status': 0})
 
     site.save()
+
+
+def gen_preview_url(content_type, slug):
+    if content_type == current_app.db.Document.STATIC_TYPE:
+        if slug == current_app.db.Document.INDEX_SLUG:
+            preview_path = '/'
+        else:
+            preview_path = '/{}'.format(slug)
+    else:
+        preview_path = '/{}/{}'.format(content_type, slug)
+
+    return '{}{}'.format(current_app.config['BASE_URL'], preview_path)

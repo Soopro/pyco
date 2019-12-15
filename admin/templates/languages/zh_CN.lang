@@ -53,6 +53,10 @@
     "msgstr": "内容"
   },
   {
+    "msgid": "Homepage",
+    "msgstr": "站点首页"
+  },
+  {
     "msgid": "Page",
     "msgstr": "页面"
   },
@@ -528,6 +532,10 @@
   {
     "msgid": "Save Content",
     "msgstr": "保存内容"
+  },
+  {
+    "msgid": "Preview URL",
+    "msgstr": "预览链接"
   },
   {
     "msgid": "Date",

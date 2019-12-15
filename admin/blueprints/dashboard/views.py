@@ -29,8 +29,10 @@ def index():
         'content': current_app.db.Document.count(),
         'media': current_app.db.Media.count(),
     }
+    base_url = current_app.config['BASE_URL']
     contents = current_app.db.Document.find_recent()
     return render_template('dashboard.html',
+                           base_url=base_url,
                            total_count=total_count,
                            recent_contents=contents)
 

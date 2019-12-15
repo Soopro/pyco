@@ -95,12 +95,13 @@
       </div>
       <div class="card-body">
         <a class="btn btn-outline-primary btn-lg w-100 mb-2"
-           href="{{url_as('media.index')}}">
-          <i class="fas fa-photo-video"></i>
-          <span>{{_('Page')}}</span>
+           href="{{base_url}}"
+           target="_blank">
+          <i class="fa fa-home fa-3x"></i>
+          <div>{{_('Homepage')}}</div>
         </a>
-        {% for content_type in site.content_types
-           if content_type.key != 'page' %}
+        <hr>
+        {% for content_type in site.content_types %}
         <a class="btn btn-outline-secondary btn-lg w-100 mb-2"
            href="{{url_as('content.index',
                            content_type=content_type.key)}}">
@@ -108,11 +109,6 @@
           <span>{{_(content_type.title)}}</span>
         </a>
         {% endfor %}
-        <a class="btn btn-outline-primary btn-lg w-100 mb-2"
-           href="{{url_as('category.index')}}">
-          <i class="fas fa-book"></i>
-          <span>{{_('Category')}}</span>
-        </a>
         <a class="btn btn-outline-primary btn-lg w-100 mb-2"
            href="{{url_as('media.index')}}">
           <i class="fas fa-photo-video"></i>

@@ -40,7 +40,9 @@
                 {% if content.slug == 'index' %}
                 <i class="fas fa-home"></i>
                 {% endif %}
-                {{content.meta.title or content.slug}}
+                <a href="{{content.url}}" target="_preview">
+                  {{content.meta.title or content.slug}}
+                </a>
                 {% if not content.status %}
                 <small class="text-muted">
                   [{{_('Draft')}}]

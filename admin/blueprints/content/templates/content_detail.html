@@ -141,9 +141,9 @@
               {{_('Save Content')}}
             </button>
             <a class="btn"
-               aria-label="{{_('Save Content')}}"
-               href="{{preview_url}}"
-               target="_blank">
+               aria-label="{{_('Preview URL')}}"
+               href="{{document.url}}"
+               target="_preview">
               <i class="fa fa-link"></i>
             </a>
             {% if document.slug!='index' or document.content_type!='page' %}

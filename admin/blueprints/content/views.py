@@ -14,7 +14,7 @@ import json
 from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
-from admin.act import url_as
+from admin.act import url_as, gen_preview_url
 
 
 blueprint = Blueprint('content', __name__, template_folder='templates')
@@ -38,6 +38,9 @@ def index(content_type):
     has_previous = paged > 1
 
     contents = files[offset:offset + limit]
+
+    for content in contents:
+        content.url = gen_preview_url(content.content_type, content.slug)
 
     prev_url = url_as(request.endpoint,
                       content_type=content_type,
@@ -92,14 +95,7 @@ def content_detail(content_type, slug):
     custom_fields = _find_custom_fields(template)
     hidden_field_keys = _find_hidden_field_keys(template)
 
-    if document.content_type == document.STATIC_TYPE:
-        if document.slug == document.INDEX_SLUG:
-            preview_path = '/'
-        else:
-            preview_path = '/{}'.format(document.slug)
-    else:
-        preview_path = '/{}/{}'.format(document.content_type, document.slug)
-    preview_url = '{}{}'.format(current_app.config['BASE_URL'], preview_path)
+    document.url = gen_preview_url(document.content_type, document.slug)
 
     # category
     site = current_app.db.Site()
@@ -110,7 +106,6 @@ def content_detail(content_type, slug):
 
     return render_template('content_detail.html',
                            document=document,
-                           preview_url=preview_url,
                            meta=document['meta'],
                            content=document['content'],
                            content_type=curr_content_type,

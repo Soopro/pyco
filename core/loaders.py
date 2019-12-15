@@ -21,6 +21,7 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('API_URL', '')
 
     app.config.setdefault('PLUGINS', [])
+    app.config.setdefault('SHORTCODE', {})
 
     app.config.setdefault('HOST', '0.0.0.0')
     app.config.setdefault('PORT', 5500)
