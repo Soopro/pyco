@@ -29,7 +29,9 @@ Link_to:
   Target: ''
 Opt:
   Rel_content: sadfsdaf
-  Rel_switch: false
+  Rel_switch: true
+  Rel_switch-1: true
+  Rel_switch-2: true
   Rel_type: post
   Test_tytle: hahhaa
 Parent: fsdaf
@@ -40,8 +42,12 @@ Status: 1
 Tags:
 - sadfsdaf
 - dsfsdaf
+- asdfadsf
+- asdf
 Template: customs
-Terms: []
+Terms:
+- sdfasdf
+- asdfdsf
 Text_1: fff
 Text_lines:
 - Text: adsfdasf

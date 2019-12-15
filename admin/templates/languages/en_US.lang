@@ -21,6 +21,10 @@
     "msgstr": "Reloaded."
   },
   {
+    "msgid": "ERROR",
+    "msgstr": "System Error."
+  },
+  {
     "msgid": "REFRESHED",
     "msgstr": "Refreshed."
   },

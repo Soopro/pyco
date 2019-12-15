@@ -281,13 +281,14 @@
   function _load_dict(form){
     var output = {};
     form.find('input:checkbox').map(function() {
-      // for switch type.
-      output[this.name] = this.checked ? true: false
+      output[this.name] = Boolean(this.checked);
     });
-    form.find('input:text, textarea, select').map(function() {
-      // for text and select type.
-      output[this.name] = this.value;
+    form.find('input:text, textarea').map(function() {
+      output[this.name] = $(this).val();
     });
+    form.find('select').map(function(){
+      output[this.name] = $(this).val();
+    })
     return output;
   }
   function _load_list(form){
@@ -296,7 +297,7 @@
       var field = $(this);
       var item = {};
       field.find('input, textarea').map(function(){
-        item[this.name] = this.value;
+        item[this.name] = $(this).val();
       })
       output.push(item);
     });
@@ -305,7 +306,7 @@
   function _load_text(form) {
     var output = '';
     form.find('input, textarea').map(function() {
-      output = this.value || '';
+      output = $(this).val() || '';
     });
     return output;
   }
@@ -313,7 +314,7 @@
     var output = '';
     form.find('textarea').map(function() {
       try {
-        output = JSON.parse(this.value);
+        output = JSON.parse($(this).val());
       } catch(e) {
         output = ''
       }

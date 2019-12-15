@@ -49,6 +49,26 @@
             <span class="custom-switch-description">{{_(prop.label)}}</span>
           </label>
         </div>
+        <div>
+          <label class="custom-switch mt-2">
+            <input class="custom-switch-input"
+                   type="checkbox"
+                   name="{{prop.key}}-1"
+                   {{'checked' if _value}}>
+            <span class="custom-switch-indicator"></span>
+            <span class="custom-switch-description">{{_(prop.label)}}</span>
+          </label>
+        </div>
+        <div>
+          <label class="custom-switch mt-2">
+            <input class="custom-switch-input"
+                   type="checkbox"
+                   name="{{prop.key}}-2"
+                   {{'checked' if _value}}>
+            <span class="custom-switch-indicator"></span>
+            <span class="custom-switch-description">{{_(prop.label)}}</span>
+          </label>
+        </div>
         {% endif %}
       </div>
       {% endfor %}

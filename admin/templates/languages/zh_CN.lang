@@ -724,27 +724,31 @@
 
   {
     "msgid": "SAVED",
-    "msgstr": "已保存。"
+    "msgstr": "已保存"
   },
   {
     "msgid": "REMOVED",
-    "msgstr": "已删除。"
+    "msgstr": "已删除"
   },
   {
     "msgid": "RESTORED",
-    "msgstr": "已恢复。"
+    "msgstr": "已恢复"
   },
   {
     "msgid": "INSTALLED",
-    "msgstr": "已安装。"
+    "msgstr": "已安装"
   },
   {
     "msgid": "RELOADED",
     "msgstr": "已重载"
   },
   {
+    "msgid": "ERROR",
+    "msgstr": "系统错误"
+  },
+  {
     "msgid": "REFRESHED",
-    "msgstr": "已刷新。"
+    "msgstr": "已刷新"
   },
   {
     "msgid": "MEDIA_UPLOADED: %s",

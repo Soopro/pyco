@@ -121,42 +121,16 @@ def update_content(content_type, slug):
     meta = get_param('meta', dict, True, default={})
     content = get_param('content', str, default='')
 
-    tags = meta.pop('tags', '')
-    terms = meta.pop('terms', [])
-    date = meta.pop('date', '')
-    parent = meta.pop('parent', '')
-    template = meta.pop('template', '')
-    redirect_url = meta.pop('redirect', '')
-    priority = meta.pop('priority')
-    status = meta.pop('status')
-
-    title = meta.pop('title', '')
-    description = meta.pop('description', '')
-    featured_img_src = meta.pop('featured_img', '')
-
     document = current_app.db.Document.find_one(slug, content_type)
-    document['meta'] = meta
-    document['meta'].update({
-        'title': title,
-        'description': description,
-        'featured_img': {
-            'src': featured_img_src
-        }
-    })
-    document['date'] = date
-    document['tags'] = [tag.strip() for tag in tags
-                        if tag and isinstance(tag, str)]
-    document['terms'] = [term.strip() for term in terms
-                         if term and isinstance(term, str)]
-    document['template'] = template
-    document['parent'] = parent
-    document['redirect'] = redirect_url
-    document['priority'] = parse_int(priority)
-    document['status'] = parse_int(status)
-    document['content'] = content
-    document.save()
+    try:
+        _save_document(document, meta, content)
+    except Exception as e:
+        current_app.logger.error(e)
+        raise e
+
     flash('SAVED')
-    return jsonify({'updated': True})
+
+    return jsonify({'saved': True})
 
 
 @blueprint.route('/<content_type>/<slug>/raw')
@@ -216,3 +190,41 @@ def _find_hidden_field_keys(template):
         return hidden_field_keys
     else:
         return []
+
+
+def _save_document(document, meta, content):
+    tags = meta.pop('tags', '')
+    terms = meta.pop('terms', [])
+    date = meta.pop('date', '')
+    parent = meta.pop('parent', '')
+    template = meta.pop('template', '')
+    redirect_url = meta.pop('redirect', '')
+    priority = meta.pop('priority')
+    status = meta.pop('status')
+
+    title = meta.pop('title', '')
+    description = meta.pop('description', '')
+    featured_img_src = meta.pop('featured_img', '')
+    print('terms:', terms)
+    document['meta'] = meta
+    document['meta'].update({
+        'title': title,
+        'description': description,
+        'featured_img': {
+            'src': featured_img_src
+        }
+    })
+    document['date'] = date
+    document['tags'] = [tag.strip() for tag in tags
+                        if tag and isinstance(tag, str)]
+    document['terms'] = [term.strip() for term in terms
+                         if term and isinstance(term, str)]
+    document['template'] = template
+    document['parent'] = parent
+    document['redirect'] = redirect_url
+    document['priority'] = parse_int(priority)
+    document['status'] = parse_int(status)
+    document['content'] = content
+    document.save()
+
+    return document
