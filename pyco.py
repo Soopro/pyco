@@ -18,14 +18,12 @@ from app.blueprints import register_blueprints
 
 from core.models import DBConnection, Configure, Document, Site, Theme, Media
 
-
-__version_info__ = ('3', '6', '1')
-__version__ = '.'.join(__version_info__)
+import info
 
 
 # create app
 app = Flask(__name__, static_url_path='/static')
-app.version = __version__
+app.version = info.__version__
 
 load_config(app)
 

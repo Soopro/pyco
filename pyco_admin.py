@@ -12,11 +12,15 @@ from core.services.i18n import Translator
 from admin.blueprints import register_admin_blueprints
 from admin.act import url_as
 
+import info
+
 
 app = Flask(__name__,
             static_folder='admin/templates/assets',
             static_url_path='/static',
             template_folder='admin/templates')
+
+app.version = info.__version__
 
 load_config(app)
 
@@ -64,7 +68,8 @@ def inject_global_variable():
         '_': translator.gettext,
         'site': site,
         'theme': theme,
-        'url_as': url_as
+        'url_as': url_as,
+        'ver': app.version
     }
 
 
