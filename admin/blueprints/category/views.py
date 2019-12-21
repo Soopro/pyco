@@ -37,9 +37,8 @@ def create_term():
     term_name = request.form.get('name')
     term_key = request.form.get('key')
     site = current_app.db.Site()
-    term_key = process_slug(term_key or term_name)
-    site.add_category_term({
-        'key': term_key,
+    term = site.add_category_term({
+        'key': process_slug(term_key or term_name),
         'meta': {
             'name': term_name,
             'caption': '',
@@ -50,7 +49,7 @@ def create_term():
         'status': 0,
     })
     site.save()
-    return_url = url_as('.term', term_key=term_key)
+    return_url = url_as('.term', term_key=term['key'])
     return redirect(return_url)
 
 

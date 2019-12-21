@@ -425,11 +425,14 @@ class Site(FlatFile):
         return menus
 
     # methods
-    def _uniqueify_term_key(self, term_key):
+    def _uniqueify_term_key(self, term_key, term=None):
         term_key = process_slug(term_key)
+        if term and term['key'] == term_key:
+            return term_key
         all_term_keys = [term['key'] for term in self.categories['terms']]
         if term_key in all_term_keys:
-            term_key = self._uniqueify_term_key(slug_uuid_suffix(term_key))
+            term_key = self._uniqueify_term_key(slug_uuid_suffix(term_key),
+                                                term)
         return term_key
 
     def _find_term(self, term_key):
@@ -452,7 +455,7 @@ class Site(FlatFile):
             self.data['categories']['terms'] = []
         term_meta = term.get('meta') or {}
         term_key = self._uniqueify_term_key(term['key'])
-        self.data['categories']['terms'].insert(0, {
+        term = {
             'key': term_key,
             'meta': {
                 'name': term_meta.get('name', term_key),
@@ -462,7 +465,9 @@ class Site(FlatFile):
             'parent': term.get('parent', ''),
             'priority': term.get('priority', 0),
             'status': parse_int(term.get('status')),
-        })
+        }
+        self.data['categories']['terms'].insert(0, term)
+        return term
 
     def get_category_term(self, term_key):
         return self._find_term(term_key)
@@ -554,10 +559,15 @@ class Document(FlatFile):
             'content': content.get('content', '')
         }
 
-    def _uniqueify_slug(self, slug, content_type):
+    def _uniqueify_slug(self, slug, content_type, document=None):
+        slug = process_slug(slug)
+        if document and document.slug == slug:
+            return slug
         doc = self.find_one(slug, content_type)
         if doc:
-            slug = self._uniqueify_slug(slug_uuid_suffix(slug))
+            slug = self._uniqueify_slug(slug_uuid_suffix(slug),
+                                        content_type,
+                                        document)
         return slug
 
     def save(self):
