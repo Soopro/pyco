@@ -22,8 +22,6 @@ SYS_ICONS = [
     'apple-touch-icon.png'
 ]
 
-CONTENT_QUERY_LIMIT = 3
-
 # markdown
 USE_MARKDOWN = False
 MARKDOWN_EXTENSIONS = []
