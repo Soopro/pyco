@@ -388,8 +388,12 @@
     content = content.replace(/\r?\n|\r/gm, '');
     delete meta.content;
 
-    meta.terms = _reform_list(meta.terms)
-    meta.tags = _reform_list(meta.tags.split(','))
+    if(Array.isArray(meta.terms)){
+      meta.terms = _reform_list(meta.terms)
+    }
+    if(Array.isArray(meta.tags)){
+      meta.tags = _reform_list(meta.tags.split(','))
+    }
 
     $.ajax(content_form.attr('action'), {
       data: JSON.stringify({

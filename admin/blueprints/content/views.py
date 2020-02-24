@@ -193,7 +193,7 @@ def _find_hidden_field_keys(template):
 
 
 def _save_document(document, meta, content):
-    tags = meta.pop('tags', '')
+    tags = meta.pop('tags', [])
     terms = meta.pop('terms', [])
     date = meta.pop('date', '')
     parent = meta.pop('parent', '')
