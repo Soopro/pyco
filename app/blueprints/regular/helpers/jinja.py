@@ -255,7 +255,7 @@ def magnet(raw_list, current, limit=1):
     }
 
 
-def straw(raw_list, value, key='id', recursive_key='nodes', limit=600):
+def straw(raw_list, value, key='id', recursive_key='nodes', limit=60):
     """return a item matched with key/value form a list.
     some_page = straw(pages, some_id, key='id',
                       recursive_key='nodes', limit=600)
