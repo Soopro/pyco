@@ -1,6 +1,4 @@
 /*
-? ''
-: ''
 Cover:
   Class: ''
   Src: ffffff
