@@ -410,7 +410,7 @@ class Site(FlatFile):
             'terms': [{'key': t.get('key'),
                        'meta': t.get('meta'),
                        'parent': t.get('parent'),
-                       'priority': t.get('priority', 0),
+                       'priority': t.get('priority', 1),
                        'status': t.get('status')} for t in _terms]}
         return categories
 
@@ -466,7 +466,7 @@ class Site(FlatFile):
                 'figure': term_meta.get('figure', ''),
             },
             'parent': term.get('parent', ''),
-            'priority': term.get('priority', 0),
+            'priority': term.get('priority', 1),
             'status': parse_int(term.get('status')),
         }
         self.data['categories']['terms'].insert(0, term)
@@ -553,7 +553,7 @@ class Document(FlatFile):
             'meta': content.get('meta', {}),
             'template': content.get('template', ''),
             'parent': content.get('parent', ''),
-            'priority': content.get('priority', 0),
+            'priority': content.get('priority', 1),
             'date': content.get('date', ''),
             'tags': content.get('tags', []),
             'terms': content.get('terms', []),
@@ -577,7 +577,7 @@ class Document(FlatFile):
         _fields = self.data.get('meta') or {}
         _fields.update({
             'template': self.data.get('template', ''),
-            'priority': self.data.get('priority', 0),
+            'priority': self.data.get('priority', 1),
             'parent': self.data.get('parent', ''),
             'date': self.data.get('date', ''),
             'tags': self.data.get('tags', []),
@@ -616,7 +616,7 @@ class Document(FlatFile):
         tags = [tag.strip().lower() for tag in fields.pop('tags', [])
                 if isinstance(tag, str)]
         template = fields.pop('template', self.content_type)
-        priority = fields.pop('priority', 0)
+        priority = fields.pop('priority', 1)
         parent = fields.pop('parent', '')
         date = fields.pop('date', '')
         terms = fields.pop('terms', [])

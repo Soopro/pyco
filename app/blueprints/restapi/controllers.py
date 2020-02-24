@@ -160,22 +160,20 @@ def get_view_content_list(app_id, type_slug=None):
     perpage = get_args('perpage', default=0)
     paged = get_args('paged', default=0)
     sortby = get_args('sortby', default='', multiple=True)
-    priority = get_args('priority', default=True)
     term = get_args('term')
     tag = get_args('tag')
 
     run_hook('config_loaded', config=_hook_config())
 
     theme_opts = g.curr_app['theme_meta'].get('options', {})
-    priority = bool(priority)
 
     # set default params
     if not sortby:
         sortby = theme_opts.get('sortby', 'updated')
-        if isinstance(sortby, str):
-            sortby = [sortby]
-        elif not isinstance(sortby, list):
-            sortby = []
+    if isinstance(sortby, str):
+        sortby = [sortby]
+    elif not isinstance(sortby, list):
+        sortby = []
 
     if not perpage:
         perpage = theme_opts.get('perpage')

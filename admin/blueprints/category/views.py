@@ -45,7 +45,7 @@ def create_term():
             'figure': '',
         },
         'parent': '',
-        'priority': 0,
+        'priority': 1,
         'status': 0,
     })
     site.save()
@@ -67,7 +67,7 @@ def update_term(term_key):
     caption = request.form.get('caption', '')
     figure = request.form.get('figure', '')
     parent = request.form.get('parent', '')
-    priority = request.form.get('priority', '')
+    priority = request.form.get('priority', 1)
     status = request.form.get('status', '')
 
     site = current_app.db.Site()
@@ -78,7 +78,7 @@ def update_term(term_key):
             'figure': str(figure),
         },
         'parent': str(parent),
-        'priority': parse_int(priority),
+        'priority': parse_int(priority, 1),
         'status': parse_int(status),
     })
     site.save()

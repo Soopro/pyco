@@ -102,7 +102,7 @@ def find_404_content_file():
         'content_type': '.h',
         'meta': {},
         'parent': '',
-        'priority': 0,
+        'priority': 1,
         'date': '',
         'content': '',
         'excerpt': '',
@@ -276,7 +276,7 @@ def _sort_terms(terms, included_term_keys=None, nest_output=True):
         'key': term['key'],
         'parent': term.get('parent', ''),
         'meta': term.get('meta', {}),
-        'priority': term.get('priority', 0)
+        'priority': term.get('priority', 1)
     } for term in terms]
 
     term_list = sortedby(term_list, [('priority', 1)])

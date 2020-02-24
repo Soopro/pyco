@@ -199,7 +199,7 @@ def _save_document(document, meta, content):
     parent = meta.pop('parent', '')
     template = meta.pop('template', '')
     redirect_url = meta.pop('redirect', '')
-    priority = meta.pop('priority')
+    priority = meta.pop('priority', 1)
     status = meta.pop('status')
 
     title = meta.pop('title', '')
@@ -222,7 +222,7 @@ def _save_document(document, meta, content):
     document['template'] = template
     document['parent'] = parent
     document['redirect'] = redirect_url
-    document['priority'] = parse_int(priority)
+    document['priority'] = parse_int(priority, 1)
     document['status'] = parse_int(status)
     document['content'] = content
     document.save()

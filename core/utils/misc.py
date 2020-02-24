@@ -184,19 +184,17 @@ def sortedby(source, sort_keys, reverse=False):
     return sorted(source, key=cmp_to_key(compare), reverse=reverse)
 
 
-def parse_int(num, default=0, natural=False):
+def parse_int(num, default=0, minimum=None):
     if not isinstance(default, int):
         default = 0
-    if not isinstance(natural, (int, bool)):
-        natural = False
+    if isinstance(minimum, float):
+        minimum = int(minimum)
     try:
         num = int(float(num))
     except (ValueError, TypeError):
         num = default
-    if natural == 0:
-        num = max(0, num)
-    elif natural:
-        num = max(1, num)
+    if isinstance(minimum, int):
+        num = max(minimum, num)
     return num
 
 
