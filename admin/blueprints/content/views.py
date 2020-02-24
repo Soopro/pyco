@@ -205,8 +205,8 @@ def _save_document(document, meta, content):
     title = meta.pop('title', '')
     description = meta.pop('description', '')
     featured_img_src = meta.pop('featured_img', '')
-    print('terms:', terms)
-    document['meta'] = meta
+
+    document['meta'] = {k: v for k, v in meta.items() if k}  # clear no key.
     document['meta'].update({
         'title': title,
         'description': description,

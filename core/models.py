@@ -604,7 +604,8 @@ class Document(FlatFile):
             content = ''
         else:
             fields = yaml.safe_load(m.group('fields'))
-            content = m.group('content')
+            content = m.group('content').strip('\n\b\r')
+            # `.strip('\n\b\r')` use to prevent unexcept empty line.
 
         self._parse_structure(self._parse_field(fields), content)
 
