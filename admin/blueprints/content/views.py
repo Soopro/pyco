@@ -102,8 +102,8 @@ def content_detail(content_type, slug):
     site = current_app.db.Site()
     terms = site.categories.get('terms', [])
 
-    def display_field(key):
-        return key not in hidden_field_keys
+    def display_field(key, hidden_fields=hidden_field_keys):
+        return key not in hidden_fields
 
     return render_template('content_detail.html',
                            document=document,

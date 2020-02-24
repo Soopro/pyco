@@ -12,6 +12,7 @@
   </div>
   <div class="card-body">
     <div class="form-row">
+      {% if display_field('src', opts.hidden) %}
       <div class="form-group media-preview-field col-md-8">
         <label>{{_('Image URL')}}</label>
         <div class="input-group">
@@ -34,6 +35,8 @@
           </div>
         </div>
       </div>
+      {% endif %}
+      {% if display_field('class', opts.hidden) %}
       <div class="form-group col-md-4">
         <label>{{_('CSS Class')}}</label>
         <input class="form-control"
@@ -43,8 +46,8 @@
                placeholder="primary-bg, transparent-bg"
                value="{{_field.class}}">
       </div>
-    </div>
-    <div class="form-row">
+      {% endif %}
+      {% if display_field('style', opts.hidden) %}
       <div class="form-group col-12">
         <label>{{_('CSS Styles')}}</label>
         <input class="form-control"
@@ -54,6 +57,7 @@
                placeholder="background-color: #fff;"
                value="{{_field.style}}">
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

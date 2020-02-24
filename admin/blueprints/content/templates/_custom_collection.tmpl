@@ -35,6 +35,7 @@
           </button>
         </div>
         <div class="form-row">
+          {% if display_field('title', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Title')}}</label>
             <div class="input-group">
@@ -45,6 +46,8 @@
                      value="{{item.title}}">
             </div>
           </div>
+          {% endif %}
+          {% if display_field('subtitle', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Subtitle')}}</label>
             <div class="input-group">
@@ -55,9 +58,8 @@
                      value="{{item.subtitle}}">
             </div>
           </div>
-        </div>
-
-        <div class="form-row">
+          {% endif %}
+          {% if display_field('src', opts.hidden) %}
           <div class="form-group media-preview-field col-md-6">
             <label>{{_('Image URL')}}</label>
             <div class="input-group">
@@ -80,7 +82,8 @@
               </div>
             </div>
           </div>
-
+          {% endif %}
+          {% if display_field('link', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Link to URL')}}</label>
             <div class="input-group">
@@ -98,9 +101,8 @@
                      value="{{item.target}}">
             </div>
           </div>
-        </div>
-
-        <div class="form-row">
+          {% endif %}
+          {% if display_field('caption', opts.hidden) %}
           <div class="form-group col-12">
             <label>{{_('Caption')}}</label>
             <textarea class="form-control"
@@ -108,6 +110,7 @@
                         rows="4"
                         maxlength="1200">{{item.caption}}</textarea>
           </div>
+          {% endif %}
         </div>
 
         <hr>
@@ -135,6 +138,7 @@
           </button>
         </div>
         <div class="form-row">
+          {% if display_field('title', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Title')}}</label>
             <div class="input-group">
@@ -144,6 +148,8 @@
                      maxlength="60">
             </div>
           </div>
+          {% endif %}
+          {% if display_field('subtitle', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Subtitle')}}</label>
             <div class="input-group">
@@ -153,9 +159,8 @@
                    maxlength="120">
             </div>
           </div>
-        </div>
-
-        <div class="form-row">
+          {% endif %}
+          {% if display_field('src', opts.hidden) %}
           <div class="form-group media-preview-field col-md-6">
             <label>{{_('Image URL')}}</label>
             <div class="input-group">
@@ -177,7 +182,8 @@
               </div>
             </div>
           </div>
-
+          {% endif %}
+          {% if display_field('link', opts.hidden) %}
           <div class="form-group col-md-6">
             <label>{{_('Link to URL')}}</label>
             <div class="input-group">
@@ -193,9 +199,9 @@
                      placeholder="_self">
             </div>
           </div>
-        </div>
+          {% endif %}
 
-        <div class="form-row">
+          {% if display_field('caption', opts.hidden) %}
           <div class="form-group col-12">
             <label>{{_('Caption')}}</label>
             <textarea class="form-control"
@@ -203,6 +209,7 @@
                         rows="4"
                         maxlength="1200"></textarea>
           </div>
+          {% endif %}
         </div>
 
         <hr>

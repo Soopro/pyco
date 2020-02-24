@@ -265,6 +265,7 @@ class Theme(FlatFile):
                         'type': v,
                         'label': k,
                         'props': [],
+                        'hidden': [],
                     }
                 elif isinstance(v, dict):
                     props = v.get('props', [])[:60]
@@ -279,13 +280,15 @@ class Theme(FlatFile):
                     fields[key] = {
                         'type': v.get('type', ''),
                         'label': v.get('label', k),
-                        'props': props
+                        'props': props,
+                        'hidden': v.get('!', [])
                     }
                 else:
                     fields[key] = {
                         'type': '',
                         'label': k,
-                        'props': []
+                        'props': [],
+                        'hidden': []
                     }
             return fields
 

@@ -12,6 +12,7 @@
   </div>
   <div class="card-body">
     <div class="form-row">
+      {% if display_field('name', opts.hidden) %}
       <div class="form-group col-md-8">
         <label>{{_('Name')}}</label>
         <input class="form-control"
@@ -20,6 +21,8 @@
                maxlength="60"
                value="{{_field.name}}">
       </div>
+      {% endif %}
+      {% if display_field('class', opts.hidden) %}
       <div class="form-group col-md-4">
         <label>{{_('CSS Class')}}</label>
         <input class="form-control"
@@ -29,8 +32,8 @@
                placeholder="primary-bg, transparent-bg"
                value="{{_field.class}}">
       </div>
-    </div>
-    <div class="form-row">
+      {% endif %}
+      {% if display_field('link', opts.hidden) %}
       <div class="form-group col-12">
         <label>{{_('Link to URL')}}</label>
         <div class="input-group">
@@ -48,6 +51,7 @@
                  value="{{_field.target}}">
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

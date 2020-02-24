@@ -42,7 +42,7 @@
 
   "custom_fields": {
     "customs": {
-
+      "!": ["terms"],
       "opt": {
         "type": "attrs",
         "label": "Options",
@@ -93,13 +93,29 @@
       },
       "text-lines": "lines",
       "link-to": "link",
+      "link-with-hidden": {
+        "type": "link",
+        "label": "link with hidden",
+        "!": ["name", "link", "class"]
+      },
       "features": {
         "type": "collection",
         "label": "List"
       },
+      "features-with-hidden": {
+        "type": "collection",
+        "label": "List with hidden",
+        "!": ["title", "subtitle", "link", "src", "caption"]
+      },
+
       "cover": {
         "type": "bg",
         "label": "Background Cover"
+      },
+      "cover-with-hidden": {
+        "!": ["src", "class", "style"],
+        "type": "bg",
+        "label": "Background Cover Hidden"
       },
       "img": "media",
       "text-1": "text",
@@ -108,7 +124,8 @@
     },
     "page": {
       "background": "media",
-      "button": "link"
+      "button": "link",
+      "!": ["title", "link", "src", "link", "class"]
     }
   }
 }
