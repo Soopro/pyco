@@ -127,18 +127,18 @@
            data-type="base">
         <div class="card-header">
           <h4>{{_('Properties')}}</h4>
+          <a class="btn ml-auto"
+             aria-label="{{_('Preview URL')}}"
+             href="{{document.url}}"
+             target="_preview">
+            <i class="fa fa-link"></i>
+          </a>
         </div>
         <div class="card-body">
           <div class="d-flex">
             <button class="btn btn-primary btn-lg save-btn">
               {{_('Save Content')}}
             </button>
-            <a class="btn"
-               aria-label="{{_('Preview URL')}}"
-               href="{{document.url}}"
-               target="_preview">
-              <i class="fa fa-link"></i>
-            </a>
             {% if document.slug!='index' or document.content_type!='page' %}
             <a class="btn btn-danger btn-lg btn-icon ml-auto"
                aria-label="{{_('Delete')}}"
