@@ -6,7 +6,7 @@ Cover:
 Date: '2019-11-26'
 Description: '123123123'
 Featured_img:
-  Src: http://localhost:5500/uploads/banner-profile.jpg
+  Src: http://localhost:5500/uploads/default.jpg
 Features:
 - Caption: bbb
   Link: ''
@@ -26,22 +26,26 @@ Link_to:
   Name: bbbb
   Target: ''
 Opt:
+  Bg_image: http://localhost:5500/uploads/default.jpg
+  Caption: adsfsdafsadf
   Rel_content: sadfsdaf
   Rel_switch: true
-  Rel_switch-1: true
-  Rel_switch-2: true
   Rel_type: post
   Test_tytle: hahhaa
+  Title: asdfsdaf
 Parent: fsdaf
 Priority: 1
 Redirect: ''
 Script_s: fsdaf
 Status: 1
 Tags:
-- sadfsdaf
-- dsfsdaf
-- asdfadsf
-- asdf
+- s
+- ','
+- a
+- ','
+- d
+- ','
+- f
 Template: customs
 Terms:
 - sdfasdf

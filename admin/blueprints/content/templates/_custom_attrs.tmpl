@@ -14,17 +14,44 @@
     <div class="form-row">
       {% for prop in opts.props %}
       {% set _value = _obj[prop.key] if prop.key in _obj else prop.value %}
-      <div class="form-group col-md-6 col-xl-4">
-        {% if prop.type == 'text' %}
+      {% if prop.type == 'text' %}
+      <div class="form-group col-md-6">
         <label>
           {{_(prop.label)|title}}
         </label>
         <input class="form-control"
                type="text"
                name="{{prop.key}}"
-               maxlength="360"
+               maxlength="120"
                value="{{_value}}">
-        {% elif prop.type == 'select' %}
+      </div>
+      {% elif prop.type == 'image' %}
+      <div class="form-group col-md-6 media-preview-field">
+        <label>
+          {{_(prop.label)|title}}
+        </label>
+        <div class="input-group">
+          <div class="input-group-append media-preview">
+            <a href="#" target="_blank"></a>
+          </div>
+          <input class="form-control media-input"
+                 type="text"
+                 name="{{prop.key}}"
+                 value="{{_value or ''}}">
+          <div class="input-group-append">
+            <button class="btn btn-secondary"
+                    aria-lable="{{_('Select Image')}}"
+                    data-toggle="modal"
+                    data-target="#MODAL-MEDIAREPO"
+                    data-input="{{prop.key}}"
+                    type="button">
+              <i class="fas fa-image"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      {% elif prop.type == 'select' %}
+      <div class="form-group col-md-6">
         <label>
           {{_(prop.label)|title}}
         </label>
@@ -37,7 +64,9 @@
           </option>
           {% endfor %}
         </select>
-        {% elif prop.type == 'switch' %}
+      </div>
+      {% elif prop.type == 'switch' %}
+      <div class="form-group col-md-6">
         <label>{{_('Switch')}}</label>
         <div>
           <label class="custom-switch mt-2">
@@ -49,28 +78,18 @@
             <span class="custom-switch-description">{{_(prop.label)}}</span>
           </label>
         </div>
-        <div>
-          <label class="custom-switch mt-2">
-            <input class="custom-switch-input"
-                   type="checkbox"
-                   name="{{prop.key}}-1"
-                   {{'checked' if _value}}>
-            <span class="custom-switch-indicator"></span>
-            <span class="custom-switch-description">{{_(prop.label)}}</span>
-          </label>
-        </div>
-        <div>
-          <label class="custom-switch mt-2">
-            <input class="custom-switch-input"
-                   type="checkbox"
-                   name="{{prop.key}}-2"
-                   {{'checked' if _value}}>
-            <span class="custom-switch-indicator"></span>
-            <span class="custom-switch-description">{{_(prop.label)}}</span>
-          </label>
-        </div>
-        {% endif %}
       </div>
+      {% elif prop.type == 'textarea' %}
+      <div class="form-group col-12">
+        <label>
+          {{_(prop.label)|title}}
+        </label>
+        <textarea class="form-control"
+                  name="{{prop.key}}"
+                  rows="4"
+                  maxlength="360">{{_value}}</textarea>
+      </div>
+      {% endif %}
       {% endfor %}
     </div>
   </div>

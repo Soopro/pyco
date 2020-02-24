@@ -51,7 +51,7 @@
             "key":"test_tytle",
             "type": "text",
             "label":"Test",
-            "value": "hahhaa"
+            "value": "this is test_style"
           },
           {
             "key":"rel_content",
@@ -73,6 +73,21 @@
             "type": "switch",
             "label": "Switch",
             "value": true
+          },
+          {
+            "key": "title",
+            "label": "Title",
+            "type": "text"
+          },
+          {
+            "key": "bg_image",
+            "label": "Background URL",
+            "type": "image"
+          },
+          {
+            "key": "caption",
+            "label": "Caption",
+            "type": "textarea"
           }
         ]
       },
