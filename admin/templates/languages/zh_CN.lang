@@ -253,6 +253,18 @@
     "msgstr": "安全"
   },
   {
+    "msgid": "Additional Options",
+    "msgstr": "附加选项"
+  },
+  {
+    "msgid": "Login Extends",
+    "msgstr": "登录扩展"
+  },
+  {
+    "msgid": "HTML Code after admin login form.",
+    "msgstr": "附加在管理界面登录表单之后的HTML代码。"
+  },
+  {
     "msgid": "Download Backup Package",
     "msgstr": "下载备份包"
   },

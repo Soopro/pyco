@@ -354,6 +354,18 @@ def change_passcode():
     return redirect(return_url)
 
 
+@blueprint.route('/extra', methods=['POST'])
+@login_required
+def update_extra():
+    login_extra = request.form.get('login_extra', '')
+    configure = g.configure
+    configure['login_extra'] = login_extra
+    configure.save()
+    flash('SAVED')
+    return_url = url_as('.configuration')
+    return redirect(return_url)
+
+
 @blueprint.route('/backup')
 @login_required
 def backup_download():

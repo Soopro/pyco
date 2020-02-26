@@ -135,7 +135,8 @@ class Configure(FlatFile):
     conf_path = 'configure.yaml'
     data = {
         'passcode_hash': '',
-        'locale': 'en_US'
+        'locale': 'en_US',
+        'login_extra': '',
     }
     LOCALES = [
         {'key': 'en_US', 'name': 'English'},

@@ -44,7 +44,7 @@ def login():
         return redirect(url_as('.initialize'))
     elif session.get('pyco_admin'):
         return redirect('/')
-    return render_template('login.html')
+    return render_template('login.html', configure=configure)
 
 
 @blueprint.route('/login', methods=['POST'])

@@ -35,6 +35,7 @@
         </div>
       </form>
     </div>
+
     <div class="card">
       <form action="{{url_as('.change_passcode')}}"
             method="POST">
@@ -92,7 +93,9 @@
         </div>
       </form>
     </div>
+
   </div>
+
   <div class="col-12 col-md-6 col-lg-6">
     <div class="card">
       <div class="card-header">
@@ -142,6 +145,28 @@
         </div>
       </div>
     </div>
+
+    <div class="card">
+      <form action="{{url_as('.update_extra')}}"
+            method="POST">
+        <div class="card-header">
+          <h4>{{_('Additional Options')}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>{{_('Login Extends')}}</label>
+            <textarea class="form-control"
+                      placeholder="{{_('HTML Code after admin login form.')}}"
+                      name="login_extra"
+                      rows="6">{{configure.login_extra}}</textarea>
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary btn-lg">{{_('Save')}}</button>
+        </div>
+      </form>
+    </div>
+
   </div>
 </div>
 {% endblock %}
