@@ -319,14 +319,15 @@ def gen_wrap_slot(app):
         return {}
     slots_map = {}
     for k, v in app['slots'].items():
-        slots_map[k] = {
-            'name': v.get('name', ''),
-            'src': v.get('src', ''),
-            'route': v.get('route', ''),
-            'scripts': v.get('scripts', ''),
-            'data': v.get('data', {}),
-            'status': bool(v.get('status', True)),
-        }
+        status = bool(v.get('status', True))
+        if status:
+            slots_map[k] = {
+                'name': v.get('name', ''),
+                'src': v.get('src', ''),
+                'route': v.get('route', ''),
+                'scripts': v.get('scripts', ''),
+                'data': v.get('data', {}),
+            }
     return slots_map
 
 
