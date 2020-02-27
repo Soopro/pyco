@@ -212,8 +212,8 @@ def _query_contents(content_type=None, attrs=[], term=None, tag=None,
     if not perpage:
         perpage = theme_opts.get('perpage')
 
-    perpage = parse_int(perpage, 12, True)
-    paged = parse_int(paged, 1, True)
+    perpage = parse_int(perpage, 12, 1)
+    paged = parse_int(paged, 1, 1)
 
     perpage = min(perpage, current_app.db.Document.MAXIMUM_QUERY)
 

@@ -9,7 +9,6 @@ from flask import (Blueprint,
                    jsonify,
                    render_template)
 import math
-import json
 
 from core.utils.request import get_param
 from core.utils.misc import (parse_int, process_slug)
@@ -24,7 +23,7 @@ blueprint = Blueprint('content', __name__, template_folder='templates')
 @blueprint.route('/<content_type>')
 @login_required
 def index(content_type):
-    paged = parse_int(request.args.get('paged'), 1, True)
+    paged = parse_int(request.args.get('paged'), 1, 1)
 
     curr_content_type = _find_content_type(content_type)
     files = current_app.db.Document.find(content_type)

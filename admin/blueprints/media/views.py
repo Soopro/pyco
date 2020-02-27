@@ -23,7 +23,7 @@ blueprint = Blueprint('media', __name__, template_folder='templates')
 @blueprint.route('/')
 @login_required
 def index():
-    paged = parse_int(request.args.get('paged'), 1, True)
+    paged = parse_int(request.args.get('paged'), 1, 1)
 
     files = current_app.db.Media.find()
     limit = current_app.db.Media.MAXIMUM_QUERY

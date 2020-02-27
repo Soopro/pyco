@@ -28,7 +28,7 @@ def query_by_files(content_type=None, attrs=None, term=None, tag=None,
     # sorting
     sorting = _sorting(files, parse_sortby(sortby))
 
-    limit = parse_int(limit, 1, True)
+    limit = parse_int(limit, 1, 1)
     offset = parse_int(offset, 0, 0)
 
     if sorting:
@@ -82,7 +82,7 @@ def search_by_files(keywords, content_type,
         for kw in keywords:
             results = [f for f in results if _search_match(kw, f)]
 
-    limit = parse_int(limit, 1, True)
+    limit = parse_int(limit, 1, 1)
     offset = parse_int(offset, 0, 0)
 
     return results[offset:offset + limit], len(results)
