@@ -324,6 +324,7 @@ def gen_wrap_slot(app):
             'src': v.get('src', ''),
             'route': v.get('route', ''),
             'scripts': v.get('scripts', ''),
+            'data': v.get('data', {}),
             'status': bool(v.get('status', True)),
         }
     return slots_map

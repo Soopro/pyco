@@ -154,7 +154,9 @@ Global content data for whole site. some data is simulation for cloud service, i
     1. `name`: **[ str ]** slot label.
     2. `src`: **[ str ]** slot media src.
     3. `route`: **[ str ]** slot route.
-    4. `script`: **[ str ]** slot script.
+    4. `scripts`: **[ str ]** slot scripts.
+    5. `data`: **[ dict ]** slot data key/value map.
+    6. `status`: **[ str ]** slot on (1) or off (1).
 
 * `meta`: Site meta
   * `title`: **[ str ]** site title, aka app title.

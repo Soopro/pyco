@@ -446,7 +446,7 @@ def str_eval(s, default=None):
             raise e
 
 
-# json
+# data
 def parse_json(s, default=None):
     try:
         return json.loads(s)
@@ -455,3 +455,14 @@ def parse_json(s, default=None):
             return default
         else:
             raise e
+
+
+def get_from_dict(obj, key, format_class=None, default=None):
+    try:
+        result = obj.get(key, default)
+    except Exception:
+        result = default
+
+    if callable(format_class) and not isinstance(result, format_class):
+        result = format_class()
+    return result

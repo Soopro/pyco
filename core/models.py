@@ -12,7 +12,8 @@ from .utils.misc import (process_slug,
                          gen_excerpt,
                          guess_mimetype,
                          split_file_ext,
-                         split_file_type)
+                         split_file_type,
+                         get_from_dict)
 
 
 class DBConnection:
@@ -364,16 +365,25 @@ class Site(FlatFile):
         c_types = site.get('content_types', {})
         if self.STATIC_TYPE not in c_types:
             c_types.update({self.STATIC_TYPE: self.STATIC_TYPE_NAME})
+        slots = {k: {
+            'name': get_from_dict(v, 'name', str),
+            'src': get_from_dict(v, 'src', str),
+            'route': get_from_dict(v, 'route', str),
+            'scripts': get_from_dict(v, 'scripts', str),
+            'data': get_from_dict(v, 'data', dict, default={}),
+            'status': bool(v.get('status', True)),
+        } for k, v in site.get('slots', {}).items()}
+
         self._id = site.get('app_id', self._id)
         self.data = {
             '_id': self._id,
             'slug': site.get('slug'),
-            'locale': site.get('locale', 'en_US'),
+            'locale': site.get('locale') or 'en_US',
             'content_types': c_types,
             'categories': site.get('categories') or {},
             'menus': site.get('menus') or {self.PRIMARY_MENU: []},
-            'slots': site.get('slots', {}),
-            'meta': site.get('meta', {}),
+            'slots': slots,
+            'meta': site.get('meta') or {},
         }
 
     @property
