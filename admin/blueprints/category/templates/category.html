@@ -49,18 +49,19 @@
                 {% endif %}
               </td>
               <td>
-                {{term.meta.name or term.key}}
                 {% if not term.status %}
                 <small class="text-muted">
                   [{{_('Draft')}}]
                 </small>
                 {% endif %}
+                {{term.meta.name or term.key}}
               </td>
               <td>{{term.parent or '-'}}</td>
               <td>
                 <div class="row">
                   <div class="col-lg-6 text-center">
-                    <a class="btn btn-primary"
+                    <a class="btn {{'btn-primary' if term.status else
+                                    'btn-secondary'}}"
                        href="{{url_as('.term', term_key=term.key)}}">
                       <i class="fas fa-edit"></i>
                       <span>{{_('Edit')}}</span>

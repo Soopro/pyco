@@ -37,24 +37,25 @@
                 {{loop.index}}
               </td>
               <td>
+                {% if not content.status %}
+                <small class="text-muted">
+                  [{{_('Draft')}}]
+                </small>
+                {% endif %}
                 {% if content.slug == 'index' %}
                 <i class="fas fa-home"></i>
                 {% endif %}
                 <a href="{{content.url}}" target="_preview">
                   {{content.meta.title or content.slug}}
                 </a>
-                {% if not content.status %}
-                <small class="text-muted">
-                  [{{_('Draft')}}]
-                </small>
-                {% endif %}
               </td>
               <td>{{content.template}}</td>
               <td>{{content.updated|dateformat}}</td>
               <td>
                 <div class="row">
                   <div class="col-lg-6 text-center">
-                    <a class="btn btn-primary"
+                    <a class="btn {{'btn-primary' if content.status else
+                                    'btn-secondary'}}"
                        href="{{url_as('.content_detail',
                                        content_type=content_type.key,
                                        slug=content.slug)}}">
