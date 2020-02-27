@@ -44,7 +44,7 @@ def update_site():
     license = request.form.get('license', '')
 
     site = current_app.db.Site()
-    site['locale'] = locale
+    site['locale'] = locale.replace('-', '_')
     site['meta']['title'] = title
     site['meta']['description'] = description
     site['meta']['logo'] = logo
@@ -97,7 +97,7 @@ def update_site_language():
             url = '#'
 
         languages.append({
-            'key': key,
+            'key': key.replace('-', '_'),
             'name': name,
             'url': url,
         })
@@ -323,7 +323,7 @@ def configuration():
 def update_configure():
     locale = request.form.get('locale', 'en_US')
     configure = g.configure
-    configure['locale'] = locale
+    configure['locale'] = locale.replace('-', '_')
     configure.save()
     flash('SAVED')
     return_url = url_as('.configuration')
