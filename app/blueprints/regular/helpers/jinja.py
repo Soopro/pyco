@@ -123,7 +123,7 @@ def filter_date_formatted(date, to_format=None):
     }
 
     try:
-        locale = g.curr_app['locale']
+        locale = g.curr_app['locale'].replace('-', '_')
         lang = locale.split('_')[0]
     except Exception:
         locale = None
