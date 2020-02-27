@@ -293,7 +293,7 @@ def time_age(date, gap=None, input_datefmt='%Y-%m-%d'):
     return age
 
 
-def match_cond(target, cond_key, cond_value, force=True, opposite=False):
+def match_cond(target, cond_key, cond_value, opposite=False):
     """
     params:
     - target: the source data want to check.
@@ -301,58 +301,40 @@ def match_cond(target, cond_key, cond_value, force=True, opposite=False):
     - cond_value: the value of condition.
       if the cond_value is a list, any item matched will make output matched.
     - opposite: reverse check result.
-    - force: must have the value or not.
     """
 
     def _dotted_get(key, obj):
-        if not isinstance(obj, dict):
-            return None
-        elif '.' not in key:
-            return obj.get(key)
+        if '.' not in key:
+            try:
+                return obj.get(key)
+            except Exception:
+                return None
         else:
             key_pairs = key.split('.', 1)
-            obj = obj.get(key_pairs[0])
-            return _dotted_get(key_pairs[1], obj)
-
-    def _dotted_in(key, obj):
-        if not isinstance(obj, dict):
-            return False
-        elif '.' not in key:
-            return key in obj
-        else:
-            key_pairs = key.split('.', 1)
-            obj = obj.get(key_pairs[0])
-            return _dotted_in(key_pairs[1], obj)
-
-    if cond_value == '' and not force:
-        return _dotted_in(cond_key, target) != opposite
-    elif cond_value is None and not force:
-        # if cond_value is None will reverse the opposite,
-        # then for the macthed opposite must reverse again. so...
-        # also supported if the target value really is None.
-        return _dotted_in(cond_key, target) == opposite
-    elif isinstance(cond_value, bool) and not force:
-        return _dotted_in(cond_key, target) != opposite
-    elif not _dotted_in(cond_key, target):
-        return False
+            try:
+                _obj = obj.get(key_pairs[0])
+            except Exception:
+                return None
+            return _dotted_get(key_pairs[1], _obj)
 
     matched = False
     target_value = _dotted_get(cond_key, target)
+
     if isinstance(cond_value, list):
         for c_val in cond_value:
             matched = match_cond(target, cond_key, c_val, force=True)
             if matched:
                 break
-    elif isinstance(cond_value, bool):
-        target_bool = isinstance(target_value, bool)
-        matched = cond_value == target_value and target_bool
     else:
         if isinstance(target_value, list):
             matched = cond_value in target_value
         else:
             matched = cond_value == target_value
 
-    return matched != opposite
+    if opposite:
+        return not matched
+    else:
+        return matched
 
 
 # mimetypes

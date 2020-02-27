@@ -373,30 +373,28 @@ def _query(content_type, attrs=None, term=None, tag=None):
     elif not isinstance(attrs, list):
         attrs = []
 
-    for attr in attrs[:5]:  # max fields key is 5
+    for attr in attrs[:6]:  # max fields key is 6
         opposite = False
-        force = False
         attr_key = None
         attr_value = ''
 
         if isinstance(attr, str):
             attr_key = attr.lower()
         elif isinstance(attr, dict):
-            opposite = bool(attr.pop('not', False))
-            force = bool(attr.pop('force', False))
+            opposite = bool(attr.pop('!', False) or attr.pop('not', False))
             if attr:
                 attr_key = list(attr.keys())[0]
                 attr_value = attr[attr_key]
-            else:
+            else:  # incase attr is empty after pop
                 continue
 
-        if attr_key is None:
+        if attr_key is None:  # make sure has attr_key
             continue
 
         if attr_key not in QUERYABLE_FIELD_KEYS and '.' not in attr_key:
             attr_key = 'meta.{}'.format(attr_key)
         files = [f for f in files
-                 if match_cond(f, attr_key, attr_value, force, opposite)]
+                 if match_cond(f, attr_key, attr_value, opposite)]
 
     if term:
         files = [file for file in files if term in file['terms']]

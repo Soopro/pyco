@@ -189,33 +189,31 @@ def saltshaker(raw_salts, conditions, limit=None, sort_by=None,
 
     results = []
 
-    for cond in conditions[:5]:
+    for cond in conditions[:6]:
         opposite = False
-        force = False
         cond_key = None
         cond_value = ''
         if isinstance(cond, (str)):
             cond_key = cond.lower()
         elif isinstance(cond, dict):
-            opposite = bool(cond.pop('not', False))
-            force = bool(cond.pop('force', False))
+            opposite = bool(cond.pop('!', False) or cond.pop('not', False))
             if cond:
                 cond_key = list(cond.keys())[0]
                 cond_value = cond[cond_key]
-            else:
+            else:  # incase cond is empty after pop
                 continue
 
-        if cond_key is None:
+        if cond_key is None:  # make sure has cond_key
             continue
 
         if intersection and results:
             c_k = cond_key
             c_v = cond_value
             results = [i for i in results
-                       if match_cond(i, c_k, c_v, force, opposite)]
+                       if match_cond(i, c_k, c_v, opposite)]
         else:
             for i in salts:
-                _mch = match_cond(i, cond_key, cond_value, force, opposite)
+                _mch = match_cond(i, cond_key, cond_value, opposite)
                 if i not in results and _mch:
                     results.append(i)
     # sort by
