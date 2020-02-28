@@ -104,10 +104,10 @@ def app_before_request():
     res_url = current_app.config.get('RES_URL')
 
     if configure['acc_url']:
-        if configure['acc'] == 1:
+        if configure['acc_mode'] == 1:
             # replace base_url
             uploads_url = configure['acc_url']
-        elif configure['acc'] == 2:
+        elif configure['acc_mode'] == 2:
             acc_url = configure['acc_url']
             # use replace because uploads might not sub as base_url
             uploads_url = replace_startswith(uploads_url, base_url, acc_url)

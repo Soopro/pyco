@@ -62,7 +62,11 @@
           var filename = self.$panel.data('media-filename');
           self.$panel.data('for-summernote', false);
           if (img_src) {
-            context.invoke('editor.insertImage', img_src, filename);
+            img_el = '<img src="'+img_src+'" alt="'+filename+'"/>'
+            context.invoke('editor.pasteHTML', img_el);
+            // context.invoke('editor.insertImage', img_src, filename);
+            // `insertImage` will load the image and set image width.
+            // which is I don't want to.
           }
         }
       }

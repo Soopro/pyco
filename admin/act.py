@@ -59,8 +59,8 @@ def get_uploads_url():
     uploads_url = current_app.config.get('UPLOADS_URL')
     acc_url = configure['acc_url']
     if acc_url:
-        if configure['acc'] == 1:
+        if configure['acc_mode'] == 1:
             uploads_url = acc_url
-        elif configure['acc'] == 2:
+        elif configure['acc_mode'] == 2:
             uploads_url = replace_startswith(uploads_url, base_url, acc_url)
     return uploads_url

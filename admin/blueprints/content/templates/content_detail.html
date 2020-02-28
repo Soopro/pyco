@@ -274,7 +274,9 @@
 <script src="{{static_url}}/modules/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 <script src="{{static_url}}/modules/summernote/summernote-bs4.js"></script>
 <script src="{{static_url}}/modules/summernote/plugin/ext-media.js"></script>
+{% if lang == 'zh' %}
 <script src="{{static_url}}/modules/summernote/lang/summernote-{{locale|replace('_', '-')}}.js"></script>
+{% endif %}
 <script>
   'use strict';
 
