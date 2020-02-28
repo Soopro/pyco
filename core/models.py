@@ -138,6 +138,8 @@ class Configure(FlatFile):
         'passcode_hash': '',
         'locale': 'en_US',
         'login_extra': '',
+        'acc_mode': 0,
+        'acc_url': '',
     }
     LOCALES = [
         {'key': 'en_US', 'name': 'English'},

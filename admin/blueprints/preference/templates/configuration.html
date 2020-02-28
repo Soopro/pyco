@@ -29,6 +29,38 @@
               {{_('* Switch the language display for admin panel.')}}
             </small>
           </div>
+          <div class="form-group">
+            <label>{{_('CDN Acceleration Option')}}</label>
+            <select class="form-control"
+                    name="acc">
+              <option value="0"
+                      {{'selected' if configure.acc_mode==0}}>
+                {{_('Do not use')}}
+              </option>
+              <option value="1"
+                      {{'selected' if configure.acc_mode==1}}>
+                {{_('Accelerate media files only')}}
+              </option>
+              <option value="2"
+                      {{'selected' if configure.acc_mode==2}}>
+                {{_('Accelerate entire site')}}
+              </option>
+            </select>
+            <small class="form-text text-muted">
+              {{_('* Only effect contents after this option activated, the previous contents needs to be replaced manually.')}}
+            </small>
+          </div>
+          <div class="form-group {{'d-none' if configure.acc_mode != 0}}">
+            <label>{{_('Acceleration URL')}}</label>
+            <input class="form-control"
+                   type="text"
+                   name="acc_url"
+                   value="{{configure.acc_mode_url}}"
+                   required>
+            <small class="form-text text-muted">
+              {{_('* Accelerated URL will not activate when blank.')}}
+            </small>
+          </div>
         </div>
         <div class="card-footer">
           <button class="btn btn-primary btn-lg">{{_('Save')}}</button>

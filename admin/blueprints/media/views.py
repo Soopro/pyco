@@ -14,7 +14,7 @@ from core.utils.response import output_json
 from core.utils.misc import parse_int, safe_filename
 
 from admin.decorators import login_required
-from admin.act import url_as
+from admin import act
 
 
 blueprint = Blueprint('media', __name__, template_folder='templates')
@@ -37,12 +37,12 @@ def index():
 
     mediafiles = [f.info for f in files[offset:offset + limit]]
 
-    uploads_url = current_app.config.get('UPLOADS_URL')
+    uploads_url = act.get_uploads_url()
     for media in mediafiles:
         media['src'] = '{}/{}'.format(uploads_url, media['filename'])
 
-    prev_url = url_as(request.endpoint, paged=max(paged - 1, 1))
-    next_url = url_as(request.endpoint, paged=min(paged + 1, max_pages))
+    prev_url = act.url_as(request.endpoint, paged=max(paged - 1, 1))
+    next_url = act.url_as(request.endpoint, paged=min(paged + 1, max_pages))
 
     paginator = {
         'next': next_url if has_next else None,
@@ -99,7 +99,7 @@ def repository():
     mediafiles = [f.info for f in files[offset:offset + limit]]
     has_more = offset + limit < count
 
-    uploads_url = current_app.config.get('UPLOADS_URL')
+    uploads_url = act.get_uploads_url()
     for media in mediafiles:
         media['src'] = '{}/{}'.format(uploads_url, media['filename'])
         media['_more'] = has_more
@@ -126,7 +126,7 @@ def repository_upload():
 
     media = current_app.db.Media.find_one(filename)
 
-    uploads_url = current_app.config.get('UPLOADS_URL')
+    uploads_url = act.get_uploads_url()
     output_media = media.info
     output_media.update({
         'type': output_media['type'],

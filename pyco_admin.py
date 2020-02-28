@@ -10,7 +10,7 @@ from core.models import DBConnection, Configure, Document, Site, Theme, Media
 from core.services.i18n import Translator
 
 from admin.blueprints import register_admin_blueprints
-from admin.act import url_as
+from admin import act
 
 import info
 
@@ -60,7 +60,7 @@ def inject_global_variable():
     return {
         'static_url': '{}{}'.format(app.config['ADMIN_BASE_URL'],
                                     app.static_url_path),
-        'base_url': app.config['ADMIN_BASE_URL'],
+        'base_url': app.config['BASE_URL'],
         'theme_url': app.config['THEME_URL'],
         'uploads_url': app.config['UPLOADS_URL'],
         'locale': locale,
@@ -68,7 +68,7 @@ def inject_global_variable():
         '_': translator.gettext,
         'site': site,
         'theme': theme,
-        'url_as': url_as,
+        'url_as': act.url_as,
         'ver': app.version
     }
 

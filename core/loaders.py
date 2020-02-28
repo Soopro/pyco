@@ -7,18 +7,10 @@ import re
 def load_config(app, config_name='config.py'):
     app.config.from_pyfile(config_name)
     app.config.setdefault('DEBUG', False)
-    app.config.setdefault('CONTENT_QUERY_LIMIT', 6)
-
-    app.config.setdefault('PAYLOAD_DIR', 'paylaod')
-    app.config.setdefault('BACKUPS_DIR', '_backups')
 
     app.config.setdefault('THEME_NAME', 'default')
 
     app.config.setdefault('BASE_URL', '/')
-    app.config.setdefault('RES_URL', '')
-    app.config.setdefault('UPLOADS_URL', '')
-    app.config.setdefault('THEME_URL', '')
-    app.config.setdefault('API_URL', '')
 
     app.config.setdefault('PLUGINS', [])
     app.config.setdefault('SHORTCODE', {})
@@ -26,13 +18,32 @@ def load_config(app, config_name='config.py'):
     app.config.setdefault('HOST', '0.0.0.0')
     app.config.setdefault('PORT', 5500)
 
-    app.config.setdefault('SYS_ICONS', ['favicon.ico',
-                                        'apple-touch-icon-precomposed.png',
-                                        'apple-touch-icon.png'])
-
     app.config.setdefault('ADMIN_PORT', 5510)
     app.config.setdefault('ADMIN_BASE_URL', ':5510/')
 
+    # auto generate, unless manually for adv useage.
+    app.config.setdefault('CONTENT_QUERY_LIMIT', 6)
+    app.config.setdefault('PAYLOAD_DIR', 'payload')
+    app.config.setdefault('BACKUPS_DIR', '_backups')
+
+    _base_url = app.config['BASE_URL'].strip('/')
+    _theme_name = app.config['THEME_NAME']
+    app.config.setdefault('API_URL', '{}/restapi'.format(_base_url))
+    app.config.setdefault('THEME_URL',
+                          '{}/static/{}'.format(_base_url, _theme_name))
+    app.config.setdefault('UPLOADS_URL', '{}/uploads'.format(_base_url))
+    app.config.setdefault('RES_URL', '{}/uploads/res'.format(_base_url))
+
+    # sys icon use for prevent unexcept request for site icon by browser.
+    app.config.setdefault('SYS_ICONS', ['favicon.ico',
+                                        'apple-touch-icon-precomposed.png',
+                                        'apple-touch-icon.png'])
+    # inject default shortcode
+    app.config['SHORTCODE'].update({
+        'uploads': app.config['UPLOADS_URL']
+    })
+
+    # inject debug
     app.debug = app.config['DEBUG']
 
 
@@ -78,12 +89,18 @@ def load_modal_pretreat(app):
         return None
 
     def pretreat_raw_method(self, text):
-        for code, replace_to in app.config['SHORTCODE'].items():
-            try:
-                _compiler = re.compile(r'\[\%{}\%\]'.format(str(code)),
-                                       re.IGNORECASE)
-                text = re.sub(_compiler, str(replace_to), str(text))
-            except Exception as e:
-                app.logger.error('Shortcode Error: {}'.format(e))
+        for code, action in app.config['SHORTCODE'].items():
+            if isinstance(action, str):
+                try:
+                    _compiler = re.compile(r'\[\%{}\%\]'.format(str(code)),
+                                           re.IGNORECASE)
+                    text = re.sub(_compiler, str(action), str(text))
+                except Exception as e:
+                    app.logger.error('Shortcode Error: {}'.format(e))
+            elif callable(action):
+                try:
+                    text = action(text)
+                except Exception as e:
+                    app.logger.error('Shortcode Error: {}'.format(e))
         return text
     return pretreat_raw_method

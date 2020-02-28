@@ -102,7 +102,12 @@
   },
   "slots": {
     "event": {
-      "script": "<div></div>"
+      "name": "",
+      "src": "",
+      "route": "",
+      "scripts": "",
+      "data": {},
+      "status": true
     }
   },
   "meta": {

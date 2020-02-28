@@ -59,7 +59,7 @@ def filter_url(url, remove_args=False, remove_hash=False):
     if not url or url_validator(url):
         return url
     elif url.startswith('/'):
-        return '{}/{}'.format(g.curr_base_url, url.strip('/'))
+        return '{}/{}'.format(g.base_url, url.strip('/'))
     else:
         return url.rstrip('/')
 
@@ -72,7 +72,7 @@ def filter_path(url, remove_args=True, remove_hash=True):
     if remove_hash:
         url = url.split('#')[0]
     try:
-        path = url.split(g.curr_base_url)[-1]
+        path = url.split(g.base_url)[-1]
     except Exception:
         path = url
 

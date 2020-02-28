@@ -14,7 +14,7 @@ from core.utils.request import get_param
 from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
-from admin.act import url_as, gen_preview_url
+from admin import act
 
 
 blueprint = Blueprint('content', __name__, template_folder='templates')
@@ -40,14 +40,14 @@ def index(content_type):
     contents = files[offset:offset + limit]
 
     for content in contents:
-        content.url = gen_preview_url(content.content_type, content.slug)
+        content.url = act.gen_preview_url(content.content_type, content.slug)
 
-    prev_url = url_as(request.endpoint,
-                      content_type=content_type,
-                      paged=max(paged - 1, 1))
-    next_url = url_as(request.endpoint,
-                      content_type=content_type,
-                      paged=min(paged + 1, max_pages))
+    prev_url = act.url_as(request.endpoint,
+                          content_type=content_type,
+                          paged=max(paged - 1, 1))
+    next_url = act.url_as(request.endpoint,
+                          content_type=content_type,
+                          paged=min(paged + 1, max_pages))
 
     paginator = {
         'next': next_url if has_next else None,
@@ -79,9 +79,9 @@ def create_content(content_type):
         }
     })
     content.save()
-    return_url = url_as('.content_detail',
-                        content_type=content_type,
-                        slug=content.slug)
+    return_url = act.url_as('.content_detail',
+                            content_type=content_type,
+                            slug=content.slug)
     return redirect(return_url)
 
 
@@ -95,7 +95,7 @@ def content_detail(content_type, slug):
     custom_fields = _find_custom_fields(template)
     hidden_field_keys = _find_hidden_field_keys(template)
 
-    document.url = gen_preview_url(document.content_type, document.slug)
+    document.url = act.gen_preview_url(document.content_type, document.slug)
 
     # category
     site = current_app.db.Site()
@@ -148,9 +148,9 @@ def hardcore_content(content_type, slug):
     document.hardcore(raw)
     document.save()
     flash('SAVED')
-    return_url = url_as('.content_raw',
-                        content_type=content_type,
-                        slug=slug)
+    return_url = act.url_as('.content_raw',
+                            content_type=content_type,
+                            slug=slug)
     return redirect(return_url)
 
 
@@ -160,7 +160,7 @@ def remove(content_type, slug):
     content = current_app.db.Document.find_one(slug, content_type)
     content.delete()
     flash('REMOVED')
-    return_url = url_as('.index', content_type=content_type)
+    return_url = act.url_as('.index', content_type=content_type)
     return redirect(return_url)
 
 

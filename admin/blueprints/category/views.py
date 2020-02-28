@@ -12,7 +12,7 @@ from flask import (Blueprint,
 from core.utils.misc import (parse_int, process_slug)
 
 from admin.decorators import login_required
-from admin.act import url_as
+from admin import act
 
 
 blueprint = Blueprint('category', __name__, template_folder='templates')
@@ -49,7 +49,7 @@ def create_term():
         'status': 0,
     })
     site.save()
-    return_url = url_as('.term', term_key=term['key'])
+    return_url = act.url_as('.term', term_key=term['key'])
     return redirect(return_url)
 
 
@@ -83,7 +83,7 @@ def update_term(term_key):
     })
     site.save()
     flash('SAVED')
-    return_url = url_as('.index')
+    return_url = act.url_as('.index')
     return redirect(return_url)
 
 
@@ -94,7 +94,7 @@ def remove_term(term_key):
     site.remove_category_term(term_key)
     site.save()
     flash('REMOVED')
-    return_url = url_as('.index')
+    return_url = act.url_as('.index')
     return redirect(return_url)
 
 

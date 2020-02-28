@@ -380,6 +380,14 @@ def escape_asterisk(key, asterisk='*', output=None):
         return key
 
 
+# replace
+def replace_startswith(text, target_str, replacement, count=1):
+    if isinstance(text, str) and text.startswith(target_str):
+        text = text.replace(target_str, replacement, count)
+        # use `count` = 1 to replace every matched.
+    return text
+
+
 # random
 def random_choices(seq, limit=1):
     seq = list(seq)

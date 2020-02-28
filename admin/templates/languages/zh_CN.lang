@@ -249,6 +249,10 @@
     "msgstr": "管理界面语言"
   },
   {
+    "msgid": "Media Base URL Displacement",
+    "msgstr": "替换媒体文件基础网址"
+  },
+  {
     "msgid": "Security",
     "msgstr": "安全"
   },
@@ -682,6 +686,14 @@
   {
     "msgid": "* Switch the language display for admin panel.",
     "msgstr": "* 这个选项用来切换管理面板的语言显示。"
+  },
+  {
+    "msgid": "* Only effect contents after this option activated, the previous contents needs to be replaced manually.",
+    "msgstr": "* 只对此选项生效后录入的内容有效，之前的内容需要手动替换。"
+  },
+  {
+    "msgid": "* Accelerated URL will not activate when blank.",
+    "msgstr": "* 加速URL为空白时将不会生效。"
   },
   {
     "msgid": "* A HTML code into <head> of the site.",

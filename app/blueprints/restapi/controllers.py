@@ -40,13 +40,13 @@ def get_view_metas(app_id):
     context = {
         'site_meta': site_meta,
         'theme_meta': theme_meta,
-        'base_url': g.curr_base_url,
-        'theme_url': config.get('THEME_URL', ''),
-        'res_url': config.get('RES_URL', ''),
+        'base_url': g.base_url,
+        'theme_url': g.theme_url,
+        'res_url': g.res_url,
         'lang': locale.split('_')[0],
         'locale': locale,
         'languages': gen_wrap_languages(languages, locale),
-        'menu': gen_wrap_menu(curr_app, g.curr_base_url),
+        'menu': gen_wrap_menu(curr_app, g.base_url),
         'content_type': curr_app['content_types'],
         'slot': gen_wrap_slot(curr_app)
     }

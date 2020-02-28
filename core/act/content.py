@@ -174,9 +174,9 @@ def gen_page_url(data, static_type='page', index='index'):
     if data.get('content_type') == static_type:
         if slug == index:
             slug = ''
-        url = '{}/{}'.format(g.curr_base_url, slug)
+        url = '{}/{}'.format(g.base_url, slug)
     else:
-        url = '{}/{}/{}'.format(g.curr_base_url, data['content_type'], slug)
+        url = '{}/{}/{}'.format(g.base_url, data['content_type'], slug)
     return url
 
 

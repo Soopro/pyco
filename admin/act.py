@@ -1,8 +1,9 @@
 # coding=utf-8
 
-from flask import current_app, url_for
+from flask import current_app, url_for, g
 import os
 
+from core.utils.misc import replace_startswith
 from core.utils.files import ensure_dirs
 
 
@@ -49,5 +50,17 @@ def gen_preview_url(content_type, slug):
             preview_path = '/{}'.format(slug)
     else:
         preview_path = '/{}/{}'.format(content_type, slug)
-
     return '{}{}'.format(current_app.config['BASE_URL'], preview_path)
+
+
+def get_uploads_url():
+    configure = g.configure
+    base_url = current_app.config['BASE_URL']
+    uploads_url = current_app.config.get('UPLOADS_URL')
+    acc_url = configure['acc_url']
+    if acc_url:
+        if configure['acc'] == 1:
+            uploads_url = acc_url
+        elif configure['acc'] == 2:
+            uploads_url = replace_startswith(uploads_url, base_url, acc_url)
+    return uploads_url

@@ -39,7 +39,6 @@ def rendering(content_type_slug, file_slug):
     g.curr_content_type = content_type_slug
     g.curr_file_slug = file_slug
 
-    base_url = g.curr_base_url
     curr_app = g.curr_app
 
     config['site_meta'] = curr_app['site_meta']
@@ -79,7 +78,7 @@ def rendering(content_type_slug, file_slug):
 
     # page redirect
     if redirect_to['url']:
-        redirect_to_url = get_redirect_url(redirect_to['url'], base_url)
+        redirect_to_url = get_redirect_url(redirect_to['url'], g.base_url)
         if redirect_to_url and request.url != redirect_to_url:
             return redirect(redirect_to_url, code=302)
 
@@ -96,7 +95,7 @@ def rendering(content_type_slug, file_slug):
     set_multi_language(view_ctx, curr_app)
 
     # menu
-    view_ctx['menu'] = gen_wrap_menu(curr_app, base_url)
+    view_ctx['menu'] = gen_wrap_menu(curr_app, g.base_url)
 
     # slots
     view_ctx['slot'] = gen_wrap_slot(curr_app)
@@ -105,10 +104,10 @@ def rendering(content_type_slug, file_slug):
     view_ctx['app_id'] = curr_app['_id']
     view_ctx['site_meta'] = site_meta
     view_ctx['theme_meta'] = theme_meta
-    view_ctx['api_url'] = config.get('API_URL', '')
-    view_ctx['theme_url'] = config.get('THEME_URL', '')
-    view_ctx['res_url'] = config.get('RES_URL', '')
-    view_ctx['base_url'] = base_url
+    view_ctx['api_url'] = g.api_url
+    view_ctx['theme_url'] = g.theme_url
+    view_ctx['res_url'] = g.res_url
+    view_ctx['base_url'] = g.base_url
 
     # request
     view_ctx['request'] = {

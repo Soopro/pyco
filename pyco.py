@@ -10,6 +10,7 @@ from flask.json import JSONEncoder
 from core.utils.request import get_remote_addr, get_request_url
 from core.utils.response import make_cors_headers
 from core.utils.files import ensure_dirs, concat_path
+from core.utils.misc import replace_startswith
 from core.loaders import (load_config,
                           load_plugins,
                           load_metas,
@@ -95,17 +96,38 @@ def app_before_request():
     if request.endpoint == 'uploads.get_uploads':
         return
 
+    configure = app.db.Configure()
     base_url = current_app.config.get('BASE_URL')
     uploads_url = current_app.config.get('UPLOADS_URL')
+    theme_url = current_app.config.get('THEME_URL')
+    api_url = current_app.config.get('API_URL')
+    res_url = current_app.config.get('RES_URL')
+
+    if configure['acc_url']:
+        if configure['acc'] == 1:
+            # replace base_url
+            uploads_url = configure['acc_url']
+        elif configure['acc'] == 2:
+            acc_url = configure['acc_url']
+            # use replace because uploads might not sub as base_url
+            uploads_url = replace_startswith(uploads_url, base_url, acc_url)
+            theme_url = replace_startswith(theme_url, base_url, acc_url)
+            api_url = replace_startswith(api_url, base_url, acc_url)
+            res_url = replace_startswith(res_url, base_url, acc_url)
+            # replace base_url after all
+            base_url = acc_url
 
     g.curr_app = load_metas(current_app)
 
     g.request_remote_addr = get_remote_addr()
     g.request_path = request.path
 
-    g.curr_base_url = base_url
+    g.base_url = base_url
     g.uploads_url = uploads_url
-    g.request_url = get_request_url(g.curr_base_url, g.request_path)
+    g.theme_url = theme_url
+    g.api_url = api_url
+    g.res_url = res_url
+    g.request_url = get_request_url(g.base_url, g.request_path)
 
     g.query_map = {}
 

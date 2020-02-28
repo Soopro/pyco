@@ -18,7 +18,7 @@ from core.utils.misc import hmac_sha, now, process_slug, parse_int, parse_json
 from core.utils.files import unzip, zipdir, clean_dirs
 
 from admin.decorators import login_required
-from admin.act import url_as, sync_site_by_theme_opts
+from admin import act
 
 
 blueprint = Blueprint('preference', __name__, template_folder='templates')
@@ -53,7 +53,7 @@ def update_site():
     site['meta']['license'] = license
     site.save()
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -71,7 +71,7 @@ def update_site_adv():
     site.save()
 
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -107,7 +107,7 @@ def update_site_language():
     site.save()
 
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -149,7 +149,7 @@ def update_site_social():
     site.save()
 
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -188,7 +188,7 @@ def add_site_menu_node(menu_key):
 
     site.save()
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -239,7 +239,7 @@ def update_site_menu_node(menu_key):
         nodes.insert(_index, new_node)
     site.save()
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -260,7 +260,7 @@ def remove_site_menu_node(menu_key):
         nodes.remove(node)
     site.save()
     flash('REMOVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -273,7 +273,7 @@ def hardcore_site_menu(menu_key):
     site['menus'][menu_key] = parse_json(hardcore, [])
     site.save()
     flash('SAVED')
-    return_url = url_as('.site')
+    return_url = act.url_as('.site')
     return redirect(return_url)
 
 
@@ -294,18 +294,18 @@ def install_theme():
     clean_dirs(theme.theme_folder)
     unzip(f, theme.theme_folder)
 
-    sync_site_by_theme_opts()
+    act.sync_site_by_theme_opts()
     flash('INSTALLED')
-    return_url = url_as('.appearance')
+    return_url = act.url_as('.appearance')
     return redirect(return_url)
 
 
 @blueprint.route('/appearance/reload')
 @login_required
 def reload_theme():
-    sync_site_by_theme_opts()
+    act.sync_site_by_theme_opts()
     flash('RELOADED')
-    return_url = url_as('.appearance')
+    return_url = act.url_as('.appearance')
     return redirect(return_url)
 
 
@@ -322,11 +322,15 @@ def configuration():
 @login_required
 def update_configure():
     locale = request.form.get('locale', 'en_US')
+    acceleration = request.form.get('acc_mode', False)
+    acceleration_url = request.form.get('acc_url', False)
     configure = g.configure
     configure['locale'] = locale.replace('-', '_')
+    configure['acc_mode'] = parse_int(acceleration)
+    configure['acc_url'] = acceleration_url
     configure.save()
     flash('SAVED')
-    return_url = url_as('.configuration')
+    return_url = act.url_as('.configuration')
     return redirect(return_url)
 
 
@@ -350,7 +354,7 @@ def change_passcode():
         configure.save()
         flash('SAVED')
 
-    return_url = url_as('.configuration')
+    return_url = act.url_as('.configuration')
     return redirect(return_url)
 
 
@@ -362,7 +366,7 @@ def update_extra():
     configure['login_extra'] = login_extra
     configure.save()
     flash('SAVED')
-    return_url = url_as('.configuration')
+    return_url = act.url_as('.configuration')
     return redirect(return_url)
 
 
@@ -387,7 +391,7 @@ def backup_restore():
     # unpack files
     unzip(f, payload_dir)
     flash('RESTORED')
-    return_url = url_as('.configuration')
+    return_url = act.url_as('.configuration')
     return redirect(return_url)
 
 
