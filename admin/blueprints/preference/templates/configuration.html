@@ -32,7 +32,8 @@
           <div class="form-group">
             <label>{{_('CDN Acceleration Option')}}</label>
             <select class="form-control"
-                    name="acc">
+                    id="ACC-MODE-SELECTOR"
+                    name="acc_mode">
               <option value="0"
                       {{'selected' if configure.acc_mode==0}}>
                 {{_('Do not use')}}
@@ -47,16 +48,16 @@
               </option>
             </select>
             <small class="form-text text-muted">
-              {{_('* Only effect contents after this option activated, the previous contents needs to be replaced manually.')}}
+              {{_('* Use third-party CDN for acceleration. This option only effect contents after this option activated, the previous contents needs to be replaced manually.')}}
             </small>
           </div>
-          <div class="form-group {{'d-none' if configure.acc_mode != 0}}">
+          <div id="ACC-URL"
+               class="form-group {{'d-none' if configure.acc_mode == 0}}">
             <label>{{_('Acceleration URL')}}</label>
             <input class="form-control"
                    type="text"
                    name="acc_url"
-                   value="{{configure.acc_mode_url}}"
-                   required>
+                   value="{{configure.acc_url}}">
             <small class="form-text text-muted">
               {{_('* Accelerated URL will not activate when blank.')}}
             </small>
@@ -206,6 +207,16 @@
 <script src="{{static_url}}/modules/jquery-pwstrength/jquery.pwstrength.min.js"></script>
 <script>
 $(".pwstrength").pwstrength();
+
+$('#ACC-MODE-SELECTOR').on('change', function(e){
+  $('#ACC-URL').removeClass('d-none');
+  var value = $(this).val();
+  if (value == 0) {
+    $('#ACC-URL').hide();
+  } else {
+    $('#ACC-URL').show();
+  }
+});
 
 </script>
 {% endblock %}

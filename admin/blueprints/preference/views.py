@@ -322,12 +322,13 @@ def configuration():
 @login_required
 def update_configure():
     locale = request.form.get('locale', 'en_US')
-    acceleration = request.form.get('acc_mode', False)
-    acceleration_url = request.form.get('acc_url', False)
+    acc_mode = request.form.get('acc_mode', 0)
+    acc_url = request.form.get('acc_url', '')
     configure = g.configure
+    print('acc_mode', acc_mode, 12321)
     configure['locale'] = locale.replace('-', '_')
-    configure['acc_mode'] = parse_int(acceleration)
-    configure['acc_url'] = acceleration_url
+    configure['acc_mode'] = parse_int(acc_mode)
+    configure['acc_url'] = str(acc_url)
     configure.save()
     flash('SAVED')
     return_url = act.url_as('.configuration')
