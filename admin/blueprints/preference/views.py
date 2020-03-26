@@ -224,16 +224,14 @@ def update_site_menu_node(menu_key):
         parent = _find_parent_node(nodes, parent_key)
         node = _find_node(parent['nodes'], node_key)
         new_node.update({
-            'meta': node['meta'],
-            'nodes': node['nodes']
+            'nodes': node.get('nodes', [])
         })
-        parent['nodes'].insert(_index, new_node)
         parent['nodes'].remove(node)
+        parent['nodes'].insert(_index, new_node)
     else:
         node = _find_node(nodes, node_key)
         new_node.update({
-            'meta': node['meta'],
-            'nodes': node['nodes']
+            'nodes': node.get('nodes', [])
         })
         nodes.remove(node)
         nodes.insert(_index, new_node)
