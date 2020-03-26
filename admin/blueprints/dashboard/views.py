@@ -41,7 +41,7 @@ def login():
     if not configure.exists():
         return redirect(act.url_as('.initialize'))
     elif session.get('pyco_admin'):
-        return redirect('/')
+        return redirect(act.url_as('.index'))
     return render_template('login.html', configure=configure)
 
 
@@ -59,7 +59,7 @@ def exec_login():
             raise Exception('Not installed properly: {}'.format(e))
         hmac_key = '{}{}'.format(current_app.secret_key, get_remote_addr())
         session['pyco_admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
-        return redirect('/')
+        return redirect(act.url_as('.index'))
     else:
         flash('WRONG_PASSCODE', 'danger')
         return redirect(act.url_as('.login'))
