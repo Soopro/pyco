@@ -4,7 +4,7 @@ import multiprocessing
 
 bind = '127.0.0.1:5500'
 workers = multiprocessing.cpu_count() * 2 + 1
-accesslog = '/deploy/pyco_admin.access.log'
-errorlog = '/deploy/pyco_admin.error.log'
-pidfile = '/deploy/pyco_admin.pid'
+accesslog = '/deploy/pyco.access.log'
+errorlog = '/deploy/pyco.error.log'
+pidfile = '/deploy/pyco.pid'
 raw_env = ''
