@@ -126,7 +126,8 @@ def get_url_params(url, unique=True):
 
 
 def gen_excerpt(raw_text, excerpt_length, ellipsis_mark='&hellip;'):
-    excerpt = re.sub(r'<.*?>', '', raw_text).strip()
+    excerpt = re.sub(r'[\r\b\n]', '', raw_text, flags=re.MULTILINE).strip()
+    excerpt = re.sub(r'<.*?>', '', excerpt, flags=re.MULTILINE).strip()
     excerpt_ellipsis = ellipsis_mark if len(excerpt) > excerpt_length else ''
     return '{}{}'.format(excerpt[:excerpt_length], excerpt_ellipsis)
 
