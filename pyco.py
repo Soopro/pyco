@@ -54,13 +54,6 @@ app.template_folder = os.path.join(app.config['PAYLOAD_DIR'],
 # static
 app.static_folder = os.path.join(app.config['PAYLOAD_DIR'],
                                  Theme.THEMES_DIR)
-# UNCOMMENT THOSE LINES, IF YOU WANT CUSTOM STATIC URL
-# app.static_url_path = '/static'
-# app.add_url_rule(
-#     app.static_url_path + '/<path:filename>',
-#     view_func=app.send_static_file,
-#     endpoint='static'
-# )
 
 # jinja env
 app.jinja_env.autoescape = False
@@ -130,6 +123,13 @@ def app_before_request():
     g.request_url = get_request_url(g.base_url, g.request_path)
 
     g.query_map = {}
+
+
+@app.after_request
+def app_after_request(resp):
+    if request.endpoint == 'static':
+        resp.headers = make_cors_headers(resp.headers.get('Content-Type'))
+    return resp
 
 
 @app.teardown_request
