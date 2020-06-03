@@ -18,7 +18,6 @@ from .utils.misc import (process_slug,
 
 class DBConnection:
     models = dict()
-    app = None
     pretreat_method = None
     data_dir = None
 
