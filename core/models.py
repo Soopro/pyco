@@ -440,13 +440,13 @@ class Site(FlatFile):
         return menus
 
     # methods
-    def _uniqueify_term_key(self, term_key, term=None):
+    def _uniquify_term_key(self, term_key, term=None):
         term_key = process_slug(term_key)
         if term and term['key'] == term_key:
             return term_key
         all_term_keys = [term['key'] for term in self.categories['terms']]
         if term_key in all_term_keys:
-            term_key = self._uniqueify_term_key(slug_uuid_suffix(term_key),
+            term_key = self._uniquify_term_key(slug_uuid_suffix(term_key),
                                                 term)
         return term_key
 
@@ -469,7 +469,7 @@ class Site(FlatFile):
         if not terms:
             self.data['categories']['terms'] = []
         term_meta = term.get('meta') or {}
-        term_key = self._uniqueify_term_key(term['key'])
+        term_key = self._uniquify_term_key(term['key'])
         term = {
             'key': term_key,
             'meta': {
@@ -552,7 +552,7 @@ class Document(FlatFile):
 
     def add(self, content):
         content_dir = self.get_dir()
-        slug = self._uniqueify_slug(content['slug'], content['content_type'])
+        slug = self._uniquify_slug(content['slug'], content['content_type'])
         if content['content_type'] in [None, self.STATIC_TYPE]:
             rel_path = os.path.join(content_dir, slug)
         else:
@@ -574,13 +574,13 @@ class Document(FlatFile):
             'content': content.get('content', '')
         }
 
-    def _uniqueify_slug(self, slug, content_type, document=None):
+    def _uniquify_slug(self, slug, content_type, document=None):
         slug = process_slug(slug)
         if document and document.slug == slug:
             return slug
         doc = self.find_one(slug, content_type)
         if doc:
-            slug = self._uniqueify_slug(slug_uuid_suffix(slug),
+            slug = self._uniquify_slug(slug_uuid_suffix(slug),
                                         content_type,
                                         document)
         return slug
