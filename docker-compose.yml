@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  pyco:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5500:5500"
+      - "5510:5510"
+    command: "pyco"
+#    command: "admin"
