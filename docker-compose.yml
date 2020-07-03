@@ -7,6 +7,12 @@ services:
     restart: always
     ports:
       - "5500:5500"
-      - "5510:5510"
     command: "pyco"
-#    command: "admin"
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5510:5510"
+    command: "admin"
