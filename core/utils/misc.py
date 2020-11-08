@@ -270,30 +270,6 @@ def to_timestamp(date, input_datefmt='%Y-%m-%d'):
     return int((date - datetime(1970, 1, 1)).total_seconds())
 
 
-def time_age(date, gap=None, input_datefmt='%Y-%m-%d'):
-    if not isinstance(gap, int):
-        gap = 3600 * 24 * 365
-    if isinstance(date, str):
-        try:
-            dt = datetime.strptime(date, input_datefmt)
-            dt_stamp = (dt - datetime(1970, 1, 1)).total_seconds()
-        except Exception:
-            return None
-    elif isinstance(date, int):
-        if len(str(date)) == 13:
-            date = int(date / 1000)
-        dt_stamp = date
-    elif isinstance(date, datetime.datetime):
-        dt_stamp = (date - datetime(1970, 1, 1)).total_seconds()
-    else:
-        return None
-    try:
-        age = int(int(time.time()) - dt_stamp) / gap
-    except Exception:
-        return None
-    return age
-
-
 def match_cond(target, cond_key, cond_value, opposite=False):
     """
     params:
