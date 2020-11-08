@@ -265,7 +265,7 @@ def to_timestamp(date, input_datefmt='%Y-%m-%d'):
             date = datetime.strptime(date, input_datefmt)
         except Exception:
             return 0
-    elif not isinstance(date, datetime.datetime):
+    elif not isinstance(date, datetime):
         return 0
     return int((date - datetime(1970, 1, 1)).total_seconds())
 
