@@ -447,7 +447,7 @@ class Site(FlatFile):
         all_term_keys = [term['key'] for term in self.categories['terms']]
         if term_key in all_term_keys:
             term_key = self._uniquify_term_key(slug_uuid_suffix(term_key),
-                                                term)
+                                               term)
         return term_key
 
     def _find_term(self, term_key):
@@ -581,8 +581,8 @@ class Document(FlatFile):
         doc = self.find_one(slug, content_type)
         if doc:
             slug = self._uniquify_slug(slug_uuid_suffix(slug),
-                                        content_type,
-                                        document)
+                                       content_type,
+                                       document)
         return slug
 
     def save(self):
